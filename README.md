@@ -7,7 +7,7 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
 ## Packages
 
 - `installer`: Inject `loader` to Typora. 
-- `loader`: Desgin to load which `core` (production or development).
+- `loader`: Decide to load which `core` (production or development).
 - `core`: Setup an environment for extending Typora and managing plugins.
 
 
@@ -42,11 +42,11 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
 
 ## Preview
 
-![](.\docs\assets\base.jpg)
+![](https://fastly.jsdelivr.net/gh/typora-community-plugin/typora-community-plugin@latest/docs/assets/base.jpg)
 
-![](.\docs\assets\command-modal.jpg)
+![](https://fastly.jsdelivr.net/gh/typora-community-plugin/typora-community-plugin@latest/docs/assets/command-modal.jpg)
 
-![](.\docs\assets\settings-modal.jpg)
+![](https://fastly.jsdelivr.net/gh/typora-community-plugin/typora-community-plugin@latest/docs/assets/settings-modal.jpg)
 
 
 
