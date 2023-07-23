@@ -1,0 +1,16 @@
+# vscode
+.vscode
+
+# Intellij
+*.iml
+.idea
+
+# npm
+node_modules
+
+# output
+dist
+types
+
+# Exclude macOS Finder (System Explorer) View States
+.DS_Store
