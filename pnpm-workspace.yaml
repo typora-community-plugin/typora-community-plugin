@@ -1,2 +1,3 @@
+git-checks: false
 packages:
 - 'packages/*'

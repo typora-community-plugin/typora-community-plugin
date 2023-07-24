@@ -1,0 +1,107 @@
+/*
+ * override base-control.user.css
+ *********************************************/
+
+body.typ-tabs--enable {
+
+  .md-notification-container,
+  #zoom-hint,
+  #md-searchpanel,
+  #write {
+    top: 32px;
+  }
+
+  .unibody-window {
+    .md-notification-container {
+      padding-top: 29px;
+    }
+
+    #zoom-hint,
+    #md-searchpanel {
+      top: 61px;
+    }
+  }
+}
+
+/*
+ * Tabs
+ *********************************************/
+
+.typ-tabs-wrapper {
+  --typ-tab-border-color: rgb(0, 0, 0, .07);
+
+  @media (prefers-color-scheme: dark) {
+    --typ-tab-border-color: #555;
+  }
+
+  position: fixed;
+  top: 0;
+
+  width: calc(100% - var(--typ-ribbon-width));
+  overflow: hidden;
+
+  background: var(--bg-color);
+
+  .typora-node.megamenu-opened &,
+  .typora-node.typora-sourceview-on &,
+  .typora-node.show-preference-panel & {
+    display: none;
+  }
+
+  .pin-outline & {
+    width: calc(100% - var(--typ-ribbon-width) - var(--sidebar-width));
+  }
+
+  .unibody-window & {
+    margin-top: 28px;
+  }
+}
+
+%typ-tabs__child {
+  display: inline-block;
+  padding: 7px 6px 0 8px;
+  height: 100%;
+  border-bottom: 1px solid var(--typ-tab-border-color);
+  color: #777;
+  white-space: nowrap;
+}
+
+.typ-tabs {
+  display: flex;
+  padding: 0;
+  min-width: 100%;
+  height: 32px;
+
+  &::after {
+    @extend %typ-tabs__child;
+
+    content: '';
+    flex: 1;
+  }
+
+  .typ-close-tab {
+    font-style: normal;
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    padding-left: 6px;
+  }
+}
+
+.typ-tab {
+  @extend %typ-tabs__child;
+
+  &.active {
+    padding-top: 5px;
+    border: 1px solid var(--typ-tab-border-color);
+    border-top: 3px solid var(--active-file-border-color);
+    border-bottom: 1px solid transparent;
+
+    &:first-child {
+      border-left: 1px solid transparent;
+    }
+
+    & .typ-close-tab {
+      display: none;
+    }
+  }
+}

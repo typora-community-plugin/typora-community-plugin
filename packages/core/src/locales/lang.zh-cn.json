@@ -1,0 +1,58 @@
+{
+  "commandModal": {
+    "commandOpen": "打开命令面板",
+    "placeholder": "输入文本过滤命令"
+  },
+  "settingModal": {
+    "commandOpen": "打开插件配置对话框",
+    "title": "设置",
+    "groupCore": "核心设置",
+    "groupPlugins": "社区插件设置"
+  },
+  "settingTabs": {
+    "appearance": {
+      "name": "外观",
+      "ribbon": "显示活动栏",
+      "ribbonDesc": "同时会启用自定义侧边面板",
+      "fileTabs": "显示文件标签页",
+      "fileTabsDesc": "推荐启用配置 - 通用 - “切换文件时自动保存对上一个文件的更改”"
+    },
+    "hotkey": {
+      "name": "快捷键",
+      "waitHotkey": "请按下快捷键..."
+    },
+    "pluginMarketplace": {
+      "name": "插件市场",
+      "githubProxy": "Github 代理",
+      "pluginListSource": "加载插件列表的来源",
+      "pluginDownloadSource": "下载插件的来源",
+      "pluginList": "插件列表",
+      "author": "作者",
+      "installToGlobal": "安装到全局",
+      "installToVault": "安装到笔记库"
+    },
+    "plugins": {
+      "name": "已安装插件"
+    },
+    "about": {
+      "name": "关于",
+      "projectDesc": "一个社区插件系统，适用于",
+      "labelVersion": "版本",
+      "labelAuthor": "作者",
+      "labelHomepage": "项目主页"
+    }
+  },
+  "ribbon": {
+    "search": "搜索文件内容",
+    "files": "文件管理",
+    "outline": "大纲",
+    "settings": "设置",
+    "settingOfApp": "打开应用设置",
+    "settingOfPlugin": "打开插件设置"
+  },
+  "tabview": {
+    "close": "关闭标签",
+    "closeOthers": "关闭其他标签",
+    "closeRight": "关闭右侧标签"
+  }
+}

@@ -1,0 +1,92 @@
+:root {
+  --typ-ribbon-width: 48px;
+}
+
+/*
+ * override base-control.user.css
+ *********************************************/
+
+.typ-ribbon--enable {
+
+  &.typora-node:not(.megamenu-opened):not(.typora-sourceview-on) {
+
+    #top-titlebar,
+    .md-notification-container,
+    #md-searchpanel,
+    content,
+    footer.ty-footer {
+      left: var(--typ-ribbon-width);
+    }
+
+    &.show-preference-panel #top-titlebar {
+      left: 0;
+    }
+
+    /* 侧栏展开时 */
+    &.pin-outline {
+
+      #typora-sidebar {
+        left: var(--typ-ribbon-width);
+      }
+
+      #top-titlebar,
+      #typora-sidebar-resizer:not(.dragging),
+      .md-notification-container,
+      #md-searchpanel,
+      content,
+      footer.ty-footer {
+        left: calc(var(--typ-ribbon-width) + var(--sidebar-width));
+      }
+    }
+  }
+
+  .info-panel-tab-wrapper {
+    display: none;
+  }
+
+  .sidebar-content {
+    top: 18px;
+  }
+}
+
+/**
+ * Ribbon
+ ****************************************/
+
+.typ-ribbon {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+
+  padding-bottom: 16px;
+  width: var(--typ-ribbon-width);
+  height: 100vh;
+
+  border-right: 1px solid rgb(0, 0, 0, .07);
+
+  .typora-node.megamenu-opened &,
+  .typora-node.typora-sourceview-on &,
+  .typora-node.show-preference-panel & {
+    display: none;
+  }
+
+  &>.group {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+
+    &.bottom {
+      margin-top: auto;
+    }
+
+    &>.typ-ribbon-item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 4px 0;
+      height: var(--typ-ribbon-width);
+      font-size: calc(0.58 * var(--typ-ribbon-width));
+      color: var(--control-text-color);
+    }
+  }
+}

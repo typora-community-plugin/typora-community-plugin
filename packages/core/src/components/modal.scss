@@ -1,0 +1,41 @@
+.typ-modal__wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 999;
+
+  width: 100%;
+  height: 100%;
+  background: rgb(var(--typ-light-bg-color), .4);
+
+  &.middle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.typ-modal {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border: 1px solid var(--window-border-color);
+  background: var(--bg-color);
+  box-shadow: 0 15px 30px rgb(var(--typ-shadow-color), .5);
+}
+
+.typ-modal__header {
+  padding: 0 0 1.25rem 0;
+  font-size: 1.25rem;
+}
+
+.typ-modal__body {
+  flex: 1;
+  overflow: hidden;
+}
+
+.typ-modal__footer {
+  display: flex;
+  justify-content: end;
+  padding: 2rem 0 0 0;
+}

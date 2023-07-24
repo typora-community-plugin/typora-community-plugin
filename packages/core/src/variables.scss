@@ -1,0 +1,20 @@
+:root {
+  --typ-color-gray-1: 200, 200, 200;
+  --typ-color-gray-2: 150, 150, 150;
+  --typ-color-gray-3: 100, 100, 100;
+  --typ-color-gray-4: 50, 50, 50;
+
+  --typ-text-color: var(--typ-color-gray-4);
+
+  --typ-light-bg-color: var(--typ-color-gray-1);
+
+  --typ-shadow-color: var(--typ-color-gray-1);
+
+  @media (prefers-color-scheme: dark) {
+    --typ-text-color: var(--typ-color-gray-1);
+
+    --typ-light-bg-color: var(--typ-color-gray-4);
+
+    --typ-shadow-color: var(--typ-color-gray-4);
+  }
+}

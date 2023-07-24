@@ -1,0 +1,84 @@
+.typ-setting-item {
+  display: flex;
+  align-items: center;
+  margin-left: .5rem;
+
+  &.multiline {
+    display: flex;
+    padding: .5rem 0;
+
+    &:has(input[type=checkbox]) :where(input[type=checkbox], .typ-setting-info) {
+      align-self: flex-start;
+    }
+
+    input[type=checkbox] {
+      margin-right: .5rem;
+    }
+
+    &:not(:last-child:has(table)) {
+      border-bottom: solid 1px var(--window-border-color);
+    }
+  }
+
+  &:first-child h3 {
+    margin-top: 0;
+  }
+
+  h3 {
+    margin: 1.5rem 0 0.5rem;
+  }
+
+  .typ-setting-option {
+    padding: 0 0.5rem;
+    border: 1px solid var(--table-border-color);
+    border-radius: 3px;
+    box-shadow: 1px 1px 1px 0 rgb(var(--typ-shadow-color), .4);
+
+    &.primary {
+      color: var(--primary-btn-text-color);
+      background: var(--primary-color);
+      border: none;
+      box-shadow: none;
+    }
+  }
+
+  button {
+    color: var(--panel-border-color);
+    border: none;
+    border-radius: 3px;
+
+    &:hover {
+      background: var(--item-hover-bg-color);
+    }
+
+    &:active {
+      background: var(--active-toggle-btn-color);
+    }
+
+    &.primary {
+      color: var(--primary-btn-text-color);
+      background: var(--primary-color);
+
+      &:active {
+        background: var(--primary-btn-border-color);
+      }
+    }
+  }
+}
+
+.typ-setting-info {
+  flex: 1;
+}
+
+.typ-setting-description {
+  color: var(--text-color);
+  opacity: 0.6;
+}
+
+.typ-setting-controls {
+  display: flex;
+
+  &>* {
+    margin-left: .5rem;
+  }
+}

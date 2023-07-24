@@ -1,0 +1,58 @@
+{
+  "commandModal": {
+    "commandOpen": "Open Command Panel",
+    "placeholder": "Filter commands by text inputed"
+  },
+  "settingModal": {
+    "commandOpen": "Open Plugin Settings Modal",
+    "title": "Settings",
+    "groupCore": "Core",
+    "groupPlugins": "Community Plugins"
+  },
+  "settingTabs": {
+    "appearance": {
+      "name": "Appearance",
+      "ribbon": "Show Ribbon",
+      "ribbonDesc": "Also enable Custom Sidebar Panel",
+      "fileTabs": "Show File Tabs",
+      "fileTabsDesc": "Better to enable Setting - General - \"Save without asking when switch files on side panel\""
+    },
+    "hotkey": {
+      "name": "Hotkey",
+      "waitHotkey": "Press hotkey..."
+    },
+    "pluginMarketplace": {
+      "name": "Plugin Marketplace",
+      "githubProxy": "Github Proxy",
+      "pluginListSource": "Load plugin list from",
+      "pluginDownloadSource": "Download plugin from",
+      "pluginList": "Plugin List",
+      "author": "Author",
+      "installToGlobal": "Install to global",
+      "installToVault": "Install to vault"
+    },
+    "plugins": {
+      "name": "Installed Plugins"
+    },
+    "about": {
+      "name": "About",
+      "projectDesc": "A community plugin system for",
+      "labelVersion": "Version",
+      "labelAuthor": "Author",
+      "labelHomepage": "Homepage"
+    }
+  },
+  "ribbon": {
+    "search": "Search file content",
+    "files": "Files",
+    "outline": "Outline",
+    "settings": "Settings",
+    "settingOfApp": "Open App Settings",
+    "settingOfPlugin": "Open Plugin Settings"
+  },
+  "tabview": {
+    "close": "Close",
+    "closeOthers": "Close other tabs",
+    "closeRight": "Close tabs to right"
+  }
+}

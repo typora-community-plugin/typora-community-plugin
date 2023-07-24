@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "baseUrl": ".",
+    "module": "ESNext",
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "types": [
+      "node",
+      "typora"
+    ]
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
+}

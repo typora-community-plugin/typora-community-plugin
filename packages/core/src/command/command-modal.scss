@@ -1,0 +1,59 @@
+.typ-modal:has(.typ-command-modal__form) {
+  position: absolute;
+  top: 3rem;
+  left: 50%;
+  transform: translateX(-50%);
+
+  padding: 0.2rem;
+  width: 30rem;
+}
+
+%typ-command-modal__child {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+
+  &>* {
+    flex: 1;
+  }
+}
+
+.typ-command-modal__form {
+  @extend %typ-command-modal__child;
+
+  &>* {
+    margin: 0.3rem;
+  }
+
+  & input {
+    padding: 0.25rem;
+    border: 1px solid #ddd;
+    outline: none;
+    box-shadow: inset 1px 1px 1px 0px #eee;
+    font-size: 1rem;
+
+    &::placeholder {
+      opacity: 0.5;
+    }
+  }
+}
+
+.typ-command-modal__results {
+  @extend %typ-command-modal__child;
+
+  padding-bottom: 0.3rem;
+  max-height: 30rem;
+  overflow-y: auto;
+}
+
+.typ-command-modal__item {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.9rem;
+  color: #666;
+
+  &:hover,
+  &.active {
+    background: rgb(0, 0, 0, 0.03);
+  }
+}

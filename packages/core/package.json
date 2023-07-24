@@ -1,0 +1,30 @@
+{
+  "name": "@typora-community-plugin/core",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build:dev": "node build.js",
+    "build": "node build.js --prod"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/extract-zip": "1.6.2",
+    "@types/glob": "7.2.0",
+    "@types/jquery": "3.3.1",
+    "@types/lodash": "4.14",
+    "@types/node": "16.18.0",
+    "@types/typora": "workspace:../types",
+    "@types/yauzl": "2.10.0",
+    "esbuild": "^0.18.16",
+    "esbuild-plugin-typora": "workspace:../esbuild-plugin",
+    "esbuild-sass-plugin": "^2.10.0",
+    "iconv-lite": "0.6.3"
+  },
+  "dependencies": {
+    "@plylrnsdy/decorate.js": "^1.0.1"
+  }
+}
