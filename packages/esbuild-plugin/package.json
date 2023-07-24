@@ -1,0 +1,21 @@
+{
+  "name": "@typora-community-plugin/esbuild-plugin-typora",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "types": "index.ts",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "keywords": [
+    "esbuild-plugin",
+    "typora-plugin"
+  ],
+  "author": "plylrnsdy",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.4.4",
+    "esbuild": "^0.18.16"
+  }
+}
