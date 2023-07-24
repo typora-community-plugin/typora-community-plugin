@@ -24,7 +24,9 @@ await esbuild.build({
     'process.env.CORE_VERSION': `"${packageInfo.version}"`,
   },
   plugins: [
-    typoraPlugin(),
+    typoraPlugin({
+      mode: IS_PROD ? 'production' : 'development'
+    }),
     sassPlugin(),
   ],
 })

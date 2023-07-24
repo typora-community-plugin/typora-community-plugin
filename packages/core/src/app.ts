@@ -72,8 +72,7 @@ export class App extends Events<AppEvents> {
     document.head.insertAdjacentHTML('beforeend', `<link rel="stylesheet" id="typora-plugin-core" href="file://${this.coreDir}core.css" crossorigin="anonymous"></link>`)
 
     // @ts-ignore
-    window[Symbol.for('module:typora-plugin')] = {
-      // @ts-ignore
+    window[Symbol.for("typora-plugin-core")] = {
       app: this,
       ...Core,
     }

@@ -24,7 +24,7 @@ export default function typoraPlugin(options: Options) {
 
   const { mode } = Object.assign({}, DEFAULT_SETTINGS, options)
 
-  const pluginCoreSymbol = mode === 'development'
+  const coreModuleId = mode === 'development'
     ? '"Typora"'
     : 'Symbol.for("typora-plugin-core@v2")'
 
@@ -91,17 +91,19 @@ export default function typoraPlugin(options: Options) {
   }
 
   function resolveModules(text: string) {
-    return text.replace(/await import\(['"]([^'"]+)['"]\)/g, (_, $1: string) => {
-      if (modules.builtinModules.includes($1)) {
-        return `reqnode("${$1}")`
-      }
-      if (internalModules[$1]) {
-        return `reqnode("${internalModules[$1]}")`
-      }
-      if ($1 === '@typora-community-plugin/core') {
-        return `window[${pluginCoreSymbol}]`
-      }
-      return _
-    })
+    return text
+      .replace(/await import\(['"]([^'"]+)['"]\)/g, (_, $1: string) => {
+        if (modules.builtinModules.includes($1)) {
+          return `reqnode("${$1}")`
+        }
+        if (internalModules[$1]) {
+          return `reqnode("${internalModules[$1]}")`
+        }
+        if ($1 === '@typora-community-plugin/core') {
+          return `window[${coreModuleId}]`
+        }
+        return _
+      })
+      .replace(/Symbol.for\("typora-plugin-core"\)/g, coreModuleId)
   }
 }
