@@ -32,5 +32,5 @@ if ($html -nomatch '/plugins/loader.js" type="module"></script>$') {
 }
 
 If (-not Test-Path "%UserProfile%\\AppData\\Roaming\\Typora\\plugins") {
-  Invoke-Expression "cmd /c mklink /d %UserProfile%\\AppData\\Roaming\\Typora\\plugins %UserProfile%\\.typora"
+  Invoke-Expression "cmd /c mklink /d %UserProfile%\\AppData\\Roaming\\Typora\\plugins %UserProfile%\\.typora\\community-plugins"
 }
