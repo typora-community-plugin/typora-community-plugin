@@ -1,12 +1,13 @@
 {
   "name": "@typora-community-plugin/esbuild-plugin-typora",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Build typora community plugin with esbuild.",
   "type": "module",
   "main": "index.js",
   "types": "index.ts",
   "scripts": {
-    "build": "node build.js"
+    "build": "node build.js",
+    "publish": "pnpm run build && pnpm publish --access=public"
   },
   "keywords": [
     "esbuild-plugin",

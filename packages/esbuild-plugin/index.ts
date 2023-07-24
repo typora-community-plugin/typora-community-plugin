@@ -96,7 +96,7 @@ export default function typoraPlugin(options: Options) {
       if (internalModules[$1]) {
         return `reqnode("${internalModules[$1]}")`
       }
-      if ($1 === 'typora') {
+      if ($1 === '@typora-community-plugin/core') {
         return `window[${pluginCoreSymbol}]`
       }
       return _
