@@ -29,11 +29,13 @@ importers:
       '@types/node': ^20.4.4
       '@types/typora': workspace:../types
       esbuild: ^0.18.16
+      esbuild-plugin-typora: workspace:../esbuild-plugin
       typescript: ^5.1.6
     devDependencies:
       '@types/node': 20.4.4
       '@types/typora': link:../types
       esbuild: 0.18.16
+      esbuild-plugin-typora: link:../esbuild-plugin
       typescript: 5.1.6
 
   packages/types:
