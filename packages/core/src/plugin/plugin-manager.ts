@@ -8,7 +8,7 @@ import { _options } from 'typora'
 
 export class PluginManager {
 
-  globalRootDir = path.join(_options.userDataPath, 'extensions')
+  globalRootDir = path.join(_options.userDataPath, 'plugins')
   globalPluginsDir = ''
   vaultPluginsDir = ''
 
