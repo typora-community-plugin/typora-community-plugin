@@ -2,6 +2,8 @@
 
 A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidian plugin system](https://marcus.se.net/obsidian-plugin-docs/).
 
+**WARNING**: Third-party plugins may have data or privacy risks.
+
 
 
 ## Packages
