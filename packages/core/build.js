@@ -4,6 +4,7 @@ import * as path from 'node:path'
 import * as esbuild from 'esbuild'
 import typoraPlugin from 'esbuild-plugin-typora'
 import { sassPlugin } from 'esbuild-sass-plugin'
+import packageInfo from './package.json' assert { type: "json" }
 
 
 const args = process.argv.slice(2)
@@ -19,9 +20,12 @@ await esbuild.build({
   bundle: true,
   minify: IS_PROD,
   sourcemap: IS_DEV,
+  define: {
+    'process.env.CORE_VERSION': `"${packageInfo.version}"`,
+  },
   plugins: [
     typoraPlugin(),
-    sassPlugin()
+    sassPlugin(),
   ],
 })
 

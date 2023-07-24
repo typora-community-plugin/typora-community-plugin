@@ -5,6 +5,7 @@
     "module": "ESNext",
     "noImplicitAny": true,
     "moduleResolution": "node",
+    "resolveJsonModule": true,
     "types": [
       "node",
       "typora"

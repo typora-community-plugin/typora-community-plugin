@@ -12,7 +12,7 @@ import type { AppearanceSettings } from './settings/setting-tabs/appearance-sett
 import type { PluginMarketplaceSettings } from './settings/setting-tabs/plugin-marketplace-setting-tab'
 import { I18n } from './locales/i18n'
 import { _options } from 'typora'
-import Locale from './locales/lang.en.json'
+import * as Locale from './locales/lang.en.json'
 
 
 type AppEvents = {
@@ -38,7 +38,7 @@ export type AppPlugin = (app: App) => void
 export class App extends Events<AppEvents> {
 
   get coreVersion() {
-    return '2.0.0-beta.1'
+    return process.env.CORE_VERSION
   }
 
   get coreDir() {
