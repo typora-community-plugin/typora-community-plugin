@@ -4,10 +4,12 @@ import * as modules from 'node:module'
 
 
 const internalModules: Record<string, string> = {
+  'extract-zip': 'extract-zip',
+  'yauzl': 'extract-zip/node_modules/yauzl',
+
   'glob': 'fs-plus/node_modules/glob',
   'iconv-lite': 'iconv-lite',
   'lodash': 'lowdb/node_modules/lodash',
-  'yauzl': 'extract-zip/node_modules/yauzl',
 }
 
 interface Options {
