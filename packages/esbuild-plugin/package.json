@@ -1,7 +1,7 @@
 {
   "name": "@typora-community-plugin/esbuild-plugin-typora",
   "version": "1.0.0",
-  "description": "",
+  "description": "Build typora community plugin with esbuild.",
   "type": "module",
   "main": "index.js",
   "types": "index.ts",
