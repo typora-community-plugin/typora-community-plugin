@@ -7,8 +7,13 @@
     "node": ">=18",
     "pnpm": ">=7"
   },
-  "scripts": {},
+  "scripts": {
+    "build": "pnpm -F loader run build && pnpm -F core run build && node build.js"
+  },
   "keywords": [],
   "author": "plylrnsdy",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "archiver": "^5.3.1"
+  }
 }
