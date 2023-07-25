@@ -69,7 +69,7 @@ export class Vault extends Events<VaultEvents> {
       const text = fs.readFileSync(configPath, 'utf8')
       return JSON.parse(text)
     } catch (error) {
-      console.error(`Failed to load config "${filename}.json"`)
+      console.warn(`Failed to load config "${filename}.json"`)
       return defaultValue
     }
   }

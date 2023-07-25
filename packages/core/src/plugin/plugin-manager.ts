@@ -48,32 +48,27 @@ export class PluginManager {
     for (const dir of pluginDirs) {
       const manifestPath = path.join(dir, 'manifest.json')
 
-      try {
-        await fs.access(manifestPath)
+      await fs.access(manifestPath)
+        .then(() => fs.readFile(manifestPath, 'utf8'))
+        .then(text => {
+          const manifest = JSON.parse(text) as PluginManifest
+          manifest.dir = dir
 
-        const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8')) as PluginManifest
-        manifest.dir = dir
-
-        this.manifests[manifest.id] = manifest
-      } catch (error) {
-        console.error(error)
-      }
+          this.manifests[manifest.id] = manifest
+        })
+        .catch(() => { })
     }
   }
 
   private async _readPluginsDir(pluginsPath: string) {
     if (!pluginsPath) return []
 
-    let result: string[] = []
-    try {
-      fs.access(pluginsPath)
-      const dirnames = await fs.readdir(pluginsPath)
-      result = dirnames.map(dir => path.join(pluginsPath, dir))
-    } catch (error) {
-      console.error(error)
-    } finally {
-      return result
-    }
+    return fs.access(pluginsPath)
+      .then(() => fs.readdir(pluginsPath))
+      .then((dirnames) =>
+        dirnames.map(dir => path.join(pluginsPath, dir))
+      )
+      .catch(() => [])
   }
 
   /**
