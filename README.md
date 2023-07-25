@@ -1,5 +1,7 @@
 # Typora Community Plugin
 
+English | [简体中文](https://github.com/typora-community-plugin/typora-community-plugin/blob/main/README.zh-CN.md)
+
 A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidian plugin system](https://marcus.se.net/obsidian-plugin-docs/).
 
 **WARNING**: Third-party plugins may have data or privacy risks.
@@ -11,6 +13,8 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
 - `installer`: Inject `loader` to Typora. 
 - `loader`: Decide to load which `core` (production or development).
 - `core`: Setup an environment for extending Typora and managing plugins.
+- `types`: Types of Typora global variables.
+- `esbuild-plugin`: Build `core` or plugin with esbuild.
 
 
 
@@ -38,7 +42,7 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
   - Markdown preprocessor
   - Markdown postprocessor
   - Markdown suggestion
-- I18n: auto follow system, now support English and Chiness
+- I18n: auto follow system, now support English and Chinese
 
 
 
