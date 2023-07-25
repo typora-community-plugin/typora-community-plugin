@@ -38,7 +38,7 @@ await fs.rm('./dist/locales/i18n.ts')
 
 
 if (args.includes('--start')) {
-  await fs.rm(path.join(process.env.USERPROFILE, '.typora/plugins/.lock/win-test'))
+  await fs.rm(path.join(process.env.USERPROFILE, '.typora/community-plugins/.lock/win-test'))
     .catch(() => { })
 
   child_process.exec('Typora ./test/vault/doc.md')
