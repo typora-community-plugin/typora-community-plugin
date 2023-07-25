@@ -1,10 +1,9 @@
 const fs = require('node:fs')
-const path = require('node:path')
 const archiver = require('archiver')
 const packageInfo = require('./packages/core/package.json')
 
 
-const output = fs.createWriteStream(path.join(process.cwd(), '/typora-community-plugin.zip'))
+const output = fs.createWriteStream('typora-community-plugin.zip')
 
 const archive = archiver('zip', { zlib: { level: 9 } })
   .on('error', (err) => { throw err })
