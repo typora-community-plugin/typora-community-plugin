@@ -1,14 +1,34 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
     "baseUrl": ".",
+
+    "target": "ESNext",
+
     "module": "ESNext",
-    "noImplicitAny": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
+
     "types": [
       "node",
       "typora"
+    ],
+    "skipLibCheck": true,
+    "noImplicitAny": true,
+
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationDir": "typings",
+
+    "paths": {
+      "src/*": [
+        "./src/*"
+      ]
+    },
+    "plugins": [
+      {
+        "transform": "typescript-transform-paths",
+        "afterDeclarations": true
+      }
     ]
   },
   "include": [

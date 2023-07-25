@@ -1,0 +1,7 @@
+dist/
+
+src/
+test/
+
+build-dts.js
+build.js

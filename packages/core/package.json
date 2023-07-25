@@ -1,15 +1,29 @@
 {
   "name": "@typora-community-plugin/core",
   "version": "2.0.0-beta.1",
-  "description": "",
+  "description": "Typora Plugin Core's types for plugin development.",
   "type": "module",
-  "main": "index.js",
+  "main": "",
+  "types": "typings/index.d.ts",
   "scripts": {
     "build:dev": "node build.js",
-    "build": "node build.js --prod"
+    "build": "node build.js --prod",
+    "build-dts": "node build-dts.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "typora",
+    "typora-plugin"
+  ],
+  "author": "plylrnsdy <https://github.com/plylrnsdy>",
+  "homepage": "https://github.com/typora-community-plugin/typora-community-plugin#README.md",
+  "bugs": {
+    "url": "https://github.com/typora-community-plugin/typora-community-plugin/issues",
+    "email": "plylrnsdy@163.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/typora-community-plugin/typora-community-plugin.git"
+  },
   "license": "MIT",
   "devDependencies": {
     "@types/extract-zip": "1.6.2",
@@ -22,7 +36,10 @@
     "esbuild": "^0.18.16",
     "esbuild-plugin-typora": "workspace:../esbuild-plugin",
     "esbuild-sass-plugin": "^2.10.0",
-    "iconv-lite": "0.6.3"
+    "iconv-lite": "0.6.3",
+    "ts-patch": "^3.0.2",
+    "typescript": "^5.1.6",
+    "typescript-transform-paths": "^3.4.6"
   },
   "dependencies": {
     "@plylrnsdy/decorate.js": "^1.0.1"
