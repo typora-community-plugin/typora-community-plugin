@@ -37,7 +37,7 @@ await fs.cp('./src/locales', './dist/locales', { recursive: true })
 await fs.rm('./dist/locales/i18n.ts')
 
 
-if (IS_DEV) {
+if (args.includes('--start')) {
   await fs.rm(path.join(process.env.USERPROFILE, '.typora/plugins/.lock/win-test'))
     .catch(() => { })
 

@@ -1,14 +1,15 @@
 {
   "name": "@typora-community-plugin/core",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.2",
   "description": "Typora Plugin Core's types for plugin development.",
   "type": "module",
   "main": "",
   "types": "typings/index.d.ts",
   "scripts": {
-    "build:dev": "node build.js",
+    "build:dev": "node build.js --start",
     "build": "node build.js --prod",
-    "build-dts": "node build-dts.js"
+    "build-dts": "node build-dts.js",
+    "prepublish": "node build.js && pnpm run build-dts"
   },
   "keywords": [
     "typora",
