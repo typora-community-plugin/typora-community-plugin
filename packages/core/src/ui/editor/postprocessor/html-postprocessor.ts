@@ -1,7 +1,6 @@
 import { PostProcessor } from "./postprocessor"
 
 
-// @ts-ignore ts(2417)
 export class HtmlPostProcessor extends PostProcessor {
 
   private _selector = ''

@@ -4,11 +4,14 @@ import { HtmlPostProcessor } from "./html-postprocessor"
 import type { ButtonOptions } from "./postprocessor"
 
 
-interface CodeBlockButtonOptions extends Omit<ButtonOptions, 'onclick'> {
-  onclick(code: string, el: HTMLElement): void
+interface CodeblockContext {
+  codeblock: HTMLPreElement
+  code: string
 }
 
-// @ts-ignore ts(2417)
+interface CodeBlockButtonOptions extends ButtonOptions<CodeblockContext> {
+}
+
 export class CodeblockPostProcessor extends HtmlPostProcessor {
   type = 'codeblock'
 
@@ -44,9 +47,8 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
     return this.preview !== CodeblockPostProcessor.prototype.preview
   }
 
-  // @ts-ignore ts(2416)
   renderButton(parent: HTMLElement, button: CodeBlockButtonOptions) {
-    const btn = button as CodeBlockButtonOptions & { $button: ButtonOptions }
+    const btn = button as CodeBlockButtonOptions & { $button: ButtonOptions<void> }
     if (!btn.$button) {
       btn.$button = {
         ...button,
@@ -54,7 +56,7 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
           const pre = event.target.closest('pre')!
           const cid = pre.getAttribute('cid')!
           const code = editor.fences.getValue(cid)
-          button!.onclick(code, pre)
+          button!.onclick(event, { codeblock: pre, code })
         },
       }
     }

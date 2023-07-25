@@ -2,11 +2,13 @@ import './postprocessor.scss'
 import { randomString } from "src/utils/random-string"
 
 
-export interface ButtonOptions {
+export type ButtonMouseEventListener<T> = (event: MouseEvent & { target: HTMLElement }, context: T) => void
+
+export interface ButtonOptions<T = any> {
   text: string,
   title?: string,
   className?: string,
-  onclick: (event: MouseEvent & { target: HTMLElement }) => void
+  onclick: ButtonMouseEventListener<T>
 }
 
 export type RawProcessor = (el: HTMLElement) => void
@@ -36,7 +38,7 @@ export class PostProcessor {
     buttonEl.classList.add('typ-block-operate-button', className)
     buttonEl.innerHTML = button.text
     buttonEl.title = button.title ?? ''
-    buttonEl.onclick = button.onclick
+    buttonEl.onclick = (event: any) => button.onclick(event, {})
 
     group.append(buttonEl)
   }
@@ -53,9 +55,14 @@ export class PostProcessor {
     return group
   }
 
-  static from(process: RawProcessor): PostProcessor {
+  static from(options: RawProcessor | Pick<PostProcessor, 'process'>): PostProcessor {
     const processor = new PostProcessor()
-    processor.process = process
+    if (typeof options === 'function') {
+      processor.process = options
+    }
+    else {
+      Object.assign(processor, options)
+    }
     return processor
   }
 }
