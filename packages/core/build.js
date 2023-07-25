@@ -4,14 +4,15 @@ import * as path from 'node:path'
 import * as esbuild from 'esbuild'
 import typoraPlugin from 'esbuild-plugin-typora'
 import { sassPlugin } from 'esbuild-sass-plugin'
-import packageInfo from './package.json' assert { type: "json" }
 
 
 const args = process.argv.slice(2)
 const IS_PROD = args.includes('--prod')
 const IS_DEV = !IS_PROD
 
-await fs.rm(`${process.cwd()}/dist`, { recursive: true, force: true })
+const packageInfo = JSON.parse(await fs.readFile('./package.json', 'utf8'))
+
+await fs.rm('./dist', { recursive: true, force: true })
 
 await esbuild.build({
   entryPoints: ['src/core.ts'],
@@ -31,13 +32,9 @@ await esbuild.build({
   ],
 })
 
-await fs.cp(
-  `${process.cwd()}/src/locales`,
-  `${process.cwd()}/dist/locales`,
-  { recursive: true }
-)
+await fs.cp('./src/locales', './dist/locales', { recursive: true })
 
-await fs.rm(`${process.cwd()}/dist/locales/i18n.ts`)
+await fs.rm('./dist/locales/i18n.ts')
 
 
 if (IS_DEV) {
