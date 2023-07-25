@@ -1,6 +1,6 @@
 {
-  "$version": "2.0.0-beta.1",
-  "$stores": {
+  "version": "2.0.0-beta.1",
+  "settings": {
     "githubPluginListUri": "jsdelivr",
     "githubDownloadUri": "ghproxy",
     "showRibbon": true,

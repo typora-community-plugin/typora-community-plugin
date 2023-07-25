@@ -58,7 +58,7 @@ export class App extends Events<AppEvents> {
 
   env: EnvironmentVairables = this._readEnv()
 
-  settings = new Settings<AppSettings>(this, 'core', this.coreVersion)
+  settings = new Settings<AppSettings>(this, 'core')
 
   plugins = new PluginManager(this)
 
