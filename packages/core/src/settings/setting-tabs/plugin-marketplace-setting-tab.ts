@@ -25,6 +25,9 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     super()
 
     app.settings.setDefault(DEFAULT_SETTINGS)
+    app.settings.onChange('githubPluginListUri', () => {
+      this.renderPluginList()
+    })
 
     this.markettplace = new PluginMarketplace(app)
   }
@@ -53,7 +56,10 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     })
 
     this.addSettingTitle(t.pluginList)
+    this.renderPluginList()
+  }
 
+  private renderPluginList() {
     this.markettplace.loadCommunityPlugins()
       .then(data => {
         data.forEach(p => this.renderPlugins(p))
