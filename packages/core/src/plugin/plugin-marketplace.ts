@@ -18,9 +18,13 @@ interface GithubUri {
 
 export class PluginMarketplace {
 
-  private pluginListUris: GithubUri[] = [{
+  pluginListUris: GithubUri[] = [{
     id: 'github',
     host: 'https://raw.githubusercontent.com/',
+    path: 'typora-community-plugin/typora-plugin-releases/main/community-plugins.json'
+  }, {
+    id: 'ghproxy',
+    host: 'https://ghproxy.com/https://raw.githubusercontent.com/',
     path: 'typora-community-plugin/typora-plugin-releases/main/community-plugins.json'
   }, {
     id: 'jsdelivr',
@@ -28,13 +32,13 @@ export class PluginMarketplace {
     path: 'typora-community-plugin/typora-plugin-releases@main/community-plugins.json'
   }]
 
-  private releaseUris: GithubUri[] = [{
+  releaseUris: GithubUri[] = [{
     id: 'github',
     host: 'https://api.github.com/',
     path: 'repos/{repo}/releases/latest'
   }]
 
-  private downloadUris: GithubUri[] = [{
+  downloadUris: GithubUri[] = [{
     id: 'github',
     host: 'https://github.com/',
     path: '{repo}/releases/download/{version}/plugin.zip'

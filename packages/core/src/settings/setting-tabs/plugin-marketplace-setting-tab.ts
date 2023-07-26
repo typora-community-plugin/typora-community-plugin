@@ -40,7 +40,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     this.addSetting(settings => {
       settings.addName(t.pluginListSource)
       settings.addSelect({
-        options: ['github', 'jsdelivr'],
+        options: this.markettplace.pluginListUris.map(u => u.id),
         selected: this.app.settings.get('githubPluginListUri'),
         onchange: (event) => this.app.settings.set('githubPluginListUri', event.target.value)
       })
@@ -50,7 +50,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
       settings.addName(t.pluginDownloadSource)
       settings.addSelect({
         selected: this.app.settings.get('githubDownloadUri'),
-        options: ['github', 'ghproxy'],
+        options: this.markettplace.downloadUris.map(u => u.id),
         onchange: (event) => this.app.settings.set('githubDownloadUri', event.target.value)
       })
     })
