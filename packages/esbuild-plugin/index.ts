@@ -23,10 +23,7 @@ const DEFAULT_SETTINGS = {
 export default function typoraPlugin(options: Options) {
 
   const { mode } = Object.assign({}, DEFAULT_SETTINGS, options)
-
-  const coreModuleId = mode === 'development'
-    ? '"Typora"'
-    : 'Symbol.for("typora-plugin-core@v2")'
+  const coreModuleId = 'Symbol.for("typora-plugin-core@v2")'
 
   return {
     name: 'typora-plugin',
@@ -99,11 +96,17 @@ export default function typoraPlugin(options: Options) {
         if (internalModules[$1]) {
           return `reqnode("${internalModules[$1]}")`
         }
+        // handle: plugin implement
         if ($1 === '@typora-community-plugin/core') {
           return `window[${coreModuleId}]`
         }
         return _
       })
-      .replace(/Symbol.for\("typora-plugin-core"\)/g, coreModuleId)
+      // handle: app.ts
+      .replace('window[Symbol.for("typora-plugin-core")]',
+        mode === 'development'
+          ? `window.Typora = window[${coreModuleId}]`
+          : `window[${coreModuleId}]`
+      )
   }
 }
