@@ -91,11 +91,14 @@ export class PluginMarketplaceSettingTab extends SettingTab {
       setting.addDescription(`${t.author}: ${info.author}`)
       setting.addDescription(info.description)
 
+      if (this.app.plugins.manifests[info.id]) return
+
       setting.addButton(button => {
         button.innerText = t.installToGlobal
         button.classList.add('primary')
         button.onclick = () =>
           this.markettplace.installPlugin(info, 'global')
+            .then(() => setting.controls.remove())
       })
 
       setting.addButton(button => {
@@ -103,6 +106,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
         button.classList.add('primary')
         button.onclick = () =>
           this.markettplace.installPlugin(info, 'vault')
+            .then(() => setting.controls.remove())
       })
     })
   }
