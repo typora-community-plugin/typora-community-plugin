@@ -48,11 +48,11 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
 
 ## Preview
 
-![](https://fastly.jsdelivr.net/gh/typora-community-plugin/typora-community-plugin@latest/docs/assets/base.jpg)
+![](https://fastly.jsdelivr.net/gh/typora-community-plugin/typora-community-plugin@main/docs/assets/base.jpg)
 
-![](https://fastly.jsdelivr.net/gh/typora-community-plugin/typora-community-plugin@latest/docs/assets/command-modal.jpg)
+![](https://fastly.jsdelivr.net/gh/typora-community-plugin/typora-community-plugin@main/docs/assets/command-modal.jpg)
 
-![](https://fastly.jsdelivr.net/gh/typora-community-plugin/typora-community-plugin@latest/docs/assets/settings-modal.jpg)
+![](https://fastly.jsdelivr.net/gh/typora-community-plugin/typora-community-plugin@main/docs/assets/settings-modal.jpg)
 
 
 

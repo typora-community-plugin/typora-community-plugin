@@ -25,7 +25,7 @@ export class PluginMarketplace {
   }, {
     id: 'jsdelivr',
     host: 'https://fastly.jsdelivr.net/gh/',
-    path: 'typora-community-plugin/typora-plugin-releases@latest/community-plugins.json'
+    path: 'typora-community-plugin/typora-plugin-releases@main/community-plugins.json'
   }]
 
   private releaseUris: GithubUri[] = [{
