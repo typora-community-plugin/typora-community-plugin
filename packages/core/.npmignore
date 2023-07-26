@@ -3,3 +3,4 @@ test/
 
 build-dts.js
 build.js
+tsconfig.json
