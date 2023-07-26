@@ -32,7 +32,8 @@
       "installToVault": "Install to vault"
     },
     "plugins": {
-      "name": "Installed Plugins"
+      "name": "Installed Plugins",
+      "uninstall": "Uninstall"
     },
     "about": {
       "name": "About",

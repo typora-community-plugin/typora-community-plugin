@@ -32,7 +32,8 @@
       "installToVault": "安装到笔记库"
     },
     "plugins": {
-      "name": "已安装插件"
+      "name": "已安装插件",
+      "uninstall": "卸载"
     },
     "about": {
       "name": "关于",

@@ -1,3 +1,7 @@
+.typ-plugin-meta-group:has(+div) {
+  margin-right: 1rem;
+}
+
 .typ-plugin-meta {
   color: var(--text-color);
   opacity: 0.8;

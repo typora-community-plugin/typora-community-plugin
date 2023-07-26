@@ -63,6 +63,15 @@
         background: var(--primary-btn-border-color);
       }
     }
+
+    &.danger {
+      color: var(--primary-btn-text-color);
+      background: rgb(var(--typ-color-red-4));
+
+      &:active {
+        background: rgb(var(--typ-color-red-5));
+      }
+    }
   }
 }
 

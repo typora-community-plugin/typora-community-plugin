@@ -26,12 +26,14 @@ export class PluginsManagerSettingTab extends SettingTab {
   }
 
   private renderPlugins(manifest: PluginManifest) {
+    const t = this.app.i18n.t.settingTabs.plugins
+
     this.addSetting(setting => {
       setting.addName(manifest.name || manifest.id)
       setting.addDescription(manifest.description)
 
       setting.containerEl.append(
-        html`<div><div class="typ-plugin-meta">v${manifest.version}</div><div class="typ-plugin-meta">by ${manifest.author}</div></div>`)
+        html`<div class="typ-plugin-meta-group"><div class="typ-plugin-meta">v${manifest.version}</div><div class="typ-plugin-meta">by ${manifest.author}</div></div>`)
 
       setting.addCheckbox(checkbox => {
         checkbox.checked = this.app.plugins.enabledPlugins[manifest.id]
@@ -42,6 +44,15 @@ export class PluginsManagerSettingTab extends SettingTab {
           else
             this.app.plugins.disablePlugin(manifest.id)
         })
+      })
+
+      setting.addButton(button => {
+        button.classList.add('danger')
+        button.innerText = t.uninstall
+        button.onclick = () => {
+          this.app.plugins.uninstallPlugin(manifest.id)
+            .then(() => setting.containerEl.remove())
+        }
       })
     })
   }

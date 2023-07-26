@@ -1,5 +1,6 @@
 import * as path from 'path'
 import * as fs from 'fs/promises'
+import * as _ from 'lodash'
 import type { App } from "../app"
 import type { PluginManifest } from "./plugin-manifest"
 import { Plugin } from "./plugin"
@@ -122,14 +123,23 @@ export class PluginManager {
   }
 
   disablePlugin(id: string) {
-    this.instances[id].unload()
+    this.instances[id]?.unload()
     document.getElementById(`typora-plugin:${id}`)?.remove()
 
     this.enabledPlugins[id] = false
     this._saveEnabledConfig()
   }
 
-  private _saveEnabledConfig() {
-    this.app.vault.writeConfigJson('plugins', this.enabledPlugins)
+  uninstallPlugin(id: string) {
+    this.unloadPlugin(id)
+    const manifest = this.manifests[id]
+    delete this.manifests[id]
+    delete this.enabledPlugins[id]
+    this._saveEnabledConfig()
+    return fs.rm(manifest.dir!, { recursive: true })
   }
+
+  private _saveEnabledConfig = _.debounce(() => {
+    this.app.vault.writeConfigJson('plugins', this.enabledPlugins)
+  }, 1e3)
 }
