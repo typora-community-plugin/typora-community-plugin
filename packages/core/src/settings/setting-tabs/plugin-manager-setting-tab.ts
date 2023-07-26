@@ -48,7 +48,8 @@ export class PluginsManagerSettingTab extends SettingTab {
 
       setting.addButton(button => {
         button.classList.add('danger')
-        button.innerText = t.uninstall
+        button.title = t.uninstall
+        button.innerHTML = '<span class="fa fa-trash-o"></span>'
         button.onclick = () => {
           this.app.plugins.uninstallPlugin(manifest.id)
             .then(() => setting.containerEl.remove())
