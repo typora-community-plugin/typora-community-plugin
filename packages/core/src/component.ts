@@ -52,6 +52,7 @@ export abstract class Component {
   }
 
   unregister(disposable: DisposeFunc) {
+    disposable?.()
     this._disposables = this._disposables.filter(d => d !== disposable)
   }
 
