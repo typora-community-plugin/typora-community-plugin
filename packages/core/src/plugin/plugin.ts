@@ -26,6 +26,7 @@ export abstract class Plugin extends Component {
 
   async loadData() {
     return fs.readFile(this.dataPath, 'utf8')
+      .then(text => JSON.parse(text))
       .catch(error => ({}))
   }
 

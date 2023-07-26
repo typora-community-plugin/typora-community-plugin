@@ -22,5 +22,6 @@ export { SettingTab } from './settings/setting-tab'
 export { SettingItem } from './settings/setting-item'
 
 export { default as decorate } from '@plylrnsdy/decorate.js'
+export type { DisposeFunc } from './utils/types'
 export { html } from './utils/html'
 export { default as until } from './utils/until'
