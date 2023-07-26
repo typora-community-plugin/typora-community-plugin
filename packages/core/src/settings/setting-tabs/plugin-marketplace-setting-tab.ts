@@ -62,6 +62,9 @@ export class PluginMarketplaceSettingTab extends SettingTab {
   private renderPluginList() {
     this.markettplace.loadCommunityPlugins()
       .then(data => {
+        this.containerEl.querySelectorAll('.typ-plugin-item')
+          .forEach(el => el.remove())
+
         data.forEach(p => this.renderPlugins(p))
       })
   }
@@ -70,6 +73,8 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     const t = this.app.i18n.t.settingTabs.pluginMarketplace
 
     this.addSetting(setting => {
+      setting.containerEl.classList.add('typ-plugin-item')
+
       setting.addName(info.name || info.id)
       setting.addDescription(`${t.author}: ${info.author}`)
       setting.addDescription(info.description)
