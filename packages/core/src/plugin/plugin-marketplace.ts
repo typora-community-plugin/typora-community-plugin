@@ -92,6 +92,7 @@ export class PluginMarketplace {
               throw Error('Downloaded plugin id is not equal to user install plugin id.')
             }
             else {
+              manifest.dir = root
               this.app.plugins.manifests[manifest.id] = manifest
             }
           })
