@@ -56,17 +56,29 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     })
 
     this.addSettingTitle(t.pluginList)
+  }
+
+  show() {
     this.renderPluginList()
+    super.show()
+  }
+
+  hide() {
+    this.cleanPluginList()
+    super.hide()
   }
 
   private renderPluginList() {
     this.markettplace.loadCommunityPlugins()
       .then(data => {
-        this.containerEl.querySelectorAll('.typ-plugin-item')
-          .forEach(el => el.remove())
-
+        this.cleanPluginList()
         data.forEach(p => this.renderPlugins(p))
       })
+  }
+
+  private cleanPluginList() {
+    this.containerEl.querySelectorAll('.typ-plugin-item')
+      .forEach(el => el.remove())
   }
 
   private renderPlugins(info: PluginMarketInfo) {
