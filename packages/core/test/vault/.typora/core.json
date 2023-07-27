@@ -4,6 +4,7 @@
     "githubPluginListUri": "ghproxy",
     "githubDownloadUri": "ghproxy",
     "showRibbon": true,
-    "showFileTabs": true
+    "showFileTabs": true,
+    "showSearchResultFullPath": true
   }
 }

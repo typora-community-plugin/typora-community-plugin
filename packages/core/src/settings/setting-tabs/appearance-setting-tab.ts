@@ -6,11 +6,13 @@ import { SettingTab } from "../setting-tab"
 export type AppearanceSettings = {
   showRibbon: boolean
   showFileTabs: boolean
+  showSearchResultFullPath: boolean
 }
 
 const DEFAULT_SETTINGS: AppearanceSettings = {
   showRibbon: true,
   showFileTabs: true,
+  showSearchResultFullPath: false,
 }
 
 export class AppearanceSettingTab extends SettingTab {
@@ -26,11 +28,25 @@ export class AppearanceSettingTab extends SettingTab {
   }
 
   onload() {
-    const { i18n } = this.app
+    const t = this.app.i18n.t.settingTabs.appearance
 
+    this.addSettingTitle(t.search)
     this.addSetting(setting => {
-      setting.addName(i18n.t.settingTabs.appearance.ribbon)
-      setting.addDescription(i18n.t.settingTabs.appearance.ribbonDesc)
+      setting.addName(t.searchResultFullPath)
+      setting.addDescription(t.searchResultFullPathDesc)
+      setting.addCheckbox(checkbox => {
+        checkbox.checked = this.app.settings.get('showSearchResultFullPath')
+        checkbox.addEventListener('click', event => {
+          const el = event.target as HTMLInputElement
+          this.app.settings.set('showSearchResultFullPath', el.checked)
+        })
+      })
+    })
+
+    this.addSettingTitle(t.advanced)
+    this.addSetting(setting => {
+      setting.addName(t.ribbon)
+      setting.addDescription(t.ribbonDesc)
       setting.addCheckbox(checkbox => {
         checkbox.checked = this.app.settings.get('showRibbon')
         checkbox.addEventListener('click', event => {
@@ -39,10 +55,9 @@ export class AppearanceSettingTab extends SettingTab {
         })
       })
     })
-
     this.addSetting(setting => {
-      setting.addName(i18n.t.settingTabs.appearance.fileTabs)
-      setting.addDescription(i18n.t.settingTabs.appearance.fileTabsDesc)
+      setting.addName(t.fileTabs)
+      setting.addDescription(t.fileTabsDesc)
       setting.addCheckbox(checkbox => {
         checkbox.checked = this.app.settings.get('showFileTabs')
         checkbox.addEventListener('click', event => {

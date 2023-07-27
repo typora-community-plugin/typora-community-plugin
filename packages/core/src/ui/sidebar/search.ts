@@ -9,6 +9,8 @@ import type { App } from 'src/app'
 
 export class Search extends View {
 
+  private observer = new MutationObserver(this.appendTitle)
+
   constructor(app: App, workspace: Workspace, sidebar: Sidebar) {
     super()
 
@@ -19,6 +21,12 @@ export class Search extends View {
       title: app.i18n.t.ribbon.search,
       icon: html`<i class="fa fa-search"></i>`,
       onclick: () => sidebar.switch(Search),
+    })
+
+    app.settings.onChange('showSearchResultFullPath', (_, isEnabled) => {
+      isEnabled
+        ? this.showSearchResultPath()
+        : this.hideSearchResultPath()
     })
   }
 
@@ -36,5 +44,28 @@ export class Search extends View {
     const parent = this.containerEl.parentElement!
     parent.classList.remove('ty-show-search')
     parent.classList.remove('ty-on-search')
+  }
+
+  private appendTitle(mutationsList: MutationRecord[]) {
+    mutationsList.forEach(mutation => {
+      if (mutation.type !== 'childList') return
+      mutation.addedNodes.forEach((el: HTMLElement) => {
+        const loc = el.querySelector('.file-list-item-parent-loc')! as HTMLElement
+        loc.title = loc.innerText
+      })
+    })
+  }
+
+  private showSearchResultPath() {
+    const resultsEl = $('#file-library-search-result').get(0)!
+    this.observer.observe(resultsEl, {
+      attributes: false,
+      childList: true,
+      subtree: true,
+    })
+  }
+
+  private hideSearchResultPath() {
+    this.observer.disconnect()
   }
 }

@@ -12,6 +12,10 @@
   "settingTabs": {
     "appearance": {
       "name": "Appearance",
+      "search": "Search",
+      "searchResultFullPath": "Show search result full path",
+      "searchResultFullPathDesc": "Hover your cursor over the path and it will show full path in a tooltip.",
+      "advanced": "Advanced",
       "ribbon": "Show Ribbon",
       "ribbonDesc": "Also enable Custom Sidebar Panel",
       "fileTabs": "Show File Tabs",
