@@ -3,6 +3,7 @@ import type { App } from "src/app"
 import type { PluginManifest } from "src/plugin/plugin-manifest"
 import { html } from "src/utils/html"
 import { SettingTab } from "../setting-tab"
+import { format } from 'src/utils/format'
 
 
 export class PluginsManagerSettingTab extends SettingTab {
@@ -20,8 +21,13 @@ export class PluginsManagerSettingTab extends SettingTab {
 
   show() {
     this.containerEl.innerHTML = ''
+
+    const t = this.app.i18n.t.settingTabs.plugins
+    this.addSettingTitle(format(t.titleInstalled, [Object.keys(this.app.plugins.manifests).length]))
+
     Object.values(this.app.plugins.manifests)
       .forEach(manifest => this.renderPlugins(manifest))
+
     super.show()
   }
 

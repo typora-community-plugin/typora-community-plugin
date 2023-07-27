@@ -37,6 +37,7 @@
     },
     "plugins": {
       "name": "已安装插件",
+      "titleInstalled": "已安装 {0} 个插件",
       "uninstall": "卸载"
     },
     "about": {

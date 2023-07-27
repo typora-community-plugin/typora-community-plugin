@@ -37,6 +37,7 @@
     },
     "plugins": {
       "name": "Installed Plugins",
+      "titleInstalled": "{0} plugins installed",
       "uninstall": "Uninstall"
     },
     "about": {
