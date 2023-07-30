@@ -64,9 +64,9 @@ export class MarkdownPreProcessor {
     let codeblocks: string[] = []
     let htmlTags: string[] = []
 
-    // Part `(?<=$|\n)(\s*`{3,})(?:.|\n)+?\1` handle multi-line codeblock
-    // Part `(?<!\\)(`+).+?\2`              handle single line codeblock
-    md = md.replace(/(?<=$|\n)(\s*`{3,})(?:.|\n)+?\1|(?<!\\)(`+).+?\2/g, ($) => {
+    // Part `(?<=\n|^)(\s*`{3,})(?:.|\n)+?\1` handle multi-line codeblock
+    // Part `(?<!\\)(`+).+?\2`                handle single line codeblock
+    md = md.replace(/(?<=\n|^)(\s*`{3,})(?:.|\n)+?\1|(?<!\\)(`+).+?\2/g, ($) => {
       codeblocks.push($)
       return '___CODE_PLACEHOLDER___'
     })
