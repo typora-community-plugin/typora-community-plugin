@@ -4,15 +4,17 @@ import { SettingTab } from "../setting-tab"
 
 
 export type AppearanceSettings = {
+  showNotSupportedFile: boolean
+  showSearchResultFullPath: boolean
   showRibbon: boolean
   showFileTabs: boolean
-  showSearchResultFullPath: boolean
 }
 
 const DEFAULT_SETTINGS: AppearanceSettings = {
+  showNotSupportedFile: false,
+  showSearchResultFullPath: false,
   showRibbon: true,
   showFileTabs: true,
-  showSearchResultFullPath: false,
 }
 
 export class AppearanceSettingTab extends SettingTab {
@@ -29,6 +31,19 @@ export class AppearanceSettingTab extends SettingTab {
 
   onload() {
     const t = this.app.i18n.t.settingTabs.appearance
+
+    this.addSettingTitle(t.fileExplorer)
+    this.addSetting(setting => {
+      setting.addName(t.showNotSupportedFile)
+      setting.addDescription(t.showNotSupportedFileDesc)
+      setting.addCheckbox(checkbox => {
+        checkbox.checked = this.app.settings.get('showNotSupportedFile')
+        checkbox.addEventListener('click', event => {
+          const el = event.target as HTMLInputElement
+          this.app.settings.set('showNotSupportedFile', el.checked)
+        })
+      })
+    })
 
     this.addSettingTitle(t.search)
     this.addSetting(setting => {

@@ -3,9 +3,11 @@
   "settings": {
     "githubPluginListUri": "ghproxy",
     "githubDownloadUri": "ghproxy",
+    "showNotSupportedFile": true,
+    "showSearchResultFullPath": true,
     "showRibbon": true,
     "showFileTabs": true,
-    "showSearchResultFullPath": true,
-    "openLinkInCurrentWin": true
+    "openLinkInCurrentWin": true,
+    "showAllFileTypes": true
   }
 }

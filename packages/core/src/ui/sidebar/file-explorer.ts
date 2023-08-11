@@ -1,15 +1,19 @@
+import * as _ from 'lodash'
+import * as path from 'path'
+import { editor, File } from "typora"
+import decorate from "@plylrnsdy/decorate.js"
+import type { App } from 'src/app'
 import { View } from 'src/ui/view'
 import type { Workspace } from "src/ui/workspace"
 import type { Sidebar } from './sidebar'
 import { BUILT_IN, WorkspaceRibbon } from "src/ui/ribbon/workspace-ribbon"
-import { editor } from "typora"
 import { html } from "src/utils/html"
-import type { App } from 'src/app'
+import type { DisposeFunc } from "src/utils/types"
 
 
 export class FileExplorer extends View {
 
-  constructor(app: App, workspace: Workspace, sidebar: Sidebar) {
+  constructor(private app: App, workspace: Workspace, sidebar: Sidebar) {
     super()
 
     this.containerEl = document.getElementById('file-library') as HTMLElement
@@ -20,13 +24,21 @@ export class FileExplorer extends View {
       icon: html`<i class="fa fa-folder-o"></i>`,
       onclick: () => sidebar.switch(FileExplorer),
     })
+
+    app.settings.onChange('showNotSupportedFile', (_, isEnabled) => {
+      isEnabled
+        ? this.showNotSupportedFile()
+        : this.hideNotSupportedFile()
+    })
   }
+
 
   onload() {
   }
 
   onunload() {
   }
+
 
   show() {
     editor.library.fileSearch.hide()
@@ -35,5 +47,27 @@ export class FileExplorer extends View {
 
   hide() {
     this.containerEl.parentElement!.classList.remove('active-tab-files')
+  }
+
+
+  private disableOpenNotSupportedFile: DisposeFunc = _.noop
+
+  private showNotSupportedFile() {
+    File.SupportedFiles.indexOf = () => 1
+
+    this.disableOpenNotSupportedFile =
+      decorate(editor.library, 'openFile', fn => (file, callback) => {
+        const ext = path.extname(file).slice(1)
+        if (ext && !File.SupportedFiles.includes(ext)) {
+          this.app.openFileWithDefaultApp(file)
+          return
+        }
+        fn(file, callback)
+      })
+  }
+
+  private hideNotSupportedFile() {
+    delete File.SupportedFiles.indexOf
+    this.disableOpenNotSupportedFile()
   }
 }

@@ -17,6 +17,9 @@
     },
     "appearance": {
       "name": "Appearance",
+      "fileExplorer": "File Explorer",
+      "showNotSupportedFile": "Show not supported file",
+      "showNotSupportedFileDesc": "Not supported file will open with default application.",
       "search": "Search",
       "searchResultFullPath": "Show search result full path",
       "searchResultFullPathDesc": "Hover your cursor over the path and it will show full path in a tooltip.",
