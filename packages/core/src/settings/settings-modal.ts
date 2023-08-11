@@ -4,6 +4,7 @@ import { Modal } from "src/components/modal"
 import { html } from 'src/utils/html'
 import type { SettingTab } from './setting-tab'
 import { HotkeySettingTab } from "./setting-tabs/hotkey-setting-tab"
+import { FileLinkSettingTab } from './setting-tabs/file-link-setting-tab'
 import { AppearanceSettingTab } from "./setting-tabs/appearance-setting-tab"
 import { PluginMarketplaceSettingTab } from './setting-tabs/plugin-marketplace-setting-tab'
 import { PluginsManagerSettingTab } from "./setting-tabs/plugin-manager-setting-tab"
@@ -50,6 +51,7 @@ export class SettingsModal extends Modal {
     })
 
     this.addGroupTitle(t.groupCore)
+    this.addTab(new FileLinkSettingTab(this.app))
     this.addTab(new AppearanceSettingTab(this.app))
     this.addTab(new HotkeySettingTab(this.app))
     this.addTab(new PluginMarketplaceSettingTab(this.app))

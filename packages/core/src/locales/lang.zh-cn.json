@@ -10,6 +10,11 @@
     "groupPlugins": "社区插件设置"
   },
   "settingTabs": {
+    "fileLink": {
+      "name": "文件与链接",
+      "openLinkInCurrentWin": "在当前窗口打开 Markdown 超链接",
+      "openLinkInCurrentWinDesc": "Ctrl+鼠标单击 Markdown 超链接会直接在当前窗口打开。若使用文件标签页推荐启用该选项。"
+    },
     "appearance": {
       "name": "外观",
       "search": "搜索",

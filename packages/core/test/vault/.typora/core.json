@@ -5,6 +5,7 @@
     "githubDownloadUri": "ghproxy",
     "showRibbon": true,
     "showFileTabs": true,
-    "showSearchResultFullPath": true
+    "showSearchResultFullPath": true,
+    "openLinkInCurrentWin": true
   }
 }

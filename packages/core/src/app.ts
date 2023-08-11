@@ -1,4 +1,5 @@
 import './variables.scss'
+import * as fs from 'fs/promises'
 import * as path from 'path'
 import * as Core from '.'
 import { Events } from './events'
@@ -8,11 +9,14 @@ import { Workspace } from './ui/workspace'
 import { HotkeyManager } from './hotkey-manager'
 import { CommandManager } from './command/command-manager'
 import { Settings } from './settings/settings'
+import type { FileLinkSettings } from './settings/setting-tabs/file-link-setting-tab'
 import type { AppearanceSettings } from './settings/setting-tabs/appearance-setting-tab'
 import type { PluginMarketplaceSettings } from './settings/setting-tabs/plugin-marketplace-setting-tab'
 import { I18n } from './locales/i18n'
-import { _options } from 'typora'
+import { JSBridge, _options, editor } from 'typora'
 import * as Locale from './locales/lang.en.json'
+import { isMarkdownUrl } from './utils/is-markdown-url'
+import type { FileURL } from './utils/types'
 
 
 type AppEvents = {
@@ -28,7 +32,7 @@ type EnvironmentVairables = {
   [key: string]: any
 }
 
-type AppSettings = AppearanceSettings & PluginMarketplaceSettings
+type AppSettings = FileLinkSettings & AppearanceSettings & PluginMarketplaceSettings
 
 export type AppPlugin = (app: App) => void
 
@@ -97,5 +101,45 @@ export class App extends Events<AppEvents> {
     await this.plugins.loadFromVault()
 
     this.emit('load')
+  }
+
+  openLink(link: string) {
+    if (link.startsWith('http')) {
+      editor.tryOpenUrl_(link)
+    }
+    else {
+      this.openFile(unescape(link))
+    }
+  }
+
+  async openFile(filepath: string) {
+    if (filepath.startsWith('.')) {
+      filepath = path.resolve(path.dirname(this.workspace.activeFile), filepath)
+    }
+
+    let url: FileURL = { pathname: filepath }
+    const basename = path.basename(filepath)
+    if (basename.includes('#')) {
+      url = await fs.access(filepath)
+        .then(() => url)
+        .catch(() => {
+          const hashSplitorIdx = filepath.lastIndexOf('#')
+          return {
+            pathname: filepath.slice(0, hashSplitorIdx),
+            hash: filepath.slice(hashSplitorIdx),
+          }
+        })
+    }
+
+    if (isMarkdownUrl(url.pathname)) {
+      this.workspace.activeEditor.openFile(url)
+    }
+    else {
+      this.openFileWithDefaultApp(filepath)
+    }
+  }
+
+  openFileWithDefaultApp(filepath: string) {
+    JSBridge.invoke("shell.openItem", filepath)
   }
 }

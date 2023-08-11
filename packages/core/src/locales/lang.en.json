@@ -10,6 +10,11 @@
     "groupPlugins": "Community Plugins"
   },
   "settingTabs": {
+    "fileLink": {
+      "name": "File & Link",
+      "openLinkInCurrentWin": "Open Markdown links in current window",
+      "openLinkInCurrentWinDesc": "Ctrl+Click to open Markdown links will open Markdown file in current window. Enable it better if use File Tabs"
+    },
     "appearance": {
       "name": "Appearance",
       "search": "Search",
