@@ -14,6 +14,9 @@ export declare var ClientCommand: TClientCommand
 interface TClientCommand {
   copyAsMarkdown(): void
   setTheme(cssFilename: string): void
+  /**
+   * Toggle Chrome Devtools.
+   */
   toggleDevTools(): void
 }
 
@@ -40,6 +43,9 @@ interface File {
    * Get openned folder path.
    */
   getMountFolder(): string
+  /**
+   * Openned folder path.
+   */
   mountFolder_: string
 
   isWin: boolean
@@ -111,6 +117,7 @@ interface Editor {
   getMarkdown(): string
   reset(markdown: string): void
   tryOpenLink($el: JQuery, param1?: boolean): void
+  tryOpenUrl_(url: string, param1?: boolean): void
 }
 
 interface AutoComplete {
@@ -207,6 +214,9 @@ interface Library {
 
   setSidebarWidth(width: number, saveInSettings: boolean): void
 
+  /**
+   * Switch sidebar view.
+   */
   switch(view: '' | 'file-tree' | 'file-list' | 'outline', param1?: boolean): void
 }
 
@@ -370,11 +380,39 @@ export declare function isInputComponent(el: Element | null): boolean
 
 
 export declare var JSBridge: {
+  invoke(command: "app.openFile", path: string, opts: { forceCreateWindow: boolean, mountFolder: string }): Promise<any>
   invoke(command: "app.openFileOrFolder", path: string, opts: { forceCreateWindow: boolean, mountFolder: string }): Promise<any>
+  //
+  invoke(command: "app.sendEvent", event: "willRename", data: { oldPath: string }): Promise<any>
   invoke(command: "app.sendEvent", event: "didRename", data: { oldPath: string, newPath: string }): Promise<any>
+  invoke(command: "app.sendEvent", event: "willSave", filePath: string): Promise<any>
+  invoke(command: "app.sendEvent", event: "didSave", data: { path: string, summary: any, lastModifiedDate: any }): Promise<any>
+  //
+  invoke(command: "controller.switchFolder", path: string): Promise<any>
+  invoke(command: "document.switchDocument", path: string): Promise<any>
+  invoke(command: "document.switchToUntitled", filename?: string, isFileExist?: boolean): Promise<any>
+  invoke(command: "setting.getKeyBinding"): Promise<any>
+  /** Open file with default application. */
+  invoke(command: "shell.openItem", path: string): Promise<any>
   invoke(command: "shell.trashItem", path: string): Promise<any>
   invoke(command: "theme.setThemeSource", mode: "system" | "light" | "dark"): Promise<any>
+  //
+  invoke(command: "webContents.cut"): Promise<any>
+  invoke(command: "webContents.copy"): Promise<any>
+  //
+  invoke(command: "window.close"): Promise<any>
+  invoke(command: "window.fullscreen"): Promise<any>
+  invoke(command: "window.loadFinished"): Promise<any>
+  invoke(command: "window.maximize"): Promise<any>
+  invoke(command: "window.minimize"): Promise<any>
+  invoke(command: "window.pin"): Promise<any>
+  invoke(command: "window.restore"): Promise<any>
+  invoke(command: "window.toggleDevTools"): Promise<any>
+  invoke(command: "window.unpin"): Promise<any>
+  //
   invoke(command: string, ...args: any[]): Promise<any>
+
+  showInBrowser(url: string): void
 }
 
 
