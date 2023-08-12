@@ -1,7 +1,11 @@
 import { App } from './app'
-import { devtools } from './devtools'
 
 
-new App()
-  .use(devtools)
-  .start()
+const app = new App()
+
+if (process.env.IS_DEV) {
+  const { devtools } = await import('./devtools')
+  app.use(devtools)
+}
+
+app.start()

@@ -23,6 +23,7 @@ await esbuild.build({
   sourcemap: IS_DEV,
   define: {
     'process.env.CORE_VERSION': `"${packageInfo.version}"`,
+    'process.env.IS_DEV': `${IS_DEV}`,
   },
   plugins: [
     typoraPlugin({
