@@ -23,16 +23,17 @@ export class FileLinkSettingTab extends SettingTab {
   }
 
   onload() {
+    const { settings } = this.app
     const t = this.app.i18n.t.settingTabs.fileLink
 
     this.addSetting(setting => {
       setting.addName(t.openLinkInCurrentWin)
       setting.addDescription(t.openLinkInCurrentWinDesc)
       setting.addCheckbox(checkbox => {
-        checkbox.checked = this.app.settings.get('openLinkInCurrentWin')
+        checkbox.checked = settings.get('openLinkInCurrentWin')
         checkbox.addEventListener('click', event => {
           const el = event.target as HTMLInputElement
-          this.app.settings.set('openLinkInCurrentWin', el.checked)
+          settings.set('openLinkInCurrentWin', el.checked)
         })
       })
     })

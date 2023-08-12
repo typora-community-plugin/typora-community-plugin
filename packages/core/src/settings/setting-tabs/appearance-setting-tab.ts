@@ -30,6 +30,7 @@ export class AppearanceSettingTab extends SettingTab {
   }
 
   onload() {
+    const { settings } = this.app
     const t = this.app.i18n.t.settingTabs.appearance
 
     this.addSettingTitle(t.fileExplorer)
@@ -37,10 +38,10 @@ export class AppearanceSettingTab extends SettingTab {
       setting.addName(t.showNotSupportedFile)
       setting.addDescription(t.showNotSupportedFileDesc)
       setting.addCheckbox(checkbox => {
-        checkbox.checked = this.app.settings.get('showNotSupportedFile')
+        checkbox.checked = settings.get('showNotSupportedFile')
         checkbox.addEventListener('click', event => {
           const el = event.target as HTMLInputElement
-          this.app.settings.set('showNotSupportedFile', el.checked)
+          settings.set('showNotSupportedFile', el.checked)
         })
       })
     })
@@ -50,10 +51,10 @@ export class AppearanceSettingTab extends SettingTab {
       setting.addName(t.searchResultFullPath)
       setting.addDescription(t.searchResultFullPathDesc)
       setting.addCheckbox(checkbox => {
-        checkbox.checked = this.app.settings.get('showSearchResultFullPath')
+        checkbox.checked = settings.get('showSearchResultFullPath')
         checkbox.addEventListener('click', event => {
           const el = event.target as HTMLInputElement
-          this.app.settings.set('showSearchResultFullPath', el.checked)
+          settings.set('showSearchResultFullPath', el.checked)
         })
       })
     })
@@ -63,10 +64,10 @@ export class AppearanceSettingTab extends SettingTab {
       setting.addName(t.ribbon)
       setting.addDescription(t.ribbonDesc)
       setting.addCheckbox(checkbox => {
-        checkbox.checked = this.app.settings.get('showRibbon')
+        checkbox.checked = settings.get('showRibbon')
         checkbox.addEventListener('click', event => {
           const el = event.target as HTMLInputElement
-          this.app.settings.set('showRibbon', el.checked)
+          settings.set('showRibbon', el.checked)
         })
       })
     })
@@ -74,10 +75,10 @@ export class AppearanceSettingTab extends SettingTab {
       setting.addName(t.fileTabs)
       setting.addDescription(t.fileTabsDesc)
       setting.addCheckbox(checkbox => {
-        checkbox.checked = this.app.settings.get('showFileTabs')
+        checkbox.checked = settings.get('showFileTabs')
         checkbox.addEventListener('click', event => {
           const el = event.target as HTMLInputElement
-          this.app.settings.set('showFileTabs', el.checked)
+          settings.set('showFileTabs', el.checked)
         })
       })
     })

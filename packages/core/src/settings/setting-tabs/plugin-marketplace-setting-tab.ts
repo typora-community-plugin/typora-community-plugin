@@ -33,25 +33,26 @@ export class PluginMarketplaceSettingTab extends SettingTab {
   }
 
   onload() {
+    const { settings } = this.app
     const t = this.app.i18n.t.settingTabs.pluginMarketplace
 
     this.addSettingTitle(t.githubProxy)
 
-    this.addSetting(settings => {
-      settings.addName(t.pluginListSource)
-      settings.addSelect({
+    this.addSetting(setting => {
+      setting.addName(t.pluginListSource)
+      setting.addSelect({
         options: this.markettplace.pluginListUris.map(u => u.id),
-        selected: this.app.settings.get('githubPluginListUri'),
-        onchange: (event) => this.app.settings.set('githubPluginListUri', event.target.value)
+        selected: settings.get('githubPluginListUri'),
+        onchange: (event) => settings.set('githubPluginListUri', event.target.value)
       })
     })
 
-    this.addSetting(settings => {
-      settings.addName(t.pluginDownloadSource)
-      settings.addSelect({
-        selected: this.app.settings.get('githubDownloadUri'),
+    this.addSetting(setting => {
+      setting.addName(t.pluginDownloadSource)
+      setting.addSelect({
+        selected: settings.get('githubDownloadUri'),
         options: this.markettplace.downloadUris.map(u => u.id),
-        onchange: (event) => this.app.settings.set('githubDownloadUri', event.target.value)
+        onchange: (event) => settings.set('githubDownloadUri', event.target.value)
       })
     })
 

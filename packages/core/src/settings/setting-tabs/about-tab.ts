@@ -27,7 +27,8 @@ export class AboutTab extends SettingTab {
       settings.addName(`${t.labelAuthor}: <a href="https://github.com/plylrnsdy">plylrnsdy</a>`)
     })
     this.addSetting(settings => {
-      settings.addName(`${t.labelHomepage}: <a href="https://github.com/typora-community-plugin/typora-community-plugin">https://github.com/typora-community-plugin/typora-community-plugin</a>`)
+      const url = 'https://github.com/typora-community-plugin/typora-community-plugin'
+      settings.addName(`${t.labelHomepage}: <a href="${url}">${url}</a>`)
     })
   }
 

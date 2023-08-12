@@ -55,13 +55,15 @@ export class PluginMarketplace {
   }
 
   constructor(private app: App) {
-    this.activeUri.pluginList = getUri(this.pluginListUris, app.settings.get('githubPluginListUri'))
-    this.activeUri.download = getUri(this.downloadUris, app.settings.get('githubDownloadUri'))
+    const { settings } = app
 
-    app.settings.onChange('githubPluginListUri', (_, id) => {
+    this.activeUri.pluginList = getUri(this.pluginListUris, settings.get('githubPluginListUri'))
+    this.activeUri.download = getUri(this.downloadUris, settings.get('githubDownloadUri'))
+
+    settings.onChange('githubPluginListUri', (_, id) => {
       this.activeUri.pluginList = getUri(this.pluginListUris, id)
     })
-    app.settings.onChange('githubDownloadUri', (_, id) => {
+    settings.onChange('githubDownloadUri', (_, id) => {
       this.activeUri.download = getUri(this.downloadUris, id)
     })
 
