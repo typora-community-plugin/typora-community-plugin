@@ -25,11 +25,17 @@ export class FileExplorer extends View {
       onclick: () => sidebar.switch(FileExplorer),
     })
 
-    app.settings.onChange('showNotSupportedFile', (_, isEnabled) => {
+
+    const SETTING_KEY = 'showNotSupportedFile'
+    const toggleShowNotSupportedFile = (key: string, isEnabled: boolean) => {
       isEnabled
         ? this.showNotSupportedFile()
         : this.hideNotSupportedFile()
-    })
+    }
+
+    toggleShowNotSupportedFile(SETTING_KEY, app.settings.get(SETTING_KEY))
+
+    app.settings.onChange(SETTING_KEY, toggleShowNotSupportedFile)
   }
 
 
