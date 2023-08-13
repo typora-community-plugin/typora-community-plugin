@@ -1,17 +1,15 @@
 {
   "name": "@typora-community-plugin/typora-types",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Types of Typora global variables.",
   "main": "",
   "types": "index.d.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "keywords": [
     "types",
     "typora"
   ],
-  "author": "",
+  "author": "plylrnsdy <https://github.com/plylrnsdy>",
   "license": "MIT",
   "devDependencies": {
     "@types/jquery": "3.3.1"
