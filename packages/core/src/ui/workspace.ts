@@ -40,13 +40,11 @@ export class Workspace extends Events<WorkspaceEvents> {
 
     this.activeEditor = new MarkdownEditor(app)
 
-    this._children.push(
-      new SettingsModal(app),
-      new WorkspaceRibbon(app),
-      new Sidebar(app, this),
-      new TabsView(app),
-      new CommandModal(app),
-    )
+    this._children.push(new SettingsModal(app))
+    this._children.push(new WorkspaceRibbon(app))
+    this._children.push(new Sidebar(app, this))
+    this._children.push(new TabsView(app))
+    this._children.push(new CommandModal(app))
 
     setTimeout(() => this._children.forEach(child => child.load()))
 
