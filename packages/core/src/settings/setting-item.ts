@@ -56,13 +56,14 @@ export class SettingItem extends View {
     this.controls.append(button)
   }
 
-  addInput(type: string, build: (checkbox: HTMLInputElement) => void) {
+  addInput(type: string, build: (input: HTMLInputElement) => void) {
+    this.tryAddControls()
     const input = html`<input type="${type}">` as HTMLInputElement
     build(input)
     this.controls.append(input)
   }
 
-  addText(build: (checkbox: HTMLInputElement) => void) {
+  addText(build: (input: HTMLInputElement) => void) {
     this.addInput('text', build)
   }
 
