@@ -1,0 +1,22 @@
+.typ-notice__container {
+  position: fixed;
+  top: 2rem;
+  right: .875rem;
+  z-index: var(--typ-layer-notice);
+
+  padding: .625rem;
+  max-width: 20rem;
+}
+
+.typ-notice {
+  margin-left: auto;
+  margin-bottom: .875rem;
+  padding: .5rem 1rem;
+  width: fit-content;
+
+  border-radius: .5rem;
+
+  font-size: .9rem;
+  background: var(--bg-color);
+  box-shadow: 0 .125rem .5rem rgb(var(--typ-shadow-color));
+}

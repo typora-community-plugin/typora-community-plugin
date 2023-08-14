@@ -2,6 +2,8 @@ import type { App } from './app'
 export type { App } from './app'
 export declare const app: App
 
+export { Notice } from './components/notice'
+
 export { I18n } from './locales/i18n'
 
 export { eventToHotkey, readableHotkey } from './hotkey-manager'

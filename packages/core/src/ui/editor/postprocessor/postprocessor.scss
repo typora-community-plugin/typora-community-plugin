@@ -13,7 +13,7 @@
 
 button.typ-block-operate-button {
   display: block;
-  z-index: 999;
+  z-index: var(--typ-layer-editor);
   margin-left: 6px;
   padding: 2px 4px;
   border: none;

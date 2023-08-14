@@ -1,5 +1,6 @@
 import type { App } from 'src/app'
 import type { Component } from 'src/component'
+import { NoticeContainer } from 'src/components/notice'
 import { Events } from 'src/events'
 import { MarkdownEditor } from './editor/markdown-editor'
 import { WorkspaceRibbon } from './ribbon/workspace-ribbon'
@@ -40,6 +41,7 @@ export class Workspace extends Events<WorkspaceEvents> {
 
     this.activeEditor = new MarkdownEditor(app)
 
+    this._children.push(new NoticeContainer())
     this._children.push(new SettingsModal(app))
     this._children.push(new WorkspaceRibbon(app))
     this._children.push(new Sidebar(app, this))
