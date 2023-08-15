@@ -1,11 +1,39 @@
 import * as path from "path"
 import { editor } from "typora"
 import decorate from '@plylrnsdy/decorate.js'
+import type { App } from "src/app"
+import { Component } from "src/component"
 import { View } from "./view"
-import type { App } from ".."
 
 
 export class QuickOpenPanel extends View {
+
+  private _ignoreFile: IgnoreFile
+
+  constructor(private app: App) {
+    super()
+
+    this._ignoreFile = new IgnoreFile(app)
+  }
+
+  onload() {
+    if (this.app.settings.get('ignoreFile')) {
+      this._ignoreFile.load()
+    }
+
+    this.app.settings.onChange('ignoreFile', (_, isEnabled) => {
+      isEnabled
+        ? this._ignoreFile.load()
+        : this._ignoreFile.unload()
+    })
+  }
+
+  onunload() {
+  }
+
+}
+
+class IgnoreFile extends Component {
 
   private _ignoredFiles: string[] = []
 
@@ -14,19 +42,6 @@ export class QuickOpenPanel extends View {
   }
 
   onload() {
-    if (this.app.settings.get('ignoreFile')) {
-      this.enableIgnoreFile()
-    }
-
-    this.app.settings.onChange('ignoreFile', (_, isEnabled) => {
-      isEnabled ? this.enableIgnoreFile() : this.disableIgnoreFile()
-    })
-  }
-
-  onunload() {
-  }
-
-  private enableIgnoreFile() {
 
     this._buildIgnoredFiles(this.app.settings.get('ignoreFileGlob'))
 
@@ -61,10 +76,8 @@ export class QuickOpenPanel extends View {
       }))
   }
 
-  private disableIgnoreFile() {
+  onunload() {
     editor.quickOpenPanel.cacheFolder(this.app.vault.path)
-    this._disposables.forEach(fn => fn())
-    this._disposables = []
   }
 
   private _buildIgnoredFiles(glob: string) {
