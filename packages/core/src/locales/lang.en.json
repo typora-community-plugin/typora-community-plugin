@@ -12,10 +12,10 @@
   "settingTabs": {
     "fileLink": {
       "name": "File & Link",
-      "headingOpenFile": "Open File",
       "openLinkInCurrentWin": "Open Markdown links in current window",
-      "openLinkInCurrentWinDesc": "Ctrl+Click to open Markdown links will open Markdown file in current window. Enable it better if use File Tabs",
-      "headingIgnoreFile": "Ignore File",
+      "openLinkInCurrentWinDesc": "Ctrl+Click to open Markdown links will open Markdown file in current window. Enable it better if use File Tabs.",
+      "quickOpenInCurrentWin": "Quick open file in current window",
+      "quickOpenInCurrentWinDesc": "Choose file in quick open panel will open Markdown file in current window. Enable it better if use File Tabs.",
       "ignoreFileGlob": "Ignore folder in quick open panel",
       "ignoreFileGlobDesc": "Ignore files in folders (seperated by comma) and not show in quick open panel."
     },

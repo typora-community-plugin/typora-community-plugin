@@ -4,12 +4,14 @@ import { SettingTab } from "../setting-tab"
 
 export type FileLinkSettings = {
   openLinkInCurrentWin: boolean
+  quickOpenInCurrentWin: boolean
   ignoreFile: boolean
   ignoreFileGlob: string
 }
 
 const DEFAULT_SETTINGS: FileLinkSettings = {
   openLinkInCurrentWin: true,
+  quickOpenInCurrentWin: true,
   ignoreFile: true,
   ignoreFileGlob: '.git',
 }
@@ -37,6 +39,17 @@ export class FileLinkSettingTab extends SettingTab {
         checkbox.checked = settings.get('openLinkInCurrentWin')
         checkbox.onclick = () => {
           settings.set('openLinkInCurrentWin', checkbox.checked)
+        }
+      })
+    })
+
+    this.addSetting(setting => {
+      setting.addName(t.quickOpenInCurrentWin)
+      setting.addDescription(t.quickOpenInCurrentWinDesc)
+      setting.addCheckbox(checkbox => {
+        checkbox.checked = settings.get('quickOpenInCurrentWin')
+        checkbox.onclick = () => {
+          settings.set('quickOpenInCurrentWin', checkbox.checked)
         }
       })
     })

@@ -12,10 +12,10 @@
   "settingTabs": {
     "fileLink": {
       "name": "文件与链接",
-      "headingOpenFile": "打开文件",
       "openLinkInCurrentWin": "在当前窗口打开 Markdown 超链接",
       "openLinkInCurrentWinDesc": "Ctrl+鼠标单击 Markdown 超链接会直接在当前窗口打开。若使用文件标签页推荐启用该选项。",
-      "headingIgnoreFile": "忽略文件",
+      "quickOpenInCurrentWin": "在当前窗口快速打开文件",
+      "quickOpenInCurrentWinDesc": "在快速打开面板中选取文件会直接在当前窗口打开。若使用文件标签页推荐启用该选项。",
       "ignoreFileGlob": "在快速打开面板中排除指定文件夹",
       "ignoreFileGlobDesc": "排除匹配文件夹中的文件（使用逗号分隔），并且不显示在快速打开面板。"
     },

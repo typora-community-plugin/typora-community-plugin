@@ -1,5 +1,6 @@
+import * as fs from "fs"
 import * as path from "path"
-import { editor } from "typora"
+import { JSBridge, editor } from "typora"
 import decorate from '@plylrnsdy/decorate.js'
 import type { App } from "src/app"
 import { Component } from "src/component"
@@ -9,11 +10,13 @@ import { View } from "./view"
 export class QuickOpenPanel extends View {
 
   private _ignoreFile: IgnoreFile
+  private _quickOpenInCurrentWin: QuickOpenInCurrentWin
 
   constructor(private app: App) {
     super()
 
     this._ignoreFile = new IgnoreFile(app)
+    this._quickOpenInCurrentWin = new QuickOpenInCurrentWin(app)
   }
 
   onload() {
@@ -25,6 +28,16 @@ export class QuickOpenPanel extends View {
       isEnabled
         ? this._ignoreFile.load()
         : this._ignoreFile.unload()
+    })
+
+    if (this.app.settings.get('quickOpenInCurrentWin')) {
+      this._quickOpenInCurrentWin.load()
+    }
+
+    this.app.settings.onChange('quickOpenInCurrentWin', (_, isEnabled) => {
+      isEnabled
+        ? this._quickOpenInCurrentWin.load()
+        : this._quickOpenInCurrentWin.unload()
     })
   }
 
@@ -89,6 +102,33 @@ class IgnoreFile extends Component {
   private _removeIgnoredFiles() {
     this._ignoredFiles
       .forEach(folder => editor.quickOpenPanel.removeInitFiles(folder))
+  }
+
+}
+
+class QuickOpenInCurrentWin extends Component {
+
+  constructor(private app: App) {
+    super()
+  }
+
+  onload() {
+    this.register(
+      decorate(JSBridge, 'invoke', fn => (...args) => {
+        if (
+          args[0] === 'app.openFileOrFolder' &&
+          fs.statSync(args[1]).isFile() &&
+          !args[2].forceCreateWindow
+        ) {
+          editor.library.openFile(args[1])
+          editor.library.refreshPanelCommand()
+          return
+        }
+        return fn(...args)
+      }))
+  }
+
+  onunload() {
   }
 
 }

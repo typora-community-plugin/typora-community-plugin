@@ -8,6 +8,7 @@
     "showRibbon": true,
     "showFileTabs": true,
     "openLinkInCurrentWin": true,
+    "quickOpenInCurrentWin": true,
     "ignoreFile": true,
     "ignoreFileGlob": "ignoredFolder",
     "showAllFileTypes": true
