@@ -288,9 +288,16 @@ interface NodeCollection {
 }
 
 interface QuickOpenPanel {
+  cacheFolder(mountFolder: string): void
   initFileCache(paths: string[], fileNames: string[], modifiedDates: Date[], param3: any, param4: any): void
   addInitFiles(filePaths: string[], fileNames: string[], modifiedDates: Date[]): void
   removeInitFiles(filePath: string): void
+
+  setRecentFiles(files: string[]): void
+  setRecentFolders(folders: string[]): void
+
+  show(): void
+  close(): void
 }
 
 interface Selection {
