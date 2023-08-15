@@ -39,10 +39,9 @@ export class AppearanceSettingTab extends SettingTab {
       setting.addDescription(t.showNotSupportedFileDesc)
       setting.addCheckbox(checkbox => {
         checkbox.checked = settings.get('showNotSupportedFile')
-        checkbox.addEventListener('click', event => {
-          const el = event.target as HTMLInputElement
-          settings.set('showNotSupportedFile', el.checked)
-        })
+        checkbox.onclick = () => {
+          settings.set('showNotSupportedFile', checkbox.checked)
+        }
       })
     })
 
@@ -52,10 +51,9 @@ export class AppearanceSettingTab extends SettingTab {
       setting.addDescription(t.searchResultFullPathDesc)
       setting.addCheckbox(checkbox => {
         checkbox.checked = settings.get('showSearchResultFullPath')
-        checkbox.addEventListener('click', event => {
-          const el = event.target as HTMLInputElement
-          settings.set('showSearchResultFullPath', el.checked)
-        })
+        checkbox.onclick = () => {
+          settings.set('showSearchResultFullPath', checkbox.checked)
+        }
       })
     })
 
@@ -65,10 +63,9 @@ export class AppearanceSettingTab extends SettingTab {
       setting.addDescription(t.ribbonDesc)
       setting.addCheckbox(checkbox => {
         checkbox.checked = settings.get('showRibbon')
-        checkbox.addEventListener('click', event => {
-          const el = event.target as HTMLInputElement
-          settings.set('showRibbon', el.checked)
-        })
+        checkbox.onclick = () => {
+          settings.set('showRibbon', checkbox.checked)
+        }
       })
     })
     this.addSetting(setting => {
@@ -76,10 +73,9 @@ export class AppearanceSettingTab extends SettingTab {
       setting.addDescription(t.fileTabsDesc)
       setting.addCheckbox(checkbox => {
         checkbox.checked = settings.get('showFileTabs')
-        checkbox.addEventListener('click', event => {
-          const el = event.target as HTMLInputElement
-          settings.set('showFileTabs', el.checked)
-        })
+        checkbox.onclick = () => {
+          settings.set('showFileTabs', checkbox.checked)
+        }
       })
     })
   }

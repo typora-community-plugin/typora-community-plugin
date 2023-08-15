@@ -43,13 +43,11 @@ export class PluginsManagerSettingTab extends SettingTab {
 
       setting.addCheckbox(checkbox => {
         checkbox.checked = this.app.plugins.enabledPlugins[manifest.id]
-        checkbox.addEventListener('click', event => {
-          const el = event.target as HTMLInputElement
-          if (el.checked)
-            this.app.plugins.enablePlugin(manifest.id)
-          else
-            this.app.plugins.disablePlugin(manifest.id)
-        })
+        checkbox.onclick = () => {
+          checkbox.checked
+            ? this.app.plugins.enablePlugin(manifest.id)
+            : this.app.plugins.disablePlugin(manifest.id)
+        }
       })
 
       setting.addButton(button => {
