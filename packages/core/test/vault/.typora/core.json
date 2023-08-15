@@ -8,6 +8,8 @@
     "showRibbon": true,
     "showFileTabs": true,
     "openLinkInCurrentWin": true,
+    "ignoreFile": true,
+    "ignoreFileGlob": "ignoredFolder",
     "showAllFileTypes": true
   }
 }

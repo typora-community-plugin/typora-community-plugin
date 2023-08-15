@@ -9,6 +9,7 @@ import { TabsView } from './tabs/tabs-view'
 import { SettingsModal } from 'src/settings/settings-modal'
 import { CommandModal } from 'src/command/command-modal'
 import { Notification } from './notification'
+import { QuickOpenPanel } from './quick-open-panel'
 import decorate from '@plylrnsdy/decorate.js'
 import { File, editor } from 'typora'
 
@@ -47,6 +48,7 @@ export class Workspace extends Events<WorkspaceEvents> {
     this._children.push(new Sidebar(app, this))
     this._children.push(new TabsView(app))
     this._children.push(new CommandModal(app))
+    this._children.push(new QuickOpenPanel(app))
 
     setTimeout(() => this._children.forEach(child => child.load()))
 

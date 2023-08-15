@@ -4,10 +4,14 @@ import { SettingTab } from "../setting-tab"
 
 export type FileLinkSettings = {
   openLinkInCurrentWin: boolean
+  ignoreFile: boolean
+  ignoreFileGlob: string
 }
 
 const DEFAULT_SETTINGS: FileLinkSettings = {
-  openLinkInCurrentWin: true
+  openLinkInCurrentWin: true,
+  ignoreFile: true,
+  ignoreFileGlob: '.git',
 }
 
 export class FileLinkSettingTab extends SettingTab {
@@ -31,10 +35,26 @@ export class FileLinkSettingTab extends SettingTab {
       setting.addDescription(t.openLinkInCurrentWinDesc)
       setting.addCheckbox(checkbox => {
         checkbox.checked = settings.get('openLinkInCurrentWin')
-        checkbox.addEventListener('click', event => {
-          const el = event.target as HTMLInputElement
-          settings.set('openLinkInCurrentWin', el.checked)
-        })
+        checkbox.onclick = () => {
+          settings.set('openLinkInCurrentWin', checkbox.checked)
+        }
+      })
+    })
+
+    this.addSetting(setting => {
+      setting.addName(t.ignoreFileGlob)
+      setting.addDescription(t.ignoreFileGlobDesc)
+      setting.addCheckbox(checkbox => {
+        checkbox.checked = settings.get('ignoreFile')
+        checkbox.onclick = () => {
+          settings.set('ignoreFile', checkbox.checked)
+        }
+      })
+      setting.addText(input => {
+        input.value = settings.get('ignoreFileGlob')
+        input.onclick = () => {
+          settings.set('ignoreFileGlob', input.value)
+        }
       })
     })
   }
