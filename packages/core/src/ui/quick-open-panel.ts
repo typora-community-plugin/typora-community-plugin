@@ -20,25 +20,6 @@ export class QuickOpenPanel extends View {
   }
 
   onload() {
-    if (this.app.settings.get('ignoreFile')) {
-      this._ignoreFile.load()
-    }
-
-    this.app.settings.onChange('ignoreFile', (_, isEnabled) => {
-      isEnabled
-        ? this._ignoreFile.load()
-        : this._ignoreFile.unload()
-    })
-
-    if (this.app.settings.get('quickOpenInCurrentWin')) {
-      this._quickOpenInCurrentWin.load()
-    }
-
-    this.app.settings.onChange('quickOpenInCurrentWin', (_, isEnabled) => {
-      isEnabled
-        ? this._quickOpenInCurrentWin.load()
-        : this._quickOpenInCurrentWin.unload()
-    })
   }
 
   onunload() {
@@ -52,6 +33,16 @@ class IgnoreFile extends Component {
 
   constructor(private app: App) {
     super()
+
+    const SETTING_KEY = 'ignoreFile'
+
+    if (app.settings.get(SETTING_KEY)) {
+      this.load()
+    }
+
+    app.settings.onChange(SETTING_KEY, (_, isEnabled) => {
+      isEnabled ? this.load() : this.unload()
+    })
   }
 
   onload() {
@@ -108,8 +99,18 @@ class IgnoreFile extends Component {
 
 class QuickOpenInCurrentWin extends Component {
 
-  constructor(private app: App) {
+  constructor(app: App) {
     super()
+
+    const SETTING_KEY = 'quickOpenInCurrentWin'
+
+    if (app.settings.get(SETTING_KEY)) {
+      this.load()
+    }
+
+    app.settings.onChange(SETTING_KEY, (_, isEnabled) => {
+      isEnabled ? this.load() : this.unload()
+    })
   }
 
   onload() {

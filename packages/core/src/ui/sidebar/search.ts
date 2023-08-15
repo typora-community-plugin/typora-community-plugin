@@ -5,11 +5,12 @@ import { BUILT_IN, WorkspaceRibbon } from "src/ui/ribbon/workspace-ribbon"
 import { editor } from "typora"
 import { html } from "src/utils/html"
 import type { App } from 'src/app'
+import { Component } from 'src/component'
 
 
 export class Search extends View {
 
-  private observer = new MutationObserver(this.appendTitle)
+  private _showSearchResultFullPath: ShowSearchResultFullPath
 
   constructor(app: App, workspace: Workspace, sidebar: Sidebar) {
     super()
@@ -23,11 +24,7 @@ export class Search extends View {
       onclick: () => sidebar.switch(Search),
     })
 
-    app.settings.onChange('showSearchResultFullPath', (_, isEnabled) => {
-      isEnabled
-        ? this.showSearchResultPath()
-        : this.hideSearchResultPath()
-    })
+    this._showSearchResultFullPath = new ShowSearchResultFullPath(app)
   }
 
   onload() {
@@ -45,6 +42,25 @@ export class Search extends View {
     parent.classList.remove('ty-show-search')
     parent.classList.remove('ty-on-search')
   }
+}
+
+class ShowSearchResultFullPath extends Component {
+
+  private observer = new MutationObserver(this.appendTitle)
+
+  constructor(app: App) {
+    super()
+
+    const SETTING_KEY = 'showSearchResultFullPath'
+
+    if (app.settings.get(SETTING_KEY)) {
+      this.load()
+    }
+
+    app.settings.onChange(SETTING_KEY, (_, isEnabled) => {
+      isEnabled ? this.load() : this.unload()
+    })
+  }
 
   private appendTitle(mutationsList: MutationRecord[]) {
     mutationsList.forEach(mutation => {
@@ -56,7 +72,7 @@ export class Search extends View {
     })
   }
 
-  private showSearchResultPath() {
+  onload() {
     const resultsEl = $('#file-library-search-result').get(0)!
     this.observer.observe(resultsEl, {
       attributes: false,
@@ -65,7 +81,7 @@ export class Search extends View {
     })
   }
 
-  private hideSearchResultPath() {
+  onunload() {
     this.observer.disconnect()
   }
 }

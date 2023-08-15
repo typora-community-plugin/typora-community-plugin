@@ -8,10 +8,12 @@ import type { Workspace } from "src/ui/workspace"
 import type { Sidebar } from './sidebar'
 import { BUILT_IN, WorkspaceRibbon } from "src/ui/ribbon/workspace-ribbon"
 import { html } from "src/utils/html"
-import type { DisposeFunc } from "src/utils/types"
+import { Component } from 'src/component'
 
 
 export class FileExplorer extends View {
+
+  private _showNotSupportedFile: ShowNotSupportedFile
 
   constructor(private app: App, workspace: Workspace, sidebar: Sidebar) {
     super()
@@ -25,17 +27,7 @@ export class FileExplorer extends View {
       onclick: () => sidebar.switch(FileExplorer),
     })
 
-
-    const SETTING_KEY = 'showNotSupportedFile'
-    const toggleShowNotSupportedFile = (key: string, isEnabled: boolean) => {
-      isEnabled
-        ? this.showNotSupportedFile()
-        : this.hideNotSupportedFile()
-    }
-
-    toggleShowNotSupportedFile(SETTING_KEY, app.settings.get(SETTING_KEY))
-
-    app.settings.onChange(SETTING_KEY, toggleShowNotSupportedFile)
+    this._showNotSupportedFile = new ShowNotSupportedFile(app)
   }
 
 
@@ -54,14 +46,28 @@ export class FileExplorer extends View {
   hide() {
     this.containerEl.parentElement!.classList.remove('active-tab-files')
   }
+}
 
+class ShowNotSupportedFile extends Component {
 
-  private disableOpenNotSupportedFile: DisposeFunc = _.noop
+  constructor(private app: App) {
+    super()
 
-  private showNotSupportedFile() {
+    const SETTING_KEY = 'showNotSupportedFile'
+
+    if (app.settings.get(SETTING_KEY)) {
+      this.load()
+    }
+
+    app.settings.onChange(SETTING_KEY, (_, isEnabled) => {
+      isEnabled ? this.load() : this.unload()
+    })
+  }
+
+  onload() {
     File.SupportedFiles.indexOf = () => 1
 
-    this.disableOpenNotSupportedFile =
+    this.register(
       decorate(editor.library, 'openFile', fn => (file, callback) => {
         const ext = path.extname(file).slice(1)
         if (ext && !File.SupportedFiles.includes(ext)) {
@@ -69,11 +75,10 @@ export class FileExplorer extends View {
           return
         }
         fn(file, callback)
-      })
+      }))
   }
 
-  private hideNotSupportedFile() {
+  onunload() {
     delete File.SupportedFiles.indexOf
-    this.disableOpenNotSupportedFile()
   }
 }
