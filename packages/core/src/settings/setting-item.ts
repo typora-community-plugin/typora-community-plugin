@@ -73,19 +73,28 @@ export class SettingItem extends View {
     el.onchange = options.onchange
     this.controls.append(el)
   }
+  /**
+   * @deprecated Use `addTag` instead.
+   */
+  addOption = this.addTag
 
-  addOption(text: string, build?: (el: HTMLElement) => void) {
+  /**
+   * @deprecated Use `addRemovableTag` instead.
+   */
+  addRemovableOption = this.addRemovableTag
+
+  addTag(text: string, build?: (el: HTMLElement) => void) {
     this.tryAddControls()
-    const el = html`<div class="typ-setting-option">${text} </div>`
+    const el = html`<div class="typ-setting-tag">${text} </div>`
     build?.(el)
     this.controls.prepend(el)
   }
 
-  addRemovableOption(text: string, onClose: () => void = _.noop) {
-    this.addOption(text, el => {
+  addRemovableTag(text: string, onClose: () => void = _.noop) {
+    this.addTag(text, el => {
       el.classList.add('removable')
 
-      $(`<span class="fa fa-times"></span>`)
+      $(`<span class="typ-icon typ-close"></span>`)
         .on('click', () => {
           el.remove()
           onClose()

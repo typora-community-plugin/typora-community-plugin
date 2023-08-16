@@ -79,11 +79,8 @@ body.typ-tabs--enable {
     flex: 1;
   }
 
-  .typ-close-tab {
-    font-style: normal;
+  .typ-close::before {
     font-size: 1.5rem;
-    line-height: 1.5rem;
-    padding-left: 6px;
   }
 }
 
@@ -100,7 +97,7 @@ body.typ-tabs--enable {
       border-left: 1px solid transparent;
     }
 
-    & .typ-close-tab {
+    .typ-close {
       display: none;
     }
   }

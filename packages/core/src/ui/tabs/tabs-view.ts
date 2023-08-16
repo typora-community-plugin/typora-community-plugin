@@ -99,7 +99,7 @@ export class TabsView extends View {
 
         editor.library.openFile(filePath)
       }
-      else if (clickedEl.classList.contains('typ-close-tab')) {
+      else if (clickedEl.classList.contains('typ-close')) {
         const tab = clickedEl.parentElement!
         this.removeTab(tab.dataset.path!)
       }
@@ -165,7 +165,7 @@ export class TabsView extends View {
     const displayPath = path.relative(this.app.vault.path, filePath)
       .replace(/(?<=\.textbundle)[\\/]text\.(?:md|markdown)$/, '')
 
-    const tab = $(`<div class="typ-tab active" data-path="${filePath}" title="${displayPath}" draggable="true">${path.basename(displayPath)}<i class="typ-close-tab">×</i></div>`)
+    const tab = $(`<div class="typ-tab active" data-path="${filePath}" title="${displayPath}" draggable="true">${path.basename(displayPath)}<i class="typ-icon typ-close"></i></div>`)
       .get(0)!
 
     this.containerEl.querySelectorAll('.typ-tab')
@@ -185,7 +185,7 @@ export class TabsView extends View {
     if (!this.tabs.has(oldPath)) return
     const tab = this.tabs.get(oldPath)!
     tab.dataset.path = newPath
-    tab.innerHTML = `${path.basename(newPath)}<i class="typ-close-tab">×</i>`
+    tab.innerHTML = `${path.basename(newPath)}<i class="typ-icon typ-close"></i>`
     this.tabs.set(newPath, tab)
   }
 
