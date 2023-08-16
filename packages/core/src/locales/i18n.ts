@@ -6,6 +6,7 @@ import type { ReadonlyDeep } from 'src/utils/types'
 
 type I18nBaseOptions = {
   defaultLang?: string
+  userLang?: string
 }
 type I18nFileOptions = I18nBaseOptions & {
   localePath: string
@@ -16,22 +17,24 @@ type I18nJsonOptions<T> = I18nBaseOptions & {
 type I18nOptions<T> = I18nFileOptions | I18nJsonOptions<T>
 
 const DEFALUT_OPTIONS: I18nBaseOptions = {
-  defaultLang: 'en'
+  defaultLang: 'en',
 }
 
 export class I18n<T> {
 
-  private locale: string
+  locale: string
+
   private resources: T
 
   constructor(options: I18nOptions<T>) {
     const {
       defaultLang,
+      userLang,
       localePath,
       resources,
     } = Object.assign({}, DEFALUT_OPTIONS, options) as Required<I18nBaseOptions> & Partial<I18nFileOptions & I18nJsonOptions<T>>
 
-    const locale = _options.appLocale.toLowerCase();
+    const locale = userLang ?? _options.appLocale.toLowerCase();
     const localeList = [locale, locale.split('-').at(0)!, defaultLang]
 
     if (resources) {

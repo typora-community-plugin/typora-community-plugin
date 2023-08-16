@@ -15,6 +15,9 @@ export class Settings<T extends Record<string, any>> {
 
   private _migation = {} as Record<string, () => void>
 
+  /**
+   * @param filename relative to typora config folder `.typora`
+   */
   constructor(
     public app: App,
     public filename: string
@@ -36,7 +39,7 @@ export class Settings<T extends Record<string, any>> {
 
   set<K extends keyof T>(key: K, value: T[K]) {
     this._stores.settings[key] = value
-    this._listeners[key].forEach(fn => fn(key, value))
+    this._listeners[key]?.forEach(fn => fn(key, value))
     this.save()
   }
 
@@ -51,6 +54,9 @@ export class Settings<T extends Record<string, any>> {
     return () => this.removeChangeListener(key, listener)
   }
 
+  /**
+   * Alias of `addChangeListener()`
+   */
   onChange = this.addChangeListener
 
   removeChangeListener<K extends keyof T>(

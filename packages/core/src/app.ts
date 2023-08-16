@@ -12,6 +12,7 @@ import { Settings } from './settings/settings'
 import type { FileLinkSettings } from './settings/setting-tabs/file-link-setting-tab'
 import type { AppearanceSettings } from './settings/setting-tabs/appearance-setting-tab'
 import type { PluginMarketplaceSettings } from './settings/setting-tabs/plugin-marketplace-setting-tab'
+import type { CoreSettings } from './settings/setting-tabs/about-tab'
 import { I18n } from './locales/i18n'
 import { JSBridge, _options, editor } from 'typora'
 import * as Locale from './locales/lang.en.json'
@@ -33,7 +34,7 @@ type EnvironmentVairables = {
   [key: string]: any
 }
 
-type AppSettings = FileLinkSettings & AppearanceSettings & PluginMarketplaceSettings
+type AppSettings = FileLinkSettings & AppearanceSettings & PluginMarketplaceSettings & CoreSettings
 
 export type AppPlugin = (app: App) => void
 
@@ -58,15 +59,16 @@ export class App extends Events<AppEvents> {
 
   vault = new Vault(this)
 
+  settings = new Settings<AppSettings>(this, 'core')
+
   i18n = new I18n<typeof Locale>({
-    localePath: path.join(this.coreDir, 'locales')
+    localePath: path.join(this.coreDir, 'locales'),
+    userLang: this.settings.get('displayLang'),
   })
 
   commands = new CommandManager(this)
 
   env: EnvironmentVairables = this._readEnv()
-
-  settings = new Settings<AppSettings>(this, 'core')
 
   github = new GithubAPI(this)
 

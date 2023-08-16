@@ -1,6 +1,7 @@
 {
   "version": "2.0.0-beta.10",
   "settings": {
+    "displayLang": "en",
     "githubProxy": "ghproxy",
     "showNotSupportedFile": true,
     "showSearchResultFullPath": true,
