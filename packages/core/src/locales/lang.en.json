@@ -44,8 +44,10 @@
       "searchPlugin": "Search plugins:",
       "pluginList": "Plugin List",
       "author": "Author",
-      "installToGlobal": "Install to global",
-      "installToVault": "Install to vault"
+      "installToGlobal": "Global",
+      "installToGlobalDesc": "Install to global",
+      "installToVault": "Vault",
+      "installToVaultDesc": "Install to vault"
     },
     "plugins": {
       "name": "Installed Plugins",

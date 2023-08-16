@@ -101,7 +101,8 @@ export class PluginMarketplaceSettingTab extends SettingTab {
       if (this.app.plugins.manifests[info.id]) return
 
       setting.addButton(button => {
-        button.innerText = t.installToGlobal
+        button.innerHTML = '<span class="fa fa-cloud-download"></span> ' + t.installToGlobal
+        button.title = t.installToGlobalDesc
         button.classList.add('primary')
         button.onclick = () =>
           this.markettplace.installPlugin(info, 'global')
@@ -109,7 +110,8 @@ export class PluginMarketplaceSettingTab extends SettingTab {
       })
 
       setting.addButton(button => {
-        button.innerText = t.installToVault
+        button.innerHTML = '<span class="fa fa-cloud-download"></span> ' + t.installToVault
+        button.title = t.installToVaultDesc
         button.classList.add('primary')
         button.onclick = () =>
           this.markettplace.installPlugin(info, 'vault')

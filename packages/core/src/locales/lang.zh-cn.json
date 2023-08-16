@@ -44,8 +44,10 @@
       "searchPlugin": "搜索插件:",
       "pluginList": "插件列表",
       "author": "作者",
-      "installToGlobal": "安装到全局",
-      "installToVault": "安装到笔记库"
+      "installToGlobal": "全局",
+      "installToGlobalDesc": "安装到全局",
+      "installToVault": "笔记库",
+      "installToVaultDesc": "安装到笔记库"
     },
     "plugins": {
       "name": "已安装插件",
