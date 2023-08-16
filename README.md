@@ -54,6 +54,8 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
 
 ![](https://fastly.jsdelivr.net/gh/typora-community-plugin/typora-community-plugin@main/docs/assets/settings-modal.jpg)
 
+![](https://fastly.jsdelivr.net/gh/typora-community-plugin/typora-community-plugin@main/docs/assets/plugin-marketplace.jpg)
+
 
 
 ## Contributing
