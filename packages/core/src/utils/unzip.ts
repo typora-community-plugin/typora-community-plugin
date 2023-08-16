@@ -12,21 +12,34 @@ export function unzipFromBuffer(buffer: Buffer, dest: string) {
 
       zipfile
         .on('entry', (entry) => {
-          const filepath = path.join(dest, entry.fileName)
-          if (entry.fileName.endsWith('/')) {
-            fs.mkdirSync(filepath, { recursive: true })
-          }
-          else {
-            zipfile.openReadStream(entry, (err, stream) => {
-              if (err) return reject(err)
+          const { fileName } = entry
+          const filepath = path.join(dest, fileName)
 
-              stream.pipe(fs.createWriteStream(filepath))
-                .on('close', () => zipfile.readEntry())
-            })
+          if (fileName.endsWith('/')) {
+            tryMakeDir(filepath)
+            zipfile.readEntry()
+            return
           }
+
+          if (fileName.includes('/')) {
+            tryMakeDir(path.dirname(filepath))
+          }
+
+          zipfile.openReadStream(entry, (err, stream) => {
+            if (err) return reject(err)
+
+            stream.pipe(fs.createWriteStream(filepath))
+              .on('close', () => zipfile.readEntry())
+          })
         })
         .on('end', resolve)
         .readEntry()
     })
   })
+}
+
+function tryMakeDir(filepath: string) {
+  if (!fs.existsSync(filepath)) {
+    fs.mkdirSync(filepath, { recursive: true })
+  }
 }

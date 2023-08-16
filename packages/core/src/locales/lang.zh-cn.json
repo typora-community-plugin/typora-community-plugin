@@ -56,7 +56,10 @@
       "projectDesc": "一个社区插件系统，适用于",
       "labelVersion": "版本",
       "labelAuthor": "作者",
-      "labelHomepage": "项目主页"
+      "labelHomepage": "项目主页",
+      "buttonUpdate": "更新",
+      "coreUpToDate": "Typora Community Plugin 已是最新版本。",
+      "coreUpdateSuccess": "Typora Community Plugin 更新成功。"
     }
   },
   "ribbon": {

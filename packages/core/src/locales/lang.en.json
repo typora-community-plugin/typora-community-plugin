@@ -56,7 +56,10 @@
       "projectDesc": "A community plugin system for",
       "labelVersion": "Version",
       "labelAuthor": "Author",
-      "labelHomepage": "Homepage"
+      "labelHomepage": "Homepage",
+      "buttonUpdate": "Update",
+      "coreUpToDate": "Typora Community Plugin is up to date.",
+      "coreUpdateSuccessful": "Typora Community Plugin update successful."
     }
   },
   "ribbon": {

@@ -42,6 +42,9 @@ export type AppPlugin = (app: App) => void
  */
 export class App extends Events<AppEvents> {
 
+  /**
+   * @example '2.0.0'
+   */
   get coreVersion() {
     return process.env.CORE_VERSION
   }
