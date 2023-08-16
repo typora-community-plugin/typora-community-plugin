@@ -40,7 +40,8 @@
     "pluginMarketplace": {
       "name": "插件市场",
       "githubProxy": "Github 代理",
-      "githubProxySource": "从...获取数据",
+      "githubProxyDesc": "用于加载插件列表和下载插件。",
+      "searchPlugin": "搜索插件:",
       "pluginList": "插件列表",
       "author": "作者",
       "installToGlobal": "安装到全局",
@@ -48,6 +49,7 @@
     },
     "plugins": {
       "name": "已安装插件",
+      "searchPlugin": "搜索插件:",
       "titleInstalled": "已安装 {0} 个插件",
       "uninstall": "卸载"
     },

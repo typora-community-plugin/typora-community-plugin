@@ -1,3 +1,4 @@
+import * as _ from "lodash"
 import type { App } from "src/app"
 import { PluginMarketplace, type PluginMarketInfo } from "src/plugin/plugin-marketplace"
 import { SettingTab } from "../setting-tab"
@@ -19,12 +20,14 @@ export class PluginMarketplaceSettingTab extends SettingTab {
 
   private markettplace: PluginMarketplace
 
+  private pluginList: PluginMarketInfo[] = []
+
   constructor(private app: App) {
     super()
 
     app.settings.setDefault(DEFAULT_SETTINGS)
     app.settings.onChange('githubProxy', () => {
-      this.renderPluginList()
+      this.loadPluginList()
     })
 
     this.markettplace = new PluginMarketplace(app)
@@ -34,14 +37,22 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     const { settings } = this.app
     const t = this.app.i18n.t.settingTabs.pluginMarketplace
 
-    this.addSettingTitle(t.githubProxy)
-
     this.addSetting(setting => {
-      setting.addName(t.githubProxySource)
+      setting.addName(t.githubProxy)
+      setting.addDescription(t.githubProxyDesc)
       setting.addSelect({
         options: this.app.github.proxies.map(u => u.id),
         selected: settings.get('githubProxy'),
-        onchange: (event) => settings.set('githubProxy', event.target.value)
+        onchange: event => settings.set('githubProxy', event.target.value)
+      })
+    })
+
+    this.addSetting(setting => {
+      setting.addName(t.searchPlugin)
+      setting.addText(input => {
+        input.oninput = _.debounce(() => {
+          this.renderPluginList(input.value)
+        }, 500)
       })
     })
 
@@ -49,7 +60,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
   }
 
   show() {
-    this.renderPluginList()
+    this.loadPluginList()
     super.show()
   }
 
@@ -58,10 +69,18 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     super.hide()
   }
 
-  private renderPluginList() {
-    this.cleanPluginList()
+  private loadPluginList() {
     this.markettplace.loadCommunityPlugins()
-      .then(data => data.forEach(p => this.renderPlugins(p)))
+      .then(data => { this.pluginList = data })
+      .then(() => this.renderPluginList())
+  }
+
+  private renderPluginList(query: string = '') {
+    query = query.toLowerCase()
+    this.cleanPluginList()
+    this.pluginList
+      .filter(p => !query || (p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query)))
+      .forEach(p => this.renderPlugin(p))
   }
 
   private cleanPluginList() {
@@ -69,7 +88,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
       .forEach(el => el.remove())
   }
 
-  private renderPlugins(info: PluginMarketInfo) {
+  private renderPlugin(info: PluginMarketInfo) {
     const t = this.app.i18n.t.settingTabs.pluginMarketplace
 
     this.addSetting(setting => {

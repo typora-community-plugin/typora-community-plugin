@@ -1,4 +1,5 @@
 import './plugin-manager-setting-tab.scss'
+import * as _ from 'lodash'
 import type { App } from "src/app"
 import type { PluginManifest } from "src/plugin/plugin-manifest"
 import { html } from "src/utils/html"
@@ -23,18 +24,47 @@ export class PluginsManagerSettingTab extends SettingTab {
     this.containerEl.innerHTML = ''
 
     const t = this.app.i18n.t.settingTabs.plugins
+
+    this.addSetting(setting => {
+      setting.addName(t.searchPlugin)
+      setting.addText(input => {
+        input.oninput = _.debounce(() => {
+          this.renderPluginList(input.value)
+        }, 500)
+      })
+    })
+
     this.addSettingTitle(format(t.titleInstalled, [Object.keys(this.app.plugins.manifests).length]))
 
-    Object.values(this.app.plugins.manifests)
-      .forEach(manifest => this.renderPlugins(manifest))
+    this.renderPluginList()
 
     super.show()
   }
 
-  private renderPlugins(manifest: PluginManifest) {
+  hide() {
+    this.cleanPluginList()
+    super.hide()
+  }
+
+  private renderPluginList(query: string = '') {
+    query = query.toLowerCase()
+    this.cleanPluginList()
+    Object.values(this.app.plugins.manifests)
+      .filter(p => !query || (p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query)))
+      .forEach(p => this.renderPlugin(p))
+  }
+
+  private cleanPluginList() {
+    this.containerEl.querySelectorAll('.typ-plugin-item')
+      .forEach(el => el.remove())
+  }
+
+  private renderPlugin(manifest: PluginManifest) {
     const t = this.app.i18n.t.settingTabs.plugins
 
     this.addSetting(setting => {
+      setting.containerEl.classList.add('typ-plugin-item')
+
       setting.addName(manifest.name || manifest.id)
       setting.addDescription(manifest.description)
 

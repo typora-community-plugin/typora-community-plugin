@@ -39,8 +39,9 @@
     },
     "pluginMarketplace": {
       "name": "Plugin Marketplace",
-      "githubProxy": "Github Proxy",
-      "githubProxySource": "Get data from",
+      "githubProxy": "Github proxy",
+      "githubProxyDesc": "Proxy of github for loading plugin list and downloading plugin.",
+      "searchPlugin": "Search plugins:",
       "pluginList": "Plugin List",
       "author": "Author",
       "installToGlobal": "Install to global",
@@ -48,6 +49,7 @@
     },
     "plugins": {
       "name": "Installed Plugins",
+      "searchPlugin": "Search plugins:",
       "titleInstalled": "{0} plugins installed",
       "uninstall": "Uninstall"
     },
