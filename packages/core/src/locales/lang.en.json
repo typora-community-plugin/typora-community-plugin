@@ -40,8 +40,7 @@
     "pluginMarketplace": {
       "name": "Plugin Marketplace",
       "githubProxy": "Github Proxy",
-      "pluginListSource": "Load plugin list from",
-      "pluginDownloadSource": "Download plugin from",
+      "githubProxySource": "Get data from",
       "pluginList": "Plugin List",
       "author": "Author",
       "installToGlobal": "Install to global",

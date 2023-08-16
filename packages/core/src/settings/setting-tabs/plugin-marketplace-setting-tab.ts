@@ -4,13 +4,11 @@ import { SettingTab } from "../setting-tab"
 
 
 export type PluginMarketplaceSettings = {
-  githubPluginListUri: string
-  githubDownloadUri: string
+  githubProxy: string
 }
 
 const DEFAULT_SETTINGS: PluginMarketplaceSettings = {
-  githubPluginListUri: 'github',
-  githubDownloadUri: 'github',
+  githubProxy: 'github',
 }
 
 export class PluginMarketplaceSettingTab extends SettingTab {
@@ -25,7 +23,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     super()
 
     app.settings.setDefault(DEFAULT_SETTINGS)
-    app.settings.onChange('githubPluginListUri', () => {
+    app.settings.onChange('githubProxy', () => {
       this.renderPluginList()
     })
 
@@ -39,20 +37,11 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     this.addSettingTitle(t.githubProxy)
 
     this.addSetting(setting => {
-      setting.addName(t.pluginListSource)
+      setting.addName(t.githubProxySource)
       setting.addSelect({
-        options: this.markettplace.pluginListUris.map(u => u.id),
-        selected: settings.get('githubPluginListUri'),
-        onchange: (event) => settings.set('githubPluginListUri', event.target.value)
-      })
-    })
-
-    this.addSetting(setting => {
-      setting.addName(t.pluginDownloadSource)
-      setting.addSelect({
-        selected: settings.get('githubDownloadUri'),
-        options: this.markettplace.downloadUris.map(u => u.id),
-        onchange: (event) => settings.set('githubDownloadUri', event.target.value)
+        options: this.app.github.proxies.map(u => u.id),
+        selected: settings.get('githubProxy'),
+        onchange: (event) => settings.set('githubProxy', event.target.value)
       })
     })
 
@@ -70,11 +59,9 @@ export class PluginMarketplaceSettingTab extends SettingTab {
   }
 
   private renderPluginList() {
+    this.cleanPluginList()
     this.markettplace.loadCommunityPlugins()
-      .then(data => {
-        this.cleanPluginList()
-        data.forEach(p => this.renderPlugins(p))
-      })
+      .then(data => data.forEach(p => this.renderPlugins(p)))
   }
 
   private cleanPluginList() {

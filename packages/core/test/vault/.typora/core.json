@@ -1,8 +1,7 @@
 {
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.10",
   "settings": {
-    "githubPluginListUri": "ghproxy",
-    "githubDownloadUri": "ghproxy",
+    "githubProxy": "ghproxy",
     "showNotSupportedFile": true,
     "showSearchResultFullPath": true,
     "showRibbon": true,
@@ -10,7 +9,6 @@
     "openLinkInCurrentWin": true,
     "quickOpenInCurrentWin": true,
     "ignoreFile": true,
-    "ignoreFileGlob": "ignoredFolder",
-    "showAllFileTypes": true
+    "ignoreFileGlob": "ignoredFolder"
   }
 }

@@ -17,6 +17,7 @@ import { JSBridge, _options, editor } from 'typora'
 import * as Locale from './locales/lang.en.json'
 import { isMarkdownUrl } from './utils/is-markdown-url'
 import type { FileURL } from './utils/types'
+import { GithubAPI } from './github'
 
 
 type AppEvents = {
@@ -63,6 +64,8 @@ export class App extends Events<AppEvents> {
   env: EnvironmentVairables = this._readEnv()
 
   settings = new Settings<AppSettings>(this, 'core')
+
+  github = new GithubAPI(this)
 
   plugins = new PluginManager(this)
 

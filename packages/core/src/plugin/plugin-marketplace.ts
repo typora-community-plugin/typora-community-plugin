@@ -1,81 +1,22 @@
 import * as fs from 'fs/promises'
 import * as path from 'path'
-import { format } from "../utils/format"
+import type { App } from 'src/app'
+import { Notice } from 'src/components/notice'
+import { unzipFromBuffer } from 'src/utils/unzip'
 import type { PluginManifest } from "./plugin-manifest"
-import type { App } from '../app'
-import { unzipFromBuffer } from '../utils/unzip'
 
 
 export type PluginMarketInfo = Pick<PluginManifest, "id" | "name" | "description" | "author"> & {
   repo: string
 }
 
-interface GithubUri {
-  id: string
-  host: string
-  path: string
-}
-
 export class PluginMarketplace {
 
-  pluginListUris: GithubUri[] = [{
-    id: 'github',
-    host: 'https://raw.githubusercontent.com/',
-    path: 'typora-community-plugin/typora-plugin-releases/main/community-plugins.json'
-  }, {
-    id: 'ghproxy',
-    host: 'https://ghproxy.com/https://raw.githubusercontent.com/',
-    path: 'typora-community-plugin/typora-plugin-releases/main/community-plugins.json'
-  }, {
-    id: 'jsdelivr',
-    host: 'https://fastly.jsdelivr.net/gh/',
-    path: 'typora-community-plugin/typora-plugin-releases@main/community-plugins.json'
-  }]
-
-  releaseUris: GithubUri[] = [{
-    id: 'github',
-    host: 'https://api.github.com/',
-    path: 'repos/{repo}/releases/latest'
-  }]
-
-  downloadUris: GithubUri[] = [{
-    id: 'github',
-    host: 'https://github.com/',
-    path: '{repo}/releases/download/{version}/plugin.zip'
-  }, {
-    id: 'ghproxy',
-    host: 'https://ghproxy.com/https://github.com/',
-    path: '{repo}/releases/download/{version}/plugin.zip'
-  }]
-
-  private activeUri = {
-    pluginList: this.pluginListUris[0],
-    release: this.releaseUris[0],
-    download: this.downloadUris[0],
-  }
-
   constructor(private app: App) {
-    const { settings } = app
-
-    this.activeUri.pluginList = getUri(this.pluginListUris, settings.get('githubPluginListUri'))
-    this.activeUri.download = getUri(this.downloadUris, settings.get('githubDownloadUri'))
-
-    settings.onChange('githubPluginListUri', (_, id) => {
-      this.activeUri.pluginList = getUri(this.pluginListUris, id)
-    })
-    settings.onChange('githubDownloadUri', (_, id) => {
-      this.activeUri.download = getUri(this.downloadUris, id)
-    })
-
-    function getUri(list: GithubUri[], id: string) {
-      return list.find(uri => uri.id === id)!
-    }
   }
 
   loadCommunityPlugins(): Promise<PluginMarketInfo[]> {
-    const url = this.activeUri.pluginList.host
-      + this.activeUri.pluginList.path
-    return fetch(url)
+    return this.app.github.getFile('typora-community-plugin/typora-plugin-releases', 'main', 'community-plugins.json')
       .then(res => res.json())
   }
 
@@ -95,7 +36,7 @@ export class PluginMarketplace {
           .then(manifest => {
             if (info.id !== manifest.id) {
               fs.rm(root, { recursive: true })
-              throw Error('Downloaded plugin id is not equal to user install plugin id.')
+              new Notice('Downloaded plugin id is not equal to user install plugin id.')
             }
             else {
               manifest.dir = root
@@ -106,15 +47,10 @@ export class PluginMarketplace {
   }
 
   downloadPlugin(info: PluginMarketInfo) {
-    const url = this.activeUri.release.host
-      + format(this.activeUri.release.path, info)
-    return fetch(url)
-      .then(res => res.json())
+    return this.app.github.getReleaseInfo(info.repo)
       .then(data => data.tag_name)
       .then(version => {
-        const url = this.activeUri.download.host
-          + format(this.activeUri.download.path, { repo: info.repo, version })
-        return fetch(url)
+        return this.app.github.download(info.repo, version, 'plugin.zip')
           .then(res => res.arrayBuffer())
       })
   }

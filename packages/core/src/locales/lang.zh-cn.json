@@ -40,8 +40,7 @@
     "pluginMarketplace": {
       "name": "插件市场",
       "githubProxy": "Github 代理",
-      "pluginListSource": "加载插件列表的来源",
-      "pluginDownloadSource": "下载插件的来源",
+      "githubProxySource": "从...获取数据",
       "pluginList": "插件列表",
       "author": "作者",
       "installToGlobal": "安装到全局",
