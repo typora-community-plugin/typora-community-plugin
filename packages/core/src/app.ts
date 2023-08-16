@@ -68,7 +68,7 @@ export class App extends Events<AppEvents> {
 
   commands = new CommandManager(this)
 
-  env: EnvironmentVairables = this._readEnv()
+  env = this._readEnv()
 
   github = new GithubAPI(this)
 
@@ -89,6 +89,8 @@ export class App extends Events<AppEvents> {
       ...Core,
     }
 
+    I18n.setUserLocale(this.i18n.locale)
+
     this.vault.on('change', () => {
       this.env = this._readEnv()
       this.plugins.unloadPlugins()
@@ -96,7 +98,7 @@ export class App extends Events<AppEvents> {
     })
   }
 
-  private _readEnv() {
+  private _readEnv(): EnvironmentVairables {
     return this.vault.readConfigJson('env')
   }
 

@@ -1,4 +1,5 @@
 import * as fs from 'fs'
+import * as fsp from 'fs/promises'
 import * as path from 'path'
 import { _options, File, JSBridge } from 'typora'
 import { Events } from './events'
@@ -76,8 +77,11 @@ export class Vault extends Events<VaultEvents> {
 
   writeConfigJson(filename: string, config: any) {
     const configPath = path.join(this.configDir, filename + '.json')
-    return fs.promises
-      .writeFile(configPath, JSON.stringify(config, null, 2), 'utf8')
+    const dirname = path.dirname(configPath)
+    return fsp
+      .access(dirname)
+      .catch(() => fsp.mkdir(dirname, { recursive: true }))
+      .then(() => fsp.writeFile(configPath, JSON.stringify(config, null, 2), 'utf8'))
       .catch(error => console.error(`Failed to save config "${filename}.json"\n`, error))
   }
 

@@ -22,6 +22,10 @@ const DEFALUT_OPTIONS: I18nBaseOptions = {
 
 export class I18n<T> {
 
+  static setUserLocale(locale: string) {
+    DEFALUT_OPTIONS.userLang = locale
+  }
+
   locale: string
 
   private resources: T
