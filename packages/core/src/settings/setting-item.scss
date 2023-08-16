@@ -25,11 +25,12 @@
   }
 
   h3 {
-    margin: 1.5rem 0 0.5rem;
+    margin: 1rem 0 .5rem;
+    font-size: 1rem;
   }
 
   .typ-setting-tag {
-    padding: 0 0.5rem;
+    padding: 0 .5rem;
     border: 1px solid var(--table-border-color);
     border-radius: 3px;
     box-shadow: 1px 1px 1px 0 rgb(var(--typ-shadow-color), .4);
@@ -81,7 +82,7 @@
 
 .typ-setting-description {
   color: var(--text-color);
-  opacity: 0.6;
+  opacity: .6;
 }
 
 .typ-setting-controls {

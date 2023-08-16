@@ -17,7 +17,7 @@ button.typ-block-operate-button {
   margin-left: 6px;
   padding: 2px 4px;
   border: none;
-  border-radius: 0.25em;
+  border-radius: .25em;
   height: 24px;
 
   color: rgba(var(--typ-text-color), .5);
@@ -27,6 +27,6 @@ button.typ-block-operate-button {
 
   &:active {
     background-color: rgba(var(--typ-light-bg-color), .5);
-    box-shadow: inset 0 0.15em 0.3em rgba(var(--typ-shadow-color), .4);
+    box-shadow: inset 0 .15em .3em rgba(var(--typ-shadow-color), .4);
   }
 }

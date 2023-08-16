@@ -1,7 +1,7 @@
 .typ-modal:has(.typ-settings-modal) {
   width: 90vw;
   height: 85vh;
-  font-size: 0.8125rem;
+  font-size: .8125rem;
 }
 
 .typ-settings-modal {
@@ -19,20 +19,21 @@
   font-weight: 300;
 
   &:not(:first-child) {
-    margin: 1rem 0 0.2rem 0;
+    margin: 1rem 0 .2rem 0;
   }
 }
 
 .typ-nav__item {
-  margin: 0 0.75rem 2px 0;
-  padding: 0.4rem 0.8rem;
+  margin: 0 .75rem 2px 0;
+  padding: .3rem .8rem;
   width: 10rem;
-  border-radius: 0.25rem;
+  border-radius: .25rem;
+  font-size: .75rem;
 
   &.active {
     color: var(--side-bar-bg-color);
     background: var(--control-text-color);
-    opacity: 0.8;
+    opacity: .8;
   }
 }
 
