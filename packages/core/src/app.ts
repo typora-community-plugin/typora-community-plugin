@@ -93,6 +93,7 @@ export class App extends Events<AppEvents> {
 
     this.vault.on('change', () => {
       this.env = this._readEnv()
+      this.settings.load()
       this.plugins.unloadPlugins()
       this.start()
     })
