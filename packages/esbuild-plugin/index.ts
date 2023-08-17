@@ -5,11 +5,40 @@ import * as modules from 'node:module'
 
 const internalModules: Record<string, string> = {
   'extract-zip': 'extract-zip',
-  'yauzl': 'extract-zip/node_modules/yauzl',
+    'mkdirp': 'extract-zip/node_modules/mkdirp',
+    'yauzl': 'extract-zip/node_modules/yauzl',
 
-  'glob': 'fs-plus/node_modules/glob',
+  'fs-extra': 'fs-extra',
+
+  'fs-plus': 'fs-plus',
+    'async': 'fs-plus/node_modules/async',
+    'brace-expansion': 'fs-plus/node_modules/brace-expansion',
+    'glob': 'fs-plus/node_modules/glob',
+    'minimatch': 'fs-plus/node_modules/minimatch',
+    'rimraf': 'fs-plus/node_modules/rimraf',
+    'underscore': 'fs-plus/node_modules/underscore',
+    'underscore-plus': 'fs-plus/node_modules/underscore-plus',
+
+  'getos': 'getos',
+  'hjson': 'hjson',
   'iconv-lite': 'iconv-lite',
-  'lodash': 'lowdb/node_modules/lodash',
+  'jschardet': 'jschardet',
+  'jsonfile': 'jsonfile',
+  'native-reg': 'native-reg',
+  'node-machine-id': 'node-machine-id',
+
+  'lowdb': 'lowdb',
+    'lodash': 'lowdb/node_modules/lodash',
+
+  // raven
+    'md5': 'raven/node_modules/md5',
+    'uuid': 'raven/node_modules/uuid',
+
+  'spellchecker': 'spellchecker',
+
+  'vscode-ripgrep': 'vscode-ripgrep',
+    'debug': 'vscode-ripgrep/node_modules/debug',
+    'ms': 'vscode-ripgrep/node_modules/ms',
 }
 
 interface Options {

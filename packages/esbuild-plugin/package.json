@@ -1,6 +1,6 @@
 {
   "name": "@typora-community-plugin/esbuild-plugin-typora",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Build typora community plugin with esbuild.",
   "type": "module",
   "main": "index.js",
@@ -13,7 +13,12 @@
     "esbuild-plugin",
     "typora-plugin"
   ],
-  "author": "plylrnsdy",
+  "author": "plylrnsdy <https://github.com/plylrnsdy>",
+  "homepage": "https://github.com/typora-community-plugin/typora-community-plugin/tree/main/packages/esbuild-plugin#README.md",
+  "bugs": {
+    "url": "https://github.com/typora-community-plugin/typora-community-plugin/issues",
+    "email": "plylrnsdy@163.com"
+  },
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.4.4",
