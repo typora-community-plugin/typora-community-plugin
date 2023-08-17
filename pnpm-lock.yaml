@@ -15,6 +15,7 @@ importers:
       '@types/glob': 7.2.0
       '@types/jquery': 3.3.1
       '@types/lodash': '4.14'
+      '@types/mkdirp': 0.5.1
       '@types/node': 16.18.0
       '@types/typora': workspace:../types
       '@types/yauzl': 2.10.0
@@ -32,6 +33,7 @@ importers:
       '@types/glob': 7.2.0
       '@types/jquery': 3.3.1
       '@types/lodash': 4.14.195
+      '@types/mkdirp': 0.5.1
       '@types/node': 16.18.0
       '@types/typora': link:../types
       '@types/yauzl': 2.10.0
@@ -298,6 +300,12 @@ packages:
 
   /@types/minimatch/5.1.2:
     resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
+    dev: true
+
+  /@types/mkdirp/0.5.1:
+    resolution: {integrity: sha512-XA4vNO6GCBz8Smq0hqSRo4yRWMqr4FPQrWjhJt6nKskzly4/p87SfuJMFYGRyYb6jo2WNIQU2FDBsY5r1BibUA==}
+    dependencies:
+      '@types/node': 16.18.0
     dev: true
 
   /@types/node/16.18.0:

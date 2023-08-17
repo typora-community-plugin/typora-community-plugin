@@ -1,4 +1,5 @@
 import * as fs from 'fs'
+import * as fsp from 'fs/promises'
 import * as path from 'path'
 import type { App } from './app'
 import { BUILT_IN, WorkspaceRibbon } from './ui/ribbon/workspace-ribbon'
@@ -37,9 +38,9 @@ export function devtools(app: App) {
     const winLocker = path.join(lockerDir, `win-${app.env.PLUGIN_WIN_ID}`)
     const ac = new AbortController()
 
-    fs.promises.access(lockerDir)
-      .catch(() => fs.promises.mkdir(lockerDir))
-      .then(() => fs.promises.writeFile(winLocker, '', 'utf-8'))
+    fsp.access(lockerDir)
+      .catch(() => fsp.mkdir(lockerDir))
+      .then(() => fsp.writeFile(winLocker, '', 'utf-8'))
       .then(() => fs.watch(winLocker, { signal: ac.signal }, (e) => {
         if (e === 'rename') {
           ac.abort()

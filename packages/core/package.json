@@ -31,6 +31,7 @@
     "@types/glob": "7.2.0",
     "@types/jquery": "3.3.1",
     "@types/lodash": "4.14",
+    "@types/mkdirp": "0.5.1",
     "@types/node": "16.18.0",
     "@types/typora": "workspace:../types",
     "@types/yauzl": "2.10.0",

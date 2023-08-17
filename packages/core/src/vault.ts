@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import * as fsp from 'fs/promises'
+import * as mkdirp from 'mkdirp'
 import * as path from 'path'
 import { _options, File, JSBridge } from 'typora'
 import { Events } from './events'
@@ -55,7 +56,7 @@ export class Vault extends Events<VaultEvents> {
   }
 
   initConfigDir() {
-    fs.mkdirSync(this.dataDir, { recursive: true })
+    mkdirp.sync(this.dataDir)
   }
 
   /**

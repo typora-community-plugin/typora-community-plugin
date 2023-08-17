@@ -1,6 +1,7 @@
 import * as yauzl from 'yauzl'
 import * as fs from 'fs'
 import * as path from 'path'
+import * as mkdirp from 'mkdirp'
 
 
 export function unzipFromBuffer(buffer: Buffer, dest: string) {
@@ -16,13 +17,13 @@ export function unzipFromBuffer(buffer: Buffer, dest: string) {
           const filepath = path.join(dest, fileName)
 
           if (fileName.endsWith('/')) {
-            tryMakeDir(filepath)
+            mkdirp.sync(filepath)
             zipfile.readEntry()
             return
           }
 
           if (fileName.includes('/')) {
-            tryMakeDir(path.dirname(filepath))
+            mkdirp.sync(path.dirname(filepath))
           }
 
           zipfile.openReadStream(entry, (err, stream) => {
@@ -36,10 +37,4 @@ export function unzipFromBuffer(buffer: Buffer, dest: string) {
         .readEntry()
     })
   })
-}
-
-function tryMakeDir(filepath: string) {
-  if (!fs.existsSync(filepath)) {
-    fs.mkdirSync(filepath, { recursive: true })
-  }
 }
