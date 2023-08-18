@@ -26,6 +26,11 @@ export class Events<E extends Record<string, (...args: any[]) => any>> {
   }
 
   protected emit<K extends keyof E>(event: K, ...args: Parameters<E[K]>) {
-    this._events.emit(event as string, ...args)
+    try {
+      this._events.emit(event as string, ...args)
+    }
+    catch (error) {
+      console.error(error)
+    }
   }
 }

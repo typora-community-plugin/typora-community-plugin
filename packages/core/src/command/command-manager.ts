@@ -65,7 +65,11 @@ export class CommandManager {
   }
 
   run(commandId: string) {
-    this.commandMap[commandId]?.callback()
+    try {
+      this.commandMap[commandId]?.callback()
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   setCommandHotkey(commandId: string, hotkey: string | null) {

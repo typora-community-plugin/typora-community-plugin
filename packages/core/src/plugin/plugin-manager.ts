@@ -89,15 +89,19 @@ export class PluginManager {
   }
 
   async loadPlugin(id: string) {
-    const module = await import(path.join(this.manifests[id].dir!, 'main.js'))
-
-    const PluginImplement = module.default
-    this.instances[id] = new PluginImplement(this.app, this.manifests[id])
-
     try {
-      const cssText = await fs.readFile(path.join(this.manifests[id].dir!, 'style.css'), 'utf8')
-      this.styles[id] = cssText
+      const module = await import(path.join(this.manifests[id].dir!, 'main.js'))
+
+      const PluginImplement = module.default
+      this.instances[id] = new PluginImplement(this.app, this.manifests[id])
+
+      const cssPath = path.join(this.manifests[id].dir!, 'style.css')
+      fs.access(cssPath)
+        .then(() => fs.readFile(cssPath, 'utf8'))
+        .then(cssText => { this.styles[id] = cssText })
+        .catch(() => { })
     } catch (error) {
+      console.error(error)
     }
   }
 
@@ -112,7 +116,11 @@ export class PluginManager {
       await this.loadPlugin(id)
     }
 
-    this.instances[id].load()
+    try {
+      this.instances[id].load()
+    } catch (error) {
+      console.error(error)
+    }
 
     if (this.styles[id]) {
       document.head.insertAdjacentHTML('beforeend', `<style id="typora-plugin:${id}">${this.styles[id]}</style>`)
