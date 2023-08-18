@@ -63,7 +63,7 @@
       "labelHomepage": "项目主页",
       "buttonUpdate": "更新",
       "coreUpToDate": "Typora Community Plugin 已是最新版本。",
-      "coreUpdateSuccess": "Typora Community Plugin 更新成功。",
+      "coreUpdateSuccessful": "Typora Community Plugin 更新成功。",
       "lang": "语言",
       "langDesc": "Typora Community Plugin 的显示语言。(需要重启 Typora)"
     }
