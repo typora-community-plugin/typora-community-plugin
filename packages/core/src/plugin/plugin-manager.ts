@@ -96,7 +96,7 @@ export class PluginManager {
       this.instances[id] = new PluginImplement(this.app, this.manifests[id])
 
       const cssPath = path.join(this.manifests[id].dir!, 'style.css')
-      fs.access(cssPath)
+      await fs.access(cssPath)
         .then(() => fs.readFile(cssPath, 'utf8'))
         .then(cssText => { this.styles[id] = cssText })
         .catch(() => { })
