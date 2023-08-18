@@ -4,7 +4,7 @@
   left: 50%;
   transform: translateX(-50%);
 
-  padding: 0.2rem;
+  padding: .2rem;
   width: 30rem;
 }
 
@@ -23,18 +23,17 @@
   @extend %typ-command-modal__child;
 
   &>* {
-    margin: 0.3rem;
+    margin: .3rem;
   }
 
   & input {
-    padding: 0.25rem;
     border: 1px solid #ddd;
     outline: none;
     box-shadow: inset 1px 1px 1px 0px #eee;
-    font-size: 1rem;
+    font-size: .875rem;
 
     &::placeholder {
-      opacity: 0.5;
+      opacity: .5;
     }
   }
 }
@@ -42,18 +41,18 @@
 .typ-command-modal__results {
   @extend %typ-command-modal__child;
 
-  padding-bottom: 0.3rem;
+  padding-bottom: .3rem;
   max-height: 30rem;
   overflow-y: auto;
 }
 
 .typ-command-modal__item {
-  padding: 0.4rem 0.6rem;
-  font-size: 0.9rem;
+  padding: .2rem .6rem;
+  font-size: .875rem;
   color: #666;
 
   &:hover,
   &.active {
-    background: rgb(0, 0, 0, 0.03);
+    background: rgb(0, 0, 0, .03);
   }
 }
