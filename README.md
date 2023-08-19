@@ -48,13 +48,27 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
 
 ## Preview
 
-![](./docs/assets/base.jpg)
+| ![](./docs/assets/base.jpg)           | ![](./docs/assets/command-modal.jpg)      |
+| ------------------------------------- | ----------------------------------------- |
+| ![](./docs/assets/settings-modal.jpg) | ![](./docs/assets/plugin-marketplace.jpg) |
 
-![](./docs/assets/command-modal.jpg)
 
-![](./docs/assets/settings-modal.jpg)
 
-![](./docs/assets/plugin-marketplace.jpg)
+## Install
+
+### Script install
+
+1. Download [Release](https://github.com/typora-community-plugin/typora-community-plugin/releases) `typora-community-plugin.zip`.
+2. Unzip it.
+3. Run as Admin `install.ps1` (only for Windows) to install.
+
+### Manual install
+
+1. Download [Release](https://github.com/typora-community-plugin/typora-community-plugin/releases) `typora-community-plugin.zip`.
+2. Unzip it.
+3. Copy files to `%UserProfiels%/.typora/comunity-plugins`.
+4. Create a symlink. Run `cmd` as admin, and run command `mklink /d %UserProfile%\\AppData\\Roaming\\Typora\\plugins %UserProfile%\\.typora\\community-plugins`.
+5. Modify `{TyporaHome}/resources/window.html`. Open the file with encoding UTF-8, then replace text `</body></html>` at the end of file as `<script src="typora://app/userData/plugins/loader.js" type="module"></script></body></html>`.
 
 
 

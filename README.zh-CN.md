@@ -48,13 +48,27 @@
 
 ## 预览
 
-![](https://fastly.jsdelivr.net/gh/typora-community-plugin/typora-community-plugin@main/docs/assets/base.jpg)
+| ![](./docs/assets/base.jpg)           | ![](./docs/assets/command-modal.jpg)      |
+| ------------------------------------- | ----------------------------------------- |
+| ![](./docs/assets/settings-modal.jpg) | ![](./docs/assets/plugin-marketplace.jpg) |
 
-![](https://fastly.jsdelivr.net/gh/typora-community-plugin/typora-community-plugin@main/docs/assets/command-modal.jpg)
 
-![](https://fastly.jsdelivr.net/gh/typora-community-plugin/typora-community-plugin@main/docs/assets/settings-modal.jpg)
 
-![](https://fastly.jsdelivr.net/gh/typora-community-plugin/typora-community-plugin@main/docs/assets/plugin-marketplace.jpg)
+## 安装
+
+### 脚本安装
+
+1. 从 [Release](https://github.com/typora-community-plugin/typora-community-plugin/releases) 下载 `typora-community-plugin.zip`。
+2. 解压文件。
+3. 以管理员身份运行 `install.ps1` (只适用于 Windows)。
+
+### 手动安装
+
+1. 从 [Release](https://github.com/typora-community-plugin/typora-community-plugin/releases) 下载 `typora-community-plugin.zip`。
+2. 解压文件。
+3. 复制文件到 `%UserProfiels%/.typora/comunity-plugins`。
+4. 创建文件夹的符号链接。以管理员身份运行 `cmd` ，然后运行命令 `mklink /d %UserProfile%\\AppData\\Roaming\\Typora\\plugins %UserProfile%\\.typora\\community-plugins`。
+5. 修改文件 `{Typora 安装目录}/resources/window.html`。使用 UTF-8 编码打开该文件，替换文件末尾的文本 `</body></html>` 为 `<script src="typora://app/userData/plugins/loader.js" type="module"></script></body></html>`。
 
 
 
