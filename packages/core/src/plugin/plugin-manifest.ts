@@ -1,4 +1,7 @@
+export type PluginPostion = 'global' | 'vault'
+
 export interface PluginManifest {
+  postion?: PluginPostion
   /** Plugin dir full path */
   dir?: string
 

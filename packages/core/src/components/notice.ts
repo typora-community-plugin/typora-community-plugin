@@ -19,7 +19,7 @@ export class Notice {
 
   private el: HTMLElement
 
-  constructor(message: string, delay = 3000) {
+  constructor(message: string, delay = 5000) {
     this.el = html`<div class="typ-notice">${message}</div>`
 
     $('.typ-notice__container').append(this.el)

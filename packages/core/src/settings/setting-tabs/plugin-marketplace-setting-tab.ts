@@ -1,6 +1,6 @@
 import * as _ from "lodash"
 import type { App } from "src/app"
-import { PluginMarketplace, type PluginMarketInfo } from "src/plugin/plugin-marketplace"
+import { type PluginMarketInfo } from "src/plugin/plugin-marketplace"
 import { SettingTab } from "../setting-tab"
 
 
@@ -18,10 +18,6 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     return this.app.i18n.t.settingTabs.pluginMarketplace.name
   }
 
-  private markettplace: PluginMarketplace
-
-  private pluginList: PluginMarketInfo[] = []
-
   constructor(private app: App) {
     super()
 
@@ -29,8 +25,6 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     app.settings.onChange('githubProxy', () => {
       this.loadPluginList()
     })
-
-    this.markettplace = new PluginMarketplace(app)
   }
 
   onload() {
@@ -70,15 +64,14 @@ export class PluginMarketplaceSettingTab extends SettingTab {
   }
 
   private loadPluginList() {
-    this.markettplace.loadCommunityPlugins()
-      .then(data => { this.pluginList = data })
+    this.app.plugins.marketplace.loadCommunityPlugins()
       .then(() => this.renderPluginList())
   }
 
   private renderPluginList(query: string = '') {
     query = query.toLowerCase()
     this.cleanPluginList()
-    this.pluginList
+    this.app.plugins.marketplace.pluginList
       .filter(p => !query || (p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query)))
       .forEach(p => this.renderPlugin(p))
   }
@@ -105,7 +98,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
         button.title = t.installToGlobalDesc
         button.classList.add('primary')
         button.onclick = () =>
-          this.markettplace.installPlugin(info, 'global')
+          this.app.plugins.marketplace.installPlugin(info, 'global')
             .then(() => setting.controls.remove())
       })
 
@@ -114,7 +107,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
         button.title = t.installToVaultDesc
         button.classList.add('primary')
         button.onclick = () =>
-          this.markettplace.installPlugin(info, 'vault')
+          this.app.plugins.marketplace.installPlugin(info, 'vault')
             .then(() => setting.controls.remove())
       })
     })

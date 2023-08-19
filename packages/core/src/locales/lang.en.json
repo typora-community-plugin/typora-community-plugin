@@ -4,7 +4,12 @@
     "placeholder": "Filter commands by text inputed"
   },
   "pluginManager": {
-    "needNewerCoreVersion": "Plugin \"{name}\" need higher version Typora Community Plugin. Please check for update."
+    "needNewerCoreVersion": "Plugin \"{name}\" need higher version Typora Community Plugin. Please check for update.",
+    "upToDate": "Plugin \"{name}\" is up to date.",
+    "updateSuccessful": "Plugin \"{name}\" update successful."
+  },
+  "pluginMarketplace": {
+    "idNotCorrect": "Downloaded plugin \"{name}\" id is not equal to user install plugin id."
   },
   "settingModal": {
     "commandOpen": "Open Plugin Settings Modal",
@@ -56,6 +61,7 @@
       "name": "Installed Plugins",
       "searchPlugin": "Search plugins:",
       "titleInstalled": "{0} plugins installed",
+      "update": "Update",
       "uninstall": "Uninstall"
     },
     "about": {

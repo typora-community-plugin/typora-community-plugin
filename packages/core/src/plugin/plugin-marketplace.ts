@@ -3,7 +3,7 @@ import * as path from 'path'
 import type { App } from 'src/app'
 import { Notice } from 'src/components/notice'
 import { unzipFromBuffer } from 'src/utils/unzip'
-import type { PluginManifest } from "./plugin-manifest"
+import type { PluginManifest, PluginPostion } from "./plugin-manifest"
 
 
 export type PluginMarketInfo = Pick<PluginManifest, "id" | "name" | "description" | "author"> & {
@@ -12,15 +12,17 @@ export type PluginMarketInfo = Pick<PluginManifest, "id" | "name" | "description
 
 export class PluginMarketplace {
 
+  pluginList: PluginMarketInfo[] = []
+
   constructor(private app: App) {
   }
 
   loadCommunityPlugins(): Promise<PluginMarketInfo[]> {
     return this.app.github.getFile('typora-community-plugin/typora-plugin-releases', 'main', 'community-plugins.json')
-      .then(res => res.json())
+      .then(async res => this.pluginList = await res.json() ?? [] as any)
   }
 
-  installPlugin(info: PluginMarketInfo, pos: 'global' | 'vault') {
+  installPlugin(info: PluginMarketInfo, pos: PluginPostion) {
     return this.downloadPlugin(info)
       .then(arrBuf => {
         const buf = Buffer.from(arrBuf)
@@ -36,7 +38,7 @@ export class PluginMarketplace {
           .then(manifest => {
             if (info.id !== manifest.id) {
               fs.rm(root, { recursive: true })
-              new Notice('Downloaded plugin id is not equal to user install plugin id.')
+              new Notice(this.app.i18n.t.pluginMarketplace.idNotCorrect)
             }
             else {
               manifest.dir = root

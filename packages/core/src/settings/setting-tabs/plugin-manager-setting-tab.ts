@@ -1,10 +1,12 @@
 import './plugin-manager-setting-tab.scss'
 import * as _ from 'lodash'
 import type { App } from "src/app"
+import { Notice } from 'src/components/notice'
 import type { PluginManifest } from "src/plugin/plugin-manifest"
-import { html } from "src/utils/html"
 import { SettingTab } from "../setting-tab"
 import { format } from 'src/utils/format'
+import { html } from "src/utils/html"
+import * as versions from 'src/utils/versions'
 
 
 export class PluginsManagerSettingTab extends SettingTab {
@@ -21,8 +23,6 @@ export class PluginsManagerSettingTab extends SettingTab {
   }
 
   show() {
-    this.containerEl.innerHTML = ''
-
     const t = this.app.i18n.t.settingTabs.plugins
 
     this.addSetting(setting => {
@@ -42,7 +42,7 @@ export class PluginsManagerSettingTab extends SettingTab {
   }
 
   hide() {
-    this.cleanPluginList()
+    this.containerEl.innerHTML = ''
     super.hide()
   }
 
@@ -60,6 +60,7 @@ export class PluginsManagerSettingTab extends SettingTab {
   }
 
   private renderPlugin(manifest: PluginManifest) {
+    const { plugins } = this.app
     const t = this.app.i18n.t.settingTabs.plugins
 
     this.addSetting(setting => {
@@ -72,11 +73,21 @@ export class PluginsManagerSettingTab extends SettingTab {
         html`<div class="typ-plugin-meta-group"><div class="typ-plugin-meta">v${manifest.version}</div><div class="typ-plugin-meta">by ${manifest.author}</div></div>`)
 
       setting.addCheckbox(checkbox => {
-        checkbox.checked = this.app.plugins.enabledPlugins[manifest.id]
+        checkbox.checked = plugins.enabledPlugins[manifest.id]
         checkbox.onclick = () => {
           checkbox.checked
-            ? this.app.plugins.enablePlugin(manifest.id)
-            : this.app.plugins.disablePlugin(manifest.id)
+            ? plugins.enablePlugin(manifest.id)
+            : plugins.disablePlugin(manifest.id)
+        }
+      })
+
+      setting.addButton(button => {
+        button.classList.add('primary')
+        button.title = t.update
+        button.innerHTML = '<span class="fa fa-repeat"></span>'
+        button.onclick = () => {
+          plugins.updatePlugin(manifest.id)
+            .then(() => this.renderPluginList())
         }
       })
 
@@ -85,7 +96,7 @@ export class PluginsManagerSettingTab extends SettingTab {
         button.title = t.uninstall
         button.innerHTML = '<span class="fa fa-trash-o"></span>'
         button.onclick = () => {
-          this.app.plugins.uninstallPlugin(manifest.id)
+          plugins.uninstallPlugin(manifest.id)
             .then(() => setting.containerEl.remove())
         }
       })

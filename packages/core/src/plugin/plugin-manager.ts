@@ -4,8 +4,9 @@ import * as _ from 'lodash'
 import { _options } from 'typora'
 import type { App } from "src/app"
 import { Notice } from 'src/components/notice'
-import type { PluginManifest } from "./plugin-manifest"
 import { Plugin } from "./plugin"
+import type { PluginManifest, PluginPostion } from "./plugin-manifest"
+import { PluginMarketplace } from './plugin-marketplace'
 import { format } from 'src/utils/format'
 import * as versions from 'src/utils/versions'
 
@@ -21,7 +22,10 @@ export class PluginManager {
   instances: Record<string, Plugin> = {}
   styles: Record<string, string> = {}
 
+  marketplace: PluginMarketplace
+
   constructor(private app: App) {
+    this.marketplace = new PluginMarketplace(app)
   }
 
   get pluginsDataDir() {
@@ -44,23 +48,15 @@ export class PluginManager {
   }
 
   async loadManifests() {
-    const pluginDirs = [
-      ...await this._readPluginsDir(this.globalPluginsDir),
-      ...await this._readPluginsDir(this.vaultPluginsDir),
-    ]
+    await this._loadManifests('global', this.globalPluginsDir)
+    await this._loadManifests('vault', this.vaultPluginsDir)
+  }
+
+  private async _loadManifests(postion: PluginPostion, pluginsPath: string) {
+    const pluginDirs = await this._readPluginsDir(pluginsPath)
 
     for (const dir of pluginDirs) {
-      const manifestPath = path.join(dir, 'manifest.json')
-
-      await fs.access(manifestPath)
-        .then(() => fs.readFile(manifestPath, 'utf8'))
-        .then(text => {
-          const manifest = JSON.parse(text) as PluginManifest
-          manifest.dir = dir
-
-          this.manifests[manifest.id] = manifest
-        })
-        .catch(() => { })
+      this.loadManifest(postion, dir)
     }
   }
 
@@ -73,6 +69,21 @@ export class PluginManager {
         dirnames.map(dir => path.join(pluginsPath, dir))
       )
       .catch(() => [])
+  }
+
+  loadManifest(postion: PluginPostion, pluginPath: string) {
+    const manifestPath = path.join(pluginPath, 'manifest.json')
+
+    return fs.access(manifestPath)
+      .then(() => fs.readFile(manifestPath, 'utf8'))
+      .then(text => {
+        const manifest = JSON.parse(text) as PluginManifest
+        manifest.postion = postion
+        manifest.dir = manifestPath
+
+        this.manifests[manifest.id] = manifest
+      })
+      .catch(() => { })
   }
 
   /**
@@ -145,6 +156,30 @@ export class PluginManager {
 
     this.enabledPlugins[id] = false
     this._saveEnabledConfig()
+  }
+
+  async updatePlugin(id: string) {
+    const { marketplace } = this
+    const t = this.app.i18n.t.pluginManager
+    const manifest = this.manifests[id]
+
+    if (!marketplace.pluginList.length) {
+      await marketplace.loadCommunityPlugins()
+    }
+
+    const info = marketplace.pluginList.find(p => p.id === id)
+    const version = await this.app.github.getReleaseInfo(info.repo)
+      .then(data => data.tag_name)
+
+    if (versions.compare(manifest.version, version) >= 0) {
+      new Notice(format(t.upToDate, manifest))
+      return
+    }
+
+    await this.uninstallPlugin(id)
+
+    return marketplace.installPlugin(info, manifest.postion)
+      .then(() => new Notice(format(t.updateSuccessful, manifest)))
   }
 
   uninstallPlugin(id: string) {

@@ -4,7 +4,12 @@
     "placeholder": "输入文本过滤命令"
   },
   "pluginManager": {
-    "needNewerCoreVersion": "插件 \"{name}\" 需要更高版本的 Typora Community Plugin。请检查更新。"
+    "needNewerCoreVersion": "插件 \"{name}\" 需要更高版本的 Typora Community Plugin。请检查更新。",
+    "upToDate": "插件 \"{name}\" 已是最新版本。",
+    "updateSuccessful": "插件 \"{name}\" 更新成功。"
+  },
+  "pluginMarketplace": {
+    "idNotCorrect": "下载的插件 \"{name}\" id 与用户安装的 id 不相同。"
   },
   "settingModal": {
     "commandOpen": "打开插件配置对话框",
@@ -56,6 +61,7 @@
       "name": "已安装插件",
       "searchPlugin": "搜索插件:",
       "titleInstalled": "已安装 {0} 个插件",
+      "update": "更新",
       "uninstall": "卸载"
     },
     "about": {
