@@ -56,7 +56,7 @@ export class PluginManager {
     const pluginDirs = await this._readPluginsDir(pluginsPath)
 
     for (const dir of pluginDirs) {
-      this.loadManifest(postion, dir)
+      await this.loadManifest(postion, dir)
     }
   }
 
