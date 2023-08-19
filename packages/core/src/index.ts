@@ -2,6 +2,8 @@ import type { App } from './app'
 export type { App } from './app'
 export declare const app: App
 
+export { Component } from './component'
+
 export { Modal } from './components/modal'
 export { Notice } from './components/notice'
 
