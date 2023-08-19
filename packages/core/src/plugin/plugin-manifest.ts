@@ -4,10 +4,10 @@ export interface PluginManifest {
 
   id: string
   name: string
+  description: string
   author: string
+  authorUrl: string
   version: string
   minAppVersion: string
-  minLoaderVersion: string
-  description: string
-  authorUrl: string
+  minCoreVersion: string
 }

@@ -3,6 +3,9 @@
     "commandOpen": "打开命令面板",
     "placeholder": "输入文本过滤命令"
   },
+  "pluginManager": {
+    "needNewerCoreVersion": "插件 \"{name}\" 需要更高版本的 Typora Community Plugin。请检查更新。"
+  },
   "settingModal": {
     "commandOpen": "打开插件配置对话框",
     "title": "设置",

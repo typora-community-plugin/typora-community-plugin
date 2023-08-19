@@ -1,10 +1,13 @@
 import * as path from 'path'
 import * as fs from 'fs/promises'
 import * as _ from 'lodash'
-import type { App } from "../app"
+import { _options } from 'typora'
+import type { App } from "src/app"
+import { Notice } from 'src/components/notice'
 import type { PluginManifest } from "./plugin-manifest"
 import { Plugin } from "./plugin"
-import { _options } from 'typora'
+import { format } from 'src/utils/format'
+import * as versions from 'src/utils/versions'
 
 
 export class PluginManager {
@@ -112,6 +115,12 @@ export class PluginManager {
   }
 
   async enablePlugin(id: string) {
+    if (versions.compare(this.app.coreVersion, this.manifests[id].minCoreVersion) < 0) {
+      const msg = format(this.app.i18n.t.pluginManager.needNewerCoreVersion, this.manifests[id])
+      new Notice(msg)
+      return
+    }
+
     if (!this.instances[id]) {
       await this.loadPlugin(id)
     }

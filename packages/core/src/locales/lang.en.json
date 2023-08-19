@@ -3,6 +3,9 @@
     "commandOpen": "Open Command Panel",
     "placeholder": "Filter commands by text inputed"
   },
+  "pluginManager": {
+    "needNewerCoreVersion": "Plugin \"{name}\" need higher version Typora Community Plugin. Please check for update."
+  },
   "settingModal": {
     "commandOpen": "Open Plugin Settings Modal",
     "title": "Settings",

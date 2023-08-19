@@ -2,6 +2,7 @@ import type { App } from './app'
 export type { App } from './app'
 export declare const app: App
 
+export { Modal } from './components/modal'
 export { Notice } from './components/notice'
 
 export { I18n } from './locales/i18n'
@@ -23,6 +24,7 @@ export { WorkspaceRibbon } from './ui/ribbon/workspace-ribbon'
 export { Sidebar } from './ui/sidebar/sidebar'
 
 export type { DisposeFunc } from './utils/types'
+export { format } from './utils/format'
 export { html } from './utils/html'
 export { until } from './utils/until'
 export { default as decorate } from '@plylrnsdy/decorate.js'
