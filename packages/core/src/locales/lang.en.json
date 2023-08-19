@@ -66,7 +66,7 @@
       "labelHomepage": "Homepage",
       "buttonUpdate": "Update",
       "coreUpToDate": "Typora Community Plugin is up to date.",
-      "coreUpdateSuccessful": "Typora Community Plugin update successful.",
+      "coreUpdateSuccessful": "Typora Community Plugin update successful. (Need to relaunch Typora)",
       "lang": "Language",
       "langDesc": "Display language of Typora Community Plugin. (Need to relaunch Typora)"
     }
