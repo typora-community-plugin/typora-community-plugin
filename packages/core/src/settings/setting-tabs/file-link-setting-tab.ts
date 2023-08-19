@@ -1,3 +1,4 @@
+import * as _ from "lodash"
 import type { App } from "src/app"
 import { SettingTab } from "../setting-tab"
 
@@ -65,9 +66,9 @@ export class FileLinkSettingTab extends SettingTab {
       })
       setting.addText(input => {
         input.value = settings.get('ignoreFileGlob')
-        input.onclick = () => {
+        input.onchange = _.debounce(() => {
           settings.set('ignoreFileGlob', input.value)
-        }
+        }, 1e3)
       })
     })
   }
