@@ -19,6 +19,7 @@ export class Search extends View {
 
     workspace.getViewByType(WorkspaceRibbon)!.addButton({
       [BUILT_IN]: true,
+      id: 'core.search',
       title: app.i18n.t.ribbon.search,
       icon: html`<i class="fa fa-search"></i>`,
       onclick: () => sidebar.switch(Search),

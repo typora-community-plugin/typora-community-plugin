@@ -16,6 +16,7 @@ export class Outline extends View {
 
     workspace.getViewByType(WorkspaceRibbon)!.addButton({
       [BUILT_IN]: true,
+      id: 'core.outline',
       title: app.i18n.t.ribbon.outline,
       icon: html`<i class="fa fa-list"></i>`,
       onclick: () => sidebar.switch(Outline),

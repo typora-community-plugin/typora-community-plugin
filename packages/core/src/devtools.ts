@@ -25,6 +25,7 @@ export function devtools(app: App) {
       .addButton({
         [BUILT_IN]: true,
         group: 'bottom',
+        id: 'core.devtools',
         title: 'Devtools',
         icon: html`<div><i class="fa fa-wrench"></i></div>`,
         onclick() {

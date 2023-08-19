@@ -6,7 +6,6 @@ import type { App } from 'src/app'
 import { editor, File } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
 import { html } from 'src/utils/html'
-import { randomString } from 'src/utils/random-string'
 import { ContextMenu, type MenuItem } from 'src/components/context-menu'
 import { draggable } from 'src/components/draggable'
 
@@ -15,7 +14,7 @@ export const BUILT_IN = Symbol('built-in')
 
 interface RibbonItemButton {
   group?: 'top' | 'bottom'
-  id?: string
+  id: string
   title?: string
   className?: string
   icon: HTMLElement
@@ -80,7 +79,7 @@ export class WorkspaceRibbon extends View {
       <div class="group top"></div>
       <div class="group bottom"></div>`
 
-    draggable(container, 'y')
+    // draggable(container, 'y')
 
     return container
   }
@@ -91,6 +90,7 @@ export class WorkspaceRibbon extends View {
     this.addButton({
       [BUILT_IN]: true,
       group: 'bottom',
+      id: 'core.settings',
       title: this.app.i18n.t.ribbon.settings,
       icon: html`<i class="fa fa-cog"></i>`,
       menuItems: [{
@@ -106,8 +106,8 @@ export class WorkspaceRibbon extends View {
   }
 
   addButton(button: RibbonItemButton): DisposeFunc {
-    if (!button.id) {
-      button.id = 'typ-btn_' + randomString()
+    if(this.buttons.find(btn => btn.id === button.id)) {
+      throw Error('[WorkspaceRibbon] Button\'s id duplicated!')
     }
     this.buttons.push(button)
 
@@ -119,7 +119,7 @@ export class WorkspaceRibbon extends View {
 
   removeButton(button: RibbonItemButton) {
     this.buttons = this.buttons.filter(btn => btn === button)
-    this.containerEl.querySelector(`.typ-ribbon-item.${button.id}`)?.remove()
+    this.containerEl.querySelector(`.typ-ribbon-item[data-id="${button.id}"]`)?.remove()
   }
 
   private _renderButton(button: RibbonItemButton) {
@@ -129,9 +129,10 @@ export class WorkspaceRibbon extends View {
 
     const itemEl = document.createElement('div')
     itemEl.title = button.title ?? ''
+    itemEl.dataset.id = button.id
     itemEl.setAttribute('draggable', 'true')
 
-    itemEl.classList.add('typ-ribbon-item', button.id!)
+    itemEl.classList.add('typ-ribbon-item')
     if (button.className) {
       itemEl.classList.add(button.className)
     }

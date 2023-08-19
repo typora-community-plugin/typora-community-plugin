@@ -22,6 +22,7 @@ export class FileExplorer extends View {
 
     workspace.getViewByType(WorkspaceRibbon)!.addButton({
       [BUILT_IN]: true,
+      id: 'core.file-explorer',
       title: app.i18n.t.ribbon.files,
       icon: html`<i class="fa fa-folder-o"></i>`,
       onclick: () => sidebar.switch(FileExplorer),
