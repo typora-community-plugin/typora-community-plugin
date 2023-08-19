@@ -79,11 +79,11 @@ export class PluginManager {
       .then(text => {
         const manifest = JSON.parse(text) as PluginManifest
         manifest.postion = postion
-        manifest.dir = manifestPath
+        manifest.dir = pluginPath
 
         this.manifests[manifest.id] = manifest
       })
-      .catch(() => { })
+      .catch((error) => console.error(error))
   }
 
   /**
