@@ -72,6 +72,16 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
 
 
 
+## Usage
+
+### Hotkeys
+
+| Hotkey                      | Function            |
+| --------------------------- | ------------------- |
+| <kbd>F1</kbd>               | Open Command Panel  |
+| <kbd>Ctrl</kbd>+<kbd>.</kbd>| Open Settings Modal |
+
+
 ## Contributing
 
 Welcome to create pull requests.
