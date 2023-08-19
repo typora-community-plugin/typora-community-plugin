@@ -56,7 +56,7 @@ export class EditorSuggestManager {
       const { isMatched, query = '' } = suggest.findQuery(textBefore)
       if (!isMatched) continue
 
-      range.start -= query!.length + 1
+      range.start -= query!.length + suggest.triggerText.length
       editor.autoComplete.show(suggest.suggestionKeys, range, query, suggest._handlers)
       break
     }
@@ -64,6 +64,13 @@ export class EditorSuggestManager {
 }
 
 export abstract class EditorSuggest<T> {
+
+  /**
+   * User's input text prefix which will trigger this suggest.
+   *
+   * @example ":" // prefix `:` for emoji (like `:smile:`)
+   */
+  abstract triggerText: string
 
   abstract suggestionKeys: string[]
 
