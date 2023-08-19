@@ -23,9 +23,6 @@ export class Outline extends View {
     })
   }
 
-  onload() {
-  }
-
   onunload() {
     this.containerEl.style.display = ''
   }

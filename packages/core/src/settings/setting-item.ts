@@ -21,9 +21,6 @@ export class SettingItem extends View {
     this.containerEl = html`<div class="typ-setting-item multiline"></div>`
   }
 
-  onload() {
-  }
-
   onunload() {
     this.containerEl.remove()
   }

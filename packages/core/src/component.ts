@@ -12,7 +12,7 @@ export abstract class Component {
       return
     }
 
-    this.onload?.()
+    this.onload()
     this._children.forEach(child => child.load())
     this._loaded = true
   }
@@ -22,7 +22,7 @@ export abstract class Component {
       return
     }
 
-    this.onunload?.()
+    this.onunload()
     this._disposables.forEach(dispose => dispose())
     this._disposables = []
     this._children.forEach(child => child.unload())
@@ -30,9 +30,9 @@ export abstract class Component {
     this._loaded = false
   }
 
-  abstract onload(): void
+  onload() { }
 
-  abstract onunload(): void
+  onunload() { }
 
   addChild(component: Component) {
     this._children.push(component)

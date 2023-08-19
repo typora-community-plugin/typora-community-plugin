@@ -28,12 +28,6 @@ export class Search extends View {
     this._showSearchResultFullPath = new ShowSearchResultFullPath(app)
   }
 
-  onload() {
-  }
-
-  onunload() {
-  }
-
   show() {
     editor.library.fileSearch.showSearch()
   }

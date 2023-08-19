@@ -110,7 +110,4 @@ class OpenLinkInCurrentWin extends Component {
       }))
   }
 
-  onunload() {
-  }
-
 }

@@ -45,12 +45,6 @@ export class EditableTable<T extends Record<string, any>> extends View {
     })
   }
 
-  onload() {
-  }
-
-  onunload() {
-  }
-
   setHeaders(headers: TableHeader<T>[]) {
     this.headers = headers
     this.renderHeaders()

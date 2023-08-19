@@ -31,14 +31,6 @@ export class FileExplorer extends View {
     this._showNotSupportedFile = new ShowNotSupportedFile(app)
   }
 
-
-  onload() {
-  }
-
-  onunload() {
-  }
-
-
   show() {
     editor.library.fileSearch.hide()
     editor.library.switch("", true)

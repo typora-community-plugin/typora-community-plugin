@@ -19,12 +19,6 @@ export class QuickOpenPanel extends View {
     this._quickOpenInCurrentWin = new QuickOpenInCurrentWin(app)
   }
 
-  onload() {
-  }
-
-  onunload() {
-  }
-
 }
 
 class IgnoreFile extends Component {
@@ -127,9 +121,6 @@ class QuickOpenInCurrentWin extends Component {
         }
         return fn(...args)
       }))
-  }
-
-  onunload() {
   }
 
 }

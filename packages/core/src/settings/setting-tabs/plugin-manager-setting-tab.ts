@@ -1,12 +1,10 @@
 import './plugin-manager-setting-tab.scss'
 import * as _ from 'lodash'
 import type { App } from "src/app"
-import { Notice } from 'src/components/notice'
 import type { PluginManifest } from "src/plugin/plugin-manifest"
 import { SettingTab } from "../setting-tab"
 import { format } from 'src/utils/format'
 import { html } from "src/utils/html"
-import * as versions from 'src/utils/versions'
 
 
 export class PluginsManagerSettingTab extends SettingTab {
@@ -17,9 +15,6 @@ export class PluginsManagerSettingTab extends SettingTab {
 
   constructor(private app: App) {
     super()
-  }
-
-  onload() {
   }
 
   show() {
