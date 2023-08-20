@@ -39,7 +39,7 @@ export class HotkeySettingTab extends SettingTab {
   private addHotkey(setting: SettingItem, id: string, hotkey: string) {
     hotkey = hotkey.split('+').join(' + ')
 
-    setting.addRemovableOption(hotkey, () => {
+    setting.addRemovableTag(hotkey, () => {
       this.app.commands.setCommandHotkey(id, null)
       this.addCreateHotkeyButton(setting, id)
     })
@@ -49,18 +49,20 @@ export class HotkeySettingTab extends SettingTab {
     setting.addButton(btn => {
       btn.append(html`<span class="fa fa-plus"></span>`)
       btn.onclick = () => {
-        const text = this.app.i18n.t.settingTabs.hotkey.waitHotkey
-        setting.addOption(text, el => {
+        btn.remove()
+        setting.addButton(el => {
+          el.innerText = this.app.i18n.t.settingTabs.hotkey.waitHotkey
           el.classList.add('primary')
+          el.onkeyup = event => {
+            el.onkeyup = null
+            event.stopPropagation()
+            setting.controls.innerHTML = ''
+            const hotkey = readableHotkey(eventToHotkey(event))
+            this.addHotkey(setting, id, hotkey)
+            this.app.commands.setCommandHotkey(id, hotkey)
+          }
+          setTimeout(() => el.focus())
         })
-        btn.onkeyup = event => {
-          btn.onkeyup = null
-          event.stopPropagation()
-          setting.controls.innerHTML = ''
-          const hotkey = readableHotkey(eventToHotkey(event))
-          this.addHotkey(setting, id, hotkey)
-          this.app.commands.setCommandHotkey(id, hotkey)
-        }
       }
     })
   }
