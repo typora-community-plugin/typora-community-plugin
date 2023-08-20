@@ -1,0 +1,35 @@
+.typ-button {
+  color: var(--panel-border-color);
+  border: none;
+  border-radius: 3px;
+
+  &:hover {
+    background: var(--item-hover-bg-color);
+  }
+
+  &:active {
+    background: var(--active-toggle-btn-color);
+  }
+
+  /**
+   * Color
+   ****************************************/
+
+  &.primary {
+    color: var(--primary-btn-text-color);
+    background: var(--primary-color);
+
+    &:active {
+      background: var(--primary-btn-border-color);
+    }
+  }
+
+  &.danger {
+    color: var(--primary-btn-text-color);
+    background: rgb(var(--typ-color-red-4));
+
+    &:active {
+      background: rgb(var(--typ-color-red-5));
+    }
+  }
+}

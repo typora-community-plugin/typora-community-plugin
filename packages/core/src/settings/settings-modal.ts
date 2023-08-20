@@ -23,8 +23,6 @@ export class SettingsModal extends Modal {
   }
 
   onload() {
-    super.onload()
-
     const t = this.app.i18n.t.settingModal
 
     this.register(
@@ -36,13 +34,13 @@ export class SettingsModal extends Modal {
         callback: () => this.show(),
       }))
 
+    super.onload()
+
+    this.modal.classList.add('typ-settings-modal')
+
     this.addHeader(t.title)
     this.addBody(body => {
-      let container
       body.append(
-        container = html`<div class="typ-settings-modal"></div>`
-      )
-      container.append(
         this.sidebar = html`<div class="typ-sidebar"></div>`,
         this.main = html`<div class="typ-main"></div>`,
       )
@@ -71,7 +69,7 @@ export class SettingsModal extends Modal {
   }
 
   private addGroupTitle(text: string) {
-    this.sidebar.append(html`<div class="typ-nav-group-title">${text}</div>`)
+    this.sidebar.append(html`<div class="typ-nav__group-title">${text}</div>`)
   }
 
   addTab(tab: SettingTab) {

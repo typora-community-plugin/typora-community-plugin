@@ -83,7 +83,10 @@ export class Vault extends Events<VaultEvents> {
       .access(dirname)
       .catch(() => fsp.mkdir(dirname, { recursive: true }))
       .then(() => fsp.writeFile(configPath, JSON.stringify(config, null, 2), 'utf8'))
-      .catch(error => console.error(`Failed to save config "${filename}.json"\n`, error))
+      .catch(error => {
+        console.error(`Failed to save config "${filename}.json".`)
+        console.error(error)
+      })
   }
 
   private _emitMissingEvent() {

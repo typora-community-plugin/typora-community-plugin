@@ -75,9 +75,9 @@ export class WorkspaceRibbon extends View {
     const container = document.createElement('div')
     container.classList.add('typ-ribbon')
 
-    container.innerHTML = `
-      <div class="group top"></div>
-      <div class="group bottom"></div>`
+    container.innerHTML =
+      '<div class="group top"></div>' +
+      '<div class="group bottom"></div>'
 
     // draggable(container, 'y')
 
@@ -106,7 +106,7 @@ export class WorkspaceRibbon extends View {
   }
 
   addButton(button: RibbonItemButton): DisposeFunc {
-    if(this.buttons.find(btn => btn.id === button.id)) {
+    if (this.buttons.find(btn => btn.id === button.id)) {
       throw Error('[WorkspaceRibbon] Button\'s id duplicated!')
     }
     this.buttons.push(button)

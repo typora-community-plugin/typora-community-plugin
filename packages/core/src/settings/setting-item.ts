@@ -1,8 +1,8 @@
 import './setting-item.scss'
 import * as _ from 'lodash'
+import { EditableTable } from 'src/components/editable-table'
 import { View } from "src/ui/view"
 import { html } from "src/utils/html"
-import { EditableTable } from '../components/editable-table'
 
 
 type SelectOptions = {
@@ -13,12 +13,24 @@ type SelectOptions = {
 
 export class SettingItem extends View {
 
+  /**
+   * Contain `name` and `description`.
+   */
   info: HTMLElement
+
+  /**
+   * Constrols before `info`.
+   */
+  controlsPrefix: HTMLElement
+
+  /**
+   * Constrols after `info`.
+   */
   controls: HTMLElement
 
   constructor() {
     super()
-    this.containerEl = html`<div class="typ-setting-item multiline"></div>`
+    this.containerEl = html`<div class="typ-setting-item"></div>`
   }
 
   onunload() {
@@ -34,27 +46,34 @@ export class SettingItem extends View {
     this.info.append(html`<div class="typ-setting-description">${description}</div>`)
   }
 
-  addCheckbox(build: (checkbox: HTMLInputElement) => void) {
-    const input = html`<input type="checkbox">` as HTMLInputElement
-    build(input)
-    this.containerEl.prepend(input)
+  private tryPrependControls() {
+    if (this.controlsPrefix) return
+    this.containerEl.prepend(
+      this.controlsPrefix = html`<div class="typ-setting-controls prefix"></div>`)
   }
 
-  private tryAddControls() {
+  private tryAppendControls() {
     if (this.controls) return
     this.containerEl.append(
-      this.controls = html`<div class="typ-setting-controls"></div>`)
+      this.controls = html`<div class="typ-setting-controls postfix"></div>`)
+  }
+
+  addCheckbox(build: (checkbox: HTMLInputElement) => void) {
+    this.tryPrependControls()
+    const input = html`<input type="checkbox">` as HTMLInputElement
+    build(input)
+    this.controlsPrefix.append(input)
   }
 
   addButton(build: (button: HTMLButtonElement) => void) {
-    this.tryAddControls()
-    const button = html`<button></button>` as HTMLButtonElement
+    this.tryAppendControls()
+    const button = html`<button class="typ-button"></button>` as HTMLButtonElement
     build(button)
     this.controls.append(button)
   }
 
   addInput(type: string, build: (input: HTMLInputElement) => void) {
-    this.tryAddControls()
+    this.tryAppendControls()
     const input = html`<input type="${type}">` as HTMLInputElement
     build(input)
     this.controls.append(input)
@@ -65,7 +84,7 @@ export class SettingItem extends View {
   }
 
   addSelect(options: SelectOptions) {
-    this.tryAddControls()
+    this.tryAppendControls()
     const el = html`<select>${options.options.map(o => `<option ${o === options.selected ? 'selected' : ''}>${o}</option>`).join('')}</select>` as HTMLSelectElement
     el.onchange = options.onchange
     this.controls.append(el)
@@ -81,8 +100,8 @@ export class SettingItem extends View {
   addRemovableOption = this.addRemovableTag
 
   addTag(text: string, build?: (el: HTMLElement) => void) {
-    this.tryAddControls()
-    const el = html`<div class="typ-setting-tag">${text} </div>`
+    this.tryAppendControls()
+    const el = html`<div class="typ-tag">${text} </div>`
     build?.(el)
     this.controls.prepend(el)
   }

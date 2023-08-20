@@ -6,3 +6,12 @@
     font-size: .8125rem
   }
 }
+
+.typ-setting-title {
+  margin: 1rem 0 .5rem;
+  font-size: 1rem;
+
+  .typ-setting-item:first-child & {
+    margin-top: 0;
+  }
+}

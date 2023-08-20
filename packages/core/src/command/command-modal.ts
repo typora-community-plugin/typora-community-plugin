@@ -19,8 +19,6 @@ export class CommandModal extends Modal {
   }
 
   onload() {
-    super.onload()
-
     const t = this.app.i18n.t.commandModal
 
     this.register(
@@ -36,6 +34,10 @@ export class CommandModal extends Modal {
           this.show()
         }
       }))
+
+    super.onload()
+
+    this.modal.classList.add('typ-command-modal')
 
     this.addBody(body => {
       let form
