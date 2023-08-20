@@ -59,7 +59,10 @@ export class App extends Events<AppEvents> {
 
   vault = new Vault(this)
 
-  settings = new Settings<AppSettings>(this, 'core')
+  settings = new Settings<AppSettings>(this, {
+    filename: 'core',
+    version: 1,
+  })
 
   i18n = new I18n<typeof Locale>({
     localePath: path.join(this.coreDir, 'locales'),

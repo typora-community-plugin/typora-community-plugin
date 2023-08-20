@@ -7,11 +7,16 @@ interface SettingsOption {
    * Filename relative to typora config folder `.typora`
    */
   filename: string
-  version: string
+  /**
+   * Settings file's structure version.
+   * Increasing it after breaking change. And need to use `migare()` to upgrade it.
+   */
+  version: number
+  migations?: SettingMigrations
 }
 
 interface SettingsFile<T> {
-  version: string
+  version: number
   settings: T
 }
 
@@ -28,25 +33,18 @@ export class Settings<T extends Record<string, any>> {
     return this._stores.version
   }
 
-  set version(value: string) {
+  set version(value: number) {
     this._stores.version = value
   }
 
   private _stores = { settings: {} } as SettingsFile<T>
   private _listeners = {} as SettingsListeners<T>
-  private _migation = {} as Record<string, () => void>
+  private _migations: SettingMigrations | null
 
-  constructor(app: App, filename: string)
-  constructor(app: App, options: SettingsOption)
-  constructor(private app: App, options: string | SettingsOption) {
-    if (typeof options === 'string') {
-      this.filename = options
-      this.version = app.coreVersion
-    }
-    else {
-      this.filename = options.filename
-      this.version = options.version
-    }
+  constructor(private app: App, options: SettingsOption) {
+    this.filename = options.filename
+    this.version = options.version
+    this._migations = options.migations
 
     this.load()
   }
@@ -93,9 +91,15 @@ export class Settings<T extends Record<string, any>> {
       version: this.version,
       settings: {}
     })
-    while (this._migation[this.version]) {
-      this._migation[this.version]()
-    }
+
+    if (!this._migations) return
+
+    this._migations.migrate(this)
+
+    if (!this._migations.hasMigrated) return
+
+    this.save()
+    this._migations.hasMigrated = false
   }
 
   private _save = () => {
@@ -104,16 +108,34 @@ export class Settings<T extends Record<string, any>> {
 
   save = _.debounce(this._save, 1e3)
 
-  migare(
-    oldVersion: string,
-    newVersion: string,
+  migrateTo(newVersion: number, transform: (oldStores: SettingsFile<any>) => any) {
+    this._stores = transform(this._stores)
+    this.version = newVersion
+  }
+
+}
+
+export class SettingMigrations {
+
+  hasMigrated = false
+
+  private _migration = [] as Array<(settings: Settings<any>) => void>
+
+  addMigration(
+    oldVersion: number,
+    newVersion: number,
     transform: (oldStores: SettingsFile<any>) => any
   ) {
-    this._migation[oldVersion] = () => {
-      this._stores = transform(this._stores)
-      this._stores.version = newVersion
+    this._migration[oldVersion] = (settings) => {
+      settings.migrateTo(newVersion, transform)
     }
     return this
   }
 
+  migrate(settings: Settings<any>) {
+    while (this._migration[settings.version]) {
+      this._migration[settings.version](settings)
+      this.hasMigrated = true
+    }
+  }
 }
