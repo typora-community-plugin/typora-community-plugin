@@ -65,7 +65,7 @@ export class PluginsManagerSettingTab extends SettingTab {
       setting.addDescription(manifest.description)
 
       setting.containerEl.append(
-        html`<div class="typ-plugin-meta-group"><div class="typ-plugin-meta">v${manifest.version}</div><div class="typ-plugin-meta">by ${manifest.author}</div></div>`)
+        html`<div class="typ-plugin-meta-group"><div class="typ-plugin-meta"><span class="fa fa-code"> </span> v${manifest.version}</div><div class="typ-plugin-meta"><span class="fa fa-user"></span> ${manifest.author}</div><div class="typ-plugin-meta"><span class="fa fa-folder-o"></span> ${manifest.postion}</div></div>`)
 
       setting.addCheckbox(checkbox => {
         checkbox.checked = plugins.enabledPlugins[manifest.id]
