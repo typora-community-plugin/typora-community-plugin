@@ -59,22 +59,9 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
     editor.library.openFile(url.pathname)
 
     if (url.hash) {
-      setTimeout(() => this.jumpToAnchor(url.hash), 500)
+      setTimeout(() => editor.tryOpenUrl(url.hash), 500)
     }
   }
-
-  private $anchorHelper = $(`<a class="typ-anchor-helper" href="" style="display: none;">`)
-    .appendTo(document.body)
-
-  private jumpToAnchor(anchor: string) {
-    const tocItem = $(`#outline-content .outline-label:contains("${anchor.slice(1)}")`).get(0)
-
-    if (tocItem)
-      tocItem.click()
-    else
-      this.$anchorHelper.attr('href', anchor).get(0).click()
-  }
-
 }
 
 class OpenLinkInCurrentWin extends Component {

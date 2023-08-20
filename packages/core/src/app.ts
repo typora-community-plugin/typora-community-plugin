@@ -115,8 +115,8 @@ export class App extends Events<AppEvents> {
   }
 
   openLink(link: string) {
-    if (link.startsWith('http')) {
-      editor.tryOpenUrl_(link)
+    if (link.startsWith('http') || link.startsWith('#')) {
+      editor.tryOpenUrl(link)
     }
     else {
       this.openFile(unescape(link))
