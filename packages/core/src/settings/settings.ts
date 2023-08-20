@@ -2,31 +2,53 @@ import * as _ from "lodash"
 import type { App } from "../app"
 
 
+interface SettingsOption {
+  /**
+   * Filename relative to typora config folder `.typora`
+   */
+  filename: string
+  version: string
+}
+
 interface SettingsFile<T> {
   version: string
   settings: T
 }
 
+type SettingsListeners<T> = Record<
+  keyof T,
+  Array<(key: keyof T, value: T[keyof T]) => void>
+>
+
 export class Settings<T extends Record<string, any>> {
 
-  private _stores = {} as SettingsFile<T>
-
-  private _listeners = {} as Record<keyof T, Array<(key: keyof T, value: T[keyof T]) => void>>
-
-  private _migation = {} as Record<string, () => void>
-
-  /**
-   * @param filename relative to typora config folder `.typora`
-   */
-  constructor(
-    public app: App,
-    public filename: string
-  ) {
-    this.load()
-  }
+  filename: string
 
   get version() {
     return this._stores.version
+  }
+
+  set version(value: string) {
+    this._stores.version = value
+  }
+
+  private _stores = { settings: {} } as SettingsFile<T>
+  private _listeners = {} as SettingsListeners<T>
+  private _migation = {} as Record<string, () => void>
+
+  constructor(app: App, filename: string)
+  constructor(app: App, options: SettingsOption)
+  constructor(private app: App, options: string | SettingsOption) {
+    if (typeof options === 'string') {
+      this.filename = options
+      this.version = app.coreVersion
+    }
+    else {
+      this.filename = options.filename
+      this.version = options.version
+    }
+
+    this.load()
   }
 
   get<K extends keyof T>(key: K): T[K] {
@@ -68,7 +90,7 @@ export class Settings<T extends Record<string, any>> {
 
   load() {
     this._stores = this.app.vault.readConfigJson(this.filename, {
-      version: this.app.coreVersion,
+      version: this.version,
       settings: {}
     })
     while (this._migation[this.version]) {
