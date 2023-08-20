@@ -11,7 +11,7 @@ type TableHeader<T extends object> = {
 
 type RowHandler<T> = (row: T) => void
 
-const removeRowCell = `<td><button data-op="removeRow"><span class="fa fa-minus"></span></button></td>`
+const removeRowCell = `<td><button class="typ-button" data-op="removeRow"><span class="fa fa-minus"></span></button></td>`
 
 export class EditableTable<T extends Record<string, any>> extends View {
 
@@ -80,7 +80,7 @@ export class EditableTable<T extends Record<string, any>> extends View {
   }
 
   private renderFooter() {
-    const footer = `<tr><td colspan="${this.headers.length}"></td><td><button data-op="addRow"><span class="fa fa-plus"></span></button></td></tr>`
+    const footer = `<tr><td colspan="${this.headers.length}"></td><td><button class="typ-button" data-op="addRow"><span class="fa fa-plus"></span></button></td></tr>`
 
     $('tfoot', this.containerEl)
       .empty()
