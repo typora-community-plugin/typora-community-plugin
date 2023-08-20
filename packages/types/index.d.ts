@@ -5,7 +5,9 @@ export declare var _options: {
   appVersion: string
   initFilePath: string
   mountFolder: string
+  tempPath: string
   userDataPath: string
+  userPath: string
 }
 
 
@@ -14,11 +16,25 @@ export declare var ClientCommand: TClientCommand
 interface TClientCommand {
   copyAsMarkdown(): void
   setTheme(cssFilename: string): void
+
   /**
    * Toggle Chrome Devtools.
    */
   toggleDevTools(): void
+
+  togglePreferencePanel(): void
+  showPreferencePanel(): void
+
+  toggleOutline(): void
+  toggleFileList(): void
+  toggleFileTree(): void
+
+  pinWindow(): void
+  unpinWindow(): void
 }
+
+
+export declare var debugMode: boolean
 
 
 export declare var File: File
@@ -72,11 +88,17 @@ interface File {
 }
 
 interface Bundle {
+  fileEncode: string
+  fileName: string
 
   /**
    * @since Typora v1.4.x
    */
   filePath: string
+
+  hasMidified: boolean
+  modifiedDate: Date
+  savedContent: string
 }
 
 interface ChangeCounter {
@@ -114,10 +136,22 @@ interface Editor {
   /** Editor writing area `div#write` */
   writingArea: HTMLElement
 
+  /**
+   * Get current note's markdown string.
+   */
   getMarkdown(): string
+
   reset(markdown: string): void
   tryOpenLink($el: JQuery, param1?: boolean): void
+
+  /**
+   * @deprecated in Typora v1.2.x
+   */
   tryOpenUrl_(url: string, param1?: boolean): void
+  /**
+   * @param url relative file path or web url
+   */
+  tryOpenUrl(url: string, param1?: boolean): void
 }
 
 interface AutoComplete {
@@ -422,7 +456,9 @@ export declare var JSBridge: {
   showInBrowser(url: string): void
 }
 
-
+/**
+ * Get current note's markdown string.
+ */
 export declare function getMarkdown(): string
 
 
