@@ -178,9 +178,12 @@ export class PluginManager {
       return
     }
 
+    const isEnabled = this.enabledPlugins[id]
+
     await this.uninstallPlugin(id)
 
     return marketplace.installPlugin(info, manifest.postion)
+      .then(() => isEnabled && this.enablePlugin(id))
       .then(() => new Notice(format(t.updateSuccessful, manifest)))
   }
 
