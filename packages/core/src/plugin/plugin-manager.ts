@@ -104,12 +104,14 @@ export class PluginManager {
 
   async loadPlugin(id: string) {
     try {
-      const module = await import(path.join(this.manifests[id].dir!, 'main.js'))
+      const manifest = this.manifests[id]
+
+      const module = await import(path.join(manifest.dir!, 'main.js') + `?v=${manifest.version}`)
 
       const PluginImplement = module.default
-      this.instances[id] = new PluginImplement(this.app, this.manifests[id])
+      this.instances[id] = new PluginImplement(this.app, manifest)
 
-      const cssPath = path.join(this.manifests[id].dir!, 'style.css')
+      const cssPath = path.join(manifest.dir!, 'style.css')
       await fs.access(cssPath)
         .then(() => fs.readFile(cssPath, 'utf8'))
         .then(cssText => { this.styles[id] = cssText })
