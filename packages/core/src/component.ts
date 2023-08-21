@@ -65,4 +65,8 @@ export abstract class Component {
     target.addEventListener(event, listener, options)
     this.register(() => target.removeEventListener(event, listener, options))
   }
+
+  registerInterval(intervalId: number) {
+    this.register(() => clearInterval(intervalId))
+  }
 }
