@@ -46,6 +46,7 @@ export class PluginsManagerSettingTab extends SettingTab {
     this.cleanPluginList()
     Object.values(this.app.plugins.manifests)
       .filter(p => !query || (p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query)))
+      .sort((a, b) => a.name.localeCompare(b.name))
       .forEach(p => this.renderPlugin(p))
   }
 
