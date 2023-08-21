@@ -49,7 +49,7 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
 ## Preview
 
 | Ribbon & Multi File Tabs              | Command Panel                             |
-| ------------------------------------- | ----------------------------------------- |
+| :-----------------------------------: | :---------------------------------------: |
 | ![](./docs/assets/base.jpg)           | ![](./docs/assets/command-modal.jpg)      |
 | Settings Modal                        | Plugin Marketplace                        |
 | ![](./docs/assets/settings-modal.jpg) | ![](./docs/assets/plugin-marketplace.jpg) |

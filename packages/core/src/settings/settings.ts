@@ -1,6 +1,6 @@
 import * as _ from "lodash"
 import type { App } from "src/app"
-import { DisposeFunc } from "src/utils/types"
+import type { DisposeFunc } from "src/utils/types"
 
 
 export interface SettingsOptions {
