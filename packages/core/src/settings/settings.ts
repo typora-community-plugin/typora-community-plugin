@@ -1,5 +1,6 @@
 import * as _ from "lodash"
-import type { App } from "../app"
+import type { App } from "src/app"
+import { DisposeFunc } from "src/utils/types"
 
 
 export interface SettingsOptions {
@@ -66,7 +67,7 @@ export class Settings<T extends Record<string, any>> {
   addChangeListener<K extends keyof T>(
     key: K,
     listener: (key: K, value: T[K]) => void
-  ) {
+  ): DisposeFunc {
     if (!this._listeners[key]) {
       this._listeners[key] = []
     }

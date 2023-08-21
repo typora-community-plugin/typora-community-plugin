@@ -3,6 +3,7 @@ export type { App } from './app'
 export declare const app: App
 
 export { Component } from './component'
+export { Events } from './events'
 
 export { Modal } from './components/modal'
 export { Notice } from './components/notice'
