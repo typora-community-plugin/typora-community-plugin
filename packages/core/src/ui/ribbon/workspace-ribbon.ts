@@ -118,7 +118,7 @@ export class WorkspaceRibbon extends View {
   }
 
   removeButton(button: RibbonItemButton) {
-    this.buttons = this.buttons.filter(btn => btn === button)
+    this.buttons = this.buttons.filter(btn => btn !== button)
     this.containerEl.querySelector(`.typ-ribbon-item[data-id="${button.id}"]`)?.remove()
   }
 
