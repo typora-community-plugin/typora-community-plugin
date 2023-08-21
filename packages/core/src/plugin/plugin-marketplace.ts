@@ -41,6 +41,7 @@ export class PluginMarketplace {
               new Notice(this.app.i18n.t.pluginMarketplace.idNotCorrect)
             }
             else {
+              manifest.postion = pos
               manifest.dir = root
               this.app.plugins.manifests[manifest.id] = manifest
             }
