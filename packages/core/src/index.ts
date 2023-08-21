@@ -10,8 +10,12 @@ export { Notice } from './components/notice'
 export { I18n } from './locales/i18n'
 
 export type { PluginManifest } from './plugin/plugin-manifest'
+export { PluginSettings } from './plugin/plugin-settings'
 export { Plugin } from './plugin/plugin'
 
+/**
+ * @deprecated Use `PluginSettings` instead.
+ */
 export { Settings } from './settings/settings'
 export { SettingTab } from './settings/setting-tab'
 export { SettingItem } from './settings/setting-item'
@@ -25,7 +29,6 @@ export { EditorSuggest } from './ui/editor/editor-suggestion'
 export { WorkspaceRibbon } from './ui/ribbon/workspace-ribbon'
 export { Sidebar } from './ui/sidebar/sidebar'
 
-export type { DisposeFunc } from './utils/types'
 export { format } from './utils/format'
 export { html } from './utils/html'
 export { until } from './utils/until'

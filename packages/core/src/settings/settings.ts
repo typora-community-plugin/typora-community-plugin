@@ -2,7 +2,7 @@ import * as _ from "lodash"
 import type { App } from "../app"
 
 
-interface SettingsOption {
+export interface SettingsOptions {
   /**
    * Filename relative to typora config folder `.typora`
    */
@@ -41,7 +41,7 @@ export class Settings<T extends Record<string, any>> {
   private _listeners = {} as SettingsListeners<T>
   private _migations: SettingMigrations | null
 
-  constructor(private app: App, options: SettingsOption) {
+  constructor(private app: App, options: SettingsOptions) {
     this.filename = options.filename
     this.version = options.version
     this._migations = options.migations

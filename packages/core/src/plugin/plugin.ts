@@ -9,9 +9,20 @@ import { SettingsModal } from "../settings/settings-modal"
 import type { SettingTab } from "../settings/setting-tab"
 import type { TPostProcessor } from '../ui/editor/postprocessor'
 import type { TPreProcessor } from '../ui/editor/preprocessor'
+import { PluginSettings } from './plugin-settings'
 
 
-export abstract class Plugin extends Component {
+export abstract class Plugin<T extends Record<string, any> = {}>
+  extends Component {
+
+  private _settings: PluginSettings<T>
+
+  get settings() {
+    if (!this._settings) {
+      throw Error('[Plugin] Use `registerSettings()` register `PluginSettings` instance before using `settings`.')
+    }
+    return this._settings
+  }
 
   constructor(
     protected app: App,
@@ -24,14 +35,26 @@ export abstract class Plugin extends Component {
     return path.join(this.app.vault.dataDir, `${this.manifest.id}.json`)
   }
 
+  /**
+   * @deprecated Use `registerSettings()` register `PluginSettings` instance instead.
+   */
   async loadData() {
     return fs.readFile(this.dataPath, 'utf8')
       .then(text => JSON.parse(text))
       .catch(error => ({}))
   }
 
+  /**
+   * @deprecated Use `registerSettings()` register `PluginSettings` instance instead.
+   */
   async saveData(data: any) {
     return fs.writeFile(this.dataPath, JSON.stringify(data, null, 2), 'utf8')
+  }
+
+  registerSettings(settings: PluginSettings<any>) {
+    this._settings = settings
+    this.register(
+      this.app.vault.on('change', () => this._settings.load()))
   }
 
   registerSettingTab(tab: SettingTab) {
