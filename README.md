@@ -32,7 +32,7 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
 ## Features
 
 - Plugin Manage
-  - Install/Uninstall plugin
+  - Install/Uninstall/Update plugin
   - Enable/Disable plugin
 - New UI components
   - Ribbon
@@ -42,7 +42,7 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
   - Markdown preprocessor
   - Markdown postprocessor
   - Markdown suggestion
-- I18n: auto follow system, now support English and Chinese
+- I18n: follow system or manual configure, now support English and Chinese
 
 
 
