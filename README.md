@@ -36,7 +36,7 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
   - Enable/Disable plugin
 - New UI components
   - Ribbon
-  - (Fake) Multi File Tabs
+  - (Virtual) Multi File Tabs
 - Custom command hotkey
 - APIs to extend Typora
   - Markdown preprocessor
@@ -48,8 +48,10 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
 
 ## Preview
 
-| ![](./docs/assets/base.jpg)           | ![](./docs/assets/command-modal.jpg)      |
+| Ribbon & Multi File Tabs              | Command Panel                             |
 | ------------------------------------- | ----------------------------------------- |
+| ![](./docs/assets/base.jpg)           | ![](./docs/assets/command-modal.jpg)      |
+| Settings Modal                        | Plugin Marketplace                        |
 | ![](./docs/assets/settings-modal.jpg) | ![](./docs/assets/plugin-marketplace.jpg) |
 
 

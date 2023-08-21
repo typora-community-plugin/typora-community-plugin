@@ -48,8 +48,10 @@
 
 ## 预览
 
-| ![](./docs/assets/base.jpg)           | ![](./docs/assets/command-modal.jpg)      |
+| Ribbon & 多文件标签页                   | 命令面板                                   |
 | ------------------------------------- | ----------------------------------------- |
+| ![](./docs/assets/base.jpg)           | ![](./docs/assets/command-modal.jpg)      |
+| 配置对话框                              | 插件市场                                   |
 | ![](./docs/assets/settings-modal.jpg) | ![](./docs/assets/plugin-marketplace.jpg) |
 
 
@@ -79,7 +81,7 @@
 | 快捷键                       | 功能         |
 | --------------------------- | ----------- |
 | <kbd>F1</kbd>               | 打开命令面板  |
-| <kbd>Ctrl</kbd>+<kbd>.</kbd>| 打开设置弹出框 |
+| <kbd>Ctrl</kbd>+<kbd>.</kbd>| 打开设置对话框 |
 
 
 
