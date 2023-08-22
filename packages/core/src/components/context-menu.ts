@@ -17,7 +17,7 @@ interface MenuItemClickEvent {
 interface ContextMenuOptions {
   contextEl: HTMLElement
   triggerBy?: 'click' | 'contextmenu'
-  items: MenuItem[]
+  items: MenuItem[] | (() => MenuItem[])
 }
 
 export interface MenuItem {
@@ -31,34 +31,49 @@ export class ContextMenu extends View {
   public contextEl: HTMLElement
   private focusedEl: HTMLElement
 
+  private options: Required<Pick<ContextMenuOptions, 'triggerBy'>> & {
+    items: () => MenuItem[],
+  }
+  private items: MenuItem[]
+
   private _menuShowListners: MenuShowListener[] = []
   private _itemClickListners: MenuItemClickListener[] = []
 
   constructor(
-    private options: ContextMenuOptions
+    options: ContextMenuOptions
   ) {
     super()
-    options.triggerBy ??= 'contextmenu'
+
+    const { triggerBy, items } = options
+
+    this.options = {
+      triggerBy: triggerBy ?? 'contextmenu',
+      items: typeof items === 'function'
+        ? items
+        : () => items,
+    }
+
     this.contextEl = options.contextEl
+    this.items = this.options.items()
   }
 
   onload() {
-    this._setupContextMenu()
-    this.contextEl.addEventListener(this.options.triggerBy!, this._onContextMenu)
-    document.body.append(this.containerEl)
+    this.contextEl.addEventListener(this.options.triggerBy, this._show)
   }
 
   onunload() {
-    this.containerEl.remove()
-    this.contextEl.removeEventListener(this.options.triggerBy!, this._onContextMenu)
+    this.containerEl?.remove()
+    this.contextEl.removeEventListener(this.options.triggerBy, this._show)
   }
 
-  private _setupContextMenu() {
-    if (this.containerEl) return
+  private _rebuild() {
+
+    this.containerEl?.remove()
+    this.items = this.options.items()
 
     const menu = document.createElement('div')
     menu.className = 'dropdown-menu context-menu typ-context-menu'
-    menu.innerHTML = this.options.items.map(item => `<li data-key="${item.id}"><a>${item.text}</a></li>`)
+    menu.innerHTML = this.items.map(item => `<li data-key="${item.id}"><a>${item.text}</a></li>`)
       .join('')
 
     menu.addEventListener('click', (event) => {
@@ -66,19 +81,21 @@ export class ContextMenu extends View {
 
       const el = event.target as HTMLElement
       const itemEl = el.closest('li')!
-      const item = this.options.items.find(item => item.id === itemEl.dataset.key!)!
+      const item = this.items.find(item => item.id === itemEl.dataset.key!)!
       const itemEvent = { target: this.focusedEl, item }
 
       item.onclick?.call(this, itemEvent)
       this._itemClickListners.forEach(fn => fn.call(this, itemEvent))
     })
 
-    this.containerEl = menu
+    document.body.append(this.containerEl = menu)
   }
 
-  private _onContextMenu = (event: MouseEvent) => {
+  private _show = (event: MouseEvent) => {
     event.preventDefault()
     event.stopPropagation()
+
+    this._rebuild()
 
     this.focusedEl = event.target as HTMLElement
 
@@ -86,7 +103,7 @@ export class ContextMenu extends View {
 
     const top = event.clientY < window.innerHeight / 2
       ? event.clientY
-      : event.clientY - this.options.items.length * 30 - 8
+      : event.clientY - this.items.length * 30 - 8
 
     $(this.containerEl)
       .attr('style', `top: ${top}px;left: ${event.clientX}px;`)
