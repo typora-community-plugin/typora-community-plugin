@@ -86,10 +86,11 @@ export class PluginsManagerSettingTab extends SettingTab {
       })
 
       setting.addButton(button => {
-        if (isInMarketplace) {
+        if (isInMarketplace)
+          button.classList.add('primary')
+        else
           button.disabled = true
-        }
-        button.classList.add('primary')
+
         button.title = t.update
         button.innerHTML = '<span class="fa fa-repeat"></span>'
         button.onclick = () => {

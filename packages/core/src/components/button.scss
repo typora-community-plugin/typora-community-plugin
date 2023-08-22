@@ -11,6 +11,10 @@
     background: var(--active-toggle-btn-color);
   }
 
+  &:disabled {
+    cursor: not-allowed;
+  }
+
   /**
    * Color
    ****************************************/
