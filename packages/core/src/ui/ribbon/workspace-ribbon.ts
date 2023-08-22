@@ -79,7 +79,7 @@ export class WorkspaceRibbon extends View {
 
     this.addChild(new ContextMenu({
       contextEl: this.containerEl,
-      items: this.buttons
+      items: () => this.buttons
         .filter(btn => btn.group !== 'bottom')
         .map(btn => ({
           id: btn.id,

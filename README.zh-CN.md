@@ -2,7 +2,7 @@
 
 [English](https://github.com/typora-community-plugin/typora-community-plugin#README.md) | 简体中文
 
-一个适用于 [Typora](https://typora.io/) 的社区插件系统。受到 [Obsidian 插件系统](https://marcus.se.net/obsidian-plugin-docs/) 启发。
+一个适用于 [Typora](https://typora.io/) 的社区插件系统。受到 [Obsidian 插件系统](https://docs.obsidian.md/Home) 启发。
 
 **警告**: 第三方插件可能有数据和隐私风险。
 
@@ -22,10 +22,10 @@
 
 | Core 版本 | 已测试的 Typora | Windows | Linux | MacOS |
 | --------- | ------------- | ------- | ----- | ----- |
-| v2+       | v1.5+         | ✅      | ❌    | ❌    |
+| v2+       | v1.5+         | ✅      | ❓    | ❓    |
 
 - ✅: 已在该平台测试
-- ❌: 未在该平台测试
+- ❓: 未在该平台测试
 
 
 

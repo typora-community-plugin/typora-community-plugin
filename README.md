@@ -2,7 +2,7 @@
 
 English | [简体中文](https://github.com/typora-community-plugin/typora-community-plugin/blob/main/README.zh-CN.md)
 
-A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidian plugin system](https://marcus.se.net/obsidian-plugin-docs/).
+A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidian plugin system](https://docs.obsidian.md/Home).
 
 **WARNING**: Third-party plugins may have data or privacy risks.
 
@@ -22,10 +22,10 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
 
 | Core version | tested Typora | Windows | Linux | MacOS |
 | ------------ | ------------- | ------- | ----- | ----- |
-| v2+          | v1.5+         | ✅      | ❌    | ❌    |
+| v2+          | v1.5+         | ✅      | ❓    | ❓    |
 
 - ✅: tested in this platform
-- ❌: not test in this platform
+- ❓: not test in this platform
 
 
 
