@@ -11,15 +11,14 @@ import { draggable } from 'src/components/draggable'
 
 
 export type RibbonSettings = {
-  ribbonState: Array<{
-    id: string
+  ribbonState: Record<string, {
     visible: boolean
     order: number
   }>
 }
 
 const DEFAULT_SETTINGS: RibbonSettings = {
-  ribbonState: [],
+  ribbonState: {},
 }
 
 export const BUILT_IN = Symbol('built-in')
@@ -38,6 +37,7 @@ interface RibbonItemButton {
    * Default is `true`.
    */
   visible?: boolean
+  order?: number
 }
 
 export class WorkspaceRibbon extends View {
@@ -73,7 +73,9 @@ export class WorkspaceRibbon extends View {
 
   onload() {
     this.containerEl = this._buildRibbonContainer()
-    this.buttons.forEach(btn => this._renderButton(btn))
+    this.buttons
+      .sort((a, b) => a.order - b.order)
+      .forEach(btn => this._renderButton(btn))
 
     this.addChild(new ContextMenu({
       contextEl: this.containerEl,
@@ -108,7 +110,15 @@ export class WorkspaceRibbon extends View {
       '<div class="group top"></div>' +
       '<div class="group bottom"></div>'
 
-    // draggable(container, 'y')
+    draggable(container, 'y', () => {
+      const el = this.containerEl.querySelector(`.group.top`)
+      Array.from(el.children)
+        .forEach((icon: HTMLElement, i) => {
+          const btn = this.buttons.find(btn => btn.id === icon.dataset.id)
+          btn.order = i
+        })
+      this.app.settings.set('ribbonState', this.getState())
+    })
 
     return container
   }
@@ -139,12 +149,16 @@ export class WorkspaceRibbon extends View {
       throw Error('[WorkspaceRibbon] Button\'s id duplicated!')
     }
 
-    const state = this.app.settings.get('ribbonState').find(btn => btn.id === button.id)
+    const state = this.app.settings.get('ribbonState')[button.id]
     if (state) {
       button.visible = state.visible
+      button.order = state.order
     }
     if (!('visible' in button)) {
       button.visible = true
+    }
+    if (!('order' in button)) {
+      button.order = this.buttons.length - 1
     }
 
     this.buttons.push(button)
@@ -224,10 +238,12 @@ export class WorkspaceRibbon extends View {
   private getState() {
     return this.buttons
       .filter(btn => btn.group !== 'bottom')
-      .map((btn, i) => ({
-        id: btn.id,
-        visible: btn.visible!,
-        order: i,
-      }))
+      .reduce((o, btn, i) => (
+        o[btn.id] = {
+          visible: btn.visible!,
+          order: btn.order ?? i,
+        },
+        o
+      ), {} as RibbonSettings['ribbonState'])
   }
 }

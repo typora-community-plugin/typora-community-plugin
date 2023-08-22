@@ -12,7 +12,11 @@ const compare = {
   }
 }
 
-export function draggable(containerEl: HTMLElement, direction: keyof typeof compare) {
+export function draggable(
+  containerEl: HTMLElement,
+  direction: keyof typeof compare,
+  onChange?: () => void
+) {
 
   let draggingEl: HTMLElement | null
 
@@ -34,6 +38,7 @@ export function draggable(containerEl: HTMLElement, direction: keyof typeof comp
   })
 
   containerEl.addEventListener('mouseup', () => {
+    onChange?.()
     draggingEl?.classList.remove('typ-dragging')
     draggingEl = null
   })
