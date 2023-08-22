@@ -57,6 +57,10 @@ export class SettingsModal extends Modal {
     this.addTab(new AboutTab(this.app))
 
     setTimeout(() => this.addGroupTitle(t.groupPlugins))
+
+    if (!this.app.plugins.marketplace.pluginList.length) {
+      this.app.plugins.marketplace.loadCommunityPlugins()
+    }
   }
 
   private onItemClick = (event: MouseEvent) => {

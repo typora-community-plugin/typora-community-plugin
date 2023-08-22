@@ -165,10 +165,6 @@ export class PluginManager {
     const t = this.app.i18n.t.pluginManager
     const manifest = this.manifests[id]
 
-    if (!marketplace.pluginList.length) {
-      await marketplace.loadCommunityPlugins()
-    }
-
     const info = marketplace.pluginList.find(p => p.id === id)
     const version = await this.app.github.getReleaseInfo(info.repo)
       .then(data => data.tag_name)

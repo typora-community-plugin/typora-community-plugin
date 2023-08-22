@@ -18,6 +18,8 @@ export class SettingItem extends View {
    */
   info: HTMLElement
 
+  name: HTMLElement
+
   /**
    * Constrols before `info`.
    */
@@ -31,6 +33,8 @@ export class SettingItem extends View {
   constructor() {
     super()
     this.containerEl = html`<div class="typ-setting-item"></div>`
+    this.containerEl.append(
+      this.info = html`<div class="typ-setting-info"></div>`)
   }
 
   onunload() {
@@ -38,8 +42,18 @@ export class SettingItem extends View {
   }
 
   addName(name: string) {
-    this.containerEl.append(
-      this.info = html`<div class="typ-setting-info"><div class="typ-setting-name">${name}</div></div>`)
+    this.info.append(
+      this.name = html`<div class="typ-setting-name">${name} </div>`)
+  }
+
+  /**
+   * Add badge to `name` element.
+   */
+  addBadge(text: string) {
+    if (!this.name) {
+      this.addName('')
+    }
+    this.name.append(html` <code>${text}</code>`)
   }
 
   addDescription(description: string) {
@@ -83,12 +97,16 @@ export class SettingItem extends View {
     this.addInput('text', build)
   }
 
+  /**
+   * @beta
+   */
   addSelect(options: SelectOptions) {
     this.tryAppendControls()
     const el = html`<select>${options.options.map(o => `<option ${o === options.selected ? 'selected' : ''}>${o}</option>`).join('')}</select>` as HTMLSelectElement
     el.onchange = options.onchange
     this.controls.append(el)
   }
+
   /**
    * @deprecated Use `addTag` instead.
    */
@@ -119,6 +137,9 @@ export class SettingItem extends View {
     })
   }
 
+  /**
+   * @beta
+   */
   addTable(build: (table: EditableTable<any>) => void) {
     const table = new EditableTable()
     build(table)

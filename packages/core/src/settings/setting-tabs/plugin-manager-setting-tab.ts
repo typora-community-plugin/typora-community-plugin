@@ -57,12 +57,20 @@ export class PluginsManagerSettingTab extends SettingTab {
 
   private renderPlugin(manifest: PluginManifest) {
     const { plugins } = this.app
+    const { marketplace } = plugins
     const t = this.app.i18n.t.settingTabs.plugins
 
     this.addSetting(setting => {
+      const isInMarketplace = marketplace.pluginList.find(p => p.id === manifest.id)
+
       setting.containerEl.classList.add('typ-plugin-item')
 
       setting.addName(manifest.name || manifest.id)
+
+      if (!isInMarketplace) {
+        setting.addBadge('Local')
+      }
+
       setting.addDescription(manifest.description)
 
       setting.containerEl.append(
@@ -77,15 +85,17 @@ export class PluginsManagerSettingTab extends SettingTab {
         }
       })
 
-      setting.addButton(button => {
-        button.classList.add('primary')
-        button.title = t.update
-        button.innerHTML = '<span class="fa fa-repeat"></span>'
-        button.onclick = () => {
-          plugins.updatePlugin(manifest.id)
-            .then(() => this.renderPluginList())
-        }
-      })
+      if (isInMarketplace) {
+        setting.addButton(button => {
+          button.classList.add('primary')
+          button.title = t.update
+          button.innerHTML = '<span class="fa fa-repeat"></span>'
+          button.onclick = () => {
+            plugins.updatePlugin(manifest.id)
+              .then(() => this.renderPluginList())
+          }
+        })
+      }
 
       setting.addButton(button => {
         button.classList.add('danger')
