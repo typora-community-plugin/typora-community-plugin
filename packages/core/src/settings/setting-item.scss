@@ -11,30 +11,30 @@
   &:not(:last-child:has(table)) {
     border-bottom: solid 1px var(--window-border-color);
   }
-}
 
-.typ-setting-info {
-  align-self: flex-start;
-  flex: 1;
-}
-
-.typ-setting-description {
-  font-size: .75rem;
-  color: var(--text-color);
-  opacity: .6;
-}
-
-.typ-setting-controls {
-  &.prefix {
+  @at-root .typ-setting-info {
     align-self: flex-start;
-    padding-right: .5rem;
+    flex: 1;
+
+    @at-root .typ-setting-description {
+      font-size: .75rem;
+      color: var(--text-color);
+      opacity: .6;
+    }
   }
 
-  &.postfix {
-    display: flex;
+  @at-root .typ-setting-controls {
+    &.prefix {
+      align-self: flex-start;
+      padding-right: .5rem;
+    }
 
-    &>* {
-      margin-left: .5rem;
+    &.postfix {
+      display: flex;
+
+      &>* {
+        margin-left: .5rem;
+      }
     }
   }
 }

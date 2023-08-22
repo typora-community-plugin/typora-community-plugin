@@ -68,7 +68,7 @@ export class PluginsManagerSettingTab extends SettingTab {
       setting.addName(manifest.name || manifest.id)
 
       if (!isInMarketplace) {
-        setting.addBadge('Local')
+        setting.addBadge('<span class="fa fa-hdd-o" title="Local Plugin"></span>')
       }
 
       setting.addDescription(manifest.description)
