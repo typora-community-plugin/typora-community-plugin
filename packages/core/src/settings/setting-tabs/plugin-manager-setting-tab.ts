@@ -85,17 +85,18 @@ export class PluginsManagerSettingTab extends SettingTab {
         }
       })
 
-      if (isInMarketplace) {
-        setting.addButton(button => {
-          button.classList.add('primary')
-          button.title = t.update
-          button.innerHTML = '<span class="fa fa-repeat"></span>'
-          button.onclick = () => {
-            plugins.updatePlugin(manifest.id)
-              .then(() => this.renderPluginList())
-          }
-        })
-      }
+      setting.addButton(button => {
+        if (isInMarketplace) {
+          button.disabled = true
+        }
+        button.classList.add('primary')
+        button.title = t.update
+        button.innerHTML = '<span class="fa fa-repeat"></span>'
+        button.onclick = () => {
+          plugins.updatePlugin(manifest.id)
+            .then(() => this.renderPluginList())
+        }
+      })
 
       setting.addButton(button => {
         button.classList.add('danger')
