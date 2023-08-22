@@ -10,18 +10,34 @@ import { ContextMenu, type MenuItem } from 'src/components/context-menu'
 import { draggable } from 'src/components/draggable'
 
 
+export type RibbonSettings = {
+  ribbonState: Array<{
+    id: string
+    visible: boolean
+    order: number
+  }>
+}
+
+const DEFAULT_SETTINGS: RibbonSettings = {
+  ribbonState: [],
+}
+
 export const BUILT_IN = Symbol('built-in')
 
 interface RibbonItemButton {
   group?: 'top' | 'bottom'
   id: string
-  title?: string
+  title: string
   className?: string
   icon: HTMLElement
   onclick?: () => void
   menuItems?: MenuItem[]
 
   [BUILT_IN]?: boolean
+  /**
+   * Default is `true`.
+   */
+  visible?: boolean
 }
 
 export class WorkspaceRibbon extends View {
@@ -30,6 +46,8 @@ export class WorkspaceRibbon extends View {
 
   constructor(private app: App) {
     super()
+
+    app.settings.setDefault(DEFAULT_SETTINGS)
 
     this._addDefaultButton()
 
@@ -56,6 +74,17 @@ export class WorkspaceRibbon extends View {
   onload() {
     this.containerEl = this._buildRibbonContainer()
     this.buttons.forEach(btn => this._renderButton(btn))
+
+    this.addChild(new ContextMenu({
+      contextEl: this.containerEl,
+      items: this.buttons
+        .filter(btn => btn.group !== 'bottom')
+        .map(btn => ({
+          id: btn.id,
+          text: btn.icon.outerHTML + ' ' + btn.title,
+          onclick: () => this.toggleButton(btn),
+        })),
+    }))
 
     this.register(
       decorate.parameters(editor.library, 'setSidebarWidth', ([width, saveInSettings]) =>
@@ -109,6 +138,15 @@ export class WorkspaceRibbon extends View {
     if (this.buttons.find(btn => btn.id === button.id)) {
       throw Error('[WorkspaceRibbon] Button\'s id duplicated!')
     }
+
+    const state = this.app.settings.get('ribbonState').find(btn => btn.id === button.id)
+    if (state) {
+      button.visible = state.visible
+    }
+    if (!('visible' in button)) {
+      button.visible = true
+    }
+
     this.buttons.push(button)
 
     if (this.containerEl) {
@@ -119,7 +157,27 @@ export class WorkspaceRibbon extends View {
 
   removeButton(button: RibbonItemButton) {
     this.buttons = this.buttons.filter(btn => btn !== button)
-    this.containerEl.querySelector(`.typ-ribbon-item[data-id="${button.id}"]`)?.remove()
+    this.hideButton(button)
+  }
+
+  toggleButton(button: RibbonItemButton, visible?: boolean) {
+    button.visible = visible ?? !button.visible
+
+    button.visible
+      ? this.showButton(button)
+      : this.hideButton(button)
+
+    this.app.settings.set('ribbonState', this.getState())
+  }
+
+  showButton(button: RibbonItemButton) {
+    const el = this.containerEl.querySelector(`.typ-ribbon-item[data-id="${button.id}"]`) as HTMLElement
+    el.style.display = 'flex'
+  }
+
+  hideButton(button: RibbonItemButton) {
+    const el = this.containerEl.querySelector(`.typ-ribbon-item[data-id="${button.id}"]`) as HTMLElement
+    el.style.display = 'none'
   }
 
   private _renderButton(button: RibbonItemButton) {
@@ -132,6 +190,7 @@ export class WorkspaceRibbon extends View {
     itemEl.dataset.id = button.id
     itemEl.setAttribute('draggable', 'true')
 
+    itemEl.style.display = button.visible ? 'flex' : 'none'
     itemEl.classList.add('typ-ribbon-item')
     if (button.className) {
       itemEl.classList.add(button.className)
@@ -160,5 +219,15 @@ export class WorkspaceRibbon extends View {
 
     this.containerEl.querySelector(`.group.${button.group}`)!
       .append(itemEl)
+  }
+
+  private getState() {
+    return this.buttons
+      .filter(btn => btn.group !== 'bottom')
+      .map((btn, i) => ({
+        id: btn.id,
+        visible: btn.visible!,
+        order: i,
+      }))
   }
 }

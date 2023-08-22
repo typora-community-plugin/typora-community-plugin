@@ -1,24 +1,25 @@
 import './variables.scss'
 import * as fs from 'fs/promises'
 import * as path from 'path'
+import { JSBridge, _options, editor } from 'typora'
 import * as Core from '.'
 import { Events } from './events'
-import { PluginManager } from "./plugin/plugin-manager"
-import { Vault } from "./vault"
-import { Workspace } from './ui/workspace'
+import { GithubAPI } from './github'
 import { HotkeyManager } from './hotkey-manager'
+import { Vault } from "./vault"
 import { CommandManager } from './command/command-manager'
+import { I18n } from './locales/i18n'
+import * as Locale from './locales/lang.en.json'
+import { PluginManager } from "./plugin/plugin-manager"
 import { Settings } from './settings/settings'
 import type { FileLinkSettings } from './settings/setting-tabs/file-link-setting-tab'
 import type { AppearanceSettings } from './settings/setting-tabs/appearance-setting-tab'
 import type { PluginMarketplaceSettings } from './settings/setting-tabs/plugin-marketplace-setting-tab'
 import type { CoreSettings } from './settings/setting-tabs/about-tab'
-import { I18n } from './locales/i18n'
-import { JSBridge, _options, editor } from 'typora'
-import * as Locale from './locales/lang.en.json'
+import { Workspace } from './ui/workspace'
+import type { RibbonSettings } from './ui/ribbon/workspace-ribbon'
 import { isMarkdownUrl } from './utils/is-markdown-url'
 import type { FileURL } from './utils/types'
-import { GithubAPI } from './github'
 
 
 type AppEvents = {
@@ -34,7 +35,7 @@ type EnvironmentVairables = {
   [key: string]: any
 }
 
-type AppSettings = FileLinkSettings & AppearanceSettings & PluginMarketplaceSettings & CoreSettings
+type AppSettings = FileLinkSettings & AppearanceSettings & PluginMarketplaceSettings & CoreSettings & RibbonSettings
 
 export type AppPlugin = (app: App) => void
 
