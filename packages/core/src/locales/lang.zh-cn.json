@@ -51,6 +51,7 @@
       "githubProxyDesc": "用于加载插件列表和下载插件。",
       "searchPlugin": "搜索插件:",
       "pluginList": "插件列表",
+      "reloadPluginList": "重新加载插件列表",
       "author": "作者",
       "installToGlobal": "全局",
       "installToGlobalDesc": "安装到全局",

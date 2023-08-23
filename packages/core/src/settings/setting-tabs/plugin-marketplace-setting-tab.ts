@@ -45,12 +45,20 @@ export class PluginMarketplaceSettingTab extends SettingTab {
       setting.addName(t.searchPlugin)
       setting.addText(input => {
         input.oninput = _.debounce(() => {
+          this.cleanPluginList()
           this.renderPluginList(input.value)
         }, 500)
       })
     })
 
-    this.addSettingTitle(t.pluginList)
+    this.addSetting(setting => {
+      setting.addTitle(t.pluginList)
+      setting.addButton(button => {
+        button.title = t.reloadPluginList
+        button.innerHTML = '<span class="fa fa-refresh"></span>'
+        button.onclick = () => this.loadPluginList()
+      })
+    })
   }
 
   show() {
@@ -64,13 +72,13 @@ export class PluginMarketplaceSettingTab extends SettingTab {
   }
 
   private loadPluginList() {
+    this.cleanPluginList()
     this.app.plugins.marketplace.loadCommunityPlugins()
       .then(() => this.renderPluginList())
   }
 
   private renderPluginList(query: string = '') {
     query = query.toLowerCase()
-    this.cleanPluginList()
     this.app.plugins.marketplace.pluginList
       .filter(p => !query || (p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query)))
       .forEach(p => this.renderPlugin(p))

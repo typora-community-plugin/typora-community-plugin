@@ -51,6 +51,7 @@
       "githubProxyDesc": "Proxy of github for loading plugin list and downloading plugin.",
       "searchPlugin": "Search plugins:",
       "pluginList": "Plugin List",
+      "reloadPluginList": "Reload Plugin List",
       "author": "Author",
       "installToGlobal": "Global",
       "installToGlobalDesc": "Install to global",

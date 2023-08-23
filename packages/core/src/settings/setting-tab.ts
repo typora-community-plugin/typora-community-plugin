@@ -20,8 +20,7 @@ export abstract class SettingTab extends View {
   }
 
   addSettingTitle(text: string) {
-    this.containerEl.append(
-      html`<div class="typ-setting-item"><h3 class="typ-setting-title">${text}</h3></div>`)
+    this.addSetting(setting => setting.addTitle(text))
   }
 
   addSetting(build: (setting: SettingItem) => void) {

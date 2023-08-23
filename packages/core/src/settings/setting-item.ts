@@ -44,6 +44,11 @@ export class SettingItem extends View {
     this.containerEl.remove()
   }
 
+  addTitle(text: string) {
+    this.info.append(
+      html`<h3 class="typ-setting-title">${text}</h3>`)
+  }
+
   addName(name: string) {
     this.info.append(
       this.name = html`<div class="typ-setting-name">${name} </div>`)
