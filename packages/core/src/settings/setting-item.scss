@@ -24,7 +24,7 @@
   }
 
   @at-root .typ-setting-controls {
-    &.prefix {
+    &.prefix:not(:empty) {
       align-self: flex-start;
       padding-right: .5rem;
     }

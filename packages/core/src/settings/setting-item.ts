@@ -34,7 +34,10 @@ export class SettingItem extends View {
     super()
     this.containerEl = html`<div class="typ-setting-item"></div>`
     this.containerEl.append(
-      this.info = html`<div class="typ-setting-info"></div>`)
+      this.controlsPrefix = html`<div class="typ-setting-controls prefix"></div>`,
+      this.info = html`<div class="typ-setting-info"></div>`,
+      this.controls = html`<div class="typ-setting-controls postfix"></div>`,
+    )
   }
 
   onunload() {
@@ -60,34 +63,19 @@ export class SettingItem extends View {
     this.info.append(html`<div class="typ-setting-description">${description}</div>`)
   }
 
-  private tryPrependControls() {
-    if (this.controlsPrefix) return
-    this.containerEl.prepend(
-      this.controlsPrefix = html`<div class="typ-setting-controls prefix"></div>`)
-  }
-
-  private tryAppendControls() {
-    if (this.controls) return
-    this.containerEl.append(
-      this.controls = html`<div class="typ-setting-controls postfix"></div>`)
-  }
-
   addCheckbox(build: (checkbox: HTMLInputElement) => void) {
-    this.tryPrependControls()
     const input = html`<input type="checkbox">` as HTMLInputElement
     build(input)
     this.controlsPrefix.append(input)
   }
 
   addButton(build: (button: HTMLButtonElement) => void) {
-    this.tryAppendControls()
     const button = html`<button class="typ-button"></button>` as HTMLButtonElement
     build(button)
     this.controls.append(button)
   }
 
   addInput(type: string, build: (input: HTMLInputElement) => void) {
-    this.tryAppendControls()
     const input = html`<input type="${type}">` as HTMLInputElement
     build(input)
     this.controls.append(input)
@@ -100,11 +88,19 @@ export class SettingItem extends View {
   /**
    * @beta
    */
-  addSelect(options: SelectOptions) {
-    this.tryAppendControls()
-    const el = html`<select>${options.options.map(o => `<option ${o === options.selected ? 'selected' : ''}>${o}</option>`).join('')}</select>` as HTMLSelectElement
-    el.onchange = options.onchange
-    this.controls.append(el)
+  addSelect(options: SelectOptions): void
+  addSelect(build: (input: HTMLSelectElement) => void): void
+  addSelect(param0: SelectOptions | ((input: HTMLSelectElement) => void)) {
+    if (typeof param0 === 'function') {
+      const select = html`<select></select>` as HTMLSelectElement
+      param0(select)
+      this.controls.append(select)
+    }
+    else {
+      const el = html`<select>${param0.options.map(o => `<option ${o === param0.selected ? 'selected' : ''}>${o}</option>`).join('')}</select>` as HTMLSelectElement
+      el.onchange = param0.onchange
+      this.controls.append(el)
+    }
   }
 
   /**
@@ -118,7 +114,6 @@ export class SettingItem extends View {
   addRemovableOption = this.addRemovableTag
 
   addTag(text: string, build?: (el: HTMLElement) => void) {
-    this.tryAppendControls()
     const el = html`<div class="typ-tag">${text} </div>`
     build?.(el)
     this.controls.prepend(el)
