@@ -8,7 +8,6 @@ import { Sidebar } from './sidebar/sidebar'
 import { TabsView } from './tabs/tabs-view'
 import { SettingsModal } from 'src/settings/settings-modal'
 import { CommandModal } from 'src/command/command-modal'
-import { Notification } from './notification'
 import { QuickOpenPanel } from './quick-open-panel'
 import decorate from '@plylrnsdy/decorate.js'
 import { File, editor } from 'typora'
@@ -32,8 +31,6 @@ export class Workspace extends Events<WorkspaceEvents> {
   }
 
   private _children: Component[] = []
-
-  notification = new Notification()
 
   constructor(app: App) {
     super()

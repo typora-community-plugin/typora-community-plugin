@@ -103,16 +103,6 @@ export class SettingItem extends View {
     }
   }
 
-  /**
-   * @deprecated Use `addTag` instead.
-   */
-  addOption = this.addTag
-
-  /**
-   * @deprecated Use `addRemovableTag` instead.
-   */
-  addRemovableOption = this.addRemovableTag
-
   addTag(text: string, build?: (el: HTMLElement) => void) {
     const el = html`<div class="typ-tag">${text} </div>`
     build?.(el)

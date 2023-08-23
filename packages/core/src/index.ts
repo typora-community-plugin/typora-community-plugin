@@ -14,10 +14,6 @@ export type { PluginManifest } from './plugin/plugin-manifest'
 export { PluginSettings } from './plugin/plugin-settings'
 export { Plugin } from './plugin/plugin'
 
-/**
- * @deprecated Use `PluginSettings` instead.
- */
-export { Settings } from './settings/settings'
 export { SettingTab } from './settings/setting-tab'
 export { SettingItem } from './settings/setting-item'
 

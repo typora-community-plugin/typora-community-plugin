@@ -35,22 +35,6 @@ export abstract class Plugin<T extends Record<string, any> = {}>
     return path.join(this.app.vault.dataDir, `${this.manifest.id}.json`)
   }
 
-  /**
-   * @deprecated Use `registerSettings()` register `PluginSettings` instance instead.
-   */
-  async loadData() {
-    return fs.readFile(this.dataPath, 'utf8')
-      .then(text => JSON.parse(text))
-      .catch(error => ({}))
-  }
-
-  /**
-   * @deprecated Use `registerSettings()` register `PluginSettings` instance instead.
-   */
-  async saveData(data: any) {
-    return fs.writeFile(this.dataPath, JSON.stringify(data, null, 2), 'utf8')
-  }
-
   registerSettings(settings: PluginSettings<any>) {
     this._settings = settings
     this.register(
