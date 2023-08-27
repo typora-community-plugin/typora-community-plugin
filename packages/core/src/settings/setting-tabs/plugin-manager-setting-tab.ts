@@ -4,7 +4,7 @@ import type { App } from "src/app"
 import type { PluginManifest } from "src/plugin/plugin-manifest"
 import { SettingTab } from "../setting-tab"
 import { format } from 'src/utils/format'
-import { html } from "src/utils/html"
+import * as versions from "src/utils/versions"
 
 
 export class PluginsManagerSettingTab extends SettingTab {
@@ -29,7 +29,15 @@ export class PluginsManagerSettingTab extends SettingTab {
       })
     })
 
-    this.addSettingTitle(format(t.titleInstalled, [Object.keys(this.app.plugins.manifests).length]))
+    this.addSetting(setting => {
+      setting.addTitle(format(t.titleInstalled, [Object.keys(this.app.plugins.manifests).length]))
+
+      setting.addButton(button => {
+        button.title = t.checkForUpdate
+        button.innerHTML = '<span class="fa fa-refresh"></span>'
+        button.onclick = () => this.checkForUpdate()
+      })
+    })
 
     this.renderPluginList()
 
@@ -39,6 +47,28 @@ export class PluginsManagerSettingTab extends SettingTab {
   hide() {
     this.containerEl.innerHTML = ''
     super.hide()
+  }
+
+  private async checkForUpdate() {
+    const { manifests, marketplace } = this.app.plugins
+
+    if (!marketplace.isLoaded) {
+      await marketplace.loadCommunityPlugins()
+    }
+
+    for (const id of Object.keys(manifests)) {
+      const info = marketplace.getPlugin(id)
+
+      if (!info) return
+
+      const version = await marketplace.getPluginNewestVersion(info)
+      const manifest = manifests[id]
+
+      if (versions.compare(manifest.version, version) < 0) {
+        info.newestVersion = version
+        $(`.typ-plugin-item[data-id="${id}"] button:has(.fa-repeat)`, this.containerEl).show()
+      }
+    }
   }
 
   private renderPluginList(query: string = '') {
@@ -61,9 +91,11 @@ export class PluginsManagerSettingTab extends SettingTab {
     const t = this.app.i18n.t.settingTabs.plugins
 
     this.addSetting(setting => {
-      const isInMarketplace = marketplace.pluginList.find(p => p.id === manifest.id)
+      const info = marketplace.getPlugin(manifest.id)
+      const isInMarketplace = !!info
 
       setting.containerEl.classList.add('typ-plugin-item')
+      setting.containerEl.dataset.id = manifest.id
 
       setting.addName(manifest.name || manifest.id)
 
@@ -71,10 +103,13 @@ export class PluginsManagerSettingTab extends SettingTab {
         setting.addBadge('<span class="fa fa-hdd-o" title="Local Plugin"></span>')
       }
 
-      setting.addDescription(manifest.description)
+      setting.addDescription([
+        `<div class="typ-plugin-meta"><span class="fa fa-folder"></span> ${manifest.postion}</div>`,
+        `<div class="typ-plugin-meta"><span class="fa fa-cube"></span> v${manifest.version}</div>`,
+        `<div class="typ-plugin-meta"><span class="fa fa-user"></span> ${manifest.author}</div>`,
+      ].join(''))
 
-      setting.containerEl.append(
-        html`<div class="typ-plugin-meta-group"><div class="typ-plugin-meta"><span class="fa fa-code"> </span> v${manifest.version}</div><div class="typ-plugin-meta"><span class="fa fa-user"></span> ${manifest.author}</div><div class="typ-plugin-meta"><span class="fa fa-folder-o"></span> ${manifest.postion}</div></div>`)
+      setting.addDescription(manifest.description)
 
       setting.addCheckbox(checkbox => {
         checkbox.checked = plugins.enabledPlugins[manifest.id]
@@ -86,16 +121,20 @@ export class PluginsManagerSettingTab extends SettingTab {
       })
 
       setting.addButton(button => {
-        if (isInMarketplace)
-          button.classList.add('primary')
-        else
-          button.disabled = true
+        if (!isInMarketplace || !info.newestVersion) {
+          button.style.display = 'none'
+        }
 
+        button.classList.add('primary')
         button.title = t.update
         button.innerHTML = '<span class="fa fa-repeat"></span>'
         button.onclick = () => {
           plugins.updatePlugin(manifest.id)
-            .then(() => this.renderPluginList())
+            .then(() => {
+              const info = marketplace.getPlugin(manifest.id)
+              info.newestVersion = undefined
+              this.renderPluginList()
+            })
         }
       })
 

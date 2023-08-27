@@ -61,7 +61,8 @@
     "plugins": {
       "name": "已安装插件",
       "searchPlugin": "搜索插件:",
-      "titleInstalled": "已安装 {0} 个插件",
+      "titleInstalled": "已安装插件 (共 {0} 个)",
+      "checkForUpdate": "检查更新",
       "update": "更新",
       "uninstall": "卸载"
     },

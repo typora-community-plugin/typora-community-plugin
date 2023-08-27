@@ -58,7 +58,7 @@ export class SettingsModal extends Modal {
 
     setTimeout(() => this.addGroupTitle(t.groupPlugins))
 
-    if (!this.app.plugins.marketplace.pluginList.length) {
+    if (!this.app.plugins.marketplace.isLoaded) {
       this.app.plugins.marketplace.loadCommunityPlugins()
     }
   }

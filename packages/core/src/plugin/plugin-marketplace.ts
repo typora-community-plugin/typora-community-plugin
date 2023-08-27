@@ -8,13 +8,29 @@ import type { PluginManifest, PluginPostion } from "./plugin-manifest"
 
 export type PluginMarketInfo = Pick<PluginManifest, "id" | "name" | "description" | "author"> & {
   repo: string
+  newestVersion?: string
 }
 
 export class PluginMarketplace {
 
   pluginList: PluginMarketInfo[] = []
 
+  get isLoaded() {
+    return !!this.pluginList.length
+  }
+
   constructor(private app: App) {
+  }
+
+  getPlugin(id: string) {
+    return this.pluginList.find(p => p.id === id)
+  }
+
+  getPluginNewestVersion(info: PluginMarketInfo) {
+    return info.newestVersion
+      ? Promise.resolve(info.newestVersion)
+      : this.app.github.getReleaseInfo(info.repo)
+        .then(data => data.tag_name)
   }
 
   loadCommunityPlugins(): Promise<PluginMarketInfo[]> {
@@ -50,8 +66,7 @@ export class PluginMarketplace {
   }
 
   downloadPlugin(info: PluginMarketInfo) {
-    return this.app.github.getReleaseInfo(info.repo)
-      .then(data => data.tag_name)
+    return this.getPluginNewestVersion(info)
       .then(version => {
         return this.app.github.download(info.repo, version, 'plugin.zip')
           .then(res => res.arrayBuffer())

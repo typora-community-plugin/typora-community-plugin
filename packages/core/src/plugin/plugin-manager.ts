@@ -165,9 +165,8 @@ export class PluginManager {
     const t = this.app.i18n.t.pluginManager
     const manifest = this.manifests[id]
 
-    const info = marketplace.pluginList.find(p => p.id === id)
-    const version = await this.app.github.getReleaseInfo(info.repo)
-      .then(data => data.tag_name)
+    const info = marketplace.getPlugin(id)
+    const version = await marketplace.getPluginNewestVersion(info)
 
     if (versions.compare(manifest.version, version) >= 0) {
       new Notice(format(t.upToDate, manifest))
