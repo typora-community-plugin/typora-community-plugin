@@ -38,9 +38,12 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
     until(() => editor.writingArea).then(el => {
       this.emit('load', el)
 
-      decorate.afterCall(editor.wordCount, 'quickUpdate',
-        _.debounce(() => this.emit('edit'), 200)
-      )
+      const observer = new MutationObserver(_.debounce(emitEdit.bind(this), 400))
+      observer.observe(el, {
+        characterData: true,
+        childList: true,
+        subtree: true,
+      })
 
       // <content>
       el.parentElement!.addEventListener('scroll',
@@ -62,6 +65,22 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
       setTimeout(() => editor.tryOpenUrl(url.hash), 500)
     }
   }
+}
+
+
+function emitEdit(this: MarkdownEditor, mutationsList: MutationRecord[]) {
+  if (!isEdited(mutationsList)) return
+  this.emit('edit')
+}
+
+function isEdited(mutationsList: MutationRecord[]) {
+  return (
+    mutationsList.some(m => m.type === 'characterData')
+  ) || (
+      mutationsList.length === 1 &&
+      mutationsList[0].addedNodes.length &&
+      mutationsList[0].removedNodes.length
+    )
 }
 
 class OpenLinkInCurrentWin extends Component {
