@@ -1,7 +1,7 @@
 import './editor-suggestion.scss'
 import type { DisposeFunc } from "src/utils/types"
 import type { MarkdownEditor } from "./markdown-editor"
-import { editor } from 'typora'
+import { TRange, editor } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
 
 
@@ -19,7 +19,7 @@ export class EditorSuggestManager {
     })
 
     decorate(editor.autoComplete, 'apply', fn => (text) => {
-      if (editor.autoComplete.state.all === this._currentSuggest?.suggestionKeys) {
+      if (this._currentSuggest.isUsing) {
         const range = editor.selection.getRangy()
         const { anchor } = editor.autoComplete.state
         const textNode = anchor.containerNode.firstChild! as Element
@@ -57,7 +57,7 @@ export class EditorSuggestManager {
       if (!isMatched) continue
 
       range.start -= query!.length + suggest.triggerText.length
-      editor.autoComplete.show(suggest.suggestionKeys, range, query, suggest._handlers)
+      suggest.show(range, query)
       break
     }
   }
@@ -72,13 +72,23 @@ export abstract class EditorSuggest<T> {
    */
   abstract triggerText: string
 
-  abstract suggestionKeys: string[]
+  abstract suggestions: T[]
 
-  _handlers = {
+  private _placeholder: string[] = []
+
+  get isUsing() {
+    return editor.autoComplete.state.all === this._placeholder
+  }
+
+  private _handlers = {
     search: this.getSuggestions.bind(this),
     render: this._renderSuggestion.bind(this),
     beforeApply: this.beforeApply.bind(this),
   } as const
+
+  show(range: TRange, query: string) {
+    editor.autoComplete.show(this._placeholder, range, query, this._handlers)
+  }
 
   abstract findQuery(text: string): { isMatched: boolean, query?: string }
 
@@ -104,4 +114,20 @@ export abstract class EditorSuggest<T> {
    * @returns Markdown string
    */
   abstract beforeApply(suggest: NonNullable<T>): string
+}
+
+export abstract class TextSuggest extends EditorSuggest<string> {
+
+  getSuggestions(query: string) {
+    if (!query) return this.suggestions
+
+    query = query.toLowerCase()
+    const cache: Record<string, number> = {}
+    return this.suggestions
+      .filter(n => {
+        cache[n] = n.toLowerCase().indexOf(query)
+        return cache[n] !== -1
+      })
+      .sort((a, b) => cache[a] - cache[b] || a.length - b.length)
+  }
 }

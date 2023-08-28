@@ -22,7 +22,7 @@ export { HtmlPostProcessor } from './ui/editor/postprocessor/html-postprocessor'
 export { CodeblockPostProcessor } from './ui/editor/postprocessor/codeblock-postprocessor'
 
 export { View } from './ui/view'
-export { EditorSuggest } from './ui/editor/editor-suggestion'
+export { EditorSuggest, TextSuggest } from './ui/editor/editor-suggestion'
 export { WorkspaceRibbon } from './ui/ribbon/workspace-ribbon'
 export { Sidebar } from './ui/sidebar/sidebar'
 
