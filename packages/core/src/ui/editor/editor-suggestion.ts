@@ -100,7 +100,8 @@ export abstract class EditorSuggest<T> {
   _renderSuggestion(suggest: NonNullable<T>, isActive: boolean): string {
     const className = `typ-suggestion ${isActive ? "active" : ""}`
     const text = this.renderSuggestion(suggest)
-    return `<li class="${className}">${text}</li>`
+      .replace(/[']/g, "&quot;")
+    return `<li class="${className}" data-content="${text}">${text}</li>`
   }
 
   /**
