@@ -129,6 +129,8 @@ export class PluginManager {
 
   async enablePlugin(id: string) {
     if (versions.compare(this.app.coreVersion, this.manifests[id].minCoreVersion) < 0) {
+      this.disablePlugin(id)
+
       const msg = format(this.app.i18n.t.pluginManager.needNewerCoreVersion, this.manifests[id])
       new Notice(msg)
       return
