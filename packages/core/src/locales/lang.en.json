@@ -62,7 +62,8 @@
       "name": "Installed Plugins",
       "searchPlugin": "Search plugins:",
       "titleInstalled": "Installed Plugin ({0} installed)",
-      "checkForUpdate": "Check for Update",
+      "checkForUpdate": "Check for Updates",
+      "checkingForUpdate": "Checking for updates... ({0}/{1})",
       "update": "Update",
       "uninstall": "Uninstall"
     },

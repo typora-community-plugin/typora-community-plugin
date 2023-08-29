@@ -1,6 +1,7 @@
 import './plugin-manager-setting-tab.scss'
 import * as _ from 'lodash'
 import type { App } from "src/app"
+import { Notice } from 'src/components/notice'
 import type { PluginManifest } from "src/plugin/plugin-manifest"
 import { SettingTab } from "../setting-tab"
 import { format } from 'src/utils/format'
@@ -35,7 +36,10 @@ export class PluginsManagerSettingTab extends SettingTab {
       setting.addButton(button => {
         button.title = t.checkForUpdate
         button.innerHTML = '<span class="fa fa-refresh"></span>'
-        button.onclick = () => this.checkForUpdate()
+        button.onclick = () => {
+          button.disabled = true
+          this.checkForUpdate().then(() => button.disabled = false)
+        }
       })
     })
 
@@ -51,12 +55,16 @@ export class PluginsManagerSettingTab extends SettingTab {
 
   private async checkForUpdate() {
     const { manifests, marketplace } = this.app.plugins
+    const ids = Object.keys(manifests)
+    const text = this.app.i18n.t.settingTabs.plugins.checkingForUpdate
+    const notice = new Notice(format(text, [0, ids.length]), 0)
 
     if (!marketplace.isLoaded) {
       await marketplace.loadCommunityPlugins()
     }
 
-    for (const id of Object.keys(manifests)) {
+    for (const i in ids) {
+      const id = ids[i]
       const info = marketplace.getPlugin(id)
 
       if (!info) continue
@@ -68,7 +76,11 @@ export class PluginsManagerSettingTab extends SettingTab {
         info.newestVersion = version
         $(`.typ-plugin-item[data-id="${id}"] button:has(.fa-repeat)`, this.containerEl).show()
       }
+
+      notice.message = format(text, [+i + 1, ids.length])
     }
+
+    notice.hide()
   }
 
   private renderPluginList(query: string = '') {

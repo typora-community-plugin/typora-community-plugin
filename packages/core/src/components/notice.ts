@@ -19,15 +19,22 @@ export class Notice {
 
   private el: HTMLElement
 
+  /**
+   * @param delay Hide notice after `delay` ms. `delay = 0` will not be hidden.
+   */
   constructor(message: string, delay = 5000) {
     this.el = html`<div class="typ-notice">${message}</div>`
 
     $('.typ-notice__container').append(this.el)
 
-    setTimeout(() => this.el.remove(), delay)
+    delay && setTimeout(() => this.hide(), delay)
   }
 
   set message(msg: string) {
     this.el.innerText = msg
+  }
+
+  hide() {
+    this.el.remove()
   }
 }
