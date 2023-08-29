@@ -59,7 +59,7 @@ export class PluginsManagerSettingTab extends SettingTab {
     for (const id of Object.keys(manifests)) {
       const info = marketplace.getPlugin(id)
 
-      if (!info) return
+      if (!info) continue
 
       const version = await marketplace.getPluginNewestVersion(info)
       const manifest = manifests[id]
