@@ -75,8 +75,8 @@
     flex-direction: column;
     align-content: center;
 
-    &.bottom {
-      margin-top: auto;
+    &.top {
+      flex: 1;
     }
 
     &>.typ-ribbon-item {

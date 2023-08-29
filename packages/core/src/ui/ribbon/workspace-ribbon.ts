@@ -78,7 +78,7 @@ export class WorkspaceRibbon extends View {
       .forEach(btn => this._renderButton(btn))
 
     this.addChild(new ContextMenu({
-      contextEl: this.containerEl,
+      contextEl: $('.group.top', this.containerEl).get(0),
       items: () => this.buttons
         .filter(btn => btn.group !== 'bottom')
         .map(btn => ({
