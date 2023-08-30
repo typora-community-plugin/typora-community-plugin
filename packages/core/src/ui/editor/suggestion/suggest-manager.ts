@@ -1,8 +1,8 @@
-import './editor-suggestion.scss'
-import type { DisposeFunc } from "src/utils/types"
-import type { MarkdownEditor } from "./markdown-editor"
+import './suggest.scss'
 import { TRange, editor } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
+import type { MarkdownEditor } from "../markdown-editor"
+import type { DisposeFunc } from "src/utils/types"
 
 
 export class EditorSuggestManager {

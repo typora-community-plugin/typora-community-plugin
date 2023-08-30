@@ -7,7 +7,7 @@ import type { Command } from "../command/command-manager"
 import { Component } from "../component"
 import { SettingsModal } from "../settings/settings-modal"
 import type { SettingTab } from "../settings/setting-tab"
-import type { TPostProcessor } from '../ui/editor/postprocessor'
+import type { TPostProcessor } from '../ui/editor/postprocessor/postprocessor-manager'
 import type { TPreProcessor } from '../ui/editor/preprocessor'
 import { PluginSettings } from './plugin-settings'
 
