@@ -346,6 +346,8 @@ interface Selection {
 
   selectPhrase(): void
   selectWord(): void
+
+  scrollAdjust($el?: JQuery, offset2Top?: number, param2?: number, param3?: boolean): void
 }
 
 type TextAround = [

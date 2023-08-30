@@ -1,6 +1,7 @@
 import './tabs-view.scss'
 import * as fs from 'fs'
 import * as path from 'path'
+import decorate from "@plylrnsdy/decorate.js"
 import type { App } from "src/app"
 import { View } from "../view"
 import { editor } from "typora"
@@ -64,6 +65,15 @@ export class TabsView extends View {
             this.renameTab(path, newFilePath)
           })
       }))
+
+    // fix anchor jumping offset
+    this.register(
+      decorate.parameters(editor.selection, 'scrollAdjust', ([$el, offset, p2, p3]) => {
+        console.log({$el, offset, p2, p3})
+        if ($el) offset += 28
+        return [$el, offset, p2, p3]
+      })
+    )
   }
 
   onunload() {
