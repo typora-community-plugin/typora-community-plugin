@@ -276,7 +276,9 @@ interface TFile {
 
 interface FileSearchView {
   hide(): void
-  showSearch(): void
+  hideSearch(param0?: boolean): void
+  show(): void
+  showSearch(param0?: boolean): void
 }
 interface LocalSettingBridge {
   loadExportOption(opt: ExportOption): ExportSetting

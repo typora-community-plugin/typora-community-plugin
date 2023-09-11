@@ -12,7 +12,7 @@ export class Search extends View {
 
   private _showSearchResultFullPath: ShowSearchResultFullPath
 
-  constructor(app: App, workspace: Workspace, sidebar: Sidebar) {
+  constructor(app: App, workspace: Workspace, private sidebar: Sidebar) {
     super()
 
     this.containerEl = document.getElementById('file-library-search') as HTMLElement
@@ -29,12 +29,11 @@ export class Search extends View {
   }
 
   show() {
-    editor.library.fileSearch.showSearch()
+    editor.library.fileSearch.show()
   }
 
   hide() {
-    this.containerEl.parentElement!
-      .classList.remove('ty-show-search', 'ty-on-search')
+    this.sidebar.wrapperEl.classList.remove('ty-show-search', 'ty-on-search')
   }
 }
 

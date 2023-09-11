@@ -8,6 +8,8 @@ import { Search } from "./search"
 
 export class Sidebar extends View {
 
+  wrapperEl: HTMLElement
+
   activeView: View
   internalViews: View[]
 
@@ -15,6 +17,7 @@ export class Sidebar extends View {
     super()
 
     this.containerEl = document.getElementById('sidebar-content')!
+    this.wrapperEl = this.containerEl.parentElement
 
     this.internalViews = [
       new Search(app, workspace, this),

@@ -15,7 +15,7 @@ export class FileExplorer extends View {
 
   private _showNotSupportedFile: ShowNotSupportedFile
 
-  constructor(private app: App, workspace: Workspace, sidebar: Sidebar) {
+  constructor(private app: App, workspace: Workspace, private sidebar: Sidebar) {
     super()
 
     this.containerEl = document.getElementById('file-library') as HTMLElement
@@ -37,7 +37,7 @@ export class FileExplorer extends View {
   }
 
   hide() {
-    this.containerEl.parentElement!.classList.remove('active-tab-files')
+    this.sidebar.wrapperEl.classList.remove('active-tab-files')
   }
 }
 
