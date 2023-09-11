@@ -33,9 +33,8 @@ export class Search extends View {
   }
 
   hide() {
-    const parent = this.containerEl.parentElement!
-    parent.classList.remove('ty-show-search')
-    parent.classList.remove('ty-on-search')
+    this.containerEl.parentElement!
+      .classList.remove('ty-show-search', 'ty-on-search')
   }
 }
 
@@ -61,7 +60,11 @@ class ShowSearchResultFullPath extends Component {
     mutationsList.forEach(mutation => {
       if (mutation.type !== 'childList') return
       mutation.addedNodes.forEach((el: HTMLElement) => {
-        const loc = el.querySelector('.file-list-item-parent-loc')! as HTMLElement
+        const loc = el.querySelector('.file-list-item-parent-loc') as HTMLElement | null
+
+        // NOTE: Files in root not has `loc` element
+        if (!loc) return
+
         loc.title = loc.innerText
       })
     })
