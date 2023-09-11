@@ -69,7 +69,7 @@ export class TabsView extends View {
     // fix anchor jumping offset
     this.register(
       decorate.parameters(editor.selection, 'scrollAdjust', ([$el, offset, p2, p3]) => {
-        if ($el) offset += 28
+        if ($el && offset) offset += 28
         return [$el, offset, p2, p3]
       })
     )
