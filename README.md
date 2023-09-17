@@ -62,13 +62,13 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
 
 1. Download [Release](https://github.com/typora-community-plugin/typora-community-plugin/releases) `typora-community-plugin.zip`.
 2. Unzip it.
-3. Run as Admin `install.ps1` (only for Windows) to install.
+3. Run `install.ps1` (only for Windows) as Admin to install. <br> If you want to install it for custom Typora installed directory, run `install.ps1 -root <TyporaHome>` as Admin.
 
 ### Manual install
 
 1. Download [Release](https://github.com/typora-community-plugin/typora-community-plugin/releases) `typora-community-plugin.zip`.
 2. Unzip it.
-3. Copy files to `%UserProfile%/.typora/comunity-plugins`.
+3. Copy files to `%UserProfile%/.typora/community-plugins`.
 4. Create a symlink. Run `cmd` as admin, and run command `mklink /d %UserProfile%\\AppData\\Roaming\\Typora\\plugins %UserProfile%\\.typora\\community-plugins`.
 5. Modify `{TyporaHome}/resources/window.html`. Open the file with encoding UTF-8, then replace text `</body></html>` at the end of file as `<script src="typora://app/userData/plugins/loader.js" type="module"></script></body></html>`.
 
