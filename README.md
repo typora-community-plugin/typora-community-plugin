@@ -20,9 +20,9 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
 
 ## Compatible
 
-| Core version | tested Typora | Windows | Linux | MacOS |
-| ------------ | ------------- | ------- | ----- | ----- |
-| v2+          | v1.5+         | ✅      | ❓    | ❓    |
+| Core version | tested Typora  | Windows | Linux | MacOS |
+| ------------ | -------------- | ------- | ----- | ----- |
+| v2+          | v1.5.x, v1.6.x | ✅      | ❓    | ❓    |
 
 - ✅: tested in this platform
 - ❓: not test in this platform
