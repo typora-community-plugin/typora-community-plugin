@@ -6,8 +6,8 @@ import type { App } from 'src/app'
 import { editor, File } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
 import { html } from 'src/utils/html'
-import { ContextMenu, type MenuItem } from 'src/components/context-menu'
 import { draggable } from 'src/components/draggable'
+import { Menu } from 'src/components/menu'
 
 
 export type RibbonSettings = {
@@ -29,8 +29,7 @@ interface RibbonItemButton {
   title: string
   className?: string
   icon: HTMLElement
-  onclick?: () => void
-  menuItems?: MenuItem[]
+  onclick?: (event: MouseEvent) => void
 
   [BUILT_IN]?: boolean
   /**
@@ -77,16 +76,7 @@ export class WorkspaceRibbon extends View {
       .sort((a, b) => a.order - b.order)
       .forEach(btn => this._renderButton(btn))
 
-    this.addChild(new ContextMenu({
-      contextEl: $('.group.top', this.containerEl).get(0),
-      items: () => this.buttons
-        .filter(btn => btn.group !== 'bottom')
-        .map(btn => ({
-          id: btn.id,
-          text: btn.icon.outerHTML + ' ' + btn.title,
-          onclick: () => this.toggleButton(btn),
-        })),
-    }))
+    this._setupContextMenu()
 
     this.register(
       decorate.parameters(editor.library, 'setSidebarWidth', ([width, saveInSettings]) =>
@@ -123,8 +113,48 @@ export class WorkspaceRibbon extends View {
     return container
   }
 
+  private _setupContextMenu() {
+    const menu = new Menu()
+
+    this.registerDomEvent($('.group.top', this.containerEl).get(0), 'contextmenu', (event: MouseEvent) => {
+      menu.empty()
+
+      this.buttons
+        .filter(btn => btn.group !== 'bottom')
+        .forEach(btn => {
+          menu.addItem(item => {
+            item
+              .setKey(btn.id)
+              .setIcon(btn.icon.cloneNode(true) as HTMLElement)
+              .setTitle(btn.title)
+              .onClick(() => this.toggleButton(btn))
+          })
+        })
+
+      menu.showAtMouseEvent(event)
+    })
+
+    this.addChild(menu)
+  }
+
   private _addDefaultButton() {
     const { t } = this.app.i18n
+
+    const menu = new Menu()
+      .addItem(item => {
+        item
+          .setKey('app-settings')
+          .setTitle(t.ribbon.settingOfApp)
+          .onClick(() => File.megaMenu.showPreferencePanel())
+      })
+      .addItem(item => {
+        item
+          .setKey('plugin-settings')
+          .setTitle(t.ribbon.settingOfPlugin)
+          .onClick(() => this.app.commands.run('settings:open'))
+      })
+
+    this.addChild(menu)
 
     this.addButton({
       [BUILT_IN]: true,
@@ -132,15 +162,9 @@ export class WorkspaceRibbon extends View {
       id: 'core.settings',
       title: this.app.i18n.t.ribbon.settings,
       icon: html`<i class="fa fa-cog"></i>`,
-      menuItems: [{
-        id: 'app-settings',
-        text: t.ribbon.settingOfApp,
-        onclick: () => File.megaMenu.showPreferencePanel()
-      }, {
-        id: 'plugin-settings',
-        text: t.ribbon.settingOfPlugin,
-        onclick: () => this.app.commands.run('settings:open')
-      }]
+      onclick(event) {
+        menu.showAtMouseEvent(event)
+      },
     })
   }
 
@@ -220,13 +244,6 @@ export class WorkspaceRibbon extends View {
     }
     if (button.onclick) {
       itemEl.addEventListener('click', button.onclick)
-    }
-    else if (button.menuItems) {
-      this.addChild(new ContextMenu({
-        contextEl: itemEl,
-        triggerBy: 'click',
-        items: button.menuItems,
-      }))
     }
 
     itemEl.append(button.icon)

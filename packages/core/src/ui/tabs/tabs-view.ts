@@ -5,8 +5,8 @@ import decorate from "@plylrnsdy/decorate.js"
 import type { App } from "src/app"
 import { View } from "../view"
 import { editor } from "typora"
-import { ContextMenu } from 'src/components/context-menu'
 import { draggable } from 'src/components/draggable'
+import { Menu } from 'src/components/menu'
 
 
 export class TabsView extends View {
@@ -32,7 +32,7 @@ export class TabsView extends View {
 
   onload() {
     this.containerEl ??= this._buildContainer()
-    this._buildContextMenu()
+    this._setupContextMenu()
 
     const editorContainer = document.querySelector('content')!
     editorContainer.append(this.containerEl)
@@ -130,37 +130,42 @@ export class TabsView extends View {
     return el
   }
 
-  private _buildContextMenu() {
+  private _setupContextMenu() {
     const { t } = this.app.i18n
-    const commands: Record<string, Function> = {
-      removeTab: this.removeTab.bind(this),
-      removeOthers: this.removeOthers.bind(this),
-      removeRight: this.removeRight.bind(this),
-    }
+    const menu = new Menu()
 
-    this.addChild(
-      new ContextMenu({
-        contextEl: this.containerEl,
-        items: [{
-          id: 'removeTab',
-          text: t.tabview.close,
-        }, {
-          id: 'removeOthers',
-          text: t.tabview.closeOthers,
-        }, {
-          id: 'removeRight',
-          text: t.tabview.closeRight,
-        }]
-      })
-        .onShow(function ({ target }) {
-          $(this.containerEl)
-            .find('li[data-key="removeTab"]')
-            .toggleClass('hide', target.dataset.path === $('.typ-tab.active', this.contextEl).data('path'))
+    this.registerDomEvent(this.containerEl, 'contextmenu', (event: MouseEvent) => {
+      const clickedTabPath = $(event.target).data('path')
+      const activeTabPath = $('.typ-tab.active', this.containerEl).data('path')
+
+      menu.empty()
+
+      if (clickedTabPath !== activeTabPath) {
+        menu.addItem(item => {
+          item
+            .setKey('removeTab')
+            .setTitle(t.tabview.close)
+            .onClick(() => this.removeTab(clickedTabPath))
         })
-        .onItemClick(function ({ target, item }) {
-          commands[item.id](target.dataset.path)
+      }
+
+      menu
+        .addItem(item => {
+          item
+            .setKey('removeOthers')
+            .setTitle(t.tabview.closeOthers)
+            .onClick(() => this.removeOthers(clickedTabPath))
         })
-    )
+        .addItem(item => {
+          item
+            .setKey('removeRight')
+            .setTitle(t.tabview.closeRight)
+            .onClick(() => this.removeRight(clickedTabPath))
+        })
+        .showAtMouseEvent(event)
+    })
+
+    this.addChild(menu)
   }
 
   addTab(filePath: string) {
