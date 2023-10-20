@@ -47,7 +47,8 @@ export class TabsView extends View {
     this.register(
       this.app.workspace.on('file:open', (file) => {
         this.addTab(file)
-        setTimeout(() => editorContainer.scrollTop = this.tabPos.get(file) ?? 0, 100)
+        if (!this.tabPos.get(file)) return
+        setTimeout(() => editorContainer.scrollTop = this.tabPos.get(file), 100)
       }))
 
     this.register(
