@@ -6,6 +6,8 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
 
 **WARNING**: Third-party plugins may have data or privacy risks.
 
+To be on the safe side, install an open source plugin that can review the source code.
+
 
 
 ## Packages
@@ -20,29 +22,33 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
 
 ## Compatible
 
-| Core version | tested Typora  | Windows | Linux | MacOS |
-| ------------ | -------------- | ------- | ----- | ----- |
-| v2+          | v1.5.x, v1.6.x | ✅      | ❓    | ❓    |
+| tested Typora  | Windows     | Linux    | MacOS |
+| -------------- | ----------- | -------- | ----- |
+| v1.5.x, v1.6.x | ✅Window 10 | ✅Ubuntu | ❌    |
 
 - ✅: tested in this platform
-- ❓: not test in this platform
+- ❌: not support in this platform
 
 
 
 ## Features
 
 - Plugin Manage
-  - Install/Uninstall/Update plugin
-  - Enable/Disable plugin
+  - [x] Install/Uninstall/Update plugin
+  - [x] Enable/Disable plugin
 - New UI components
-  - Ribbon
-  - (Virtual) Multi File Tabs
-- Custom command hotkey
+  - [x] Ribbon
+  - [x] (Virtual) Multi File Tabs
+- [x] Custom command hotkey
 - APIs to extend Typora
-  - Markdown preprocessor
-  - Markdown postprocessor
-  - Markdown suggestion
-- I18n: follow system or manual configure, now support English and Chinese
+  - [x] Markdown preprocessor
+  - [x] Markdown postprocessor
+  - [x] Markdown suggestion
+- [x] I18n: follow system or manual configure, now support English and Chinese
+- [ ] Compatible with macOS
+- Documentation
+  - [ ] User documentation
+  - [ ] Developer documentation
 
 
 
@@ -66,11 +72,20 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
 
 ### Manual install
 
+for Windows
+
 1. Download [Release](https://github.com/typora-community-plugin/typora-community-plugin/releases) `typora-community-plugin.zip`.
 2. Unzip it.
 3. Copy files to `%UserProfile%/.typora/community-plugins`.
 4. Create a symlink. Run `cmd` as admin, and run command `mklink /d %UserProfile%\\AppData\\Roaming\\Typora\\plugins %UserProfile%\\.typora\\community-plugins`.
 5. Modify `{TyporaHome}/resources/window.html`. Open the file with encoding UTF-8, then replace text `</body></html>` at the end of file as `<script src="typora://app/userData/plugins/loader.js" type="module"></script></body></html>`.
+
+for Linux
+
+1. Download [Release](https://github.com/typora-community-plugin/typora-community-plugin/releases) `typora-community-plugin.zip`.
+2. Unzip it.
+3. Copy files to `~/.config/Typora/plugins`.
+4. Modify `/usr/share/typora/resources/window.html`。Open the file with encoding UTF-8, then replace text `</body></html>` at the end of file as `<script src="typora://app/userData/plugins/loader.js" type="module"></script></body></html>`.
 
 
 
@@ -82,6 +97,7 @@ A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidia
 | --------------------------- | ------------------- |
 | <kbd>F1</kbd>               | Open Command Panel  |
 | <kbd>Ctrl</kbd>+<kbd>.</kbd>| Open Settings Modal |
+
 
 
 ## Contributing

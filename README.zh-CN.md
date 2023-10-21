@@ -6,6 +6,8 @@
 
 **警告**: 第三方插件可能有数据和隐私风险。
 
+安全起见，请安装可以审查源码的开源插件。
+
 
 
 ## 模块
@@ -20,29 +22,33 @@
 
 ## 兼容性
 
-| Core 版本 | 已测试的 Typora  | Windows | Linux | MacOS |
-| --------- | -------------- | ------- | ----- | ----- |
-| v2+       | v1.5.x, v1.6.x | ✅      | ❓    | ❓    |
+| 已测试的 Typora  | Windows     | Linux   | MacOS |
+| -------------- | ----------- | -------- | ----- |
+| v1.5.x, v1.6.x | ✅Window 10 | ✅Ubuntu | ❌    |
 
 - ✅: 已在该平台测试
-- ❓: 未在该平台测试
+- ❌: 不支持该平台
 
 
 
 ## 特性
 
 - 插件管理
-  - 安装/卸载/更新 插件
-  - 启用/禁用 插件
+  - [x] 安装/卸载/更新 插件
+  - [x] 启用/禁用 插件
 - 新的 UI 组件
-  - Ribbon
-  - (模拟的) 多文件标签页
-- 自定义命令的快捷键
+  - [x] Ribbon
+  - [x] (模拟的) 多文件标签页
+- [x] 自定义命令的快捷键
 - 扩展 Typora 的 APIs
-  - Markdown 前处理器
-  - Markdown 后处理器
-  - Markdown 自动完成
-- I18n: 跟随系统或手动配置，现在支持英语和中文
+  - [x] Markdown 前处理器
+  - [x] Markdown 后处理器
+  - [x] Markdown 自动完成
+- [x] I18n: 跟随系统或手动配置，现在支持英语和中文
+- [ ] 兼容 macOS
+- 文档
+  - [ ] 用户文档
+  - [ ] 开发文档
 
 
 
@@ -66,11 +72,20 @@
 
 ### 手动安装
 
+Windows 用户
+
 1. 从 [Release](https://github.com/typora-community-plugin/typora-community-plugin/releases) 下载 `typora-community-plugin.zip`。
 2. 解压文件。
 3. 复制文件到 `%UserProfile%/.typora/community-plugins`。
 4. 创建文件夹的符号链接。以管理员身份运行 `cmd` ，然后运行命令 `mklink /d %UserProfile%\\AppData\\Roaming\\Typora\\plugins %UserProfile%\\.typora\\community-plugins`。
 5. 修改文件 `{Typora 安装目录}/resources/window.html`。使用 UTF-8 编码打开该文件，替换文件末尾的文本 `</body></html>` 为 `<script src="typora://app/userData/plugins/loader.js" type="module"></script></body></html>`。
+
+Linux 用户
+
+1. 从 [Release](https://github.com/typora-community-plugin/typora-community-plugin/releases) 下载 `typora-community-plugin.zip`。
+2. 解压文件。
+3. 复制文件到 `~/.config/Typora/plugins`。
+4. 修改文件 `/usr/share/typora/resources/window.html`。使用 UTF-8 编码打开该文件，替换文件末尾的文本 `</body></html>` 为 `<script src="typora://app/userData/plugins/loader.js" type="module"></script></body></html>`。
 
 
 
