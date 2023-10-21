@@ -106,7 +106,7 @@ export class PluginManager {
     try {
       const manifest = this.manifests[id]
 
-      const module = await import(path.join(manifest.dir!, 'main.js') + `?v=${manifest.version}`)
+      const module = await import('file://' + path.join(manifest.dir!, 'main.js') + `?v=${manifest.version}`)
 
       const PluginImplement = module.default
       this.instances[id] = new PluginImplement(this.app, manifest)
