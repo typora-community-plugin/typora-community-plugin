@@ -115,11 +115,19 @@ export class PluginsManagerSettingTab extends SettingTab {
         setting.addBadge('<span class="fa fa-hdd-o" title="Local Plugin"></span>')
       }
 
-      setting.addDescription([
-        `<div class="typ-plugin-meta"><span class="fa fa-folder"></span> ${manifest.postion}</div>`,
-        `<div class="typ-plugin-meta"><span class="fa fa-cube"></span> v${manifest.version}</div>`,
-        `<div class="typ-plugin-meta"><span class="fa fa-user"></span> ${manifest.author}</div>`,
-      ].join(''))
+      setting.addDescription(el => {
+        $(el).append(
+          `<div class="typ-plugin-meta"><span class="fa fa-folder"></span> ${manifest.postion}</div>`,
+
+          `<div class="typ-plugin-meta"><span class="fa fa-cube"></span> v${manifest.version}</div>`,
+
+          `<div class="typ-plugin-meta"><span class="fa fa-user"></span> ${manifest.author}</div>`,
+
+          manifest.repo &&
+          $(`<div class="typ-plugin-meta"><span class="fa fa-github"></span> <a>Repository</a></div>`)
+            .on('click', () => this.app.openLink('https://github.com/' + manifest.repo)),
+        )
+      })
 
       setting.addDescription(manifest.description)
 

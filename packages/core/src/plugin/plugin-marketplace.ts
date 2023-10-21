@@ -6,8 +6,7 @@ import { unzipFromBuffer } from 'src/utils/unzip'
 import type { PluginManifest, PluginPostion } from "./plugin-manifest"
 
 
-export type PluginMarketInfo = Pick<PluginManifest, "id" | "name" | "description" | "author"> & {
-  repo: string
+export type PluginMarketInfo = Pick<PluginManifest, "id" | "name" | "description" | "author" | "repo"> & {
   newestVersion?: string
 }
 

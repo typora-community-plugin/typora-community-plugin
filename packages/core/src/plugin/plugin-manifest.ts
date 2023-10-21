@@ -10,6 +10,10 @@ export interface PluginManifest {
   description: string
   author: string
   authorUrl: string
+  /**
+   * @since v2.0.0-beta.29
+   */
+  repo: string
   version: string
   minAppVersion: string
   minCoreVersion: string

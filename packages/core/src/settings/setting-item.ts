@@ -64,8 +64,18 @@ export class SettingItem extends View {
     this.name.append(html` <code>${text}</code>`)
   }
 
-  addDescription(description: string) {
-    this.info.append(html`<div class="typ-setting-description">${description}</div>`)
+  addDescription(description: string): void
+  addDescription(build: (div: HTMLElement) => void): void
+  addDescription(param0: string | ((div: HTMLElement) => void)) {
+    const el = html`<div class="typ-setting-description"></div>`
+
+    if (typeof param0 === 'string') {
+      el.innerText = param0
+    } else {
+      param0(el)
+    }
+
+    this.info.append(el)
   }
 
   addCheckbox(build: (checkbox: HTMLInputElement) => void) {
@@ -96,16 +106,18 @@ export class SettingItem extends View {
   addSelect(options: SelectOptions): void
   addSelect(build: (input: HTMLSelectElement) => void): void
   addSelect(param0: SelectOptions | ((input: HTMLSelectElement) => void)) {
+    const select = html`<select></select>` as HTMLSelectElement
+
     if (typeof param0 === 'function') {
-      const select = html`<select></select>` as HTMLSelectElement
       param0(select)
-      this.controls.append(select)
     }
     else {
-      const el = html`<select>${param0.options.map(o => `<option ${o === param0.selected ? 'selected' : ''}>${o}</option>`).join('')}</select>` as HTMLSelectElement
-      el.onchange = param0.onchange
-      this.controls.append(el)
+      select.innerHTML = param0.options.map(o => `<option ${o === param0.selected ? 'selected' : ''}>${o}</option>`).join('')
+
+      select.onchange = param0.onchange
     }
+
+    this.controls.append(select)
   }
 
   addTag(text: string, build?: (el: HTMLElement) => void) {
