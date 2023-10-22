@@ -30,12 +30,14 @@ export class AboutTab extends SettingTab {
 
     this.addSetting(setting => {
       setting.addName('Typora Community Plugin')
-      setting.addDescription([
-        `${t.projectDesc} <a href="https://typora.io">Typora</a>`,
-        `${t.labelVersion}: v${this.app.coreVersion}`,
-        `${t.labelAuthor}: <a href="https://github.com/plylrnsdy">plylrnsdy</a>`,
-        `${t.labelHomepage}: <a href="https://github.com/typora-community-plugin/typora-community-plugin">typora-community-plugin</a>`,
-      ].join('<br>'))
+      setting.addDescription(el => {
+        $(el).append([
+          `${t.projectDesc} <a href="https://typora.io">Typora</a>`,
+          `${t.labelVersion}: v${this.app.coreVersion}`,
+          `${t.labelAuthor}: <a href="https://github.com/plylrnsdy">plylrnsdy</a>`,
+          `${t.labelHomepage}: <a href="https://github.com/typora-community-plugin/typora-community-plugin">typora-community-plugin</a>`,
+        ].join('<br>'))
+      })
 
       setting.addButton(button => {
         button.classList.add('primary')
