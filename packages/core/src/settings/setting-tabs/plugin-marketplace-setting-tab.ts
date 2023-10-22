@@ -71,10 +71,18 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     super.hide()
   }
 
+  private _pluginListVersion = 0
+
   private loadPluginList() {
+    const version = +_.uniqueId()
+
     this.cleanPluginList()
     this.app.plugins.marketplace.loadCommunityPlugins()
-      .then(() => this.renderPluginList())
+      .then(() => {
+        if (version <= this._pluginListVersion) return
+        this._pluginListVersion = version
+        this.renderPluginList()
+      })
   }
 
   private renderPluginList(query: string = '') {
