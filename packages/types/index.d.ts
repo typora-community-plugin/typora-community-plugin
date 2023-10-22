@@ -11,6 +11,71 @@ export declare var _options: {
 }
 
 
+/**
+ * Can only be accessed in macOS.
+ */
+export declare var bridge: {
+
+  callHandler(cmd: "controller.openFolder", path: string): void
+  callHandler(cmd: "controller.openInTypora", path: string): void
+  callHandler(cmd: "controller.runCommand", opts: { args: string, cwd: string }, cb: ((results: [boolean, string, string, string]) => void)): void
+  callHandler(cmd: "controller.showErrorDialog", msg: string): void
+  //
+  callHandler(cmd: "document.enterOversize"): void
+  callHandler(cmd: "document.getContent", cb: (content: string) => void): void
+  callHandler(cmd: "document.getDataFromFile"): void
+  //
+  callHandler(cmd: "library.fetchAllDocs", folder: string): void
+  callHandler(cmd: "library.getRecentFolders", cb: (param0: any) => void): void
+  callHandler(cmd: "library.listDocsUnder", folder: string, cb: (file: TFile) => void): void
+  callHandler(cmd: "library.moveFile", opts: { source: string, dest: string, shouldOpen: boolean }): void
+  callHandler(cmd: "library.newFile", filepath: string, cb: (param0: any) => void): void
+  callHandler(cmd: "library.newFileUnder", folder: string): void
+  callHandler(cmd: "library.newFolder", path: string, cb: (success: boolean) => void): void
+  callHandler(cmd: "library.renameFile", opts: { old: string, new: string }, cb: (param0: any) => void): void
+  callHandler(cmd: "library.search", opts: { text: string, caseSensitive: boolean, wholeWord: boolean, args: string[] }, cb: (param0: any) => void): void
+  callHandler(cmd: "library.showProperty", filepath: string): void
+  callHandler(cmd: "library.trashItem", filepath: string, cb: (param0: any) => void): void
+  callHandler(cmd: "library.updateListItem", opts: { path: string, mark: boolean }): void
+  callHandler(cmd: "library.updateListItemIfIsOpen", path: string): void
+  //
+  callHandler(cmd: "path.isDirectory", path: string, cb: (value: boolean) => void): void
+  callHandler(cmd: "path.moveTo", opts: { source: string, folder: string }, cb: (param0: any) => void): void
+  callHandler(cmd: "path.openFile", opts: { url: string, relateToFolder: boolean }, cb: (success: boolean) => void): void
+  callHandler(cmd: "path.openURL", url: string): void
+  callHandler(cmd: "path.removeFiles", files: string[]): void
+  //
+  callHandler(cmd: "quickOpen.cacheRecentFiles"): void
+  callHandler(cmd: "quickOpen.initFileCache"): void
+  callHandler(cmd: "quickOpen.query", query: string): void
+  callHandler(cmd: "quickOpen.reindexFolderIfNeeded"): void
+  callHandler(cmd: "quickOpen.setSearchState"): void
+  callHandler(cmd: "quickOpen.setRecentFiles"): void
+  callHandler(cmd: "quickOpen.setRecentFolders"): void
+  callHandler(cmd: "quickOpen.stopQuery"): void
+  callHandler(cmd: "quickOpen.updateCacheByRename"): void
+  callHandler(cmd: "quickOpen.updateCache"): void
+  callHandler(cmd: "quickOpen.updateResult"): void
+  //
+  callHandler(cmd: "touchBar.setFencesOnSetLang", value: boolean): void
+  //
+  callHandler(cmd: "window.focus"): void
+  callHandler(cmd: "window.pasteAsPlainText"): void
+  callHandler(cmd: "window.previewFile", path: string): void
+  callHandler(cmd: "window.setTitlebarTextMarginLeft", margin: number | null): void
+  //
+  callHandler(cmd: string, data?: any, cb?: (param0: any) => void): void
+
+  callSync(method: "clipboard.readText"): string
+  callSync(method: "contextMenu.setItems", param1: any): any
+  callSync(method: "document.isDocumentEdited"): boolean
+  callSync(method: "images.convertFakeUrl", url: string): string
+  callSync(method: "path.readText", filepath: string): string
+  //
+  callSync(method: string, data?: any, cb?: (param0: any) => void): any
+}
+
+
 export declare var ClientCommand: TClientCommand
 
 interface TClientCommand {
@@ -425,37 +490,85 @@ export declare function isInputComponent(el: Element | null): boolean
 
 
 export declare var JSBridge: {
+  invoke(command: "app.cancelQuit"): Promise<any>
+  invoke(command: "app.onCloseWin", folder: string): Promise<any>
   invoke(command: "app.openFile", path: string, opts: { forceCreateWindow: boolean, mountFolder: string }): Promise<any>
   invoke(command: "app.openFileOrFolder", path: string, opts: { forceCreateWindow: boolean, mountFolder: string }): Promise<any>
+  invoke(command: "app.openOrSwitch"): Promise<any>
   //
   invoke(command: "app.sendEvent", event: "willRename", data: { oldPath: string }): Promise<any>
   invoke(command: "app.sendEvent", event: "didRename", data: { oldPath: string, newPath: string }): Promise<any>
   invoke(command: "app.sendEvent", event: "willSave", filePath: string): Promise<any>
   invoke(command: "app.sendEvent", event: "didSave", data: { path: string, summary: any, lastModifiedDate: any }): Promise<any>
   //
+  invoke(command: "clipboard.write", jsonStr: string): Promise<any>
   invoke(command: "controller.switchFolder", path: string): Promise<any>
+  invoke(command: "document.checkIfMoveOnSave", path: string): Promise<any>
+  //
+  invoke(command: "document.currentPath"): Promise<any>
+  invoke(command: "document.enterOversize"): Promise<any>
+  invoke(command: "document.getContent"): Promise<any>
+  invoke(command: "document.hasDuplicateName", filename: string): Promise<any>
+  invoke(command: "document.loadInitData"): Promise<any>
+  invoke(command: "document.newWindow"): Promise<any>
+  invoke(command: "document.noOtherWindow"): Promise<any>
+  invoke(command: "document.rename", newPath: string): Promise<any>
+  invoke(command: "document.setContent", content: string): Promise<any>
   invoke(command: "document.switchDocument", path: string): Promise<any>
   invoke(command: "document.switchToUntitled", filename?: string, isFileExist?: boolean): Promise<any>
+  //
+  invoke(command: "executeJavaScript", i: number, code: string): Promise<any>
+  invoke(command: "filesOp.clearUndo"): Promise<any>
+  invoke(command: "menu.refreshThemeMenu"): Promise<any>
+  invoke(command: "menu.updateCustomZoom"): Promise<any>
+  invoke(command: "pandoc.version"): Promise<any>
+  //
+  invoke(command: "setting.clearRecentDocuments"): Promise<any>
+  invoke(command: "setting.fetchAnalytics"): Promise<any>
+  invoke(command: "setting.getDownloadingDicts"): Promise<any>
   invoke(command: "setting.getKeyBinding"): Promise<any>
+  invoke(command: "setting.getRecentFiles"): Promise<any>
+  invoke(command: "setting.getThemes"): Promise<any>
+  invoke(command: "setting.getUnsavedDraftsPath"): Promise<any>
+  invoke(command: "setting.getUserDict"): Promise<any>
+  invoke(command: "setting.getUserDictionaryPath"): Promise<any>
+  invoke(command: "setting.loadExports"): Promise<any>
+  invoke(command: "setting.removeRecentDocument", path: string): Promise<any>
+  invoke(command: "setting.setCurTheme", path: string, name: string): Promise<any>
+  //
   /** Open file with default application. */
   invoke(command: "shell.openItem", path: string): Promise<any>
   invoke(command: "shell.trashItem", path: string): Promise<any>
+  //
   invoke(command: "theme.setThemeSource", mode: "system" | "light" | "dark"): Promise<any>
+  //
+  invoke(command: "url.request", url: string): Promise<any>
   //
   invoke(command: "webContents.cut"): Promise<any>
   invoke(command: "webContents.copy"): Promise<any>
+  invoke(command: "webContents.paste"): Promise<any>
+  invoke(command: "webContents.redo"): Promise<any>
+  invoke(command: "webContents.selectAll"): Promise<any>
+  invoke(command: "webContents.undo"): Promise<any>
   //
+  invoke(command: "window.checkAsFocus"): Promise<any>
   invoke(command: "window.close"): Promise<any>
+  invoke(command: "window.focus"): Promise<any>
   invoke(command: "window.fullscreen"): Promise<any>
+  invoke(command: "window.inspectElement", x: number, y: number): Promise<any>
   invoke(command: "window.loadFinished"): Promise<any>
   invoke(command: "window.maximize"): Promise<any>
   invoke(command: "window.minimize"): Promise<any>
   invoke(command: "window.pin"): Promise<any>
   invoke(command: "window.restore"): Promise<any>
+  invoke(command: "window.setInSourceMode", value: boolean): Promise<any>
+  invoke(command: "window.setMenuBarVisibility", value: boolean): Promise<any>
   invoke(command: "window.toggleDevTools"): Promise<any>
   invoke(command: "window.unpin"): Promise<any>
   //
   invoke(command: string, ...args: any[]): Promise<any>
+
+  putSetting(key: string, value: any): void
 
   showInBrowser(url: string): void
 }
