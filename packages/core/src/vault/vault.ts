@@ -3,9 +3,9 @@ import * as fsp from 'fs/promises'
 import * as mkdirp from 'mkdirp'
 import * as path from 'path'
 import { _options, File, JSBridge } from 'typora'
-import { Events } from './events'
+import { Events } from '../events'
 import decorate from '@plylrnsdy/decorate.js'
-import type { App } from './app'
+import type { App } from '../app'
 
 
 type VaultEvents = {

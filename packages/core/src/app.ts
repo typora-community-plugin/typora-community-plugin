@@ -6,7 +6,7 @@ import * as Core from '.'
 import { Events } from './events'
 import { GithubAPI } from './github'
 import { HotkeyManager } from './hotkey-manager'
-import { Vault } from "./vault"
+import { Vault } from "./vault/vault"
 import { CommandManager } from './command/command-manager'
 import { I18n } from './locales/i18n'
 import * as Locale from './locales/lang.en.json'
