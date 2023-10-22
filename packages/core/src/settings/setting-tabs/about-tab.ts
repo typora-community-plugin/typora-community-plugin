@@ -43,7 +43,7 @@ export class AboutTab extends SettingTab {
         button.onclick = () => {
           button.disabled = true
           this.updateCore()
-            .then(() => button.disabled = false)
+            .finally(() => button.disabled = false)
         }
       })
     })
