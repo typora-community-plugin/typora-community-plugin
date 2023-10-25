@@ -8,7 +8,7 @@
     "pnpm": ">=7"
   },
   "scripts": {
-    "build": "pnpm -F loader run build && pnpm -F core run build && node build.js"
+    "build": "cd packages/loader && pnpm run build &&  cd ../core && pnpm run build &&  cd ../.. && node build.js"
   },
   "keywords": [],
   "author": "plylrnsdy",
