@@ -1,11 +1,9 @@
-import * as fs from 'fs'
-import * as fsp from 'fs/promises'
-import * as mkdirp from 'mkdirp'
 import * as path from 'path'
 import { _options, File, JSBridge } from 'typora'
-import { Events } from '../events'
 import decorate from '@plylrnsdy/decorate.js'
 import type { App } from '../app'
+import { Events } from '../events'
+import fs from 'src/vault/filesystem'
 
 
 type VaultEvents = {
@@ -56,7 +54,7 @@ export class Vault extends Events<VaultEvents> {
   }
 
   initConfigDir() {
-    mkdirp.sync(this.dataDir)
+    fs.mkdir(this.dataDir)
   }
 
   /**
@@ -68,7 +66,7 @@ export class Vault extends Events<VaultEvents> {
   readConfigJson(filename: string, defaultValue: any = {}): any {
     try {
       const configPath = path.join(this.configDir, filename + '.json')
-      const text = fs.readFileSync(configPath, 'utf8')
+      const text = fs.readSync(configPath)
       return JSON.parse(text)
     } catch (error) {
       console.warn(`Failed to load config "${filename}.json"`)
@@ -79,10 +77,10 @@ export class Vault extends Events<VaultEvents> {
   writeConfigJson(filename: string, config: any) {
     const configPath = path.join(this.configDir, filename + '.json')
     const dirname = path.dirname(configPath)
-    return fsp
-      .access(dirname)
-      .catch(() => fsp.mkdir(dirname, { recursive: true }))
-      .then(() => fsp.writeFile(configPath, JSON.stringify(config, null, 2), 'utf8'))
+    return fs
+      .exists(dirname)
+      .catch(() => fs.mkdir(dirname))
+      .then(() => fs.write(configPath, JSON.stringify(config, null, 2)))
       .catch(error => {
         console.error(`Failed to save config "${filename}.json".`)
         console.error(error)
@@ -105,10 +103,10 @@ export class Vault extends Events<VaultEvents> {
       }
     })
 
-    decorate.afterCall(JSBridge, 'invoke', (args) => {
+    decorate.afterCall(JSBridge, 'invoke', async (args) => {
       if ("app.sendEvent" === args[0] && "didRename" === args[1]) {
         const { oldPath, newPath } = args[2]
-        const type = fs.statSync(newPath).isDirectory() ? 'directory' : 'file'
+        const type = (await fs.stat(newPath)).isDirectory() ? 'directory' : 'file'
         this.emit(`${type}:rename`, oldPath, newPath)
       }
       else if ('shell.trashItem' === args[0]) {

@@ -1,11 +1,11 @@
 import './variables.scss'
-import * as fs from 'fs/promises'
 import * as path from 'path'
 import { JSBridge, _options, editor } from 'typora'
 import * as Core from '.'
 import { Events } from './events'
 import { GithubAPI } from './github'
 import { HotkeyManager } from './hotkey-manager'
+import fs from './vault/filesystem'
 import { Vault } from "./vault/vault"
 import { CommandManager } from './command/command-manager'
 import { I18n } from './locales/i18n'
@@ -135,7 +135,7 @@ export class App extends Events<AppEvents> {
     let url: FileURL = { pathname: filepath }
     const basename = path.basename(filepath)
     if (basename.includes('#')) {
-      url = await fs.access(filepath)
+      url = await fs.exists(filepath)
         .then(() => url)
         .catch(() => {
           const hashSplitorIdx = filepath.lastIndexOf('#')

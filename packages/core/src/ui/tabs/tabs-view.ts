@@ -1,5 +1,4 @@
 import './tabs-view.scss'
-import * as fs from 'fs'
 import * as path from 'path'
 import decorate from "@plylrnsdy/decorate.js"
 import type { App } from "src/app"
@@ -7,6 +6,7 @@ import { View } from "../view"
 import { editor } from "typora"
 import { draggable } from 'src/components/draggable'
 import { Menu } from 'src/components/menu'
+import fs from 'src/vault/filesystem'
 
 
 export class TabsView extends View {
@@ -95,12 +95,8 @@ export class TabsView extends View {
 
         const filePath = tab.dataset.path!
 
-        try {
-          fs.accessSync(filePath)
-        } catch (error) {
-          this.removeTab(filePath)
-          return
-        }
+        fs.exists(filePath)
+          .then(isExists => !isExists && this.removeTab(filePath))
 
         this.containerEl.querySelectorAll('.typ-tab')
           .forEach(el => el.classList.remove('active'))

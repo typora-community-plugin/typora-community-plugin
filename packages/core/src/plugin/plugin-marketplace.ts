@@ -1,8 +1,7 @@
-import * as fs from 'fs/promises'
 import * as path from 'path'
 import type { App } from 'src/app'
 import { Notice } from 'src/components/notice'
-import { unzipFromBuffer } from 'src/utils/unzip'
+import fs from 'src/vault/filesystem'
 import type { PluginManifest, PluginPostion } from "./plugin-manifest"
 
 
@@ -38,37 +37,29 @@ export class PluginMarketplace {
   }
 
   installPlugin(info: PluginMarketInfo, pos: PluginPostion) {
-    return this.downloadPlugin(info)
-      .then(arrBuf => {
-        const buf = Buffer.from(arrBuf)
+    return this.getPluginNewestVersion(info)
+      .then(version => this.app.github.downloadThenUnzipToTemp(info.repo, version, 'plugin.zip'))
+      .then(tmp => {
         const dir = pos === 'global'
           ? this.app.plugins.globalPluginsDir
           : this.app.plugins.vaultPluginsDir
         const root = path.join(dir, info.id)
 
-        return fs.mkdir(root, { recursive: true })
-          .then(() => unzipFromBuffer(buf, root))
-          .then(() => fs.readFile(path.join(root, 'manifest.json'), 'utf8'))
+        return fs.read(path.join(tmp, 'manifest.json'))
           .then(text => JSON.parse(text) as PluginManifest)
           .then(manifest => {
             if (info.id !== manifest.id) {
-              fs.rm(root, { recursive: true })
+              fs.remove(tmp)
               new Notice(this.app.i18n.t.pluginMarketplace.idNotCorrect)
             }
             else {
               manifest.postion = pos
               manifest.dir = root
               this.app.plugins.manifests[manifest.id] = manifest
+
+              return fs.move(tmp, root)
             }
           })
-      })
-  }
-
-  downloadPlugin(info: PluginMarketInfo) {
-    return this.getPluginNewestVersion(info)
-      .then(version => {
-        return this.app.github.download(info.repo, version, 'plugin.zip')
-          .then(res => res.arrayBuffer())
       })
   }
 }

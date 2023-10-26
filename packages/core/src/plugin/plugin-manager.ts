@@ -1,5 +1,4 @@
 import * as path from 'path'
-import * as fs from 'fs/promises'
 import * as _ from 'lodash'
 import { _options } from 'typora'
 import type { App } from "src/app"
@@ -7,6 +6,7 @@ import { Notice } from 'src/components/notice'
 import { Plugin } from "./plugin"
 import type { PluginManifest, PluginPostion } from "./plugin-manifest"
 import { PluginMarketplace } from './plugin-marketplace'
+import fs from 'src/vault/filesystem'
 import { format } from 'src/utils/format'
 import * as versions from 'src/utils/versions'
 
@@ -63,8 +63,8 @@ export class PluginManager {
   private async _readPluginsDir(pluginsPath: string) {
     if (!pluginsPath) return []
 
-    return fs.access(pluginsPath)
-      .then(() => fs.readdir(pluginsPath))
+    return fs.exists(pluginsPath)
+      .then(() => fs.list(pluginsPath))
       .then((dirnames) =>
         dirnames.map(dir => path.join(pluginsPath, dir))
       )
@@ -74,8 +74,8 @@ export class PluginManager {
   loadManifest(postion: PluginPostion, pluginPath: string) {
     const manifestPath = path.join(pluginPath, 'manifest.json')
 
-    return fs.access(manifestPath)
-      .then(() => fs.readFile(manifestPath, 'utf8'))
+    return fs.exists(manifestPath)
+      .then(() => fs.read(manifestPath))
       .then(text => {
         const manifest = JSON.parse(text) as PluginManifest
         manifest.postion = postion
@@ -112,8 +112,8 @@ export class PluginManager {
       this.instances[id] = new PluginImplement(this.app, manifest)
 
       const cssPath = path.join(manifest.dir!, 'style.css')
-      await fs.access(cssPath)
-        .then(() => fs.readFile(cssPath, 'utf8'))
+      await fs.exists(cssPath)
+        .then(() => fs.read(cssPath))
         .then(cssText => { this.styles[id] = cssText })
         .catch(() => { })
     } catch (error) {
@@ -190,7 +190,7 @@ export class PluginManager {
     delete this.manifests[id]
     delete this.enabledPlugins[id]
     this._saveEnabledConfig()
-    return fs.rm(manifest.dir!, { recursive: true })
+    return fs.remove(manifest.dir!)
   }
 
   private _saveEnabledConfig = _.debounce(() => {

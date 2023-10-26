@@ -1,10 +1,9 @@
-import * as fs from 'fs'
 import * as path from 'path'
 import type { App } from "src/app"
-import { SettingTab } from "../setting-tab"
-import { unzipFromBuffer } from 'src/utils/unzip'
-import * as versions from 'src/utils/versions'
 import { Notice } from 'src/components/notice'
+import { SettingTab } from "../setting-tab"
+import * as versions from 'src/utils/versions'
+import fs from 'src/vault/filesystem'
 
 
 export type CoreSettings = {
@@ -50,16 +49,23 @@ export class AboutTab extends SettingTab {
       })
     })
 
-    this.addSetting(setting => {
+    this.addSetting(async setting => {
       setting.addName(t.lang)
       setting.addDescription(t.langDesc)
-      setting.addSelect({
-        options: fs.readdirSync(path.join(this.app.coreDir, 'locales'))
-          .map(name => name.slice(5, -5)),
-        selected: this.app.settings.get('displayLang'),
-        onchange: event => {
-          this.app.settings.set('displayLang', event.target.value)
-        },
+      setting.addSelect(async el => {
+        const files = await fs.list(path.join(this.app.coreDir, 'locales'))
+
+        const selected = this.app.settings.get('displayLang')
+        const select = (opt: string) => opt === selected ? 'selected' : ''
+        const options = files
+          .map(name => name.slice(5, -5))
+          .map(name => `<option ${select(name)}>${name}</option>`)
+
+        $(el)
+          .append(...options)
+          .on('change', e => {
+            this.app.settings.set('displayLang', $(e.target).val().toString())
+          })
       })
     })
   }
@@ -72,14 +78,12 @@ export class AboutTab extends SettingTab {
       .then(data => data.tag_name)
       .then(version => {
         if (versions.compare(this.app.coreVersion, version) < 0) {
-          return this.app.github.download(repo, version, `${name}.zip`)
-            .then(res => res.arrayBuffer())
-            .then(arrBuf => {
-              const buf = Buffer.from(arrBuf)
+          return this.app.github.downloadThenUnzipToTemp(repo, version, `${name}.zip`)
+            .then(tmp => {
               const root = path.join(this.app.coreDir, '..')
-              return unzipFromBuffer(buf, root)
-                .then(() => { new Notice(t.coreUpdateSuccessful) })
+              return fs.move(tmp, root)
             })
+            .then(() => { new Notice(t.coreUpdateSuccessful) })
         }
         else {
           new Notice(t.coreUpToDate)

@@ -1,10 +1,10 @@
-import * as fs from "fs"
 import * as path from "path"
 import { JSBridge, editor } from "typora"
 import decorate from '@plylrnsdy/decorate.js'
 import type { App } from "src/app"
 import { Component } from "src/component"
 import { View } from "./view"
+import fs from 'src/vault/filesystem'
 
 
 export class QuickOpenPanel extends View {
@@ -109,10 +109,10 @@ class QuickOpenInCurrentWin extends Component {
 
   onload() {
     this.register(
-      decorate(JSBridge, 'invoke', fn => (...args) => {
+      decorate(JSBridge, 'invoke', fn => async (...args) => {
         if (
           args[0] === 'app.openFileOrFolder' &&
-          fs.statSync(args[1]).isFile() &&
+          (await fs.stat(args[1])).isFile() &&
           !args[2].forceCreateWindow
         ) {
           editor.library.openFile(args[1])

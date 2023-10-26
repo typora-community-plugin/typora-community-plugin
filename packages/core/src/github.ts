@@ -1,5 +1,11 @@
+import * as extract from "extract-zip"
+import * as path from 'path'
+import * as _ from 'lodash'
+import { File, JSBridge, _options } from 'typora'
 import type { App } from "src/app"
 import { format } from "src/utils/format"
+import fs from 'src/vault/filesystem'
+import { Shell } from 'src/utils/shell'
 
 
 interface GithubProxy {
@@ -55,8 +61,29 @@ export class GithubAPI {
   /**
    * Download release asset
    */
-  download(repo: string, id: string, asset: string) {
+  downloadThenUnzipToTemp(repo: string, id: string, asset: string) {
     const uri = this.uri.base + '{repo}/releases/download/{id}/{asset}'
-    return fetch(format(uri, { repo, id, asset }))
+    const url = format(uri, { repo, id, asset })
+    const tmpDir = path.join(_options.userDataPath, 'plugins', '.tmp')
+    const tmpDirname = _.uniqueId()
+    const tmpFilename = `${tmpDirname}.zip`
+    const tmpZippath = path.join(tmpDir, tmpFilename)
+    const tmp = path.join(tmpDir, tmpDirname)
+
+    if (File.isNode) {
+      return fs.mkdir(tmpDir)
+        .then(() => JSBridge.invoke('app.download', url, tmpDir, tmpFilename))
+        .then(() => new Promise<void>((resolve, reject) => {
+          extract(tmpZippath, { dir: tmp }, (err) => {
+            err ? reject(err) : resolve()
+          })
+        }))
+        .then(() => fs.remove(tmpZippath))
+        .then(() => tmp)
+    }
+    else {
+      return Shell.run(`curl '${url}' | unzip -d '${tmp}'`)
+        .then(() => tmp)
+    }
   }
 }

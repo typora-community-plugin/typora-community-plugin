@@ -1,15 +1,14 @@
-import * as fs from 'fs'
-import * as fsp from 'fs/promises'
 import * as path from 'path'
 import type { App } from './app'
 import { BUILT_IN, WorkspaceRibbon } from './ui/ribbon/workspace-ribbon'
-import { ClientCommand, JSBridge } from 'typora'
+import fs from './vault/filesystem'
 import { html } from './utils/html'
+import { ClientCommand, File, JSBridge, reqnode } from 'typora'
 
 
 export function devtools(app: App) {
 
-  if (app.env.PLUGIN_WIN_ID) {
+  if (app.env.PLUGIN_WIN_ID && File.isNode) {
     createLocker()
   }
 
@@ -35,14 +34,15 @@ export function devtools(app: App) {
   }
 
   function createLocker() {
+    const nodeFs: typeof import('fs') = reqnode('fs')
     const lockerDir = path.join(app.plugins.globalRootDir, '.lock')
     const winLocker = path.join(lockerDir, `win-${app.env.PLUGIN_WIN_ID}`)
     const ac = new AbortController()
 
-    fsp.access(lockerDir)
-      .catch(() => fsp.mkdir(lockerDir))
-      .then(() => fsp.writeFile(winLocker, '', 'utf-8'))
-      .then(() => fs.watch(winLocker, { signal: ac.signal }, (e) => {
+    fs.exists(lockerDir)
+      .catch(() => fs.mkdir(lockerDir))
+      .then(() => fs.write(winLocker, ''))
+      .then(() => nodeFs.watch(winLocker, { signal: ac.signal }, (e) => {
         if (e === 'rename') {
           ac.abort()
           JSBridge.invoke("window.close")

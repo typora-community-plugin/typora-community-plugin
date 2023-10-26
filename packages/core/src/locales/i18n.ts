@@ -1,6 +1,6 @@
-import * as fs from 'fs'
 import * as path from 'path'
 import { _options } from "typora"
+import fs from 'src/vault/filesystem'
 import type { ReadonlyDeep } from 'src/utils/types'
 
 
@@ -63,14 +63,16 @@ export class I18n<T> {
       .map(s => path.join(localePath, `lang.${s}.json`))
 
     for (let i = 0; i < pathList.length; i++) {
-      const localePath = pathList[i]
-      if (!fs.existsSync(localePath)) {
-        continue
-      }
-
       try {
+        const localePath = pathList[i]
+        const localeText = fs.readSync(localePath)
+
+        if (!localeText) {
+          continue
+        }
+
         this.locale = localeList[i]
-        this.resources = JSON.parse(fs.readFileSync(localePath, 'utf8'))
+        this.resources = JSON.parse(localeText)
       }
       catch (error) {
         console.error('Failed to load locale data.')
