@@ -1,4 +1,4 @@
-import * as path from 'path'
+import path from 'src/path'
 import { ClientCommand, File, JSBridge, reqnode } from 'typora'
 import type { App } from 'src/app'
 import fs from 'src/fs/filesystem'

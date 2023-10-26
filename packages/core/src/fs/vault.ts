@@ -1,4 +1,4 @@
-import * as path from 'path'
+import path from 'src/path'
 import { _options, File, JSBridge } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
 import type { App } from 'src/app'

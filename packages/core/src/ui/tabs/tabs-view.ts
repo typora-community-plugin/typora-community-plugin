@@ -1,5 +1,5 @@
 import './tabs-view.scss'
-import * as path from 'path'
+import path from 'src/path'
 import { editor } from "typora"
 import decorate from "@plylrnsdy/decorate.js"
 import type { App } from "src/app"

@@ -1,5 +1,5 @@
 import './variables.scss'
-import * as path from 'path'
+import path from 'src/path'
 import { JSBridge, _options, editor } from 'typora'
 import * as Core from '.'
 import { Events } from 'src/events'
@@ -129,7 +129,7 @@ export class App extends Events<AppEvents> {
 
   async openFile(filepath: string) {
     if (filepath.startsWith('.')) {
-      filepath = path.resolve(path.dirname(this.workspace.activeFile), filepath)
+      filepath = path.join(path.dirname(this.workspace.activeFile), filepath)
     }
 
     let url: FileURL = { pathname: filepath }

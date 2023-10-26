@@ -1,4 +1,4 @@
-import * as path from 'path'
+import path from 'src/path'
 import type { App } from 'src/app'
 import { Notice } from 'src/components/notice'
 import fs from 'src/fs/filesystem'

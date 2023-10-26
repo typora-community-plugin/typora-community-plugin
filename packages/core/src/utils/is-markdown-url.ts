@@ -1,4 +1,4 @@
-import * as path from "path"
+import path from "src/path"
 import { File } from "typora"
 
 

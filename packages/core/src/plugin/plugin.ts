@@ -1,4 +1,4 @@
-import * as path from 'path'
+import path from 'src/path'
 import * as _ from 'lodash'
 import type { App } from "../app"
 import type { PluginManifest } from "./plugin-manifest"

@@ -1,4 +1,4 @@
-import * as path from 'path'
+import path from 'src/path'
 import * as _ from 'lodash'
 import { _options } from 'typora'
 import type { App } from "src/app"
