@@ -1,7 +1,6 @@
-import * as extract from "extract-zip"
 import * as _ from 'lodash'
 import * as path from 'path'
-import { File, JSBridge, _options } from 'typora'
+import { File, JSBridge, _options, reqnode } from 'typora'
 import type { App } from "src/app"
 import fs from 'src/fs/filesystem'
 import { format } from "src/utils/format"
@@ -74,6 +73,8 @@ export class GithubAPI {
       return fs.mkdir(tmpDir)
         .then(() => JSBridge.invoke('app.download', url, tmpDir, tmpFilename))
         .then(() => new Promise<void>((resolve, reject) => {
+          const extract = reqnode('extract-zip') as typeof import('extract-zip')
+
           extract(tmpZippath, { dir: tmp }, (err) => {
             err ? reject(err) : resolve()
           })

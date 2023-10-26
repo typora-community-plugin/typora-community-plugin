@@ -1,33 +1,45 @@
-import * as events from 'events'
 import type { DisposeFunc } from "src/utils/types"
 
 
-export class Events<E extends Record<string, (...args: any[]) => any>> {
+type EventListener = (...args: any[]) => any
+export class Events<E extends Record<string, EventListener>> {
 
-  protected _events = new events.EventEmitter()
+  protected _listeners = {} as Record<keyof E, EventListener[]>
 
   prependListener<K extends keyof E>(event: K, listener: E[K]): DisposeFunc {
-    this._events.prependListener(event as string, listener)
+    let listeners = this._listeners[event]
+      ?? (this._listeners[event] = [])
+
+    listeners.unshift(listener)
     return () => this.off(event, listener)
   }
 
   on<K extends keyof E>(event: K, listener: E[K]): DisposeFunc {
-    this._events.on(event as string, listener)
+    let listeners = this._listeners[event]
+      ?? (this._listeners[event] = [])
+
+    listeners.push(listener)
     return () => this.off(event, listener)
   }
 
   once<K extends keyof E>(event: K, listener: E[K]): DisposeFunc {
-    this._events.once(event as string, listener)
-    return () => this.off(event, listener)
+    const onceListener = ((...args: any[]) => {
+      listener(...args)
+      this.off(event, onceListener)
+    }) as E[K]
+
+    this.on(event, onceListener)
+    return () => this.off(event, onceListener)
   }
 
   off<K extends keyof E>(event: K, listener: E[K]) {
-    this._events.off(event as string, listener)
+    const listeners = this._listeners[event] ?? []
+    this._listeners[event] = listeners.filter(fn => fn !== listener)
   }
 
   protected emit<K extends keyof E>(event: K, ...args: Parameters<E[K]>) {
     try {
-      this._events.emit(event as string, ...args)
+      this._listeners[event]?.forEach(fn => fn(...args))
     }
     catch (error) {
       console.error(error)
