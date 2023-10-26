@@ -1,9 +1,9 @@
 import * as path from 'path'
 import type { App } from "src/app"
 import { Notice } from 'src/components/notice'
-import { SettingTab } from "../setting-tab"
+import fs from 'src/fs/filesystem'
+import { SettingTab } from "src/settings/setting-tab"
 import * as versions from 'src/utils/versions'
-import fs from 'src/vault/filesystem'
 
 
 export type CoreSettings = {

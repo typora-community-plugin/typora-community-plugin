@@ -1,6 +1,6 @@
 import * as path from 'path'
 import { _options } from "typora"
-import fs from 'src/vault/filesystem'
+import fs from 'src/fs/filesystem'
 import type { ReadonlyDeep } from 'src/utils/types'
 
 

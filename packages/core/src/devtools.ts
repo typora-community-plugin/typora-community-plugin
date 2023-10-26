@@ -1,9 +1,9 @@
 import * as path from 'path'
-import type { App } from './app'
-import { BUILT_IN, WorkspaceRibbon } from './ui/ribbon/workspace-ribbon'
-import fs from './vault/filesystem'
-import { html } from './utils/html'
 import { ClientCommand, File, JSBridge, reqnode } from 'typora'
+import type { App } from 'src/app'
+import fs from 'src/fs/filesystem'
+import { BUILT_IN, WorkspaceRibbon } from 'src/ui/ribbon/workspace-ribbon'
+import { html } from 'src/utils/html'
 
 
 export function devtools(app: App) {

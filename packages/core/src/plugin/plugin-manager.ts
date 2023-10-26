@@ -3,10 +3,10 @@ import * as _ from 'lodash'
 import { _options } from 'typora'
 import type { App } from "src/app"
 import { Notice } from 'src/components/notice'
+import fs from 'src/fs/filesystem'
 import { Plugin } from "./plugin"
 import type { PluginManifest, PluginPostion } from "./plugin-manifest"
 import { PluginMarketplace } from './plugin-marketplace'
-import fs from 'src/vault/filesystem'
 import { format } from 'src/utils/format'
 import * as versions from 'src/utils/versions'
 

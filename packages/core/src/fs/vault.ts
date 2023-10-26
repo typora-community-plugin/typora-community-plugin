@@ -1,9 +1,9 @@
 import * as path from 'path'
 import { _options, File, JSBridge } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
-import type { App } from '../app'
-import { Events } from '../events'
-import fs from 'src/vault/filesystem'
+import type { App } from 'src/app'
+import { Events } from 'src/events'
+import fs from 'src/fs/filesystem'
 
 
 type VaultEvents = {

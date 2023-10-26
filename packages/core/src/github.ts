@@ -1,10 +1,10 @@
 import * as extract from "extract-zip"
-import * as path from 'path'
 import * as _ from 'lodash'
+import * as path from 'path'
 import { File, JSBridge, _options } from 'typora'
 import type { App } from "src/app"
+import fs from 'src/fs/filesystem'
 import { format } from "src/utils/format"
-import fs from 'src/vault/filesystem'
 import { Shell } from 'src/utils/shell'
 
 

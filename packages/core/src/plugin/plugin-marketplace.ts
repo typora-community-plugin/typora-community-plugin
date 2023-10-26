@@ -1,7 +1,7 @@
 import * as path from 'path'
 import type { App } from 'src/app'
 import { Notice } from 'src/components/notice'
-import fs from 'src/vault/filesystem'
+import fs from 'src/fs/filesystem'
 import type { PluginManifest, PluginPostion } from "./plugin-manifest"
 
 

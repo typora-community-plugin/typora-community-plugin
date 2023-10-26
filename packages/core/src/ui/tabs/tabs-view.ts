@@ -1,12 +1,12 @@
 import './tabs-view.scss'
 import * as path from 'path'
+import { editor } from "typora"
 import decorate from "@plylrnsdy/decorate.js"
 import type { App } from "src/app"
-import { View } from "../view"
-import { editor } from "typora"
 import { draggable } from 'src/components/draggable'
 import { Menu } from 'src/components/menu'
-import fs from 'src/vault/filesystem'
+import fs from 'src/fs/filesystem'
+import { View } from "src/ui/view"
 
 
 export class TabsView extends View {
