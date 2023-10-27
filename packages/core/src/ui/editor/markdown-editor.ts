@@ -1,15 +1,15 @@
-import * as _ from "lodash"
-import type { App } from "src/app"
-import { Events } from "src/events"
-import { until } from "src/utils/until"
-import type { FileURL } from "src/utils/types"
+import decorate from "@plylrnsdy/decorate.js"
 import { editor } from "typora"
+import type { App } from "src/app"
+import { Component } from "src/component"
+import { Events } from "src/events"
 import { MarkdownPostProcessor } from "./postprocessor/postprocessor-manager"
 import { MarkdownPreProcessor } from "./preprocessor"
 import { EditorSelection } from "./selection"
 import { EditorSuggestManager } from "./suggestion/suggest-manager"
-import decorate from "@plylrnsdy/decorate.js"
-import { Component } from "src/component"
+import { debounce } from "src/utils/debounce"
+import type { FileURL } from "src/utils/types"
+import { until } from "src/utils/until"
 
 
 type MarkdownEditorEvents = {
@@ -38,7 +38,7 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
     until(() => editor.writingArea).then(el => {
       this.emit('load', el)
 
-      const observer = new MutationObserver(_.debounce(emitEdit.bind(this), 400))
+      const observer = new MutationObserver(debounce(emitEdit.bind(this), 400))
       observer.observe(el, {
         characterData: true,
         childList: true,
@@ -47,7 +47,7 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
 
       // <content>
       el.parentElement!.addEventListener('scroll',
-        _.debounce(() => this.emit('scroll'), 200)
+        debounce(() => this.emit('scroll'), 200)
       )
     })
 

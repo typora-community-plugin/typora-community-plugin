@@ -1,9 +1,9 @@
 import './plugin-manager-setting-tab.scss'
-import * as _ from 'lodash'
 import type { App } from "src/app"
 import { Notice } from 'src/components/notice'
 import type { PluginManifest } from "src/plugin/plugin-manifest"
 import { SettingTab } from "../setting-tab"
+import { debounce } from "src/utils/debounce"
 import { format } from 'src/utils/format'
 import * as versions from "src/utils/versions"
 
@@ -24,7 +24,7 @@ export class PluginsManagerSettingTab extends SettingTab {
     this.addSetting(setting => {
       setting.addName(t.searchPlugin)
       setting.addText(input => {
-        input.oninput = _.debounce(() => {
+        input.oninput = debounce(() => {
           this.renderPluginList(input.value)
         }, 500)
       })

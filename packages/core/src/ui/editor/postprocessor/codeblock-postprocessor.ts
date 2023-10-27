@@ -1,7 +1,7 @@
-import * as _ from "lodash"
 import { editor } from "typora"
 import { HtmlPostProcessor } from "./html-postprocessor"
 import type { ButtonOptions } from "./postprocessor"
+import { debounce } from "src/utils/debounce"
 
 
 interface CodeblockContext {
@@ -86,7 +86,7 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
     render()
 
     codeblock.classList.add('md-diagram', 'md-fences-advanced')
-    codeblock.addEventListener('keyup', _.debounce(render, 1000))
+    codeblock.addEventListener('keyup', debounce(render, 1000))
     codeblock.append(previewer)
   }
 

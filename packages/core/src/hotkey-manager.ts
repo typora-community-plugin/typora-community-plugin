@@ -1,5 +1,5 @@
-import * as _ from 'lodash'
 import type { App } from "./app"
+import { capitalize } from 'src/utils/capitalize'
 
 
 export type HotkeyScope = 'global' | 'editor'
@@ -111,7 +111,7 @@ function normalizeHotkey(hotkey: string) {
 export function readableHotkey(hotkey: string) {
   return normalizeHotkey(hotkey)
     .split('+')
-    .map(_.capitalize)
+    .map(capitalize)
     .join('+')
 }
 

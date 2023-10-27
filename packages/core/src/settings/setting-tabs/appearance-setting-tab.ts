@@ -1,4 +1,3 @@
-import * as _ from 'lodash'
 import type { App } from "src/app"
 import { SettingTab } from "../setting-tab"
 

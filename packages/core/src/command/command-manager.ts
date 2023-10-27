@@ -1,7 +1,7 @@
-import * as _ from "lodash"
 import type { App } from "src/app"
+import { type HotkeyScope, readableHotkey } from "src/hotkey-manager"
+import { debounce } from "src/utils/debounce"
 import type { DisposeFunc } from "src/utils/types"
-import { type HotkeyScope, readableHotkey } from "../hotkey-manager"
 
 
 export type Command = {
@@ -96,7 +96,7 @@ export class CommandManager {
       .reduce((o, k) => (o[k] = this.commandMap[k], o), {} as Record<string, Command>)
   }
 
-  private saveConfig = _.debounce(() => {
+  private saveConfig = debounce(() => {
     this.app.vault.writeConfigJson('hotkeys', this.getConfig())
   }, 1e3)
 }

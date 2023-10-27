@@ -1,8 +1,8 @@
 import './setting-item.scss'
-import * as _ from 'lodash'
 import { EditableTable } from 'src/components/editable-table'
 import { View } from "src/ui/view"
 import { html } from "src/utils/html"
+import { noop } from 'src/utils/noop'
 
 
 type SelectOptions = {
@@ -126,7 +126,7 @@ export class SettingItem extends View {
     this.controls.prepend(el)
   }
 
-  addRemovableTag(text: string, onClose: () => void = _.noop) {
+  addRemovableTag(text: string, onClose: () => void = noop) {
     this.addTag(text, el => {
       el.classList.add('removable')
 

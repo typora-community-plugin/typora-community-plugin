@@ -1,14 +1,13 @@
+import type { App } from "src/app"
+import type { Command } from "src/command/command-manager"
+import { Component } from "src/component"
 import path from 'src/path'
-import * as _ from 'lodash'
-import type { App } from "../app"
 import type { PluginManifest } from "./plugin-manifest"
-import type { Command } from "../command/command-manager"
-import { Component } from "../component"
-import { SettingsModal } from "../settings/settings-modal"
-import type { SettingTab } from "../settings/setting-tab"
-import type { TPostProcessor } from '../ui/editor/postprocessor/postprocessor-manager'
-import type { TPreProcessor } from '../ui/editor/preprocessor'
 import { PluginSettings } from './plugin-settings'
+import { SettingsModal } from "src/settings/settings-modal"
+import type { SettingTab } from "src/settings/setting-tab"
+import type { TPostProcessor } from 'src/ui/editor/postprocessor/postprocessor-manager'
+import type { TPreProcessor } from 'src/ui/editor/preprocessor'
 
 
 export abstract class Plugin<T extends Record<string, any> = {}>

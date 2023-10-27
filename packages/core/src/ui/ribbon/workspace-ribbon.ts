@@ -1,13 +1,12 @@
 import './workspace-ribbon.scss'
-import * as _ from 'lodash'
-import { View } from 'src/ui/view'
-import type { DisposeFunc } from 'src/utils/types'
-import type { App } from 'src/app'
-import { editor, File } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
-import { html } from 'src/utils/html'
+import { editor, File } from 'typora'
+import type { App } from 'src/app'
 import { draggable } from 'src/components/draggable'
 import { Menu } from 'src/components/menu'
+import { html } from 'src/utils/html'
+import { View } from 'src/ui/view'
+import type { DisposeFunc } from 'src/utils/types'
 
 
 export type RibbonSettings = {

@@ -1,10 +1,10 @@
-import * as _ from 'lodash'
 import path from 'src/path'
 import { File, JSBridge, _options, reqnode } from 'typora'
 import type { App } from "src/app"
 import fs from 'src/fs/filesystem'
 import { format } from "src/utils/format"
 import { Shell } from 'src/utils/shell'
+import { uniqueId } from "src/utils/uniqueId"
 
 
 interface GithubProxy {
@@ -64,7 +64,7 @@ export class GithubAPI {
     const uri = this.uri.base + '{repo}/releases/download/{id}/{asset}'
     const url = format(uri, { repo, id, asset })
     const tmpDir = path.join(_options.userDataPath, 'plugins', '.tmp')
-    const tmpDirname = _.uniqueId()
+    const tmpDirname = uniqueId()
     const tmpFilename = `${tmpDirname}.zip`
     const tmpZippath = path.join(tmpDir, tmpFilename)
     const tmp = path.join(tmpDir, tmpDirname)

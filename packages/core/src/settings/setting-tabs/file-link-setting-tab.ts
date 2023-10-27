@@ -1,6 +1,6 @@
-import * as _ from "lodash"
 import type { App } from "src/app"
 import { SettingTab } from "../setting-tab"
+import { debounce } from "src/utils/debounce"
 
 
 export type FileLinkSettings = {
@@ -66,7 +66,7 @@ export class FileLinkSettingTab extends SettingTab {
       })
       setting.addText(input => {
         input.value = settings.get('ignoreFileGlob')
-        input.onchange = _.debounce(() => {
+        input.onchange = debounce(() => {
           settings.set('ignoreFileGlob', input.value)
         }, 1e3)
       })

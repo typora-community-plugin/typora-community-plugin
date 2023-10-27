@@ -1,5 +1,5 @@
-import * as _ from "lodash"
 import type { App } from "src/app"
+import { debounce } from "src/utils/debounce"
 import type { DisposeFunc } from "src/utils/types"
 
 
@@ -107,7 +107,7 @@ export class Settings<T extends Record<string, any>> {
     this.app.vault.writeConfigJson(this.filename, this._stores)
   }
 
-  save = _.debounce(this._save, 1e3)
+  save = debounce(this._save, 1e3)
 
   migrateTo(newVersion: number, transform: (oldStores: SettingsFile<any>) => any) {
     this._stores = transform(this._stores)

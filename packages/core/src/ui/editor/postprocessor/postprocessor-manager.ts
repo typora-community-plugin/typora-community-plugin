@@ -1,10 +1,9 @@
-import * as _ from "lodash"
-import type { App } from "src/app"
-import type { DisposeFunc } from "src/utils/types"
 import { editor } from "typora"
+import type { App } from "src/app"
 import { PostProcessor, type RawProcessor } from './postprocessor'
 import { HtmlPostProcessor } from './html-postprocessor'
 import { CodeblockPostProcessor } from './codeblock-postprocessor'
+import type { DisposeFunc } from "src/utils/types"
 
 
 export type TPostProcessor = RawProcessor | PostProcessor | HtmlPostProcessor | CodeblockPostProcessor

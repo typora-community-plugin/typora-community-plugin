@@ -1,7 +1,8 @@
-import * as _ from "lodash"
 import type { App } from "src/app"
 import { type PluginMarketInfo } from "src/plugin/plugin-marketplace"
 import { SettingTab } from "../setting-tab"
+import { debounce } from "src/utils/debounce"
+import { uniqueId } from "src/utils/uniqueId"
 
 
 export type PluginMarketplaceSettings = {
@@ -44,7 +45,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     this.addSetting(setting => {
       setting.addName(t.searchPlugin)
       setting.addText(input => {
-        input.oninput = _.debounce(() => {
+        input.oninput = debounce(() => {
           this.cleanPluginList()
           this.renderPluginList(input.value)
         }, 500)
@@ -74,7 +75,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
   private _pluginListVersion = 0
 
   private loadPluginList() {
-    const version = +_.uniqueId()
+    const version = +uniqueId()
 
     this.cleanPluginList()
     this.app.plugins.marketplace.loadCommunityPlugins()

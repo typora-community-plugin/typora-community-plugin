@@ -1,12 +1,12 @@
-import path from 'src/path'
-import * as _ from 'lodash'
 import { _options } from 'typora'
 import type { App } from "src/app"
 import { Notice } from 'src/components/notice'
 import fs from 'src/fs/filesystem'
+import path from 'src/path'
 import { Plugin } from "./plugin"
 import type { PluginManifest, PluginPostion } from "./plugin-manifest"
 import { PluginMarketplace } from './plugin-marketplace'
+import { debounce } from "src/utils/debounce"
 import { format } from 'src/utils/format'
 import * as versions from 'src/utils/versions'
 
@@ -193,7 +193,7 @@ export class PluginManager {
     return fs.remove(manifest.dir!)
   }
 
-  private _saveEnabledConfig = _.debounce(() => {
+  private _saveEnabledConfig = debounce(() => {
     this.app.vault.writeConfigJson('plugins', this.enabledPlugins)
   }, 1e3)
 }

@@ -1,14 +1,13 @@
-import * as _ from 'lodash'
-import path from 'src/path'
-import { editor, File } from "typora"
 import decorate from "@plylrnsdy/decorate.js"
+import { editor, File } from "typora"
 import type { App } from 'src/app'
+import { Component } from 'src/component'
+import path from 'src/path'
 import { View } from 'src/ui/view'
-import type { Workspace } from "src/ui/workspace"
 import type { Sidebar } from './sidebar'
+import type { Workspace } from "src/ui/workspace"
 import { BUILT_IN, WorkspaceRibbon } from "src/ui/ribbon/workspace-ribbon"
 import { html } from "src/utils/html"
-import { Component } from 'src/component'
 
 
 export class FileExplorer extends View {
