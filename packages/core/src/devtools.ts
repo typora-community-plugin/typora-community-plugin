@@ -41,7 +41,7 @@ export function devtools(app: App) {
 
     fs.exists(lockerDir)
       .catch(() => fs.mkdir(lockerDir))
-      .then(() => fs.write(winLocker, ''))
+      .then(() => fs.writeText(winLocker, ''))
       .then(() => nodeFs.watch(winLocker, { signal: ac.signal }, (e) => {
         if (e === 'rename') {
           ac.abort()

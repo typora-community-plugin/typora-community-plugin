@@ -66,7 +66,7 @@ export class Vault extends Events<VaultEvents> {
   readConfigJson(filename: string, defaultValue: any = {}): any {
     try {
       const configPath = path.join(this.configDir, filename + '.json')
-      const text = fs.readSync(configPath)
+      const text = fs.readTextSync(configPath)
       return JSON.parse(text)
     } catch (error) {
       console.warn(`Failed to load config "${filename}.json"`)
@@ -80,7 +80,7 @@ export class Vault extends Events<VaultEvents> {
     return fs
       .exists(dirname)
       .catch(() => fs.mkdir(dirname))
-      .then(() => fs.write(configPath, JSON.stringify(config, null, 2)))
+      .then(() => fs.writeText(configPath, JSON.stringify(config, null, 2)))
       .catch(error => {
         console.error(`Failed to save config "${filename}.json".`)
         console.error(error)

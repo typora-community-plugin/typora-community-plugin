@@ -45,7 +45,7 @@ export class PluginMarketplace {
           : this.app.plugins.vaultPluginsDir
         const root = path.join(dir, info.id)
 
-        return fs.read(path.join(tmp, 'manifest.json'))
+        return fs.readText(path.join(tmp, 'manifest.json'))
           .then(text => JSON.parse(text) as PluginManifest)
           .then(manifest => {
             if (info.id !== manifest.id) {

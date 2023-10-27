@@ -65,7 +65,7 @@ export class I18n<T> {
     for (let i = 0; i < pathList.length; i++) {
       try {
         const localePath = pathList[i]
-        const localeText = fs.readSync(localePath)
+        const localeText = fs.readTextSync(localePath)
 
         if (!localeText) {
           continue

@@ -75,7 +75,7 @@ export class PluginManager {
     const manifestPath = path.join(pluginPath, 'manifest.json')
 
     return fs.exists(manifestPath)
-      .then(() => fs.read(manifestPath))
+      .then(() => fs.readText(manifestPath))
       .then(text => {
         const manifest = JSON.parse(text) as PluginManifest
         manifest.postion = postion
@@ -113,7 +113,7 @@ export class PluginManager {
 
       const cssPath = path.join(manifest.dir!, 'style.css')
       await fs.exists(cssPath)
-        .then(() => fs.read(cssPath))
+        .then(() => fs.readText(cssPath))
         .then(cssText => { this.styles[id] = cssText })
         .catch(() => { })
     } catch (error) {

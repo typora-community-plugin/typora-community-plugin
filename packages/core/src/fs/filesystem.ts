@@ -15,12 +15,12 @@ interface IFileSystem {
   move(src: string, dest: string): Promise<void>
   list(dirpath: string): Promise<string[]>
 
-  read(filepath: string): Promise<string>
-  readSync(filepath: string): string
+  readText(filepath: string): Promise<string>
+  readTextSync(filepath: string): string
 
-  write(filepath: string, text: string): Promise<void>
+  writeText(filepath: string, text: string): Promise<void>
 
-  append(filepath: string, text: string): Promise<void>
+  appendText(filepath: string, text: string): Promise<void>
 
   remove(filepath: string): Promise<void>
   trash(filepath: string): Promise<void>
@@ -51,19 +51,19 @@ class NodeFS implements IFileSystem {
     return fsp.readdir(dirpath)
   }
 
-  read(filepath: string): Promise<string> {
+  readText(filepath: string): Promise<string> {
     return fsp.readFile(filepath, 'utf8')
   }
 
-  readSync(filepath: string): string {
+  readTextSync(filepath: string): string {
     return fs.readFileSync(filepath, 'utf8')
   }
 
-  write(filepath: string, text: string): Promise<void> {
+  writeText(filepath: string, text: string): Promise<void> {
     return fsp.writeFile(filepath, text, 'utf8')
   }
 
-  append(filepath: string, text: string): Promise<void> {
+  appendText(filepath: string, text: string): Promise<void> {
     return fsp.appendFile(filepath, text, 'utf8')
   }
 
@@ -102,19 +102,19 @@ class MacFS implements IFileSystem {
       .then((out: string) => out.trim().split('\n'))
   }
 
-  read(filepath: string): Promise<string> {
-    return Promise.resolve(this.readSync(filepath))
+  readText(filepath: string): Promise<string> {
+    return Promise.resolve(this.readTextSync(filepath))
   }
 
-  readSync(filepath: string): string {
+  readTextSync(filepath: string): string {
     return bridge.callSync('path.readText', filepath)
   }
 
-  write(filepath: string, text: string): Promise<void> {
+  writeText(filepath: string, text: string): Promise<void> {
     return Shell.run(`echo ${Shell.escape(text)} > '${filepath}'`) as Promise<void>
   }
 
-  append(filepath: string, text: string): Promise<void> {
+  appendText(filepath: string, text: string): Promise<void> {
     return Shell.run(`cat ${Shell.escape(text)} >> '${filepath}'`) as Promise<void>
   }
 
