@@ -17,6 +17,7 @@ importers:
       '@rollup/plugin-node-resolve': ^15.2.3
       '@rollup/plugin-terser': ^0.4.4
       '@rollup/plugin-typescript': ^11.1.5
+      '@rollup/plugin-virtual': ^3.0.2
       '@types/extract-zip': 1.6.2
       '@types/glob': 7.2.0
       '@types/jquery': 3.3.1
@@ -45,6 +46,7 @@ importers:
       '@rollup/plugin-node-resolve': 15.2.3_rollup@4.1.4
       '@rollup/plugin-terser': 0.4.4_rollup@4.1.4
       '@rollup/plugin-typescript': 11.1.5_hewnf6dv5pfrkkfj2wdjnsgcbe
+      '@rollup/plugin-virtual': 3.0.2_rollup@4.1.4
       '@types/extract-zip': 1.6.2
       '@types/glob': 7.2.0
       '@types/jquery': 3.3.1
@@ -1568,6 +1570,18 @@ packages:
       rollup: 4.1.4
       tslib: 2.6.2
       typescript: 5.1.6
+    dev: true
+
+  /@rollup/plugin-virtual/3.0.2_rollup@4.1.4:
+    resolution: {integrity: sha512-10monEYsBp3scM4/ND4LNH5Rxvh3e/cVeL3jWTgZ2SrQ+BmUoQcopVQvnaMcOnykb1VkxUFuDAN+0FnpTFRy2A==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      rollup: 4.1.4
     dev: true
 
   /@rollup/pluginutils/5.0.5_rollup@4.1.4:

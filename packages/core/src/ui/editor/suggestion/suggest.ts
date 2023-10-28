@@ -1,5 +1,5 @@
 import './suggest.scss'
-import { TRange, editor } from 'typora'
+import { type TRange, editor } from 'typora'
 
 
 export abstract class EditorSuggest<T> {

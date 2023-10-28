@@ -34,6 +34,7 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.5",
+    "@rollup/plugin-virtual": "^3.0.2",
     "@types/extract-zip": "1.6.2",
     "@types/glob": "7.2.0",
     "@types/jquery": "3.3.1",

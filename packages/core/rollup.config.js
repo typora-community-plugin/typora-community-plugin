@@ -5,6 +5,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve'
 import scss from 'rollup-plugin-scss'
 import terser from '@rollup/plugin-terser'
 import typescript from '@rollup/plugin-typescript'
+import virtual from '@rollup/plugin-virtual'
 
 
 const { compilerOptions } = JSON.parse(await fs.readFile('./tsconfig.json', 'utf8'))
@@ -28,8 +29,12 @@ export default defineConfig({
     file: 'dist/core.js',
     format: 'cjs'
   },
-  external: ['typora'],
   plugins: [
+    virtual({
+      typora: ['_options', 'bridge', 'ClientCommand', 'debugMode', 'File', 'editor', 'JSBridge', 'reqnode']
+        .map(o => `export const ${o} = window.${o};`)
+        .join('')
+    }),
     typescript({
       compilerOptions: {
         ...compilerOptions,
