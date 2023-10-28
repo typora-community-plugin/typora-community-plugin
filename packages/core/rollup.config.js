@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises'
 import { defineConfig } from 'rollup'
 import { babel } from '@rollup/plugin-babel'
+import commonjs from '@rollup/plugin-commonjs'
 import replace from '@rollup/plugin-replace'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import scss from 'rollup-plugin-scss'
@@ -34,6 +35,7 @@ export default defineConfig({
   },
   plugins: [
     replace({
+      preventAssignment: true,
       'process.env.CORE_VERSION': `"${packageInfo.version}"`,
       'process.env.IS_DEV': 'false',
     }),
@@ -42,6 +44,8 @@ export default defineConfig({
         .map(o => `export const ${o} = window.${o};`)
         .join('')
     }),
+    nodeResolve(),
+    commonjs(),
     typescript({
       compilerOptions: {
         ...compilerOptions,
@@ -50,9 +54,11 @@ export default defineConfig({
     }),
     babel({
       babelHelpers: 'bundled',
-      presets: ["@babel/preset-env"],
+      presets: [["@babel/preset-env", { "useBuiltIns": "usage", "corejs": 3 }]],
+      exclude: [
+        /\bcore-js\b/,
+      ],
     }),
-    nodeResolve(),
     scss({
       fileName: 'core.css',
       outputStyle: 'compressed',
