@@ -4,10 +4,10 @@ import { File, _options, bridge, reqnode } from 'typora'
 (function main() {
 
   const mountFolder = _options.mountFolder
-    ?? dirname(_options.initFilePath)
+    || dirname(File.bundle.filePath)
 
-  const envPath = `${mountFolder}/.typora/env.json`
-  const settings = readText(envPath) || '{}'
+  const settings = (mountFolder && readText(`${mountFolder}/.typora/env.json`)) || '{}'
+
   const env = JSON.parse(settings)
 
   const loaderConfigPath = `${_options.userDataPath}/plugins/loader.json`
@@ -22,7 +22,7 @@ import { File, _options, bridge, reqnode } from 'typora'
 })()
 
 function dirname(filepath: string) {
-  return filepath.split(/\b(?=[\\\/]+)/).slice(0, -1).join('')
+  return filepath && filepath.split(/\b(?=[\\\/]+)/).slice(0, -1).join('')
 }
 
 function readText(filepath: string) {
