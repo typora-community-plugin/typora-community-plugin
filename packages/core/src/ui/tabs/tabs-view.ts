@@ -59,6 +59,7 @@ export class TabsView extends View {
 
     this.register(
       this.app.vault.on('directory:rename', (oldDirPath, newDirPath) => {
+        // @ts-ignore
         Array.from(this.tabs.keys())
           .filter(path => path.startsWith(oldDirPath))
           .forEach(path => {
@@ -207,6 +208,7 @@ export class TabsView extends View {
 
   removeOthers(path: string) {
     editor.library.openFile(path)
+    // @ts-ignore
     for (const p of this.tabs.keys()) {
       p !== path && this.removeTab(p)
     }

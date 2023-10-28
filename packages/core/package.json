@@ -7,7 +7,7 @@
   "types": "typings/index.d.ts",
   "scripts": {
     "build:dev": "node build.js --start",
-    "build": "node build.js --prod",
+    "build": "rollup -c rollup.config.js",
     "build-dts": "node build-dts.js",
     "prepublish": "node build.js && pnpm run build-dts"
   },
@@ -28,6 +28,12 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@babel/core": "^7.23.2",
+    "@babel/preset-env": "^7.23.2",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.5",
     "@types/extract-zip": "1.6.2",
     "@types/glob": "7.2.0",
     "@types/jquery": "3.3.1",
@@ -40,7 +46,11 @@
     "esbuild-plugin-typora": "workspace:../esbuild-plugin",
     "esbuild-sass-plugin": "^2.10.0",
     "iconv-lite": "0.6.3",
+    "rollup": "^4.1.4",
+    "rollup-plugin-scss": "^4.0.0",
+    "sass": "^1.69.5",
     "ts-patch": "^3.0.2",
+    "tslib": "^2.6.2",
     "typescript": "^5.1.6",
     "typescript-transform-paths": "^3.4.6"
   },
