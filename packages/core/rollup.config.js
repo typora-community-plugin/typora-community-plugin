@@ -1,12 +1,15 @@
 import fs from 'node:fs/promises'
 import { defineConfig } from 'rollup'
 import { babel } from '@rollup/plugin-babel'
+import replace from '@rollup/plugin-replace'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import scss from 'rollup-plugin-scss'
 import terser from '@rollup/plugin-terser'
 import typescript from '@rollup/plugin-typescript'
 import virtual from '@rollup/plugin-virtual'
 
+
+const packageInfo = JSON.parse(await fs.readFile('./package.json', 'utf8'))
 
 const { compilerOptions } = JSON.parse(await fs.readFile('./tsconfig.json', 'utf8'))
 
@@ -24,12 +27,16 @@ await fs.cp('./src/locales', './dist/locales', { recursive: true })
 await fs.rm('./dist/locales/i18n.ts')
 
 export default defineConfig({
-  input: 'src/app.ts',
+  input: 'src/core.ts',
   output: {
     file: 'dist/core.js',
     format: 'iife'
   },
   plugins: [
+    replace({
+      'process.env.CORE_VERSION': `"${packageInfo.version}"`,
+      'process.env.IS_DEV': 'false',
+    }),
     virtual({
       typora: ['_options', 'bridge', 'ClientCommand', 'debugMode', 'File', 'editor', 'JSBridge', 'reqnode']
         .map(o => `export const ${o} = window.${o};`)
