@@ -175,7 +175,7 @@ export class TabsView extends View {
     }
 
     const displayPath = path.relative(this.app.vault.path, filePath)
-      .replace(/(?<=\.textbundle)[\\/]text\.(?:md|markdown)$/, '')
+      .replace(/(\.textbundle)[\\/]text\.(?:md|markdown)$/, '$1')
 
     const tab = $(`<div class="typ-tab active" data-path="${filePath}" title="${displayPath}" draggable="true">${path.basename(displayPath)}<i class="typ-icon typ-close"></i></div>`)
       .get(0)!
