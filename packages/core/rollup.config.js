@@ -27,7 +27,7 @@ export default defineConfig({
   input: 'src/app.ts',
   output: {
     file: 'dist/core.js',
-    format: 'cjs'
+    format: 'iife'
   },
   plugins: [
     virtual({
