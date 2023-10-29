@@ -89,6 +89,10 @@ export class AboutTab extends SettingTab {
           new Notice(t.coreUpToDate)
         }
       })
+      .catch(error => {
+        console.error(error)
+        new Notice(error.msg)
+      })
   }
 
 }

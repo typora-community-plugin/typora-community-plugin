@@ -26,7 +26,7 @@ export class Vault extends Events<VaultEvents> {
 
   private _path = File.getMountFolder()
     ?? _options.mountFolder
-    ?? path.dirname(_options.initFilePath)
+    ?? path.dirname(_options.initFilePath ?? File.bundle.filePath)
 
   constructor(private app: App) {
     super()

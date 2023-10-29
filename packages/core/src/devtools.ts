@@ -35,7 +35,7 @@ export function devtools(app: App) {
 
   function createLocker() {
     const nodeFs: typeof import('fs') = reqnode('fs')
-    const lockerDir = path.join(app.plugins.globalRootDir, '.lock')
+    const lockerDir = path.join(app.plugins.globalRootDir, '_lock')
     const winLocker = path.join(lockerDir, `win-${app.env.PLUGIN_WIN_ID}`)
     const ac = new AbortController()
 

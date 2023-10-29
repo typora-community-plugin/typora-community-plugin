@@ -94,7 +94,7 @@ class MacFS implements IFileSystem {
   }
 
   move(src: string, dest: string): Promise<void> {
-    return Shell.run(`mv -f '${src}/*' '${dest}'`) as Promise<void>
+    return Shell.run(`mv -f '${src}' '${dest}'`) as Promise<void>
   }
 
   list(dirpath: string): Promise<string[]> {
@@ -119,9 +119,7 @@ class MacFS implements IFileSystem {
   }
 
   remove(filepath: string): Promise<void> {
-    return new Promise(resolve => {
-      bridge.callHandler("path.removeFiles", [filepath], resolve)
-    })
+    return Shell.run(`rm -r '${filepath}'`) as Promise<void>
   }
 
   trash(filepath: string): Promise<void> {

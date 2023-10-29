@@ -63,7 +63,7 @@ export class GithubAPI {
   downloadThenUnzipToTemp(repo: string, id: string, asset: string) {
     const uri = this.uri.base + '{repo}/releases/download/{id}/{asset}'
     const url = format(uri, { repo, id, asset })
-    const tmpDir = path.join(_options.userDataPath, 'plugins', '.tmp')
+    const tmpDir = path.join(_options.userDataPath, 'plugins', '_temp')
     const tmpDirname = uniqueId()
     const tmpFilename = `${tmpDirname}.zip`
     const tmpZippath = path.join(tmpDir, tmpFilename)
@@ -83,7 +83,10 @@ export class GithubAPI {
         .then(() => tmp)
     }
     else {
-      return Shell.run(`curl '${url}' | unzip -d '${tmp}'`)
+      return fs.mkdir(tmpDir)
+        .then(() => Shell.run(`curl -fLsS '${url}' -o '${tmpZippath}'`))
+        .then(() => Shell.run(`unzip '${tmpZippath}' -d '${tmp}'`))
+        .then(() => fs.remove(tmpZippath))
         .then(() => tmp)
     }
   }

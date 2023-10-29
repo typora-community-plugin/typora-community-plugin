@@ -57,9 +57,15 @@ export class PluginMarketplace {
               manifest.dir = root
               this.app.plugins.manifests[manifest.id] = manifest
 
-              return fs.move(tmp, root)
+              return fs.mkdir(dir)
+                .then(() => fs.trash(root))
+                .then(() => fs.move(tmp, root))
             }
           })
+      })
+      .catch(error => {
+        console.error(error)
+        new Notice(error.msg)
       })
   }
 }
