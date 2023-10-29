@@ -39,8 +39,8 @@ class CompatiblePath implements IPath {
     if (!paths.length) return '.'
 
     const segments = paths
-      .flatMap(path => path.trim().split(/[\\\/]+/))
-      .filter(Boolean)
+      .map(path => path.trim().replace(/[\\\/]+$/, ''))
+      .flatMap(path => path.split(/[\\\/]+/))
     const res = []
 
     for (let i = 0; i < segments.length; i++) {
