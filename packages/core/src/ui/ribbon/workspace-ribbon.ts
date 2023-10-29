@@ -83,7 +83,7 @@ export class WorkspaceRibbon extends View {
       ))
 
     document.body.classList.add('typ-ribbon--enable')
-    document.querySelector('header')!.append(this.containerEl)
+    document.querySelector('#typora-sidebar-resizer')!.insertAdjacentElement('afterend', this.containerEl)
   }
 
   onunload() {
