@@ -75,7 +75,7 @@ export class I18n<T> {
         this.resources = JSON.parse(localeText)
       }
       catch (error) {
-        console.error('Failed to load locale data.')
+        console.error('Failed to load locale data.', error)
       }
       return
     }

@@ -52,40 +52,23 @@ export class App extends Events<AppEvents> {
   }
 
   get coreDir() {
-    const { url } = import.meta
-    return url.startsWith('typora:')
-      ? url.replace(/^typora:([\\\/])\1app\1userData/, _options.userDataPath).slice(0, -7)
-      : url.slice(8, -7)
+    return path.join(_options.userDataPath, 'plugins', this.coreVersion)
   }
 
-  vault = new Vault(this)
-
-  settings = new Settings<AppSettings>(this, {
-    filename: 'core',
-    version: 1,
-  })
-
-  i18n = new I18n<typeof Locale>({
-    localePath: path.join(this.coreDir, 'locales'),
-    userLang: this.settings.get('displayLang'),
-  })
-
-  commands = new CommandManager(this)
-
-  env = this._readEnv()
-
-  github = new GithubAPI(this)
-
-  plugins = new PluginManager(this)
-
-  workspace = new Workspace(this)
-
-  hotkeyManager = new HotkeyManager(this)
+  vault: Vault
+  settings: Settings<AppSettings>
+  i18n: I18n<typeof Locale>
+  commands: CommandManager
+  env: EnvironmentVairables
+  github: GithubAPI
+  plugins: PluginManager
+  workspace: Workspace
+  hotkeyManager: HotkeyManager
 
   constructor() {
     super()
 
-    document.head.insertAdjacentHTML('beforeend', `<link rel="stylesheet" id="typora-plugin-core" href="file://${this.coreDir}core.css" crossorigin="anonymous"></link>`)
+    document.head.insertAdjacentHTML('beforeend', `<link rel="stylesheet" id="typora-plugin-core" href="file://${path.join(this.coreDir, 'core.css')}" crossorigin="anonymous"></link>`)
 
     // @ts-ignore
     window[Symbol.for("typora-plugin-core")] = {
@@ -93,7 +76,31 @@ export class App extends Events<AppEvents> {
       ...Core,
     }
 
+    this.vault = new Vault(this)
+
+    this.settings = new Settings<AppSettings>(this, {
+      filename: 'core',
+      version: 1,
+    })
+
+    this.i18n = new I18n<typeof Locale>({
+      localePath: path.join(this.coreDir, 'locales'),
+      userLang: this.settings.get('displayLang'),
+    })
+
     I18n.setUserLocale(this.i18n.locale)
+
+    this.commands = new CommandManager(this)
+
+    this.env = this._readEnv()
+
+    this.github = new GithubAPI(this)
+
+    this.plugins = new PluginManager(this)
+
+    this.workspace = new Workspace(this)
+
+    this.hotkeyManager = new HotkeyManager(this)
 
     this.vault.on('change', () => {
       this.env = this._readEnv()
