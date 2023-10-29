@@ -52,7 +52,8 @@ body.typ-tabs--enable {
     width: calc(100% - var(--typ-ribbon-width) - var(--sidebar-width));
   }
 
-  .unibody-window & {
+  .unibody-window &,
+  .html-for-mac & {
     margin-top: 28px;
   }
 }

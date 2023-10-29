@@ -1,7 +1,11 @@
 /// <reference types="jquery" />
 
 export declare var _options: {
+  /** access in Windows & Linux */
   appLocale: string
+  /** access in macOS */
+  locale: string
+
   appVersion: string
   initFilePath: string
   mountFolder: string
@@ -43,7 +47,7 @@ export declare var bridge: {
   callHandler(cmd: "path.moveTo", opts: { source: string, folder: string }, cb: (param0: any) => void): void
   callHandler(cmd: "path.openFile", opts: { url: string, relateToFolder: boolean }, cb: (success: boolean) => void): void
   callHandler(cmd: "path.openURL", url: string): void
-  callHandler(cmd: "path.removeFiles", files: string[]): void
+  callHandler(cmd: "path.removeFiles", files: string[], cb?: (param0: any) => void): void
   //
   callHandler(cmd: "quickOpen.cacheRecentFiles"): void
   callHandler(cmd: "quickOpen.initFileCache"): void
@@ -137,6 +141,21 @@ interface File {
 
   megaMenu: MegaMenu
 
+  /**
+   * @since Typora v0.9.x
+   * @deprecated in Typora v1.2.x
+   */
+  loadInitData(): void
+
+  /**
+   * @since Typora v1.2.x
+   */
+  loadFile(filePath: string, t: any, n: any[]): void
+
+  /**
+   * run in Windows & Linux
+   * @since Typora v0.9.x
+   */
   onFileOpened(): void
 
   option: Options
@@ -153,6 +172,11 @@ interface File {
 }
 
 interface Bundle {
+  /**
+   * access in macOS
+   */
+  currentFolderPath: string
+
   fileEncode: string
   fileName: string
 
@@ -491,6 +515,7 @@ export declare function isInputComponent(el: Element | null): boolean
 
 export declare var JSBridge: {
   invoke(command: "app.cancelQuit"): Promise<any>
+  invoke(command: 'app.download', url: string, dir: string, filename: string): Promise<any>
   invoke(command: "app.onCloseWin", folder: string): Promise<any>
   invoke(command: "app.openFile", path: string, opts: { forceCreateWindow: boolean, mountFolder: string }): Promise<any>
   invoke(command: "app.openFileOrFolder", path: string, opts: { forceCreateWindow: boolean, mountFolder: string }): Promise<any>

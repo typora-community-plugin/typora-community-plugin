@@ -67,7 +67,10 @@ export class Workspace extends Events<WorkspaceEvents> {
       this.emit('file:will-open', file)
     })
 
-    decorate.afterCall(File, 'onFileOpened', () => {
+    const onFileOpened = File.loadInitData
+      ? 'loadInitData'
+      : 'loadFile'
+    decorate.afterCall(File, onFileOpened, () => {
       if (this.activeFile) {
         setTimeout(() => this.emit('file:open', this.activeFile))
       }
