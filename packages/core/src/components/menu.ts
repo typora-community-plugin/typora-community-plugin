@@ -61,11 +61,18 @@ export class Menu extends View {
    * Do not use it directly. Use `showAtMouseEvent()` or `showAtPosition()` instead.
    */
   show() {
-    this.containerEl.classList.add('show')
+    setTimeout(() => {
+      this.containerEl.style.display = 'block'
+      this.registerDomEvent(document.body, 'click', event => {
+        if ((<HTMLElement>event.target).closest('.context-menu')) return
+        this.hide()
+      })
+    })
   }
 
   hide(): this {
-    this.containerEl.classList.remove('show')
+    this.containerEl.style.display = 'none'
+    this.unload()
     return this
   }
 }
