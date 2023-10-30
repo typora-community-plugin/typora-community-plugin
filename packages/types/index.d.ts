@@ -118,7 +118,7 @@ interface File {
   editor: Editor
 
   /**
-   * @deprecated in Typora v1.4.x
+   * @deprecated in Typora v1.4.x, use {@link Bundle.filePath} instead.
    */
   filePath: string
 
@@ -143,7 +143,7 @@ interface File {
 
   /**
    * @since Typora v0.9.x
-   * @deprecated in Typora v1.2.x
+   * @deprecated in Typora v1.2.x, use {@link File.loadFile} instead.
    */
   loadInitData(): void
 
@@ -234,11 +234,13 @@ interface Editor {
   tryOpenLink($el: JQuery, param1?: boolean): void
 
   /**
-   * @deprecated in Typora v1.2.x
+   * @since Typora v0.9.x
+   * @deprecated in Typora v1.2.x, use {@link Editor.tryOpenUrl} instead.
    */
   tryOpenUrl_(url: string, param1?: boolean): void
   /**
    * @param url relative file path or web url
+   * @since Typora v1.2.x
    */
   tryOpenUrl(url: string, param1?: boolean): void
 }
@@ -606,5 +608,7 @@ export declare function getMarkdown(): string
 
 /**
  * Import commonjs module.
+ *
+ * Access in Windows & Linux.
  */
 export declare function reqnode(id: string): any

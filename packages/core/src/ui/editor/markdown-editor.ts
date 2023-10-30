@@ -100,19 +100,17 @@ class OpenLinkInCurrentWin extends Component {
   }
 
   onload() {
+    const tryOpenUrl = editor.tryOpenUrl_ ? 'tryOpenUrl_' : 'tryOpenUrl'
+
     this.register(
-      decorate(editor, 'tryOpenLink', fn => ($a, param1) => {
+      decorate(editor, tryOpenUrl, fn => (url, param1) => {
 
-        if ($a.get(0).matches('a')) {
-          const url = $a.attr('href')
-
-          if (!(url.startsWith('#') || url.startsWith('http'))) {
-            this.app.openFile(unescape($a.attr('href')))
-            return
-          }
+        if (!(url.startsWith('#') || url.startsWith('http'))) {
+          this.app.openFile(unescape(url))
+          return
         }
 
-        return fn($a, param1)
+        return fn(url, param1)
       }))
   }
 
