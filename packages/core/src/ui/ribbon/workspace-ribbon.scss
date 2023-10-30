@@ -8,7 +8,7 @@
 
 .typ-ribbon--enable {
 
-  &.typora-node:not(.megamenu-opened):not(.typora-sourceview-on) {
+  &:not(.megamenu-opened):not(.typora-sourceview-on) {
 
     #top-titlebar,
     .md-notification-container,
@@ -63,6 +63,10 @@
   height: 100vh;
 
   border-right: 1px solid rgb(0, 0, 0, .07);
+
+  .html-for-mac & {
+    padding-top: 28px;
+  }
 
   .typora-node.megamenu-opened &,
   .typora-node.typora-sourceview-on &,
