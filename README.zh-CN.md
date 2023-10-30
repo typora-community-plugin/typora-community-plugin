@@ -22,12 +22,10 @@
 
 ## 兼容性
 
-| 已测试的 Typora  | Windows     | Linux      | MacOS |
-| -------------- | ----------- | ----------- | ----- |
-| v1.5.x, v1.6.x | ✅Window 10 | ✅Ubuntu 22 | ❌    |
-
-- ✅: 已在该平台测试
-- ❌: 不支持该平台
+| 已测试  |                |                |             |
+| :----: | -------------- | -------------- | ----------- |
+| Typora | v1.5.x, v1.6.x | v1.5.x, v1.6.x | v1.4.8      |
+| 系统    | Windows 10     | Ubuntu 22      | macOS 10.13 |
 
 
 
@@ -45,7 +43,7 @@
   - [x] Markdown 后处理器
   - [x] Markdown 自动完成
 - [x] I18n: 跟随系统或手动配置，现在支持英语和中文
-- [ ] 兼容 macOS
+- [x] 兼容 macOS
 - 文档
   - [ ] 用户文档
   - [ ] 开发文档
@@ -87,6 +85,12 @@ Linux 用户
 3. 复制文件到 `~/.config/Typora/plugins`。
 4. 修改文件 `/usr/share/typora/resources/window.html`。使用 UTF-8 编码打开该文件，替换文件末尾的文本 `</body></html>` 为 `<script src="typora://app/userData/plugins/loader.js" type="module"></script></body></html>`。
 
+macOS 用户
+
+1. 从 [Release](https://github.com/typora-community-plugin/typora-community-plugin/releases) 下载 `typora-community-plugin.zip`。
+2. 解压文件。
+3. 复制文件到 `/User/{UserName}/Library/Application%20Support/abnerworks.Typora/plugins`
+4. 右键 `Typora.app`，点击“显示包内容”，进入应用内部文件夹，修改文件 `Typora.app/Contents/Resources/TypeMark/index.html`。使用 UTF-8 编码打开该文件，替换文件末尾的文本 `</body>` 为 `<script src="file:///User/{UserName}/Library/Application%20Support/abnerworks.Typora/plugins/loader.js" type="module"></script></body>`，其中 `{UserName}` 需要替换为你的 macOS 账号名。
 
 
 ## 使用

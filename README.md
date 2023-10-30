@@ -22,12 +22,10 @@ To be on the safe side, install an open source plugin that can review the source
 
 ## Compatible
 
-| tested Typora  | Windows     | Linux       | MacOS |
-| -------------- | ----------- | ----------- | ----- |
-| v1.5.x, v1.6.x | ✅Window 10 | ✅Ubuntu 22 | ❌    |
-
-- ✅: tested in this platform
-- ❌: not support in this platform
+| Tested |                |                |             |
+| :----: | -------------- | -------------- | ----------- |
+| Typora | v1.5.x, v1.6.x | v1.5.x, v1.6.x | v1.4.8      |
+| OS     | Windows 10     | Ubuntu 22      | macOS 10.13 |
 
 
 
@@ -45,7 +43,7 @@ To be on the safe side, install an open source plugin that can review the source
   - [x] Markdown postprocessor
   - [x] Markdown suggestion
 - [x] I18n: follow system or manual configure, now support English and Chinese
-- [ ] Compatible with macOS
+- [x] Compatible with macOS
 - Documentation
   - [ ] User documentation
   - [ ] Developer documentation
@@ -85,7 +83,14 @@ for Linux
 1. Download [Release](https://github.com/typora-community-plugin/typora-community-plugin/releases) `typora-community-plugin.zip`.
 2. Unzip it.
 3. Copy files to `~/.config/Typora/plugins`.
-4. Modify `/usr/share/typora/resources/window.html`。Open the file with encoding UTF-8, then replace text `</body></html>` at the end of file as `<script src="typora://app/userData/plugins/loader.js" type="module"></script></body></html>`.
+4. Modify `/usr/share/typora/resources/window.html`. Open the file with encoding UTF-8, then replace text `</body></html>` at the end of file as `<script src="typora://app/userData/plugins/loader.js" type="module"></script></body></html>`.
+
+for macOS
+
+1. Download [Release](https://github.com/typora-community-plugin/typora-community-plugin/releases) `typora-community-plugin.zip`.
+2. Unzip it.
+3. Copy files to `/User/{UserName}/Library/Application%20Support/abnerworks.Typora/plugins`
+4. Right click `Typora.app`, then click menu item "Show Package Contents" to open the app inner folder. Modify `Typora.app/Contents/Resources/TypeMark/index.html`. Open the file with encoding UTF-8, then replace text `</body>` at the end of file as `<script src="file:///User/{UserName}/Library/Application%20Support/abnerworks.Typora/plugins/loader.js" type="module"></script></body>`, and `{UserName}` need to be replaced with your current user name of macOS.
 
 
 
