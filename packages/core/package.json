@@ -52,6 +52,7 @@
     "iconv-lite": "0.6.3",
     "rollup": "^4.1.4",
     "rollup-plugin-scss": "^4.0.0",
+    "rollup-plugin-typora": "workspace:../rollup-plugin",
     "sass": "^1.69.5",
     "ts-patch": "^3.0.2",
     "tslib": "^2.6.2",

@@ -1,0 +1,23 @@
+{
+  "name": "@typora-community-plugin/rollup-plugin-typora",
+  "version": "1.0.0",
+  "description": "Build typora community plugin with rollup.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.js",
+    "prepublish": "pnpm run build",
+    "publish": "pnpm publish --access=public"
+  },
+  "keywords": [
+    "rollup-plugin",
+    "typora-plugin"
+  ],
+  "author": "plylrnsdy <https://github.com/plylrnsdy>",
+  "homepage": "https://github.com/typora-community-plugin/typora-community-plugin/tree/main/packages/rollup-plugin#README.md",
+  "bugs": {
+    "url": "https://github.com/typora-community-plugin/typora-community-plugin/issues",
+    "email": "plylrnsdy@163.com"
+  },
+  "license": "MIT"
+}

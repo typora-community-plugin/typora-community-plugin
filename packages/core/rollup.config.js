@@ -8,6 +8,7 @@ import scss from 'rollup-plugin-scss'
 import terser from '@rollup/plugin-terser'
 import typescript from '@rollup/plugin-typescript'
 import virtual from '@rollup/plugin-virtual'
+import { virtualModules } from 'rollup-plugin-typora'
 
 
 const packageInfo = JSON.parse(await fs.readFile('./package.json', 'utf8'))
@@ -32,7 +33,6 @@ export default defineConfig({
   output: {
     file: 'dist/core.js',
     format: 'iife',
-    sourcemap: true,
   },
   plugins: [
     replace({
@@ -41,11 +41,7 @@ export default defineConfig({
       'process.env.CORE_VERSION': `"${packageInfo.version}"`,
       'process.env.IS_DEV': 'false',
     }),
-    virtual({
-      typora: ['_options', 'bridge', 'ClientCommand', 'debugMode', 'File', 'editor', 'JSBridge', 'reqnode']
-        .map(o => `export const ${o} = window.${o};`)
-        .join('')
-    }),
+    virtual({ typora: virtualModules.typora }),
     nodeResolve(),
     commonjs(),
     typescript({
