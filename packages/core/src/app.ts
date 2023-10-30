@@ -71,9 +71,13 @@ export class App extends Events<AppEvents> {
     document.head.insertAdjacentHTML('beforeend', `<link rel="stylesheet" id="typora-plugin-core" href="file://${path.join(this.coreDir, 'core.css')}" crossorigin="anonymous"></link>`)
 
     // @ts-ignore
-    window[Symbol.for("typora-plugin-core")] = {
+    window[Symbol.for(process.env.CORE_NS)] = {
       app: this,
       ...Core,
+    }
+    if (process.env.IS_DEV) {
+      // @ts-ignore
+      window['Typora'] = window[Symbol.for(process.env.CORE_NS)]
     }
 
     this.vault = new Vault(this)

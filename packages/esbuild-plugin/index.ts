@@ -131,11 +131,5 @@ export default function typoraPlugin(options: Options) {
         }
         return _
       })
-      // handle: app.ts
-      .replace('window[Symbol.for("typora-plugin-core")]',
-        mode === 'development'
-          ? `window.Typora = window[${coreModuleId}]`
-          : `window[${coreModuleId}]`
-      )
   }
 }

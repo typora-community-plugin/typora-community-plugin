@@ -31,14 +31,15 @@ export default defineConfig({
   input: 'src/core.ts',
   output: {
     file: 'dist/core.js',
-    format: 'iife'
+    format: 'iife',
+    sourcemap: true,
   },
   plugins: [
     replace({
       preventAssignment: true,
+      'process.env.CORE_NS': '"typora-plugin-core@v2"',
       'process.env.CORE_VERSION': `"${packageInfo.version}"`,
       'process.env.IS_DEV': 'false',
-      'window[Symbol.for("typora-plugin-core")]': 'window[Symbol.for("typora-plugin-core@v2")]',
     }),
     virtual({
       typora: ['_options', 'bridge', 'ClientCommand', 'debugMode', 'File', 'editor', 'JSBridge', 'reqnode']

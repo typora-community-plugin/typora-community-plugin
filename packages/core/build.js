@@ -22,6 +22,7 @@ await esbuild.build({
   minify: IS_PROD,
   sourcemap: IS_DEV,
   define: {
+    'process.env.CORE_NS': `"typora-plugin-core@v2"`,
     'process.env.CORE_VERSION': `"${packageInfo.version}"`,
     'process.env.IS_DEV': `${IS_DEV}`,
   },
