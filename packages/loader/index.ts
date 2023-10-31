@@ -4,7 +4,7 @@ import { File, _options, bridge, reqnode } from 'typora'
 (function main() {
 
   const mountFolder = _options.mountFolder
-    || dirname(File.bundle.filePath)
+    || dirname(_options.initFilePath || File.bundle.filePath)
 
   const settings = (mountFolder && readText(`${mountFolder}/.typora/env.json`)) || '{}'
 
