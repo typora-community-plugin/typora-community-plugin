@@ -65,12 +65,12 @@ export class MarkdownPreProcessor {
     let htmlTags: string[] = []
 
     // Part `(?:^|\n)(\s*`{3,})(?:.|\n)+?\1` handle multi-line codeblock
-    // Part `(?:^|.)(`+).+?\2`                handle single line codeblock
+    // Part `(?:^|.)(`+).+?\2`               handle single line codeblock
     md = md.replace(/(?:^|\n)(\s*`{3,})(?:.|\n)+?\1|(?:^|.)(`+).+?\2/g, ($) => {
       return $[0] === '\\'
         // handle: \`
         ? $
-        : (codeblocks.push($), '___CODE_PLACEHOLDER___')
+        : (codeblocks.push($.slice(1)), $[0] + '___CODE_PLACEHOLDER___')
     })
 
     if (when === 'preload') {
@@ -78,7 +78,7 @@ export class MarkdownPreProcessor {
         return $[0] === '\\'
           // handle: \<
           ? $
-          : (htmlTags.push($), '___HTML_PLACEHOLDER___')
+          : (htmlTags.push($.slice(1)), $[0] + '___HTML_PLACEHOLDER___')
       })
     }
 
