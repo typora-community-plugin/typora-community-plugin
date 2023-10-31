@@ -5,10 +5,12 @@ import url from "node:url"
 
 const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+const resolve = file => path.join(__dirname, file)
+const readJSON = async file => JSON.parse(await fs.readFile(resolve(file), 'utf8'))
 
-const exportedTyporaVariables = JSON.parse(await fs.readFile(path.join(__dirname, 'exported-by-typora.json'), 'utf8'))
+const exportedTyporaVariables = await readJSON('exported-by-typora.json')
 
-const exportedCoreModules = JSON.parse(await fs.readFile(path.join(__dirname, '/exported-by-core.json'), 'utf8'))
+const exportedCoreModules = await readJSON('exported-by-core.json')
 
 export const virtualModules = {
   'typora':
