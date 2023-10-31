@@ -17,6 +17,8 @@ const { compilerOptions } = JSON.parse(await fs.readFile('./tsconfig.json', 'utf
 
 const overrided = {
   "target": "ES5",
+  "downlevelIteration": true,
+
   "module": undefined,
   "emitDeclarationOnly": undefined,
   "declaration": undefined,
