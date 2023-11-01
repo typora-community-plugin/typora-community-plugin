@@ -28,7 +28,7 @@ body.typ-tabs--enable {
  *********************************************/
 
 .typ-tabs-wrapper {
-  --typ-tab-border-color: rgb(0, 0, 0, .07);
+  --typ-tab-border-color: rgba(0, 0, 0, 0.07);
 
   @media (prefers-color-scheme: dark) {
     --typ-tab-border-color: #555;
