@@ -1,3 +1,4 @@
+import './title-bar.scss'
 import type { App } from 'src/app'
 import type { Component } from 'src/component'
 import { NoticeContainer } from 'src/components/notice'
