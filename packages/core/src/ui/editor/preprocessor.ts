@@ -74,7 +74,7 @@ export class MarkdownPreProcessor {
     })
 
     if (when === 'preload') {
-      md = md.replace(/(?:^|.)<\/?[A-Za-z-]+[^>]*>/g, ($) => {
+      md = md.replace(/(?:^|\n|.)<\/?[A-Za-z-]+[^>]*>/g, ($) => {
         return $[0] === '\\'
           // handle: \<
           ? $
