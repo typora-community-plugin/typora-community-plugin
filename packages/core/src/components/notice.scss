@@ -1,3 +1,6 @@
+@import '../global.scss';
+
+
 .typ-notice__container {
   position: fixed;
   top: 2rem;
@@ -18,5 +21,5 @@
 
   font-size: .9rem;
   background: var(--bg-color);
-  box-shadow: 0 .125rem .5rem rgb(var(--typ-shadow-color));
+  @include shadow(0 .125rem .5rem rgb(var(--typ-shadow-color)));
 }

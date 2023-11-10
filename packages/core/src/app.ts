@@ -1,3 +1,4 @@
+import './global.scss'
 import './variables.scss'
 import path from 'src/path'
 import { JSBridge, _options, editor } from 'typora'

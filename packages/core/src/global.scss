@@ -1,0 +1,10 @@
+@mixin shadow($shadow) {
+
+  .typora-node & {
+    box-shadow: $shadow;
+  }
+
+  .html-for-mac & {
+    filter: drop-shadow($shadow);
+  }
+}
