@@ -23,7 +23,7 @@ button.typ-block-operate-button {
   color: rgba(var(--typ-text-color), .5);
   word-break: keep-all;
 
-  background-color: rgb(var(--typ-light-bg-color), .4);
+  background-color: rgba(var(--typ-light-bg-color), .4);
 
   &:active {
     background-color: rgba(var(--typ-light-bg-color), .5);

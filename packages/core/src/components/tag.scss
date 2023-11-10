@@ -2,7 +2,7 @@
   padding: 0 .5rem;
   border: 1px solid var(--table-border-color);
   border-radius: 3px;
-  box-shadow: 1px 1px 1px 0 rgb(var(--typ-shadow-color), .4);
+  box-shadow: 1px 1px 1px 0 rgba(var(--typ-shadow-color), .4);
 
   &.primary {
     color: var(--primary-btn-text-color);

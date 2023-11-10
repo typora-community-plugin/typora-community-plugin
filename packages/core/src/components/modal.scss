@@ -6,7 +6,7 @@
 
   width: 100%;
   height: 100%;
-  background: rgb(var(--typ-light-bg-color), .4);
+  background: rgba(var(--typ-light-bg-color), .4);
 
   &.middle {
     display: flex;
@@ -21,7 +21,7 @@
   padding: 1rem;
   border: 1px solid var(--window-border-color);
   background: var(--bg-color);
-  box-shadow: 0 1rem 2rem rgb(var(--typ-shadow-color), .5);
+  box-shadow: 0 1rem 2rem rgba(var(--typ-shadow-color), .5);
 }
 
 .typ-modal__header {
