@@ -12,10 +12,10 @@ const writeJSON = async (file, data) => fs.writeFile(resolve(file), JSON.stringi
 
 await readText('../types/index.d.ts')
   .then(code => code.match(/(?<=export declare (?:function|var|const|let) )\w+\b/g))
-  .then(names => writeJSON('./exported-by-typora.json', [...names]))
+  .then(names => writeJSON('./exported-by-typora.json', [...new Set(names)]))
 
 
 await readText('../core/src/index.ts')
   .then(code => code.match(/(?<=export { (?:default as )?)\w+(?= })|(?<=export declare (?:function|var|const|let) )\w+\b/g))
-  .then(names => writeJSON('./exported-by-core.json', [...names]))
+  .then(names => writeJSON('./exported-by-core.json', [...new Set(names)]))
 
