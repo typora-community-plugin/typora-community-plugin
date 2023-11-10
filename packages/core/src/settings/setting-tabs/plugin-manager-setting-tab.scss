@@ -1,13 +1,9 @@
-.typ-setting-description:has(.typ-plugin-meta) {
-  display: flex;
+.typ-plugin-meta {
+  margin-right: .75rem;
 
-  .typ-plugin-meta {
-    margin-right: .75rem;
-
-    .fa {
-      width: .75rem;
-      text-align: center;
-      opacity: .6;
-    }
+  .fa {
+    width: .75rem;
+    text-align: center;
+    opacity: .6;
   }
 }

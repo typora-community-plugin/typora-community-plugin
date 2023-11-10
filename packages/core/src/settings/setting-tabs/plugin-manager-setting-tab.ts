@@ -117,14 +117,14 @@ export class PluginsManagerSettingTab extends SettingTab {
 
       setting.addDescription(el => {
         $(el).append(
-          `<div class="typ-plugin-meta"><span class="fa fa-folder"></span> ${manifest.postion}</div>`,
+          `<span class="typ-plugin-meta"><span class="fa fa-folder"></span> ${manifest.postion}</span>`,
 
-          `<div class="typ-plugin-meta"><span class="fa fa-cube"></span> v${manifest.version}</div>`,
+          `<span class="typ-plugin-meta"><span class="fa fa-cube"></span> v${manifest.version}</span>`,
 
-          `<div class="typ-plugin-meta"><span class="fa fa-user"></span> ${manifest.author}</div>`,
+          `<span class="typ-plugin-meta"><span class="fa fa-user"></span> ${manifest.author}</span>`,
 
           manifest.repo &&
-          $(`<div class="typ-plugin-meta"><span class="fa fa-github"></span> <a>Repository</a></div>`)
+          $(`<span class="typ-plugin-meta"><span class="fa fa-github"></span> <a>Repository</a></span>`)
             .on('click', () => this.app.openLink('https://github.com/' + manifest.repo)),
         )
       })
