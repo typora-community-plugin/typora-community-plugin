@@ -1,7 +1,7 @@
 import './global.scss'
 import './variables.scss'
 import path from 'src/path'
-import { JSBridge, _options, editor } from 'typora'
+import { File, JSBridge, _options, editor } from 'typora'
 import * as Core from '.'
 import { Events } from 'src/events'
 import { GithubAPI } from 'src/github'
@@ -53,7 +53,9 @@ export class App extends Events<AppEvents> {
   }
 
   get coreDir() {
-    return path.join(_options.userDataPath, 'plugins', this.coreVersion)
+    return process.env.IS_DEV
+      ? import.meta.url.slice(8, -7)
+      : path.join(_options.userDataPath, 'plugins', this.coreVersion)
   }
 
   vault: Vault
@@ -68,8 +70,6 @@ export class App extends Events<AppEvents> {
 
   constructor() {
     super()
-
-    document.head.insertAdjacentHTML('beforeend', `<link rel="stylesheet" id="typora-plugin-core" href="file://${path.join(this.coreDir, 'core.css')}" crossorigin="anonymous"></link>`)
 
     // @ts-ignore
     window[Symbol.for(process.env.CORE_NS)] = {
@@ -113,6 +113,8 @@ export class App extends Events<AppEvents> {
       this.plugins.unloadPlugins()
       this.start()
     })
+
+    document.head.insertAdjacentHTML('beforeend', `<link rel="stylesheet" id="typora-plugin-core" href="file://${path.join(this.coreDir, 'core.css')}" crossorigin="anonymous"></link>`)
   }
 
   private _readEnv(): EnvironmentVairables {
