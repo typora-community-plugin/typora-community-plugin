@@ -606,6 +606,41 @@ export declare var JSBridge: {
 export declare function getMarkdown(): string
 
 
+type ModuleId =
+  ('extract-zip'
+    | 'extract-zip/node_modules/mkdirp'
+    | 'extract-zip/node_modules/yauzl')
+  | 'fs-extra'
+  | ('fs-plus'
+    | 'fs-plus/node_modules/async'
+    | 'fs-plus/node_modules/brace-expansion'
+    | 'fs-plus/node_modules/glob'
+    | 'fs-plus/node_modules/minimatch'
+    | 'fs-plus/node_modules/rimraf'
+    | 'fs-plus/node_modules/underscore'
+    | 'fs-plus/node_modules/underscore-plus')
+  | 'getos'
+  | 'hjson'
+  | 'iconv-lite'
+  | 'jschardet'
+  | 'jsonfile'
+  | 'native-reg'
+  | 'node-machine-id'
+  | ('lowdb'
+    | 'lowdb/node_modules/lodash')
+  | ('raven/node_modules/md5'
+    | 'raven/node_modules/uuid')
+  | 'spellchecker'
+  | ('vscode-ripgrep'
+    | 'vscode-ripgrep/node_modules/debug'
+    | 'vscode-ripgrep/node_modules/ms')
+
+/**
+ * Import commonjs module.
+ *
+ * Access in Windows & Linux.
+ */
+export declare function reqnode(id: ModuleId): any
 /**
  * Import commonjs module.
  *
