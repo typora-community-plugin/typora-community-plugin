@@ -1,3 +1,6 @@
+import type { App } from ".."
+
+
 export type PluginPostion = 'global' | 'vault'
 
 export interface PluginManifest {
@@ -17,4 +20,5 @@ export interface PluginManifest {
   version: string
   minAppVersion: string
   minCoreVersion: string
+  platforms: Array<App['platform']>
 }

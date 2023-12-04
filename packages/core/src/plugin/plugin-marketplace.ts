@@ -5,7 +5,7 @@ import fs from 'src/fs/filesystem'
 import type { PluginManifest, PluginPostion } from "./plugin-manifest"
 
 
-export type PluginMarketInfo = Pick<PluginManifest, "id" | "name" | "description" | "author" | "repo"> & {
+export type PluginMarketInfo = Pick<PluginManifest, "id" | "name" | "description" | "author" | "repo" | "platforms"> & {
   newestVersion?: string
 }
 

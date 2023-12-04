@@ -58,6 +58,9 @@ export class App extends Events<AppEvents> {
       : path.join(_options.userDataPath, 'plugins', this.coreVersion)
   }
 
+  readonly platform: 'win32' | 'linux' | 'darwin' =
+    (process?.platform as 'win32' | 'linux') ?? 'darwin'
+
   vault: Vault
   settings: Settings<AppSettings>
   i18n: I18n<typeof Locale>

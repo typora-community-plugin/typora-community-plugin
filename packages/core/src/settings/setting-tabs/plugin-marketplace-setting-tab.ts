@@ -5,6 +5,12 @@ import { debounce } from "src/utils/debounce"
 import { uniqueId } from "src/utils/uniqueId"
 
 
+const platformIcons: Record<string, string> = {
+  darwin: 'apple',
+  linux: 'linux',
+  win32: 'windows',
+}
+
 export type PluginMarketplaceSettings = {
   githubProxy: string
 }
@@ -105,9 +111,19 @@ export class PluginMarketplaceSettingTab extends SettingTab {
       setting.containerEl.classList.add('typ-plugin-item')
 
       setting.addName(info.name || info.id)
-      setting.addDescription(`${t.author}: ${info.author}`)
+      setting.addDescription(el => {
+        $(el).append(
+          `<span class="typ-plugin-meta"><span class="fa fa-user"></span> ${info.author}</span>`,
+
+          $(`<span class="typ-plugin-meta"><span class="fa fa-github"></span> <a>Repository</a></span>`)
+            .on('click', () => this.app.openLink('https://github.com/' + info.repo)),
+
+          `<span class="typ-plugin-meta">OS: ${info.platforms.map(p => `<span class="fa fa-${platformIcons[p]}"></span>`).join(' ')}</span>`,
+        )
+      })
       setting.addDescription(info.description)
 
+      if (!info.platforms.includes(this.app.platform)) return
       if (this.app.plugins.manifests[info.id]) return
 
       setting.addButton(button => {
