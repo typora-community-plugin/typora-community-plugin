@@ -24,13 +24,27 @@ const github: GithubProxy = {
 const ghproxy: GithubProxy = {
   ...github,
   id: 'ghproxy',
-  base: 'https://ghproxy.com/' + github.base,
-  raw: 'https://ghproxy.com/' + github.raw,
+  base: 'https://mirror.ghproxy.com/' + github.base,
+  raw: 'https://mirror.ghproxy.com/' + github.raw,
+}
+
+const ghproxyNet: GithubProxy = {
+  ...github,
+  id: 'ghproxy.net',
+  base: 'https://ghproxy.net/' + github.base,
+  raw: 'https://ghproxy.net/' + github.raw,
+}
+
+const ghpsCc: GithubProxy = {
+  ...github,
+  id: 'ghps.cc',
+  base: 'https://ghps.cc/' + github.base,
+  raw: 'https://ghps.cc/' + github.raw,
 }
 
 export class GithubAPI {
 
-  proxies: GithubProxy[] = [github, ghproxy]
+  proxies: GithubProxy[] = [github, ghproxy, ghproxyNet, ghpsCc]
 
   private uri: GithubProxy
 
