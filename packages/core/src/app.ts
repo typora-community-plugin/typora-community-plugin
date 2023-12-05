@@ -59,7 +59,7 @@ export class App extends Events<AppEvents> {
   }
 
   readonly platform: 'win32' | 'linux' | 'darwin' =
-    (process?.platform as 'win32' | 'linux') ?? 'darwin'
+    (window?.process?.platform as 'win32' | 'linux') ?? 'darwin'
 
   vault: Vault
   settings: Settings<AppSettings>
