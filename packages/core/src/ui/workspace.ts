@@ -77,8 +77,20 @@ export class Workspace extends Events<WorkspaceEvents> {
       }
     })
 
-    decorate.beforeCall(File, 'saveUseNode', () => {
-      this.emit('file:will-save', this.activeFile)
-    })
+    File.isNode
+      ? decorate.beforeCall(File, 'saveUseNode', () => {
+        this.emit('file:will-save', this.activeFile)
+      })
+      : (() => {
+        let start = 0
+
+        decorate.afterCall(File, 'validateContentForSave', () => {
+          start = Date.now()
+        })
+        decorate.beforeCall(File, 'sync', () => {
+          if (Date.now() - start >= 50) return
+          this.emit('file:will-save', this.activeFile)
+        })
+      })()
   }
 }
