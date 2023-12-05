@@ -99,7 +99,7 @@ export class GithubAPI {
     else {
       return fs.mkdir(tmpDir)
         .then(() => Shell.run(`curl -fLsS '${url}' -o '${tmpZippath}'`))
-        .then(() => Shell.run(`unzip '${tmpZippath}' -d '${tmp}'`))
+        .then(() => Shell.run(`unzip -o '${tmpZippath}' -d '${tmp}'`))
         .then(() => fs.remove(tmpZippath))
         .then(() => tmp)
     }
