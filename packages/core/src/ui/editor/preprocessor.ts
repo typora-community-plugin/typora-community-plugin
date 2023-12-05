@@ -42,14 +42,23 @@ export class MarkdownPreProcessor {
   }
 
   private _registerProcessors() {
-    decorate.returnValue(File, 'readContentFrom', (args, res) => {
-      if (!this._processors.preload.length) {
-        return res
-      }
+    File.isNode
+      ? decorate.returnValue(File, 'readContentFrom', (args, res) => {
+        if (!this._processors.preload.length) {
+          return res
+        }
 
-      res[1] = this._process('preload', res[1])
-      return res
-    })
+        res[1] = this._process('preload', res[1])
+        return res
+      })
+      : decorate.parameters(File, 'loadFile', (args) => {
+        if (!this._processors.preload.length) {
+          return args
+        }
+
+        args[2][0] = this._process('preload', args[2][0])
+        return args
+      })
 
     decorate.returnValue(editor, 'getMarkdown', (args, md) => {
       if (!this._processors.presave.length) {
