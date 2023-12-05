@@ -71,6 +71,7 @@
       "name": "About",
       "projectDesc": "A community plugin system for",
       "labelVersion": "Version",
+      "labelBuildTime": "Build Time",
       "labelAuthor": "Author",
       "labelHomepage": "Homepage",
       "buttonUpdate": "Update",

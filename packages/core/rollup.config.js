@@ -42,6 +42,7 @@ export default defineConfig({
       'process.env.CORE_NS': '"typora-plugin-core@v2"',
       'process.env.CORE_VERSION': `"${packageInfo.version}"`,
       'process.env.IS_DEV': 'false',
+      'process.env.BUILD_TIME': `"${new Date().toLocaleString('zh-cn')}"`,
     }),
     virtual({ typora: virtualModules.typora }),
     nodeResolve(),

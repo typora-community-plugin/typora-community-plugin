@@ -71,6 +71,7 @@
       "name": "关于",
       "projectDesc": "一个社区插件系统，适用于",
       "labelVersion": "版本",
+      "labelBuildTime": "构建时间",
       "labelAuthor": "作者",
       "labelHomepage": "项目主页",
       "buttonUpdate": "更新",

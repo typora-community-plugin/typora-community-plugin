@@ -33,6 +33,7 @@ export class AboutTab extends SettingTab {
         $(el).append([
           `${t.projectDesc} <a href="https://typora.io">Typora</a>`,
           `${t.labelVersion}: v${this.app.coreVersion}`,
+          `${t.labelBuildTime}: ${process.env.BUILD_TIME}`,
           `${t.labelAuthor}: <a href="https://github.com/plylrnsdy">plylrnsdy</a>`,
           `${t.labelHomepage}: <a href="https://github.com/typora-community-plugin/typora-community-plugin">typora-community-plugin</a>`,
         ].join('<br>'))

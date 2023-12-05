@@ -25,6 +25,7 @@ await esbuild.build({
     'process.env.CORE_NS': `"typora-plugin-core@v2"`,
     'process.env.CORE_VERSION': `"${packageInfo.version}"`,
     'process.env.IS_DEV': `${IS_DEV}`,
+    'process.env.BUILD_TIME': `"${new Date().toLocaleString('zh-cn')}"`,
   },
   plugins: [
     typoraPlugin({
