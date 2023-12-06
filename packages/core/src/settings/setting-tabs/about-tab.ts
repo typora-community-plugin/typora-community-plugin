@@ -80,9 +80,10 @@ export class AboutTab extends SettingTab {
       .then(version => {
         if (versions.compare(this.app.coreVersion, version) < 0) {
           return this.app.github.downloadThenUnzipToTemp(repo, version, `${name}.zip`)
-            .then(tmp => {
+            .then(async tmp => {
               const root = path.join(this.app.coreDir, '..')
-              return fs.move(tmp, root)
+              const files = await fs.list(tmp)
+              return Promise.all(files.map(f => fs.move(path.join(tmp, f), path.join(root, f))))
             })
             .then(() => { new Notice(t.coreUpdateSuccessful) })
         }
@@ -92,7 +93,7 @@ export class AboutTab extends SettingTab {
       })
       .catch(error => {
         console.error(error)
-        new Notice(error.msg)
+        new Notice(error.message)
       })
   }
 

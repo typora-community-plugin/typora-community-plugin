@@ -65,7 +65,7 @@ export class PluginMarketplace {
       })
       .catch(error => {
         console.error(error)
-        new Notice(error.msg)
+        new Notice(error.message)
       })
   }
 }
