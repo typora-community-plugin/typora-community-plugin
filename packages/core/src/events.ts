@@ -1,3 +1,4 @@
+import { Logger } from 'src/logger'
 import type { DisposeFunc } from "src/utils/types"
 
 
@@ -42,7 +43,9 @@ export class Events<E extends Record<string, EventListener>> {
       this._listeners[event]?.forEach(fn => fn(...args))
     }
     catch (error) {
-      console.error(error)
+      logger.error(`emit:${event as string}`, error)
     }
   }
 }
+
+const logger = new Logger(Events.name)

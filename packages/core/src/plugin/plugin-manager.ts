@@ -2,6 +2,7 @@ import { _options } from 'typora'
 import type { App } from "src/app"
 import { Notice } from 'src/components/notice'
 import fs from 'src/fs/filesystem'
+import { Logger } from 'src/logger'
 import path from 'src/path'
 import { Plugin } from "./plugin"
 import type { PluginManifest, PluginPostion } from "./plugin-manifest"
@@ -83,7 +84,7 @@ export class PluginManager {
 
         this.manifests[manifest.id] = manifest
       })
-      .catch((error) => console.error(error))
+      .catch((error) => logger.error(error))
   }
 
   /**
@@ -116,8 +117,9 @@ export class PluginManager {
         .then(() => fs.readText(cssPath))
         .then(cssText => { this.styles[id] = cssText })
         .catch(() => { })
-    } catch (error) {
-      console.error(error)
+    }
+    catch (error) {
+      logger.error(`Plugin.load:${id}`, error)
     }
   }
 
@@ -143,7 +145,7 @@ export class PluginManager {
     try {
       this.instances[id].load()
     } catch (error) {
-      console.error(error)
+      logger.error(error)
     }
 
     if (this.styles[id]) {
@@ -197,3 +199,5 @@ export class PluginManager {
     this.app.vault.writeConfigJson('plugins', this.enabledPlugins)
   }, 1e3)
 }
+
+const logger = new Logger(PluginManager.name)

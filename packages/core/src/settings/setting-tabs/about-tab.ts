@@ -2,6 +2,7 @@ import path from 'src/path'
 import type { App } from "src/app"
 import { Notice } from 'src/components/notice'
 import fs from 'src/fs/filesystem'
+import { Logger } from 'src/logger'
 import { SettingTab } from "src/settings/setting-tab"
 import * as versions from 'src/utils/versions'
 
@@ -92,9 +93,10 @@ export class AboutTab extends SettingTab {
         }
       })
       .catch(error => {
-        console.error(error)
+        logger.error(error)
         new Notice(error.message)
       })
   }
-
 }
+
+const logger = new Logger(AboutTab.name)

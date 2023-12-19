@@ -1,4 +1,5 @@
 import './postprocessor.scss'
+import { Logger } from 'src/logger'
 import { randomString } from "src/utils/random-string"
 
 
@@ -18,8 +19,9 @@ export class PostProcessor {
   _process(el: HTMLElement) {
     try {
       this.process(el)
-    } catch (e) {
-      console.error(e)
+    }
+    catch (e) {
+      logger.error(e)
     }
   }
 
@@ -67,3 +69,4 @@ export class PostProcessor {
   }
 }
 
+const logger = new Logger(PostProcessor.name)

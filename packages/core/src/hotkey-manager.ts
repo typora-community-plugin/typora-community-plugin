@@ -37,6 +37,7 @@ export class HotkeyManager {
   private _onKeyup(keybings: Record<string, EventListener[]>) {
     return (event: KeyboardEvent) => {
       const hotkey = eventToHotkey(event)
+      // TODO: try..catch with more msg
       keybings[hotkey]?.forEach(listener => listener(event))
     }
   }

@@ -1,3 +1,4 @@
+import { Logger } from 'src/logger'
 import { PostProcessor } from "./postprocessor"
 
 
@@ -18,10 +19,15 @@ export class HtmlPostProcessor extends PostProcessor {
   }
 
   _process(el: HTMLElement) {
-    const elements = this.selector
-      ? $(this.selector).toArray()
-      : [el]
-    elements.forEach(this.process, this)
+    try {
+      const elements = this.selector
+        ? $(this.selector).toArray()
+        : [el]
+      elements.forEach(this.process, this)
+    }
+    catch (error) {
+      logger.error(error)
+    }
   }
 
   static from(options: Pick<HtmlPostProcessor, 'selector' | 'process'>) {
@@ -30,3 +36,5 @@ export class HtmlPostProcessor extends PostProcessor {
     return processor
   }
 }
+
+const logger = new Logger(HtmlPostProcessor.name)

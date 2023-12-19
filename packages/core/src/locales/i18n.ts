@@ -1,6 +1,7 @@
 import path from 'src/path'
 import { _options } from "typora"
 import fs from 'src/fs/filesystem'
+import { Logger } from 'src/logger'
 import type { ReadonlyDeep } from 'src/utils/types'
 
 
@@ -75,9 +76,11 @@ export class I18n<T> {
         this.resources = JSON.parse(localeText)
       }
       catch (error) {
-        console.error('Failed to load locale data.', error)
+        logger.error('Failed to load locale data.', error)
       }
       return
     }
   }
 }
+
+const logger = new Logger(I18n.name)

@@ -4,6 +4,7 @@ import decorate from '@plylrnsdy/decorate.js'
 import type { App } from 'src/app'
 import { Events } from 'src/events'
 import fs from 'src/fs/filesystem'
+import { Logger } from 'src/logger'
 
 
 type VaultEvents = {
@@ -69,7 +70,7 @@ export class Vault extends Events<VaultEvents> {
       const text = fs.readTextSync(configPath)
       return JSON.parse(text)
     } catch (error) {
-      console.warn(`Failed to load config "${filename}.json"`)
+      logger.warn(`Failed to load config "${filename}.json"`)
       return defaultValue
     }
   }
@@ -82,8 +83,7 @@ export class Vault extends Events<VaultEvents> {
       .catch(() => fs.mkdir(dirname))
       .then(() => fs.writeText(configPath, JSON.stringify(config, null, 2)))
       .catch(error => {
-        console.error(`Failed to save config "${filename}.json".`)
-        console.error(error)
+        logger.error(`Failed to save config "${filename}.json".`, error)
       })
   }
 
@@ -114,8 +114,9 @@ export class Vault extends Events<VaultEvents> {
       }
     })
   }
-
 }
+
+const logger = new Logger(Vault.name)
 
 
 function hashCode(s: string) {

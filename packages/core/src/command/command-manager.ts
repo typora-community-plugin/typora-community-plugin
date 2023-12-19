@@ -1,5 +1,6 @@
 import type { App } from "src/app"
 import { type HotkeyScope, readableHotkey } from "src/hotkey-manager"
+import { Logger } from 'src/logger'
 import { debounce } from "src/utils/debounce"
 import type { DisposeFunc } from "src/utils/types"
 
@@ -67,8 +68,9 @@ export class CommandManager {
   run(commandId: string) {
     try {
       this.commandMap[commandId]?.callback()
-    } catch (error) {
-      console.error(error)
+    }
+    catch (error) {
+      logger.error(`run:${commandId}`, error)
     }
   }
 
@@ -100,3 +102,5 @@ export class CommandManager {
     this.app.vault.writeConfigJson('hotkeys', this.getConfig())
   }, 1e3)
 }
+
+const logger = new Logger(CommandManager.name)
