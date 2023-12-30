@@ -10,7 +10,8 @@
 
     "types": [
       "node",
-      "typora"
+      "typora",
+      "@types/jest"
     ],
     "skipLibCheck": true,
     "noImplicitAny": true,

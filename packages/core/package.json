@@ -9,6 +9,7 @@
     "build:dev": "node build.js --start",
     "build": "rollup -c rollup.config.js",
     "build-dts": "node build-dts.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --no-cache",
     "prepublish": "node build.js && pnpm run build-dts"
   },
   "keywords": [
@@ -39,6 +40,7 @@
     "@rollup/plugin-virtual": "^3.0.2",
     "@types/extract-zip": "1.6.2",
     "@types/glob": "7.2.0",
+    "@types/jest": "^29.5.11",
     "@types/jquery": "3.3.1",
     "@types/lodash": "4.14",
     "@types/mkdirp": "0.5.1",
@@ -50,6 +52,7 @@
     "esbuild-plugin-typora": "workspace:../esbuild-plugin",
     "esbuild-sass-plugin": "^2.10.0",
     "iconv-lite": "0.6.3",
+    "jest": "^29.7.0",
     "rollup": "^4.1.4",
     "rollup-plugin-scss": "^4.0.0",
     "rollup-plugin-typora": "workspace:../rollup-plugin",
