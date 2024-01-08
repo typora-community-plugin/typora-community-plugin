@@ -16,11 +16,11 @@ export type TPreProcessor = {
 
 type Processors = Record<ProcessTime, Record<MarkdownType, TPreProcessor[]> & { length: number }>
 
-// Part `\n(\s*`{3,})(?:.|\n)+?\1` handle multi-line codeblock
-// Part `.(`+).+?\2`               handle single line codeblock
-export const RE_CODEBLOCK = /\n(\s*`{3,})(?:.|\n)+?\1|.(`+).+?\2/g
+// Part `(?:^|\n)(\s*`{3,})(?:.|\n)+?\1` handle multi-line codeblock
+// Part `(`+).+?\2`                      handle single line codeblock
+export const RE_CODEBLOCK = /(?:^|\n)(\s*`{3,})(?:.|\n)+?\1|(`+).+?\2/g
 
-export const RE_HTML = /(?:\n|.)<\/?[A-Za-z-]+[^>]*>/g
+export const RE_HTML = /<\/?[A-Za-z-]+[^>]*>/g
 
 export class MarkdownPreProcessor {
 

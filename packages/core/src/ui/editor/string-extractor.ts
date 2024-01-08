@@ -1,3 +1,6 @@
+
+const ESCAPE_CHAR = '\\'
+
 /**
  * @private
  */
@@ -13,11 +16,11 @@ export class StringExtractor {
   }
 
   extract(s: string) {
-    return s.replace(this.regexp, ($) => {
-      if ($[0] === '\\') return $
-
-      this._cache.push($.slice(1))
-      return $[0] + this.placeholder
+    return s.replace(this.regexp, ($, ...args) => {
+      const offset = args.at(-2)
+      if (s[offset - 1] === ESCAPE_CHAR) return $
+      this._cache.push($)
+      return this.placeholder
     })
   }
 

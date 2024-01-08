@@ -8,7 +8,7 @@ class TestStringExtractor extends StringExtractor {
 }
 
 describe('extract single number', () => {
-  const extractor = new TestStringExtractor(/[^\\]\d/g, 'NUM')
+  const extractor = new TestStringExtractor(/\d/g, 'NUM')
 
   beforeEach(() => {
     extractor.reset()
@@ -48,6 +48,11 @@ describe('extract single number', () => {
     test('escape character', () => {
       const s = 'a=\\1'
       expect(extractor.extract(s)).toEqual(s)
+    })
+
+    test('escape and not escape', () => {
+      const s = 'a=\\1 b=2'
+      expect(extractor.extract(s)).toEqual('a=\\1 b=NUM')
     })
   })
 })
