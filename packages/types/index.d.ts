@@ -148,9 +148,9 @@ interface File {
   loadInitData(): void
 
   /**
-   * @since Typora v1.2.x
+   * @since Typora v1.1.x
    */
-  loadFile(filePath: string, t: any, n: any[]): void
+  loadFile(filePath: string, isSwitchDoc: boolean, file: [string, string, { currentFilePath: string, currentFolderPath: string, isLocked: boolean, oversize: boolean }]): void
 
   /**
    * run in Windows & Linux
@@ -160,15 +160,20 @@ interface File {
 
   option: Options
 
+  sync(e: boolean, t: any, n: boolean, i: boolean): string
+
   readContentFrom(): [unknown, string]
 
   reloadContent(): void
 
   saveUseNode(param0?: boolean, param1?: boolean): Promise<any>
 
+  setContent(e: string, t: boolean): void
   setMountFolder(path: string): void
 
   SupportedFiles: string[]
+
+  validateContentForSave(): boolean
 }
 
 interface Bundle {
@@ -328,6 +333,10 @@ interface Library {
 
   fileTree: FileTreeView
   fileSearch: FileSearchView
+
+  onFileChanges(arg0:
+    { type: "created" | "removed", path: string, isDir: boolean } | { type: "rename", newPath: string, oldPath: string, isDir: boolean }
+  ): void
 
   /**
    * @param normalizePath If path are not normalized, it may judge as different vault and open a new window to load the file.
