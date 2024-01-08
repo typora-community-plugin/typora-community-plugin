@@ -1,6 +1,7 @@
-import type { DisposeFunc } from 'src/utils/types'
-import { editor, File } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
+import { editor, File } from 'typora'
+import type { DisposeFunc } from 'src/utils/types'
+import { StringExtractor } from './string-extractor'
 
 
 type ProcessTime = 'preload' | 'presave'
@@ -15,12 +16,22 @@ export type TPreProcessor = {
 
 type Processors = Record<ProcessTime, Record<MarkdownType, TPreProcessor[]> & { length: number }>
 
+// Part `\n(\s*`{3,})(?:.|\n)+?\1` handle multi-line codeblock
+// Part `.(`+).+?\2`               handle single line codeblock
+export const RE_CODEBLOCK = /\n(\s*`{3,})(?:.|\n)+?\1|.(`+).+?\2/g
+
+export const RE_HTML = /(?:\n|.)<\/?[A-Za-z-]+[^>]*>/g
+
 export class MarkdownPreProcessor {
 
   private _processors: Processors = {
     preload: { code: [], mdtext: [], length: 0 },
     presave: { code: [], mdtext: [], length: 0 },
   }
+
+  private _codeExtractor = new StringExtractor(RE_CODEBLOCK, '___CODE_PLACEHOLDER___')
+
+  private _htmlExtractor = new StringExtractor(RE_HTML, '___HTML_PLACEHOLDER___')
 
   constructor() {
     this._registerProcessors()
@@ -41,7 +52,7 @@ export class MarkdownPreProcessor {
     o.length--
   }
 
-  private _registerProcessors() {
+  protected _registerProcessors() {
     File.isNode
       ? decorate.returnValue(File, 'readContentFrom', (args, res) => {
         if (!this._processors.preload.length) {
@@ -68,46 +79,34 @@ export class MarkdownPreProcessor {
     })
   }
 
-  private _process(when: ProcessTime, md: string) {
+  protected _process(when: ProcessTime, md: string) {
 
-    let codeblocks: string[] = []
-    let htmlTags: string[] = []
+    // pre-process
 
-    // Part `(?:^|\n)(\s*`{3,})(?:.|\n)+?\1` handle multi-line codeblock
-    // Part `(?:^|.)(`+).+?\2`               handle single line codeblock
-    md = md.replace(/(?:^|\n)(\s*`{3,})(?:.|\n)+?\1|(?:^|.)(`+).+?\2/g, ($) => {
-      return $[0] === '\\'
-        // handle: \`
-        ? $
-        : (codeblocks.push($.slice(1)), $[0] + '___CODE_PLACEHOLDER___')
-    })
+    md = this._codeExtractor.extract(md)
 
     if (when === 'preload') {
-      md = md.replace(/(?:^|\n|.)<\/?[A-Za-z-]+[^>]*>/g, ($) => {
-        return $[0] === '\\'
-          // handle: \<
-          ? $
-          : (htmlTags.push($.slice(1)), $[0] + '___HTML_PLACEHOLDER___')
-      })
+      md = this._htmlExtractor.extract(md)
     }
+
+    // process
 
     md = this._processors[when]['mdtext'].reduce((res, o) => o.process(res), md)
 
-    codeblocks = codeblocks.map(code =>
-      this._processors[when]['code'].reduce((res, o) => o.process(res), code)
+    this._processors[when]['code'].forEach((p) =>
+      this._codeExtractor.process(p.process)
     )
 
+    // post-process
+
     if (when === 'preload') {
-      htmlTags.reverse()
-      md = md.replace(/___HTML_PLACEHOLDER___/g, ($) => {
-        return htmlTags.pop()!
-      })
+      md = this._htmlExtractor.rebuild(md)
     }
 
-    codeblocks.reverse()
-    md = md.replace(/___CODE_PLACEHOLDER___/g, ($) => {
-      return codeblocks.pop()!
-    })
+    md = this._codeExtractor.rebuild(md)
+
+    this._codeExtractor.reset()
+    this._htmlExtractor.reset()
 
     return md
   }
