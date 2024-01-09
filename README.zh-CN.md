@@ -90,7 +90,7 @@ macOS 用户
 1. 从 [Release](https://github.com/typora-community-plugin/typora-community-plugin/releases) 下载 `typora-community-plugin.zip`。
 2. 解压文件。
 3. 复制文件到 `/User/{UserName}/Library/Application%20Support/abnerworks.Typora/plugins`
-4. 右键 `Typora.app`，点击“显示包内容”，进入应用内部文件夹，修改文件 `Typora.app/Contents/Resources/TypeMark/index.html`。使用 UTF-8 编码打开该文件，替换文件末尾的文本 `</body>` 为 `<script src="file:///User/{UserName}/Library/Application%20Support/abnerworks.Typora/plugins/loader.js" type="module"></script></body>`，其中 `{UserName}` 需要替换为你的 macOS 账号名。
+4. 右键 `Typora.app`，点击“显示包内容”，进入应用内部文件夹，修改文件 `Typora.app/Contents/Resources/TypeMark/index.html`。使用 UTF-8 编码打开该文件，替换文件末尾的文本 `</body>` 为 `<script src="file:///Users/{UserName}/Library/Application%20Support/abnerworks.Typora/plugins/loader.js" type="module"></script></body>`，其中 `{UserName}` 需要替换为你的 macOS 账号名。
 
 
 ## 使用
