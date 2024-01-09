@@ -7,7 +7,7 @@ import { PluginSettings } from './plugin-settings'
 import { SettingsModal } from "src/settings/settings-modal"
 import type { SettingTab } from "src/settings/setting-tab"
 import type { TPostProcessor } from 'src/ui/editor/postprocessor/postprocessor-manager'
-import type { TPreProcessor } from 'src/ui/editor/preprocessor'
+import type { TPreProcessor } from 'src/ui/editor/preprocessor/preprocessor'
 
 
 export abstract class Plugin<T extends Record<string, any> = {}>
