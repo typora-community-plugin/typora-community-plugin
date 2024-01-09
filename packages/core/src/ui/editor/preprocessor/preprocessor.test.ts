@@ -101,6 +101,23 @@ describe('extract html', () => {
     expect(extractor.extract(s)).toEqual('textHTMLHTML')
   })
 
+  describe('extract tag with attribute', () => {
+    test('tag with one attribute', () => {
+      const s = '<img src>'
+      expect(extractor.extract(s)).toEqual('HTML')
+    })
+
+    test('tag with one attribute & value', () => {
+      const s = '<img src="https://example.com/">'
+      expect(extractor.extract(s)).toEqual('HTML')
+    })
+
+    test('tag with 2 attributes', () => {
+      const s = '<img src="https://example.com/" style="border: 1px solid black;">'
+      expect(extractor.extract(s)).toEqual('HTML')
+    })
+  })
+
   describe('escape', () => {
 
     test('escape in begin', () => {
