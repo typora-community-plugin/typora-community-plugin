@@ -1,1 +1,1 @@
-["app","Component","Events","Modal","Notice","I18n","PluginSettings","Plugin","SettingTab","SettingItem","PostProcessor","HtmlPostProcessor","CodeblockPostProcessor","View","EditorSuggest","TextSuggest","WorkspaceRibbon","Sidebar","fs","path","format","html","until","decorate"]
+["app","Component","Events","Modal","Notice","I18n","PluginSettings","Plugin","SettingTab","SettingItem","PostProcessor","HtmlPostProcessor","CodeblockPostProcessor","View","EditorSuggest","TextSuggest","WorkspaceRibbon","Sidebar","fs","path","debounce","format","html","until","decorate"]
