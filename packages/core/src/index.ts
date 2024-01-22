@@ -30,6 +30,7 @@ export { Sidebar } from './ui/sidebar/sidebar'
 export { default as fs } from 'src/fs/filesystem'
 export { default as path } from 'src/path'
 
+export { debounce } from './utils/debounce'
 export { format } from './utils/format'
 export { html } from './utils/html'
 export { until } from './utils/until'
