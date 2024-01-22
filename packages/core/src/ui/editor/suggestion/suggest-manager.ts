@@ -19,7 +19,7 @@ export class EditorSuggestManager {
     })
 
     decorate(editor.autoComplete, 'apply', fn => (text) => {
-      if (this._currentSuggest.isUsing) {
+      if (this._currentSuggest?.isUsing) {
         const range = editor.selection.getRangy()
         const { anchor } = editor.autoComplete.state
         const textNode = anchor.containerNode.firstChild! as Element
