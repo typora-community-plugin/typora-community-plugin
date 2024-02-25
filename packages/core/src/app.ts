@@ -20,6 +20,7 @@ import type { CoreSettings } from 'src/settings/setting-tabs/about-tab'
 import { Workspace } from 'src/ui/workspace'
 import type { RibbonSettings } from 'src/ui/ribbon/workspace-ribbon'
 import { isMarkdownUrl } from 'src/utils/is-markdown-url'
+import { platform } from 'src/utils/platform'
 import type { FileURL } from 'src/utils/types'
 
 
@@ -58,8 +59,7 @@ export class App extends Events<AppEvents> {
       : path.join(_options.userDataPath, 'plugins', this.coreVersion)
   }
 
-  readonly platform: 'win32' | 'linux' | 'darwin' =
-    (window?.process?.platform as 'win32' | 'linux') ?? 'darwin'
+  readonly platform = platform()
 
   vault: Vault
   settings: Settings<AppSettings>

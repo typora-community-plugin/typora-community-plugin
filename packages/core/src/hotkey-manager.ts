@@ -1,5 +1,6 @@
-import type { App } from "./app"
+import type { App } from "src/app"
 import { capitalize } from 'src/utils/capitalize'
+import { platform } from "src/utils/platform"
 
 
 export type HotkeyScope = 'global' | 'editor'
@@ -111,6 +112,7 @@ function normalizeHotkey(hotkey: string) {
 
 export function readableHotkey(hotkey: string) {
   return normalizeHotkey(hotkey)
+    .replace(/meta/, platform() === 'darwin' ? 'cmd' : 'win' )
     .split('+')
     .map(capitalize)
     .join('+')
