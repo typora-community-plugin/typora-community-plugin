@@ -100,8 +100,8 @@ export function eventToHotkey(event: KeyboardEvent) {
 
 function normalizeHotkey(hotkey: string) {
   return hotkey.toLowerCase()
-    .replace(/win/, 'meta')
-    .replace(/cmd|command|ctrl/, 'ctrl')
+    .replace(/cmd|command|win/, 'meta')
+    .replace(/ctrl|control/, 'ctrl')
     .replace(/opt|option/, 'alt')
     .split('+')
     .map(shorterKeyName)
