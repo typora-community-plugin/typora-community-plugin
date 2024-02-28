@@ -22,10 +22,10 @@ To be on the safe side, install an open source plugin that can review the source
 
 ## Compatible
 
-| Tested |                |                |             |
-| :----: | -------------- | -------------- | ----------- |
-| Typora | v1.5.x, v1.6.x | v1.5.x, v1.6.x | v1.4.8      |
-| OS     | Windows 10     | Ubuntu 22      | macOS 10.13 |
+| Tested |                 |                 |             |
+| :----: | --------------- | --------------- | ----------- |
+| Typora | v1.5.x - v1.8.x | v1.5.x - v1.6.x | v1.4.8      |
+| OS     | Windows 10      | Ubuntu 22       | macOS 10.13 |
 
 
 

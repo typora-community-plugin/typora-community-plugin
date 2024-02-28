@@ -79,7 +79,9 @@ export declare var bridge: {
   callSync(method: string, data?: any, cb?: (param0: any) => void): any
 }
 
-
+/**
+ * Can only be accessed in Windows & Linux
+ */
 export declare var ClientCommand: TClientCommand
 
 interface TClientCommand {
