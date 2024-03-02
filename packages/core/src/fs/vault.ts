@@ -79,7 +79,7 @@ export class Vault extends Events<VaultEvents> {
     const configPath = path.join(this.configDir, filename + '.json')
     const dirname = path.dirname(configPath)
     return fs
-      .exists(dirname)
+      .access(dirname)
       .catch(() => fs.mkdir(dirname))
       .then(() => fs.writeText(configPath, JSON.stringify(config, null, 2)))
       .catch(error => {

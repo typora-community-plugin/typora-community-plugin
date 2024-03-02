@@ -7,6 +7,7 @@ const fsp = fs?.promises
 
 interface IFileSystem {
 
+  access(filepath: string): Promise<void>
   exists(filepath: string): Promise<boolean>
 
   stat(filepath: string): Promise<Stats>
@@ -27,6 +28,10 @@ interface IFileSystem {
 }
 
 class NodeFS implements IFileSystem {
+
+  access(filepath: string): Promise<void> {
+    return fsp.access(filepath)
+  }
 
   exists(filepath: string): Promise<boolean> {
     return fsp.access(filepath)
@@ -77,6 +82,11 @@ class NodeFS implements IFileSystem {
 }
 
 class MacFS implements IFileSystem {
+
+  access(filepath: string): Promise<void> {
+    return this.exists(filepath)
+      .then(bool => bool ? Promise.resolve() : Promise.reject())
+  }
 
   exists(filepath: string): Promise<boolean> {
     return Shell.run(`test -e '${filepath}'`)

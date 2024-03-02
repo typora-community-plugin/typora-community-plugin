@@ -39,7 +39,7 @@ export function devtools(app: App) {
     const winLocker = path.join(lockerDir, `win-${app.env.PLUGIN_WIN_ID}`)
     const ac = new AbortController()
 
-    fs.exists(lockerDir)
+    fs.access(lockerDir)
       .catch(() => fs.mkdir(lockerDir))
       .then(() => fs.writeText(winLocker, ''))
       .then(() => nodeFs.watch(winLocker, { signal: ac.signal }, (e) => {
