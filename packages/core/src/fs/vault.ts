@@ -32,7 +32,6 @@ export class Vault extends Events<VaultEvents> {
   constructor(private app: App) {
     super()
 
-    this.initConfigDir()
     this._registerEventHooks()
 
     app.once('load', () => this._emitMissingEvent())
@@ -52,10 +51,6 @@ export class Vault extends Events<VaultEvents> {
 
   get dataDir() {
     return path.join(this.configDir, 'data')
-  }
-
-  initConfigDir() {
-    fs.mkdir(this.dataDir)
   }
 
   /**
