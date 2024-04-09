@@ -50,6 +50,13 @@ class NodeFS implements IFileSystem {
 
   move(src: string, dest: string): Promise<void> {
     return fsp.rename(src, dest)
+      .catch(() => {
+        const opts = { recursive: false }
+        return fsp.stat(src)
+          .then(s => { opts.recursive = s.isDirectory() })
+          .then(() => fsp.cp(src, dest, opts))
+          .then(() => fsp.rm(src, opts))
+      })
   }
 
   list(dirpath: string): Promise<string[]> {
