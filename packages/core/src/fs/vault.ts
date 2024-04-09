@@ -1,5 +1,5 @@
 import path from 'src/path'
-import { _options, File, JSBridge } from 'typora'
+import { _options, editor, File, JSBridge } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
 import type { App } from 'src/app'
 import { Events } from 'src/events'
@@ -98,16 +98,27 @@ export class Vault extends Events<VaultEvents> {
       }
     })
 
-    decorate.afterCall(JSBridge, 'invoke', async (args) => {
-      if ("app.sendEvent" === args[0] && "didRename" === args[1]) {
-        const { oldPath, newPath } = args[2]
-        const type = (await fs.stat(newPath)).isDirectory() ? 'directory' : 'file'
-        this.emit(`${type}:rename`, oldPath, newPath)
-      }
-      else if ('shell.trashItem' === args[0]) {
-        this.emit('file:delete', args[1])
-      }
-    })
+    File.isNode
+      ? decorate.afterCall(JSBridge, 'invoke', async (args) => {
+        if ("app.sendEvent" === args[0] && "didRename" === args[1]) {
+          const { oldPath, newPath } = args[2]
+          const type = (await fs.stat(newPath)).isDirectory() ? 'directory' : 'file'
+          this.emit(`${type}:rename`, oldPath, newPath)
+        }
+        else if ('shell.trashItem' === args[0]) {
+          this.emit('file:delete', args[1])
+        }
+      })
+      : decorate.parameters(editor.library, 'onFileChanges', ([arg0]) => {
+        if (arg0.type === 'rename') {
+          const type = arg0.isDir ? 'directory' : 'file'
+          this.emit(`${type}:rename`, arg0.oldPath, arg0.newPath)
+        }
+        else if (arg0.type === 'removed') {
+          this.emit('file:delete', arg0.path)
+        }
+        return [arg0]
+      })
   }
 }
 
