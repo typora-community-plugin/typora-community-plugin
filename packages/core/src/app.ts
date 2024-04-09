@@ -4,7 +4,7 @@ import path from 'src/path'
 import { File, JSBridge, _options, editor } from 'typora'
 import * as Core from '.'
 import { Events } from 'src/events'
-import { GithubAPI } from 'src/github'
+import { GithubAPI } from 'src/net/github'
 import { HotkeyManager } from 'src/hotkey-manager'
 import fs from 'src/fs/filesystem'
 import { Vault } from "src/fs/vault"

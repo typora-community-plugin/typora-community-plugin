@@ -1,10 +1,7 @@
-import path from 'src/path'
-import { File, JSBridge, _options, reqnode } from 'typora'
+import { _options } from 'typora'
 import type { App } from "src/app"
-import fs from 'src/fs/filesystem'
 import { format } from "src/utils/format"
-import { Shell } from 'src/utils/shell'
-import { uniqueId } from "src/utils/uniqueId"
+import { HttpClient } from './http-client'
 
 
 interface GithubProxy {
@@ -71,37 +68,17 @@ export class GithubAPI {
       .then(res => res.json())
   }
 
+  getReleaseUrl(repo: string, id: string, asset: string) {
+    const uri = this.uri.base + '{repo}/releases/download/{id}/{asset}'
+    const url = format(uri, { repo, id, asset })
+    return url
+  }
+
   /**
    * Download release asset
    */
   downloadThenUnzipToTemp(repo: string, id: string, asset: string) {
-    const uri = this.uri.base + '{repo}/releases/download/{id}/{asset}'
-    const url = format(uri, { repo, id, asset })
-    const tmpDir = path.join(_options.userDataPath, 'plugins', '_temp')
-    const tmpDirname = uniqueId()
-    const tmpFilename = `${tmpDirname}.zip`
-    const tmpZippath = path.join(tmpDir, tmpFilename)
-    const tmp = path.join(tmpDir, tmpDirname)
-
-    if (File.isNode) {
-      return fs.mkdir(tmpDir)
-        .then(() => JSBridge.invoke('app.download', url, tmpDir, tmpFilename))
-        .then(() => new Promise<void>((resolve, reject) => {
-          const extract = reqnode('extract-zip') as typeof import('extract-zip')
-
-          extract(tmpZippath, { dir: tmp }, (err) => {
-            err ? reject(err) : resolve()
-          })
-        }))
-        .then(() => fs.remove(tmpZippath))
-        .then(() => tmp)
-    }
-    else {
-      return fs.mkdir(tmpDir)
-        .then(() => Shell.run(`curl -fLsS '${url}' -o '${tmpZippath}'`))
-        .then(() => Shell.run(`unzip -o '${tmpZippath}' -d '${tmp}'`))
-        .then(() => fs.remove(tmpZippath))
-        .then(() => tmp)
-    }
+    const url = this.getReleaseUrl(repo, id, asset)
+    return HttpClient.downloadThenUnzipToTemp(url)
   }
 }

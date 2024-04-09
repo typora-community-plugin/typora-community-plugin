@@ -5,6 +5,7 @@ import fs from 'src/fs/filesystem'
 import { Logger } from 'src/logger'
 import { SettingTab } from "src/settings/setting-tab"
 import * as versions from 'src/utils/versions'
+import { HttpClient } from 'src/net/http-client'
 
 
 export type CoreSettings = {
@@ -80,13 +81,8 @@ export class AboutTab extends SettingTab {
       .then(data => data.tag_name)
       .then(version => {
         if (versions.compare(this.app.coreVersion, version) < 0) {
-          return this.app.github.downloadThenUnzipToTemp(repo, version, `${name}.zip`)
-            .then(async tmp => {
-              const root = path.join(this.app.coreDir, '..')
-              const files = await fs.list(tmp)
-              return Promise.all(files.map(f => fs.move(path.join(tmp, f), path.join(root, f))))
-            })
-            .then(() => { new Notice(t.coreUpdateSuccessful) })
+          const url = this.app.github.getReleaseUrl(repo, version, name)
+          return this.installCore(url)
         }
         else {
           new Notice(t.coreUpToDate)
@@ -95,6 +91,19 @@ export class AboutTab extends SettingTab {
       .catch(error => {
         logger.error(error)
         new Notice(error.message)
+      })
+  }
+
+  installCore(url: string) {
+    return HttpClient.downloadThenUnzipToTemp(url)
+      .then(async tmp => {
+        const root = path.join(this.app.coreDir, '..')
+        const files = await fs.list(tmp)
+        return Promise.all(files.map(f => fs.move(path.join(tmp, f), path.join(root, f))))
+      })
+      .then(() => {
+        const t = this.app.i18n.t.settingTabs.about
+        new Notice(t.coreUpdateSuccessful)
       })
   }
 }
