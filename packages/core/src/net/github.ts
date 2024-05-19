@@ -1,5 +1,6 @@
 import { _options } from 'typora'
 import type { App } from "src/app"
+import { Notice } from 'src/components/notice'
 import { format } from "src/utils/format"
 import { HttpClient } from './http-client'
 
@@ -18,18 +19,18 @@ const github: GithubProxy = {
   api: 'https://api.github.com/',
 }
 
-const ghproxy: GithubProxy = {
-  ...github,
-  id: 'ghproxy',
-  base: 'https://mirror.ghproxy.com/' + github.base,
-  raw: 'https://mirror.ghproxy.com/' + github.raw,
-}
-
 const ghproxyNet: GithubProxy = {
   ...github,
   id: 'ghproxy.net',
   base: 'https://ghproxy.net/' + github.base,
   raw: 'https://ghproxy.net/' + github.raw,
+}
+
+const ghproxyOrg: GithubProxy = {
+  ...github,
+  id: 'ghproxy.org',
+  base: 'https://ghproxy.org/' + github.base,
+  raw: 'https://ghproxy.org/' + github.raw,
 }
 
 const ghpsCc: GithubProxy = {
@@ -39,22 +40,46 @@ const ghpsCc: GithubProxy = {
   raw: 'https://ghps.cc/' + github.raw,
 }
 
+const gh$proxyCom: GithubProxy = {
+  ...github,
+  id: 'gh-proxy.com',
+  base: 'https://gh-proxy.com/' + github.base,
+  raw: 'https://gh-proxy.com/' + github.raw,
+}
+
+const moeyyCn: GithubProxy = {
+  ...github,
+  id: 'moeyy.cn',
+  base: 'https://moeyy.cn/gh-proxy/' + github.base,
+  raw: 'https://moeyy.cn/gh-proxy/' + github.raw,
+}
+
 export class GithubAPI {
 
-  proxies: GithubProxy[] = [github, ghproxy, ghproxyNet, ghpsCc]
+  proxies: GithubProxy[] = [github, ghproxyNet, ghproxyOrg, ghpsCc, gh$proxyCom, moeyyCn]
 
   private uri: GithubProxy
 
   constructor(app: App) {
-    this.uri = this.getUri(app.settings.get('githubProxy'))
+
+    const getUri = (id = 'github') => {
+      const uri = this.proxies.find(uri => uri.id === id)
+
+      if (!uri) {
+        // to wait css loaded
+        setTimeout(() => new Notice(app.i18n.t.githubAPI.proxyNotFound), 5e3)
+        app.settings.set('githubProxy', 'github')
+        return github
+      }
+
+      return uri
+    }
+
+    this.uri = getUri(app.settings.get('githubProxy'))
 
     app.settings.onChange('githubProxy', (_, id) => {
-      this.uri = this.getUri(id)
+      this.uri = getUri(id)
     })
-  }
-
-  private getUri(id = 'github') {
-    return this.proxies.find(uri => uri.id === id)
   }
 
   getFile(repo: string, branch: string, filepath: string) {
@@ -68,6 +93,13 @@ export class GithubAPI {
       .then(res => res.json())
   }
 
+  /**
+   * Get Github repo release download url.
+   * @param repo Gihub repo name
+   * @param id realease id/tag
+   * @param asset file name
+   * @returns
+   */
   getReleaseUrl(repo: string, id: string, asset: string) {
     const uri = this.uri.base + '{repo}/releases/download/{id}/{asset}'
     const url = format(uri, { repo, id, asset })
@@ -75,7 +107,7 @@ export class GithubAPI {
   }
 
   /**
-   * Download release asset
+   * Download release asset from Github repo.
    */
   downloadThenUnzipToTemp(repo: string, id: string, asset: string) {
     const url = this.getReleaseUrl(repo, id, asset)

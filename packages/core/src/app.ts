@@ -1,7 +1,7 @@
 import './global.scss'
 import './variables.scss'
 import path from 'src/path'
-import { File, JSBridge, _options, editor } from 'typora'
+import { JSBridge, _options, editor } from 'typora'
 import * as Core from '.'
 import { Events } from 'src/events'
 import { GithubAPI } from 'src/net/github'

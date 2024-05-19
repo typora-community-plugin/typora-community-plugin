@@ -3,6 +3,9 @@
     "commandOpen": "Open Command Panel",
     "placeholder": "Filter commands by text inputed"
   },
+  "githubAPI": {
+    "proxyNotFound": "Github proxy is removed and has been automatically reverted to the default settings."
+  },
   "pluginManager": {
     "needNewerCoreVersion": "Plugin \"{name}\" need higher version Typora Community Plugin. Please check for update.",
     "upToDate": "Plugin \"{name}\" is up to date.",

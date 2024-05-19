@@ -3,6 +3,9 @@
     "commandOpen": "打开命令面板",
     "placeholder": "输入文本过滤命令"
   },
+  "githubAPI": {
+    "proxyNotFound": "Github 代理失效，已自动恢复为默认设置。"
+  },
   "pluginManager": {
     "needNewerCoreVersion": "插件 \"{name}\" 需要更高版本的 Typora Community Plugin。请检查更新。",
     "upToDate": "插件 \"{name}\" 已是最新版本。",
