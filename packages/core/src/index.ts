@@ -14,6 +14,7 @@ export type { PluginManifest } from './plugin/plugin-manifest'
 export { PluginSettings } from './plugin/plugin-settings'
 export { Plugin } from './plugin/plugin'
 
+export { SettingsModal } from './settings/settings-modal'
 export { SettingTab } from './settings/setting-tab'
 export { SettingItem } from './settings/setting-item'
 

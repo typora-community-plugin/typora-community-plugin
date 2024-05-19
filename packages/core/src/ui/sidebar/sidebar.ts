@@ -6,6 +6,14 @@ import { Outline } from "./outline"
 import { Search } from "./search"
 
 
+/**
+ * @example
+ *
+ * ```js
+ * // Get instance
+ * const sidebar = app.workspace.getViewByType(Sidebar)
+ * ```
+ */
 export class Sidebar extends View {
 
   wrapperEl: HTMLElement

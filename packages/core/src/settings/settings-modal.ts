@@ -11,6 +11,14 @@ import { PluginsManagerSettingTab } from "./setting-tabs/plugin-manager-setting-
 import { AboutTab } from './setting-tabs/about-tab'
 
 
+/**
+ * @example
+ *
+ * ```js
+ * // Get instance
+ * const modal = app.workspace.getViewByType(SettingsModal)
+ * ```
+ */
 export class SettingsModal extends Modal {
 
   private sidebar: HTMLElement

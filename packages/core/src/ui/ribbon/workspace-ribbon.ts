@@ -38,6 +38,14 @@ interface RibbonItemButton {
   order?: number
 }
 
+/**
+ * @example
+ *
+ * ```js
+ * // Get instance
+ * const ribbon = app.workspace.getViewByType(WorkspaceRibbon)
+ * ```
+ */
 export class WorkspaceRibbon extends View {
 
   private buttons = [] as RibbonItemButton[]
