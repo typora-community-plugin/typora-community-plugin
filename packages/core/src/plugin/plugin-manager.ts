@@ -12,6 +12,9 @@ import { format } from 'src/utils/format'
 import * as versions from 'src/utils/versions'
 
 
+const logger = new Logger('PluginManager')
+
+
 export class PluginManager {
 
   globalRootDir = path.join(_options.userDataPath, 'plugins')
@@ -199,5 +202,3 @@ export class PluginManager {
     this.app.vault.writeConfigJson('plugins', this.enabledPlugins)
   }, 1e3)
 }
-
-const logger = new Logger(PluginManager.name)

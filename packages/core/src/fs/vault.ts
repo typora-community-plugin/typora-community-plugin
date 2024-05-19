@@ -7,6 +7,9 @@ import fs from 'src/fs/filesystem'
 import { Logger } from 'src/logger'
 
 
+const logger = new Logger('Vault')
+
+
 type VaultEvents = {
   /** be emitted when first mount or change folder */
   'mounted'(path: string): void
@@ -121,9 +124,6 @@ export class Vault extends Events<VaultEvents> {
       })
   }
 }
-
-const logger = new Logger(Vault.name)
-
 
 function hashCode(s: string) {
   return (s.split('').reduce((a, b) => (((a << 5) - a) + b.charCodeAt(0)) | 0, 0) + 2147483648).toString(16)

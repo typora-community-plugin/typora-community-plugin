@@ -2,6 +2,9 @@ import { Logger } from 'src/logger'
 import { PostProcessor } from "./postprocessor"
 
 
+const logger = new Logger('HtmlPostProcessor')
+
+
 export class HtmlPostProcessor extends PostProcessor {
 
   private _selector = ''
@@ -36,5 +39,3 @@ export class HtmlPostProcessor extends PostProcessor {
     return processor
   }
 }
-
-const logger = new Logger(HtmlPostProcessor.name)

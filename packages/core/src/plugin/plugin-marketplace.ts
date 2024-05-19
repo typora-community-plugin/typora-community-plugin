@@ -6,6 +6,9 @@ import { Logger } from 'src/logger'
 import type { PluginManifest, PluginPostion } from "./plugin-manifest"
 
 
+const logger = new Logger('PluginMarketplace')
+
+
 export type PluginMarketInfo = Pick<PluginManifest, "id" | "name" | "description" | "author" | "repo" | "platforms"> & {
   newestVersion?: string
 }
@@ -70,5 +73,3 @@ export class PluginMarketplace {
       })
   }
 }
-
-const logger = new Logger(PluginMarketplace.name)

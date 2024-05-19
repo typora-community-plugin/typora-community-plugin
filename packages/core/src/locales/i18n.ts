@@ -5,6 +5,9 @@ import { Logger } from 'src/logger'
 import type { ReadonlyDeep } from 'src/utils/types'
 
 
+const logger = new Logger('I18n')
+
+
 type I18nBaseOptions = {
   defaultLang?: string
   userLang?: string
@@ -82,5 +85,3 @@ export class I18n<T> {
     }
   }
 }
-
-const logger = new Logger(I18n.name)

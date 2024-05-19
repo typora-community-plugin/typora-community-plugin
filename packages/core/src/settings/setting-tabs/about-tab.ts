@@ -8,6 +8,9 @@ import * as versions from 'src/utils/versions'
 import { HttpClient } from 'src/net/http-client'
 
 
+const logger = new Logger('AboutTab')
+
+
 export type CoreSettings = {
   displayLang: string
 }
@@ -107,5 +110,3 @@ export class AboutTab extends SettingTab {
       })
   }
 }
-
-const logger = new Logger(AboutTab.name)

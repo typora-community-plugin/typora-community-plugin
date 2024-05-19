@@ -2,7 +2,11 @@ import { Logger } from 'src/logger'
 import type { DisposeFunc } from "src/utils/types"
 
 
+const logger = new Logger('Events')
+
+
 type EventListener = (...args: any[]) => any
+
 export class Events<E extends Record<string, EventListener>> {
 
   protected _listeners = {} as Record<keyof E, EventListener[]>
@@ -39,13 +43,16 @@ export class Events<E extends Record<string, EventListener>> {
   }
 
   protected emit<K extends keyof E>(event: K, ...args: Parameters<E[K]>) {
+
+    if (process.env.IS_DEV) {
+      logger.debug(`emit: ${event as string}`, ...args)
+    }
+
     try {
       this._listeners[event]?.forEach(fn => fn(...args))
     }
     catch (error) {
-      logger.error(`emit:${event as string}`, error)
+      logger.error(`emit: ${event as string}`, error)
     }
   }
 }
-
-const logger = new Logger(Events.name)

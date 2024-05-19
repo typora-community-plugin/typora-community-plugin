@@ -5,6 +5,9 @@ import { debounce } from "src/utils/debounce"
 import type { DisposeFunc } from "src/utils/types"
 
 
+const logger = new Logger('CommandManager')
+
+
 export type Command = {
   id: string
   title: string
@@ -102,5 +105,3 @@ export class CommandManager {
     this.app.vault.writeConfigJson('hotkeys', this.getConfig())
   }, 1e3)
 }
-
-const logger = new Logger(CommandManager.name)

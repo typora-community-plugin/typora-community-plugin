@@ -3,6 +3,9 @@ import { Logger } from 'src/logger'
 import { randomString } from "src/utils/random-string"
 
 
+const logger = new Logger('PostProcessor')
+
+
 export type ButtonMouseEventListener<T> = (event: MouseEvent & { target: HTMLElement }, context: T) => void
 
 export interface ButtonOptions<T = any> {
@@ -68,5 +71,3 @@ export class PostProcessor {
     return processor
   }
 }
-
-const logger = new Logger(PostProcessor.name)
