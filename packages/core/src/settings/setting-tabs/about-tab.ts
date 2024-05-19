@@ -84,7 +84,7 @@ export class AboutTab extends SettingTab {
       .then(data => data.tag_name)
       .then(version => {
         if (versions.compare(this.app.coreVersion, version) < 0) {
-          const url = this.app.github.getReleaseUrl(repo, version, name)
+          const url = this.app.github.getReleaseUrl(repo, version, `${name}.zip`)
           return this.installCore(url)
         }
         else {
