@@ -124,8 +124,7 @@ export class PluginsManagerSettingTab extends SettingTab {
           `<span class="typ-plugin-meta"><span class="fa fa-user"></span> ${manifest.author}</span>`,
 
           manifest.repo &&
-          $(`<span class="typ-plugin-meta"><span class="fa fa-github"></span> <a>Repository</a></span>`)
-            .on('click', () => this.app.openLink('https://github.com/' + manifest.repo)),
+          $(`<span class="typ-plugin-meta"><span class="fa fa-github"></span> <a href="https://github.com/${manifest.repo}">Repository</a></span>`),
         )
       })
 

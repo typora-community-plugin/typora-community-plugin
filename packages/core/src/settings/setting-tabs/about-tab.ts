@@ -37,12 +37,9 @@ export class AboutTab extends SettingTab {
       setting.addName('Typora Community Plugin')
 
       setting.addDescription(el => {
-        const typoraUrl = $('<a>Typora</a>')
-          .on('click', () => app.openLink('https://typora.io'))
-        const authorUrl = $(`<a>plylrnsdy</a>`)
-          .on('click', () => app.openLink('https://github.com/plylrnsdy'))
-        const repoUrl = $(`<a>typora-community-plugin</a>`)
-          .on('click', () => app.openLink('https://github.com/typora-community-plugin/typora-community-plugin'))
+        const typoraUrl = '<a href="https://typora.io">Typora</a>'
+        const authorUrl = '<a href="https://github.com/plylrnsdy">plylrnsdy</a>'
+        const repoUrl = '<a href="https://github.com/typora-community-plugin/typora-community-plugin">typora-community-plugin</a>'
 
         $(el).append(
           `${t.projectDesc} `, typoraUrl, '<br>',

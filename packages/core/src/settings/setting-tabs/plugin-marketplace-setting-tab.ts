@@ -115,8 +115,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
         $(el).append(
           `<span class="typ-plugin-meta"><span class="fa fa-user"></span> ${info.author}</span>`,
 
-          $(`<span class="typ-plugin-meta"><span class="fa fa-github"></span> <a>Repository</a></span>`)
-            .on('click', () => this.app.openLink('https://github.com/' + info.repo)),
+          $(`<span class="typ-plugin-meta"><span class="fa fa-github"></span> <a href="https://github.com/${info.repo}">Repository</a></span>`),
 
           `<span class="typ-plugin-meta">OS: ${info.platforms.map(p => `<span class="fa fa-${platformIcons[p]}"></span>`).join(' ')}</span>`,
         )

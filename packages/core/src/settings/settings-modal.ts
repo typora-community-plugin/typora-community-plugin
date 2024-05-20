@@ -31,10 +31,11 @@ export class SettingsModal extends Modal {
   }
 
   onload() {
-    const t = this.app.i18n.t.settingModal
+    const { app } = this
+    const t = app.i18n.t.settingModal
 
     this.register(
-      this.app.commands.register({
+      app.commands.register({
         id: 'settings:open',
         title: t.commandOpen,
         scope: 'global',
@@ -57,18 +58,28 @@ export class SettingsModal extends Modal {
     })
 
     this.addGroupTitle(t.groupCore)
-    this.addTab(new FileLinkSettingTab(this.app))
-    this.addTab(new AppearanceSettingTab(this.app))
-    this.addTab(new HotkeySettingTab(this.app))
-    this.addTab(new PluginMarketplaceSettingTab(this.app))
-    this.addTab(new PluginsManagerSettingTab(this.app))
-    this.addTab(new AboutTab(this.app))
+    this.addTab(new FileLinkSettingTab(app))
+    this.addTab(new AppearanceSettingTab(app))
+    this.addTab(new HotkeySettingTab(app))
+    this.addTab(new PluginMarketplaceSettingTab(app))
+    this.addTab(new PluginsManagerSettingTab(app))
+    this.addTab(new AboutTab(app))
 
     setTimeout(() => this.addGroupTitle(t.groupPlugins))
 
-    if (!this.app.plugins.marketplace.isLoaded) {
-      this.app.plugins.marketplace.loadCommunityPlugins()
+    if (!app.plugins.marketplace.isLoaded) {
+      app.plugins.marketplace.loadCommunityPlugins()
     }
+
+    // fix: clicking on the link in setting modal (out of editor) will close Typora unexpectly
+    this.containerEl.addEventListener('click', event => {
+      const el = event.target as HTMLElement
+      if (el.tagName === 'A' && el.getAttribute('href')) {
+        event.preventDefault()
+        event.stopPropagation()
+        app.openLink(el.getAttribute('href'))
+      }
+    })
   }
 
   private onItemClick = (event: MouseEvent) => {
