@@ -28,20 +28,29 @@ export class AboutTab extends SettingTab {
   }
 
   onload() {
-    const t = this.app.i18n.t.settingTabs.about
+    const { app } = this
+    const t = app.i18n.t.settingTabs.about
 
     this.addSettingTitle(this.name)
 
     this.addSetting(setting => {
       setting.addName('Typora Community Plugin')
+
       setting.addDescription(el => {
-        $(el).append([
-          `${t.projectDesc} <a href="https://typora.io">Typora</a>`,
-          `${t.labelVersion}: v${this.app.coreVersion}`,
-          `${t.labelBuildTime}: ${process.env.BUILD_TIME}`,
-          `${t.labelAuthor}: <a href="https://github.com/plylrnsdy">plylrnsdy</a>`,
-          `${t.labelHomepage}: <a href="https://github.com/typora-community-plugin/typora-community-plugin">typora-community-plugin</a>`,
-        ].join('<br>'))
+        const typoraUrl = $('<a>Typora</a>')
+          .on('click', () => app.openLink('https://typora.io'))
+        const authorUrl = $(`<a>plylrnsdy</a>`)
+          .on('click', () => app.openLink('https://github.com/plylrnsdy'))
+        const repoUrl = $(`<a>typora-community-plugin</a>`)
+          .on('click', () => app.openLink('https://github.com/typora-community-plugin/typora-community-plugin'))
+
+        $(el).append(
+          `${t.projectDesc} `, typoraUrl, '<br>',
+          `${t.labelVersion}: v${app.coreVersion}<br>`,
+          `${t.labelBuildTime}: ${process.env.BUILD_TIME}<br>`,
+          `${t.labelAuthor}: `, authorUrl, '<br>',
+          `${t.labelHomepage}: `, repoUrl,
+        )
       })
 
       setting.addButton(button => {
@@ -59,9 +68,9 @@ export class AboutTab extends SettingTab {
       setting.addName(t.lang)
       setting.addDescription(t.langDesc)
       setting.addSelect(async el => {
-        const files = await fs.list(path.join(this.app.coreDir, 'locales'))
+        const files = await fs.list(path.join(app.coreDir, 'locales'))
 
-        const selected = this.app.settings.get('displayLang')
+        const selected = app.settings.get('displayLang')
         const select = (opt: string) => opt === selected ? 'selected' : ''
         const options = files
           .map(name => name.slice(5, -5))
@@ -70,7 +79,7 @@ export class AboutTab extends SettingTab {
         $(el)
           .append(...options)
           .on('change', e => {
-            this.app.settings.set('displayLang', $(e.target).val().toString())
+            app.settings.set('displayLang', $(e.target).val().toString())
           })
       })
     })
