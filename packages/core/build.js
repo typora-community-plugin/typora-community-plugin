@@ -43,7 +43,8 @@ await fs.rm('./dist/locales/i18n.ts')
 if (args.includes('--start')) {
   const lockDir = path.join(process.env.USERPROFILE, '.typora/community-plugins/_lock')
 
-  await fs.mkdir(lockDir)
+  await fs.access(lockDir)
+    .catch(() => fs.mkdir(lockDir))
     .then(() => fs.rm(path.join(lockDir, 'win-test')))
     .catch(() => { })
 
