@@ -159,10 +159,16 @@ export async function installDevPlugin(valut?: string) {
 
   const manifestPath = path.join(root, `./src/manifest.json`)
   const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'))
-
   await fs.copyFile(manifestPath, `${root}/dist/manifest.json`)
-  await fs.rename(`${root}/dist/main.css`, `${root}/dist/style.css`)
-  await fs.rename(`${root}/dist/main.css.map`, `${root}/dist/style.css.map`)
+
+  await fs.access(`${root}/dist/main.css`)
+    .then(() => Promise.all([
+      fs.rename(`${root}/dist/main.css`, `${root}/dist/style.css`),
+      fs.rename(`${root}/dist/main.css.map`, `${root}/dist/style.css.map`),
+    ]))
+    .catch(() => { })
+
   await fs.cp(`${root}/dist`, `${valut}/.typora/plugins/dist`, { recursive: true })
+
   await fs.writeFile(`${valut}/.typora/plugins.json`, JSON.stringify({ [manifest.id]: true }))
 }
