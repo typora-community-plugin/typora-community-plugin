@@ -49,6 +49,9 @@ const DEFAULT_SETTINGS = {
   mode: 'production',
 }
 
+/**
+ * esbuild plugin for Typora.
+ */
 export default function typoraPlugin(options: Options) {
 
   const { mode } = Object.assign({}, DEFAULT_SETTINGS, options)
@@ -132,4 +135,16 @@ export default function typoraPlugin(options: Options) {
         return _
       })
   }
+}
+
+/**
+ * Try closing Typora which running the plugin in development & re-open it.
+ */
+export async function relaunch() {
+  const lockDir = path.join(process.env.USERPROFILE, '.typora/community-plugins/_lock')
+
+  await fs.access(lockDir)
+    .catch(() => fs.mkdir(lockDir))
+    .then(() => fs.rm(path.join(lockDir, 'win-test')))
+    .catch(() => { })
 }
