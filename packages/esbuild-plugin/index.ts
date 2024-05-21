@@ -138,9 +138,9 @@ export default function typoraPlugin(options: Options) {
 }
 
 /**
- * Try closing Typora which running the plugin in development & re-open it.
+ * Try closing Typora which running the plugin in development.
  */
-export async function relaunch() {
+export async function closeTypora() {
   const lockDir = path.join(process.env.USERPROFILE, '.typora/community-plugins/_lock')
 
   await fs.access(lockDir)
