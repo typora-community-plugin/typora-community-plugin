@@ -1,8 +1,7 @@
 import * as child_process from 'node:child_process'
 import * as fs from 'node:fs/promises'
-import * as path from 'node:path'
 import * as esbuild from 'esbuild'
-import typoraPlugin from 'esbuild-plugin-typora'
+import typoraPlugin, { closeTypora } from 'esbuild-plugin-typora'
 import { sassPlugin } from 'esbuild-sass-plugin'
 
 
@@ -41,12 +40,7 @@ await fs.rm('./dist/locales/i18n.ts')
 
 
 if (args.includes('--start')) {
-  const lockDir = path.join(process.env.USERPROFILE, '.typora/community-plugins/_lock')
 
-  await fs.access(lockDir)
-    .catch(() => fs.mkdir(lockDir))
-    .then(() => fs.rm(path.join(lockDir, 'win-test')))
-    .catch(() => { })
-
+  closeTypora()
   child_process.exec('Typora ./test/vault/doc.md')
 }
