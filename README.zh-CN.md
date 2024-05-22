@@ -10,20 +10,6 @@
 
 
 
-## 模块
-
-<details>
-  <ul>
-    <li><em>installer</em>: 注入 <em>loader</em> 到 Typora。</li>
-    <li><em>loader</em>: 决定加载哪个版本的 <em>core</em> (生产环境或开发环境)。</li>
-    <li><em>core</em>: 提供扩展 Typora 的 API 并管理插件。</li>
-    <li><em>types</em>: Typora 全局变量的类型。</li>
-    <li><em>esbuild-plugin</em>: 使用 esbuild 构建 <em>core</em> 和插件。</li>
-  </ul>
-</details>
-
-
-
 ## 兼容性
 
 | 已测试  |                 |                 |             |
@@ -42,15 +28,8 @@
   - [x] Ribbon
   - [x] (模拟的) 多文件标签页
 - [x] 自定义命令的快捷键
-- 扩展 Typora 的 APIs
-  - [x] Markdown 前处理器
-  - [x] Markdown 后处理器
-  - [x] Markdown 自动完成
 - [x] I18n: 跟随系统或手动配置，现在支持英语和中文
 - [x] 兼容 macOS
-- 文档
-  - [ ] 用户文档
-  - [ ] 开发文档
 
 
 
@@ -82,16 +61,15 @@
 | [wikilink][p10]                  | 支持通过 `[[text]]` 链接跳转                  |
 
 
+## 用户文档
 
-## 安装
+- [如何安装](./docs/zh-cn/user-guide/1a-installation.md)
+- [在插件市场安装插件](./docs/zh-cn/user-guide/2-plugin-installation.md)
+- [如何卸载](./docs/zh-cn/user-guide/1b-uninstall.md)
 
-见 [用户文档 -> 如何安装](./docs/zh-cn/user-guide/1-installation.md)
 
 
-
-## 使用
-
-### 快捷键
+### 默认快捷键
 
 | 快捷键                       | 功能         |
 | --------------------------- | ----------- |
@@ -100,15 +78,9 @@
 
 
 
-## 卸载
+## 开发文档
 
-见 [用户文档 -> 如何卸载](./docs/zh-cn/user-guide/2-uninstall.md)
-
-
-
-## 插件开发
-
-见 [开发文档 -> 快速开始](./docs/zh-cn/dev-guide/1-getting-started.md)
+见 [开发文档](./docs/zh-cn/dev-guide/0-dev-docs.md) 或 [快速开始](./docs/zh-cn/dev-guide/1-getting-started.md)
 
 
 
@@ -121,6 +93,7 @@
 ## 支持
 
 如果你用任何问题或建议可以在 [这里](https://github.com/typora-community-plugin/typora-community-plugin/issues) 创建一个 Issue。
+
 
 
 [p1]: https://github.com/typora-community-plugin/typora-plugin-callout

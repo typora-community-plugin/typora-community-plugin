@@ -1,7 +1,5 @@
 # 快速开始
 
-[Typora](https://typora.io/) 是一个跨平台的 Markdown 编辑器。其本身并没有提供插件系统，所以 [typora-community-plugin](https://github.com/typora-community-plugin/typora-community-plugin) 参考 [Obsidian 插件系统](https://docs.obsidian.md/Home) 为社区提供了一个适用于 Typora 的插件系统。
-
 下面将简要介绍如何编译属于你的第一个插件。
 
 

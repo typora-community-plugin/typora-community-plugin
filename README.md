@@ -10,20 +10,6 @@ To be on the safe side, install an open source plugin that can review the source
 
 
 
-## Packages
-
-<details>
-  <ul>
-    <li><em>installer</em>: Inject <em>loader</em> to Typora. </li>
-    <li><em>loader</em>: Decide to load which <em>core</em> (production or development).</li>
-    <li><em>core</em>: Setup an environment for extending Typora and managing plugins.</li>
-    <li><em>types</em>: Types of Typora global variables.</li>
-    <li><em>esbuild-plugin</em>: Build <em>core</em> or plugin with esbuild.</li>
-  </ul>
-</details>
-
-
-
 ## Compatible
 
 | Tested |                 |                 |             |
@@ -42,15 +28,8 @@ To be on the safe side, install an open source plugin that can review the source
   - [x] Ribbon
   - [x] (Virtual) Multi File Tabs
 - [x] Custom command hotkey
-- APIs to extend Typora
-  - [x] Markdown preprocessor
-  - [x] Markdown postprocessor
-  - [x] Markdown suggestion
 - [x] I18n: follow system or manual configure, now support English and Chinese
 - [x] Compatible with macOS
-- Documentation
-  - [ ] User documentation
-  - [ ] Developer documentation
 
 
 
@@ -66,7 +45,7 @@ To be on the safe side, install an open source plugin that can review the source
 
 ### Plugins
 
-You can install plugins in the Plugin Marketplace
+You can install plugins from the Plugin Marketplace
 
 | Plugins                          | Description                                               |
 | -------------------------------- | --------------------------------------------------------- |
@@ -83,13 +62,13 @@ You can install plugins in the Plugin Marketplace
 
 
 
-## Install
+## User Documentation
 
-See [How to install](./docs/en-us/user-guide/1-installation.md)
+- [How to install](./docs/en-us/user-guide/1a-installation.md)
+- [Install plugin in Marketplace](./docs/en-us/user-guide/2-plugin-installation.md)
+- [How to uninstall](./docs/en-us/user-guide/1b-uninstall.md)
 
 
-
-## Usage
 
 ### Hotkeys
 
@@ -97,12 +76,6 @@ See [How to install](./docs/en-us/user-guide/1-installation.md)
 | --------------------------- | ------------------- |
 | <kbd>F1</kbd>               | Open Command Panel  |
 | <kbd>Ctrl</kbd>+<kbd>.</kbd>| Open Settings Modal |
-
-
-
-## Uninstall
-
-See [How to uninstall](./docs/en-us/user-guide/2-uninstall.md)
 
 
 
@@ -115,3 +88,16 @@ Welcome to create pull requests.
 ## Support
 
 If you have any problem or suggestion please open an issue [here](https://github.com/typora-community-plugin/typora-community-plugin/issues).
+
+
+
+[p1]: https://github.com/typora-community-plugin/typora-plugin-callout
+[p2]: https://github.com/typora-community-plugin/typora-plugin-codeblock-copy-button
+[p3]: https://github.com/typora-community-plugin/typora-plugin-codeblock-highlight-mapper
+[p4]: https://github.com/typora-community-plugin/typora-plugin-collapsible-section
+[p5]: https://github.com/typora-community-plugin/typora-plugin-file-icon
+[p6]: https://github.com/typora-community-plugin/typora-plugin-front-matter
+[p7]: https://github.com/typora-community-plugin/typora-plugin-note-refactor
+[p8]: https://github.com/typora-community-plugin/typora-plugin-note-snippets
+[p9]: https://github.com/typora-community-plugin/typora-plugin-tag
+[p10]: https://github.com/typora-community-plugin/typora-plugin-wikilink
