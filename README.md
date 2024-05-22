@@ -12,11 +12,15 @@ To be on the safe side, install an open source plugin that can review the source
 
 ## Packages
 
-- `installer`: Inject `loader` to Typora. 
-- `loader`: Decide to load which `core` (production or development).
-- `core`: Setup an environment for extending Typora and managing plugins.
-- `types`: Types of Typora global variables.
-- `esbuild-plugin`: Build `core` or plugin with esbuild.
+<details>
+  <ul>
+    <li><em>installer</em>: Inject <em>loader</em> to Typora. </li>
+    <li><em>loader</em>: Decide to load which <em>core</em> (production or development).</li>
+    <li><em>core</em>: Setup an environment for extending Typora and managing plugins.</li>
+    <li><em>types</em>: Types of Typora global variables.</li>
+    <li><em>esbuild-plugin</em>: Build <em>core</em> or plugin with esbuild.</li>
+  </ul>
+</details>
 
 
 
@@ -60,39 +64,28 @@ To be on the safe side, install an open source plugin that can review the source
 
 
 
+### Plugins
+
+You can install plugins in the Plugin Marketplace
+
+| Plugins                          | Description                                               |
+| -------------------------------- | --------------------------------------------------------- |
+| [callout][p1]                    | Support Obsidian-like Callout `> [!type]`.                |
+| [codeblock-copy-button][p2]      | Add a copy button to each codeblock's top-right corner.   |
+| [codeblock-highlight-mapper][p3] | Map language A to language B for highlighting it.         |
+| [collapsible-section][p4]        | Fold/unfold markdown section.                             |
+| [file-icon][p5]                  | Show different icon for different file type in file tree. |
+| [front-matter][p6]               | Auto edit front matter.                                   |
+| [note-refactor][p7]              | Extract selection to new file.                            |
+| [note-snippets][p8]              | Use slash command to autocomplete note snippets.          |
+| [tag][p9]                        | Support tag like `#tag`.                                  |
+| [wikilink][p10]                  | Suport wikilink like `[[text]]`.                          |
+
+
+
 ## Install
 
-### Script install
-
-1. Download [Release][release] `typora-community-plugin.zip`.
-2. Unzip it.
-3. Run `install.ps1` (only for Windows) as Admin to install. <br> If you want to install it for custom Typora installed directory, run `install.ps1 -root <TyporaHome>` as Admin.
-
-### Manual install
-
-**for Windows**
-
-1. Download [Release][release] `typora-community-plugin.zip`.
-2. Unzip it.
-3. Copy files to `%UserProfile%/.typora/community-plugins`.
-4. Create a symlink. Run `cmd` as admin, and run command `mklink /d %UserProfile%\\AppData\\Roaming\\Typora\\plugins %UserProfile%\\.typora\\community-plugins`.
-5. Modify `{TyporaHome}/resources/window.html`. Open the file with encoding UTF-8, then replace text `</body></html>` at the end of file as `<script src="typora://app/userData/plugins/loader.js" type="module"></script></body></html>`.
-
-**for Linux**
-
-1. Download [Release][release] `typora-community-plugin.zip`.
-2. Unzip it.
-3. Copy files to `~/.config/Typora/plugins`.
-4. Modify `/usr/share/typora/resources/window.html`. Open the file with encoding UTF-8, then replace text `</body></html>` at the end of file as `<script src="typora://app/userData/plugins/loader.js" type="module"></script></body></html>`.
-
-**for macOS**
-
-1. Download [Release][release] `typora-community-plugin.zip`.
-2. Unzip it.
-3. Copy files to `/Users/{UserName}/Library/Application%20Support/abnerworks.Typora/plugins`.
-4. Right click `Typora.app`, then click menu item "Show Package Contents" to open the app inner folder. Modify `Typora.app/Contents/Resources/TypeMark/index.html`. Open the file with encoding UTF-8, then replace text `</body>` at the end of file as `<script src="file:///Users/{UserName}/Library/Application%20Support/abnerworks.Typora/plugins/loader.js" type="module"></script></body>`, and `{UserName}` need to be replaced with your current user name of macOS.
-
-**PS:** After installation, Ribbon & Multi File Tabs will be shown by default. You can hide them in the Setting Modal.
+See [How to install](./docs/en-us/user-guide/1-installation.md)
 
 
 
@@ -109,7 +102,7 @@ To be on the safe side, install an open source plugin that can review the source
 
 ## Uninstall
 
-See [How to uninstall](./docs/en-us/user-guide/uninstall.md)
+See [How to uninstall](./docs/en-us/user-guide/2-uninstall.md)
 
 
 
@@ -122,7 +115,3 @@ Welcome to create pull requests.
 ## Support
 
 If you have any problem or suggestion please open an issue [here](https://github.com/typora-community-plugin/typora-community-plugin/issues).
-
-
-
-[release]: https://github.com/typora-community-plugin/typora-community-plugin/releases
