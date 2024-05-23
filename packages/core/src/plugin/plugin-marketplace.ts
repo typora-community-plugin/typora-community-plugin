@@ -36,8 +36,8 @@ export class PluginMarketplace {
   }
 
   loadCommunityPlugins(): Promise<PluginMarketInfo[]> {
-    return this.app.github.getFile('typora-community-plugin/typora-plugin-releases', 'main', 'community-plugins.json')
-      .then(async res => this.pluginList = await res.json() ?? [] as any)
+    return this.app.github.getJSON('typora-community-plugin/typora-plugin-releases', 'main', 'community-plugins.json')
+      .then(res => this.pluginList = res ?? [])
   }
 
   installPlugin(info: PluginMarketInfo, pos: PluginPostion) {

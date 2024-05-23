@@ -87,6 +87,16 @@ export class GithubAPI {
     return fetch(format(uri, { repo, branch, filepath }))
   }
 
+  /**
+   * @returns JSON Object
+   * @example
+   * app.github.getJSON('typora-community-plugin/typora-plugin-releases', 'main', 'community-plugins.json')
+   */
+  getJSON(repo: string, branch: string, filepath: string) {
+    return this.getFile(repo, branch, filepath)
+      .then(res => res.json())
+  }
+
   getReleaseInfo(repo: string) {
     const uri = this.uri.api + 'repos/{repo}/releases/latest'
     return fetch(format(uri, { repo }))
