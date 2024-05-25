@@ -19,7 +19,7 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
 
   get selector() {
     const selector = this.lang
-      .map(lang => lang ? `[lang=${lang}]` : '')
+      .map(lang => lang ? `[lang="${lang}"]` : '')
       .map(langSelector => `.md-fences${langSelector}:has(.CodeMirror)`)
       .join(',')
     return selector
