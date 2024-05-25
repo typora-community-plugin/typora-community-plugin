@@ -79,17 +79,20 @@ body.typ-tabs--enable {
     content: '';
     flex: 1;
   }
-
-  .typ-close::before {
-    font-size: 1.5rem;
-  }
 }
 
 .typ-tab {
   @extend %typ-tabs__child;
+  position: relative;
+  max-width: 15rem;
+  padding-right: 1.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   &.active {
     padding-top: 5px;
+    padding-right: 6px;
     border: 1px solid var(--typ-tab-border-color);
     border-top: 3px solid var(--active-file-border-color);
     border-bottom: 1px solid transparent;
@@ -100,6 +103,15 @@ body.typ-tabs--enable {
 
     .typ-close {
       display: none;
+    }
+  }
+
+  .typ-close {
+    position: absolute;
+    right: 0.2rem;
+
+    &::before {
+      font-size: 1.5rem;
     }
   }
 }
