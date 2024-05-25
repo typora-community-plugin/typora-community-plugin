@@ -27,6 +27,10 @@
 
 1）登录 Github，使用示例插件项目 [typora-plugin-example](https://github.com/typora-community-plugin/typora-plugin-example) 作为模板，创建新的插件项目。
 
+
+![使用模板创建项目](../../assets/dev/1-create-project.jpg)
+
+
 2）使用 Git 克隆你的插件项目到本地：
 
 
