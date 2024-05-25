@@ -92,21 +92,18 @@ export class TabsView extends View {
       if (clickedEl.classList.contains('typ-tab')) {
         const tab = clickedEl
         if (tab.classList.contains('active')) return
-
-        const filePath = tab.dataset.path!
-
-        fs.exists(filePath)
-          .then(isExists => !isExists && this.removeTab(filePath))
-
-        this.containerEl.querySelectorAll('.typ-tab')
-          .forEach(el => el.classList.remove('active'))
-
-        tab.classList.add('active')
-
-        editor.library.openFile(filePath)
+        this.toggleTab(tab)
       }
       else if (clickedEl.classList.contains('typ-close')) {
+        if (this.tabs.size <= 1) return
+
         const tab = clickedEl.parentElement!
+        if (tab.classList.contains('active')) {
+          const siblingTab = tab.previousElementSibling
+            ?? tab.nextElementSibling
+          this.toggleTab(siblingTab as HTMLElement)
+        }
+
         this.removeTab(tab.dataset.path!)
       }
     })
@@ -185,11 +182,28 @@ export class TabsView extends View {
 
     this.tabs.set(filePath, tab)
 
-    this.showCurrentTab(tab)
+    this.showTab(tab)
   }
 
-  showCurrentTab(tabEl: HTMLElement) {
+  showTab(tabEl: HTMLElement) {
     tabEl.parentElement!.parentElement!.scrollLeft = tabEl.offsetLeft
+  }
+
+  async toggleTab(tabEl: HTMLElement) {
+    const filePath = tabEl.dataset.path!
+    const isExists = await fs.exists(filePath)
+
+    if (isExists) {
+      this.containerEl.querySelectorAll('.typ-tab')
+        .forEach(el => el.classList.remove('active'))
+
+      tabEl.classList.add('active')
+
+      editor.library.openFile(filePath)
+    }
+    else {
+      this.removeTab(filePath)
+    }
   }
 
   renameTab(oldPath: string, newPath: string) {

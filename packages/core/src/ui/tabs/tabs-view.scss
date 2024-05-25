@@ -90,19 +90,18 @@ body.typ-tabs--enable {
   overflow: hidden;
   text-overflow: ellipsis;
 
+  &:only-child {
+    padding-right: .375rem;
+  }
+
   &.active {
     padding-top: 5px;
-    padding-right: 6px;
     border: 1px solid var(--typ-tab-border-color);
     border-top: 3px solid var(--active-file-border-color);
     border-bottom: 1px solid transparent;
 
     &:first-child {
       border-left: 1px solid transparent;
-    }
-
-    .typ-close {
-      display: none;
     }
   }
 
@@ -113,5 +112,9 @@ body.typ-tabs--enable {
     &::before {
       font-size: 1.5rem;
     }
+  }
+
+  &:only-child .typ-close {
+    display: none;
   }
 }
