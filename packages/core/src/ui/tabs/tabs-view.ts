@@ -99,9 +99,8 @@ export class TabsView extends View {
 
         const tab = clickedEl.parentElement!
         if (tab.classList.contains('active')) {
-          const siblingTab = tab.previousElementSibling
-            ?? tab.nextElementSibling
-          this.toggleTab(siblingTab as HTMLElement)
+          const siblingTab = this.getSiblingTab(tab)
+          this.toggleTab(siblingTab)
         }
 
         this.removeTab(tab.dataset.path!)
@@ -202,8 +201,14 @@ export class TabsView extends View {
       editor.library.openFile(filePath)
     }
     else {
+      this.toggleTab(this.getSiblingTab(tabEl))
       this.removeTab(filePath)
     }
+  }
+
+  getSiblingTab(tabEl: HTMLElement) {
+    return (tabEl.previousElementSibling
+      ?? tabEl.nextElementSibling) as HTMLElement
   }
 
   renameTab(oldPath: string, newPath: string) {
