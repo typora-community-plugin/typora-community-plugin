@@ -7,7 +7,11 @@ import { draggable } from 'src/components/draggable'
 import { Menu } from 'src/components/menu'
 import fs from 'src/fs/filesystem'
 import { View } from "src/ui/view"
+import { html } from 'src/utils/html'
+import { truncate } from 'src/utils/truncate'
 
+
+const MAX_LENGHT = { length: 20 }
 
 export class TabsView extends View {
 
@@ -169,11 +173,11 @@ export class TabsView extends View {
       return
     }
 
-    const displayPath = path.relative(this.app.vault.path, filePath)
+    const longPath = path.relative(this.app.vault.path, filePath)
       .replace(/(\.textbundle)[\\/]text\.(?:md|markdown)$/, '$1')
+    const shortName = truncate(path.basename(longPath), MAX_LENGHT)
 
-    const tab = $(`<div class="typ-tab active" data-path="${filePath}" title="${displayPath}" draggable="true">${path.basename(displayPath)}<i class="typ-icon typ-close"></i></div>`)
-      .get(0)!
+    const tab = html`<div class="typ-tab active" data-path="${filePath}" title="${longPath}" draggable="true">${shortName}<i class="typ-icon typ-close"></i></div>`
 
     this.containerEl.querySelectorAll('.typ-tab')
       .forEach(el => el.classList.remove('active'))

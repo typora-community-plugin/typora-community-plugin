@@ -83,16 +83,6 @@ body.typ-tabs--enable {
 
 .typ-tab {
   @extend %typ-tabs__child;
-  position: relative;
-  max-width: 15rem;
-  padding-right: 1.2rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  &:only-child {
-    padding-right: .375rem;
-  }
 
   &.active {
     padding-top: 5px;
@@ -105,13 +95,8 @@ body.typ-tabs--enable {
     }
   }
 
-  .typ-close {
-    position: absolute;
-    right: 0.2rem;
-
-    &::before {
-      font-size: 1.5rem;
-    }
+  .typ-close::before {
+    font-size: 1.5rem;
   }
 
   &:only-child .typ-close {
