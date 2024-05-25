@@ -80,8 +80,9 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
     const containerEl = previewer.querySelector('.md-diagram-panel-preview')!
     const render = async () => {
       const code = editor.fences.getValue(codeblock.getAttribute('cid')!)
+      const previewEl = await preview(code, codeblock)
       containerEl.innerHTML = ''
-      containerEl.append(await preview(code, codeblock))
+      containerEl.append(previewEl)
     }
     render()
 
