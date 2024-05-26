@@ -40,6 +40,12 @@ export class Search extends View {
   hide() {
     this.sidebar.wrapperEl.classList.remove('ty-show-search', 'ty-on-search')
   }
+
+  search(query: string) {
+    this.show()
+    $('#file-library-search-input').val(query)
+    editor.library.fileSearch.search(query)
+  }
 }
 
 class KeepSearchResult extends Component {

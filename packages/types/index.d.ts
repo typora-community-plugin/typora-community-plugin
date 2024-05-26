@@ -381,6 +381,10 @@ interface FileSearchView {
   clearContentHighlight(): void
   hide(): void
   hideSearch(param0?: boolean): void
+  search(query: string): void
+  searchByMac(query: string): void
+  searchByNode(query: string): void
+  buildRpArgs(query: string): string[]
   show(): void
   showSearch(param0?: boolean): void
 }
