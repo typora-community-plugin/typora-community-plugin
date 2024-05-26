@@ -3,17 +3,29 @@ import { View } from 'src/ui/view'
 import { html } from 'src/utils/html'
 
 
-export class NoticeContainer extends View {
+class NoticeContainer extends View {
 
   onload() {
     this.containerEl = html`<div class="typ-notice__container"></div>`
+    this.hide()
     document.body.append(this.containerEl)
   }
 
   onunload() {
     this.containerEl.remove()
   }
+
+  show() {
+    this.containerEl.style.display = 'block'
+  }
+
+  hide() {
+    if (this.containerEl.children.length > 0) return
+    this.containerEl.style.display = 'none'
+  }
 }
+
+export const noticeContainer = new NoticeContainer()
 
 export class Notice {
 
@@ -25,7 +37,8 @@ export class Notice {
   constructor(message: string, delay = 5000) {
     this.el = html`<div class="typ-notice">${message}</div>`
 
-    $('.typ-notice__container').append(this.el)
+    noticeContainer.containerEl.append(this.el)
+    noticeContainer.show()
 
     delay && setTimeout(() => this.hide(), delay)
   }
@@ -36,5 +49,6 @@ export class Notice {
 
   hide() {
     this.el.remove()
+    noticeContainer.hide()
   }
 }
