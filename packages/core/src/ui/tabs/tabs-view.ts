@@ -11,7 +11,7 @@ import { html } from 'src/utils/html'
 import { truncate } from 'src/utils/truncate'
 
 
-const MAX_LENGHT = { length: 20 }
+const MAX_LENGHT = { length: 20, omission: '…' }
 
 export class TabsView extends View {
 
