@@ -44,7 +44,7 @@
       "ribbon": "Show Ribbon",
       "ribbonDesc": "Also enable Custom Sidebar Panel",
       "fileTabs": "Show File Tabs",
-      "fileTabsDesc": "Better to enable Setting - General - \"Save without asking when switch files on side panel\""
+      "fileTabsDesc": "Better to enable \"App Setting -> General -> Save without asking when switch files on side panel\""
     },
     "hotkey": {
       "name": "Hotkey",
