@@ -17,10 +17,12 @@ export class HotkeySettingTab extends SettingTab {
   }
 
   onload() {
-    this.app.on('load', () => {
-      Object.values(this.app.commands.commandMap)
-        .forEach(cmd => this.renderHotkey(cmd))
-    })
+    this.register(
+      this.app.on('load', () => {
+        this.containerEl.innerHTML = ''
+        Object.values(this.app.commands.commandMap)
+          .forEach(cmd => this.renderHotkey(cmd))
+      }))
   }
 
   private renderHotkey(cmd: Command) {
