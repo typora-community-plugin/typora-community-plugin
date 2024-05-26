@@ -377,6 +377,8 @@ interface TFile {
 
 
 interface FileSearchView {
+  clearSearch(): void
+  clearContentHighlight(): void
   hide(): void
   hideSearch(param0?: boolean): void
   show(): void

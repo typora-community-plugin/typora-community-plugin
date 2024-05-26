@@ -4,6 +4,7 @@ import { SettingTab } from "../setting-tab"
 
 export type AppearanceSettings = {
   showNotSupportedFile: boolean
+  keepSearchResult: boolean
   showSearchResultFullPath: boolean
   showRibbon: boolean
   showFileTabs: boolean
@@ -11,6 +12,7 @@ export type AppearanceSettings = {
 
 const DEFAULT_SETTINGS: AppearanceSettings = {
   showNotSupportedFile: false,
+  keepSearchResult: false,
   showSearchResultFullPath: false,
   showRibbon: true,
   showFileTabs: true,
@@ -45,6 +47,16 @@ export class AppearanceSettingTab extends SettingTab {
     })
 
     this.addSettingTitle(t.search)
+    this.addSetting(setting => {
+      setting.addName(t.keepSearchResult)
+      setting.addDescription(t.keepSearchResultDesc)
+      setting.addCheckbox(checkbox => {
+        checkbox.checked = settings.get('keepSearchResult')
+        checkbox.onclick = () => {
+          settings.set('keepSearchResult', checkbox.checked)
+        }
+      })
+    })
     this.addSetting(setting => {
       setting.addName(t.searchResultFullPath)
       setting.addDescription(t.searchResultFullPathDesc)

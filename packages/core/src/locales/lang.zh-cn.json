@@ -36,6 +36,8 @@
       "showNotSupportedFile": "显示不支持的文件",
       "showNotSupportedFileDesc": "不支持的文件将会使用默认程序打开。",
       "search": "搜索",
+      "keepSearchResult": "保留搜索结果",
+      "keepSearchResultDesc": "当您切换到另一个面板（例如“文件管理”）然后再切换回搜索面板时，将不会丢失最近的搜索结果。",
       "searchResultFullPath": "显示搜索结果完整路径",
       "searchResultFullPathDesc": "将光标悬停于搜索结果的路径上，将会显示完整路径。",
       "advanced": "高级选项",

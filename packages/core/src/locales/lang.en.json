@@ -36,6 +36,8 @@
       "showNotSupportedFile": "Show not supported file",
       "showNotSupportedFileDesc": "Not supported file will open with default application.",
       "search": "Search",
+      "keepSearchResult": "Keep search results",
+      "keepSearchResultDesc": "When you switch to another panel (such as \"Files\") and then switch back to the search panel, you will not lose the recent search results.",
       "searchResultFullPath": "Show search result full path",
       "searchResultFullPathDesc": "Hover your cursor over the path and it will show full path in a tooltip.",
       "advanced": "Advanced",

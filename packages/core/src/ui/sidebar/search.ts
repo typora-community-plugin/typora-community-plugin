@@ -1,15 +1,18 @@
-import { View } from 'src/ui/view'
-import type { Workspace } from "src/ui/workspace"
-import type { Sidebar } from './sidebar'
-import { BUILT_IN, WorkspaceRibbon } from "src/ui/ribbon/workspace-ribbon"
+import decorate from '@plylrnsdy/decorate.js'
 import { editor } from "typora"
-import { html } from "src/utils/html"
 import type { App } from 'src/app'
 import { Component } from 'src/component'
+import { View } from 'src/ui/view'
+import type { Workspace } from "src/ui/workspace"
+import { BUILT_IN, WorkspaceRibbon } from "src/ui/ribbon/workspace-ribbon"
+import type { Sidebar } from './sidebar'
+import { html } from "src/utils/html"
+import { noop } from 'src/utils/noop'
 
 
 export class Search extends View {
 
+  private _keepSearchResult: KeepSearchResult
   private _showSearchResultFullPath: ShowSearchResultFullPath
 
   constructor(app: App, workspace: Workspace, private sidebar: Sidebar) {
@@ -25,15 +28,45 @@ export class Search extends View {
       onclick: () => sidebar.switch(Search),
     })
 
+    this._keepSearchResult = new KeepSearchResult(app, this.sidebar)
     this._showSearchResultFullPath = new ShowSearchResultFullPath(app)
   }
 
   show() {
     editor.library.fileSearch.show()
+    this._keepSearchResult.showSearchPanel()
   }
 
   hide() {
     this.sidebar.wrapperEl.classList.remove('ty-show-search', 'ty-on-search')
+  }
+}
+
+class KeepSearchResult extends Component {
+
+  private SETTING_KEY = 'keepSearchResult' as const
+
+  constructor(private app: App, private sidebar: Sidebar) {
+    super()
+
+    if (app.settings.get(this.SETTING_KEY)) {
+      this.load()
+    }
+
+    app.settings.onChange(this.SETTING_KEY, (_, isEnabled) => {
+      isEnabled ? this.load() : this.unload()
+    })
+  }
+
+  onload() {
+    this.register(
+      decorate(editor.library.fileSearch, 'clearSearch', () => noop)
+    )
+  }
+
+  showSearchPanel() {
+    if (this.app.settings.get(this.SETTING_KEY))
+      this.sidebar.wrapperEl.classList.add('ty-on-search')
   }
 }
 

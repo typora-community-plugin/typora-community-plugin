@@ -4,6 +4,7 @@
     "displayLang": "en",
     "githubProxy": "github",
     "showNotSupportedFile": true,
+    "keepSearchResult": true,
     "showSearchResultFullPath": true,
     "showRibbon": true,
     "showFileTabs": true,
