@@ -26,23 +26,26 @@ export class EditableTable<T extends Record<string, any>> extends View {
   constructor() {
     super()
 
-    this.containerEl = html`<table class="typ-editable-table"><thead></thead><tbody></tbody><tfoot></tfoot></table>`
+    this.containerEl = $(`<table class="typ-editable-table"></table>`)
+      .append(
+        '<thead></thead>',
+        this.bodyEl = $('<tbody></tbody>').get(0) as any,
+        '<tfoot></tfoot>',
+      )
+      .on('click', event => {
+        const el = event.target as HTMLElement
+        if (el.tagName === 'TH') return
 
-    this.bodyEl = this.containerEl.querySelector('tbody')!
+        let btn: HTMLElement | null
+        if (btn = el.closest('button')) {
+          const op = btn.dataset.op!
+          op === 'addRow' ? this.addRow() : this.removeRow(el)
+          return
+        }
 
-    this.containerEl.addEventListener('click', event => {
-      const el = event.target as HTMLElement
-      if (el.tagName === 'TH') return
-
-      let btn: HTMLElement | null
-      if (btn = el.closest('button')) {
-        const op = btn.dataset.op!
-        op === 'addRow' ? this.addRow() : this.removeRow(el)
-        return
-      }
-
-      this.startEdit(el)
-    })
+        this.startEdit(el)
+      })
+      .get(0)
   }
 
   setHeaders(headers: TableHeader<T>[]) {

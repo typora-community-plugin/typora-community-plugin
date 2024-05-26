@@ -11,9 +11,9 @@ export class Menu extends View {
 
   constructor() {
     super()
-    this.containerEl = html`<ul class="dropdown-menu context-menu" role="menu">`
-
-    this.containerEl.onclick = () => this.hide()
+    this.containerEl = $('<ul class="dropdown-menu context-menu" role="menu">')
+      .on('click', () => this.hide())
+      .get(0)
 
     document.body.append(this.containerEl)
   }

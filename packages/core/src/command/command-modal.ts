@@ -40,18 +40,18 @@ export class CommandModal extends Modal {
     this.modal.classList.add('typ-command-modal')
 
     this.addBody(body => {
-      let form
-      body.append(
-        form = html`<div class="typ-command-modal__form"></div>`,
-        this.results = html`<div class="typ-command-modal__results stopselect"></div>`,
-      )
-      this.body.addEventListener('keyup', this.onKeyup)
-
-      form.append(
-        this.input = html`<input type="text" placeholder="${t.placeholder}" />` as HTMLInputElement
-      )
-
-      this.results.addEventListener('click', this.onItemClick)
+      $(body)
+        .on('keyup', this.onKeyup as any)
+        .append(
+          $('<div class="typ-command-modal__form"></div>')
+            .append(this.input =
+              html`<input type="text" placeholder="${t.placeholder}" />` as any)
+        )
+        .append(this.results =
+          $('<div class="typ-command-modal__results stopselect"></div>')
+            .on('click', this.onItemClick as any)
+            .get(0)
+        )
     })
   }
 

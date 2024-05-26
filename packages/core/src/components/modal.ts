@@ -11,21 +11,24 @@ export class Modal extends View {
   footer?: HTMLElement
 
   onload() {
-    this.containerEl = html`<div class="typ-modal__wrapper middle stopselect" style="display: none;"></div>`
-    this.containerEl.addEventListener('click', event => {
-      if (event.target !== this.containerEl) return
-      this.hide()
-    })
-    this.containerEl.addEventListener('keyup', event => {
-      if (event.key !== "Escape") return
-      this.hide()
-    })
-
-    this.modal = html`<div class="typ-modal"></div>`
-    this.body = html`<div class="typ-modal__body"></div>`
-
-    this.containerEl.append(this.modal)
-    this.modal.append(this.body)
+    this.containerEl =
+      $('<div class="typ-modal__wrapper middle stopselect" style="display: none;"></div>')
+        .on('click', event => {
+          if (event.target !== this.containerEl) return
+          this.hide()
+        })
+        .on('keyup', event => {
+          if (event.key !== "Escape") return
+          this.hide()
+        })
+        .append(this.modal =
+          $(`<div class="typ-modal"></div>`)
+            .append(this.body =
+              html`<div class="typ-modal__body"></div>`
+            )
+            .get(0),
+        )
+        .get(0)
 
     document.body.append(this.containerEl)
   }
