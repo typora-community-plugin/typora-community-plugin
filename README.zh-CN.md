@@ -54,7 +54,8 @@
 | [codeblock-highlight-mapper][p3] | 将语言 A 映射为语言 B，使用语言 B 的语法高亮代码。 |
 | [collapsible-section][p4]        | 折叠/展开 Markdown 章节、列表、代码块           |
 | [file-icon][p5]                  | 为不同类型文件显示不同图标                      |
-| [front-matter][p6]               | 自动编辑 front matter 的时间                  |
+| [front-matter][p6]               | 自动编辑 Front Matter 的时间                  |
+| [markmap][p11]                   | 支持 Markmap                                |
 | [note-refactor][p7]              | 提取选中文本到新文件                           |
 | [note-snippets][p8]              | 使用斜线指令输入笔记片段                        |
 | [tag][p9]                        | 高亮 `#tag` 语法                             |
@@ -106,3 +107,4 @@
 [p8]: https://github.com/typora-community-plugin/typora-plugin-note-snippets
 [p9]: https://github.com/typora-community-plugin/typora-plugin-tag
 [p10]: https://github.com/typora-community-plugin/typora-plugin-wikilink
+[p11]: https://github.com/typora-community-plugin/typora-plugin-markmap

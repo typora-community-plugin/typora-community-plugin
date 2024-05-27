@@ -55,6 +55,7 @@ You can install plugins from the Plugin Marketplace
 | [collapsible-section][p4]        | Fold/unfold markdown section.                             |
 | [file-icon][p5]                  | Show different icon for different file type in file tree. |
 | [front-matter][p6]               | Auto edit front matter.                                   |
+| [markmap][p11]                   | Support Markmap.                                          |
 | [note-refactor][p7]              | Extract selection to new file.                            |
 | [note-snippets][p8]              | Use slash command to autocomplete note snippets.          |
 | [tag][p9]                        | Support tag like `#tag`.                                  |
@@ -101,3 +102,4 @@ If you have any problem or suggestion please open an issue [here](https://github
 [p8]: https://github.com/typora-community-plugin/typora-plugin-note-snippets
 [p9]: https://github.com/typora-community-plugin/typora-plugin-tag
 [p10]: https://github.com/typora-community-plugin/typora-plugin-wikilink
+[p11]: https://github.com/typora-community-plugin/typora-plugin-markmap
