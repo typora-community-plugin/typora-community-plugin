@@ -201,8 +201,10 @@ export class WorkspaceRibbon extends View {
   }
 
   removeButton(button: RibbonItemButton) {
+    const el = this.containerEl.querySelector(`.typ-ribbon-item[data-id="${button.id}"]`) as HTMLElement
+    el.remove()
+
     this.buttons = this.buttons.filter(btn => btn !== button)
-    this.hideButton(button)
   }
 
   toggleButton(button: RibbonItemButton, visible?: boolean) {
