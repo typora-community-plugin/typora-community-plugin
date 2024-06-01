@@ -52,6 +52,11 @@ export class MarkdownPostProcessor {
   }
 
   unregister(processor: TPostProcessor) {
+    if (processor instanceof CodeblockPostProcessor && processor.hasPreview()) {
+      processor.lang.forEach(lang => {
+        delete this._codePreviewProcessors[lang]
+      })
+    }
     this._processors = this._processors.filter(p => p !== processor)
   }
 }
