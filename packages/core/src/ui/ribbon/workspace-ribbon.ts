@@ -100,14 +100,13 @@ export class WorkspaceRibbon extends View {
   }
 
   private _buildRibbonContainer() {
-    const container = document.createElement('div')
-    container.classList.add('typ-ribbon')
+    const container = $('<div class="typ-ribbon">')
+      .append(
+        '<div class="group top"></div>',
+        '<div class="group bottom"></div>',
+      )
 
-    container.innerHTML =
-      '<div class="group top"></div>' +
-      '<div class="group bottom"></div>'
-
-    draggable(container, 'y', () => {
+    draggable(container.find('.group.top').get(0), 'y', () => {
       const el = this.containerEl.querySelector(`.group.top`)
       Array.from(el.children)
         .forEach((icon: HTMLElement, i) => {
@@ -117,7 +116,7 @@ export class WorkspaceRibbon extends View {
       this.app.settings.set('ribbonState', this.getState())
     })
 
-    return container
+    return container.get(0)
   }
 
   private _setupContextMenu() {
