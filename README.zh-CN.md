@@ -10,7 +10,7 @@
 
 
 
-## 特性 <span style="font-size: 1rem;">([更新日志](./docs/zh-cn/user-guide/CHANGELOG.md))</span>
+## 特性 <small>([更新日志](./docs/zh-cn/user-guide/CHANGELOG.md))</small>
 
 - 插件管理
   - [x] 安装/卸载/更新 插件
@@ -49,6 +49,7 @@
 
 | 插件                              | 描述                                        |
 | -------------------------------- | ------------------------------------------ |
+| [abcjs][p12]                     | 支持在代码块中使用 ABC 记谱法。                 |
 | [callout][p1]                    | 支持标注块语法 `> [!type]`                    |
 | [codeblock-copy-button][p2]      | 在多行代码块右上角添加一个复制按钮。              |
 | [codeblock-highlight-mapper][p3] | 将语言 A 映射为语言 B，使用语言 B 的语法高亮代码。 |
@@ -108,3 +109,4 @@
 [p9]: https://github.com/typora-community-plugin/typora-plugin-tag
 [p10]: https://github.com/typora-community-plugin/typora-plugin-wikilink
 [p11]: https://github.com/typora-community-plugin/typora-plugin-markmap
+[p12]: https://github.com/typora-community-plugin/typora-plugin-abcjs

@@ -10,7 +10,7 @@ To be on the safe side, install an open source plugin that can review the source
 
 
 
-## Features <span style="font-size: 1rem;">([CHANGELOG](./docs/en-us/user-guide/CHANGELOG.md))</span>
+## Features <small>([CHANGELOG](./docs/en-us/user-guide/CHANGELOG.md))</small>
 
 - Plugin Manage
   - [x] Install/Uninstall/Update plugin
@@ -49,6 +49,7 @@ You can install plugins from the Plugin Marketplace
 
 | Plugins                          | Description                                               |
 | -------------------------------- | --------------------------------------------------------- |
+| [abcjs][p12]                     | Use ABC music notation in codeblock.                      |
 | [callout][p1]                    | Support Obsidian-like Callout `> [!type]`.                |
 | [codeblock-copy-button][p2]      | Add a copy button to each codeblock's top-right corner.   |
 | [codeblock-highlight-mapper][p3] | Map language A to language B for highlighting it.         |
@@ -103,3 +104,4 @@ If you have any problem or suggestion please open an issue [here](https://github
 [p9]: https://github.com/typora-community-plugin/typora-plugin-tag
 [p10]: https://github.com/typora-community-plugin/typora-plugin-wikilink
 [p11]: https://github.com/typora-community-plugin/typora-plugin-markmap
+[p12]: https://github.com/typora-community-plugin/typora-plugin-abcjs
