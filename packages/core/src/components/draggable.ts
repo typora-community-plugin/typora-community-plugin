@@ -37,7 +37,7 @@ export function draggable(
     }
   })
 
-  containerEl.addEventListener('mouseup', () => {
+  document.body.addEventListener('mouseup', () => {
     onChange?.()
     draggingEl?.classList.remove('typ-dragging')
     draggingEl = null
