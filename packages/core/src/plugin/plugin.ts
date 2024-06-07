@@ -10,6 +10,11 @@ import type { TPostProcessor } from 'src/ui/editor/postprocessor/postprocessor-m
 import type { TPreProcessor } from 'src/ui/editor/preprocessor/preprocessor'
 
 
+interface StatusBarItemOptions {
+  position: 'left' | 'right',
+  hint?: string,
+}
+
 export abstract class Plugin<T extends Record<string, any> = {}>
   extends Component {
 
@@ -60,5 +65,17 @@ export abstract class Plugin<T extends Record<string, any> = {}>
   registerMarkdownPostProcessor(processor: TPostProcessor) {
     this.register(
       this.app.workspace.activeEditor.postProcessor.register(processor))
+  }
+
+  addStatusBarItem(options?: StatusBarItemOptions) {
+    options ??= { position: 'left' }
+    const { hint = '' } = options
+
+    const el = $(`<div class="footer-item footer-item-${options.position} footer-btn" ty-hint="${hint}" aria-label="${hint}">`)
+      .appendTo($('footer.ty-footer'))
+      .get(0)
+
+    this.register(() => el.remove())
+    return el
   }
 }
