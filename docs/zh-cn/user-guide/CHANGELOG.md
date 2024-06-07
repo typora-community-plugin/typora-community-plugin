@@ -1,5 +1,20 @@
 # 特性更新日志
 
+## v2.0.8
+
+- feat(core/plugin): 提供 API 来支持添加状态栏按钮
+- feat(core/ui/tabs): 支持隐藏文件扩展名
+- feat(core/ui/tabs): 中键点击文件标签可以关闭标签
+- feat(core/ui/tabs): 使用右键菜单关闭当前标签
+
+- **新增插件**
+  - [drakmode](https://github.com/typora-community-plugin/typora-plugin-darkmode): 暗黑模式
+
+## v2.0.4
+
+- **新增插件**
+  - [abcjs](https://github.com/typora-community-plugin/typora-plugin-abcjs): ABC记谱法
+
 ## v2.0.0
 
 - feat(core/ui/siderbar/search): 保留搜索面板的搜索结果

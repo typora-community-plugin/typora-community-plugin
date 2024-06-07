@@ -54,6 +54,7 @@ You can install plugins from the Plugin Marketplace
 | [codeblock-copy-button][p2]      | Add a copy button to each codeblock's top-right corner.   |
 | [codeblock-highlight-mapper][p3] | Map language A to language B for highlighting it.         |
 | [collapsible-section][p4]        | Fold/unfold markdown section.                             |
+| [darkmode][p13]                  | General dark mode for any theme.                          |
 | [file-icon][p5]                  | Show different icon for different file type in file tree. |
 | [front-matter][p6]               | Auto edit front matter.                                   |
 | [markmap][p11]                   | Support Markmap.                                          |
@@ -105,3 +106,4 @@ If you have any problem or suggestion please open an issue [here](https://github
 [p10]: https://github.com/typora-community-plugin/typora-plugin-wikilink
 [p11]: https://github.com/typora-community-plugin/typora-plugin-markmap
 [p12]: https://github.com/typora-community-plugin/typora-plugin-abcjs
+[p13]: https://github.com/typora-community-plugin/typora-plugin-darkmode

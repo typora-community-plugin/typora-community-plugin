@@ -1,5 +1,20 @@
 # Feature Changelog
 
+## v2.0.8
+
+- feat(core/plugin): support api to add status bar item
+- feat(core/ui/tabs): support hide file extension of file tab
+- feat(core/ui/tabs): click file tab with middle mouse button to close tab
+- feat(core/ui/tabs): close active tab with contextmenu
+
+- **New Plugin**
+  - [drakmode](https://github.com/typora-community-plugin/typora-plugin-darkmode): Dark Mode
+
+## v2.0.4
+
+- **New Plugin**
+  - [abcjs](https://github.com/typora-community-plugin/typora-plugin-abcjs): ABC Music Notation
+
 ## v2.0.0
 
 - feat(core/ui/siderbar/search): keep search results
