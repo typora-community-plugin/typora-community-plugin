@@ -138,17 +138,17 @@ export class TabsView extends View {
     const menu = new Menu()
 
     this.registerDomEvent(this.containerEl, 'contextmenu', (event: MouseEvent) => {
-      const clickedTabPath = $(event.target).data('path')
-      const activeTabPath = $('.typ-tab.active', this.containerEl).data('path')
+      const tabEl = $(event.target).closest('.typ-tab')
+      const clickedTabPath = tabEl.data('path')
 
       menu.empty()
 
-      if (clickedTabPath !== activeTabPath) {
+      if (this.tabs.size > 1) {
         menu.addItem(item => {
           item
             .setKey('removeTab')
             .setTitle(t.tabview.close)
-            .onClick(() => this.removeTab(clickedTabPath))
+            .onClick(() => this.closeTab(tabEl[0]))
         })
       }
 
