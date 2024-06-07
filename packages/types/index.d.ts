@@ -226,6 +226,7 @@ interface Editor {
   quickOpenPanel: QuickOpenPanel
   selection: Selection
   stylize: Stylize
+  tableEdit: TableEdit
   undo: Undo
   UserOp: TUserOp
   wordCount: WordCount
@@ -489,6 +490,29 @@ interface Bookmark {
 
 interface Stylize {
   insertMetaBlock(): void
+}
+
+interface TableEdit {
+  addCol(arg0: any): void
+  addRow(arg0: any, arg1: any): void
+  copyTable(): void
+  deleteCol(): void
+  deleteRow(): void
+  deleteTable(arg0: any, arg1: any): void
+  getSibling(arg0: any, arg1: any, arg2: any): any
+  insertTable(): void
+  isTableEmpty(arg0: any): boolean
+  moveColLeftOrRight(arg0: any): void
+  moveRowUpOrDown(arg0: any): void
+  moveTableCol(arg0: any, arg1: any, arg2: any): any
+  moveTableRow(arg0: any, arg1: any, arg2: any): any
+  moveToBelowCell(arg0: any, arg1: any, arg2: any): any
+  moveToNextCell(arg0: any, arg1: any, arg2: any, arg3: any): any
+  reformatTable(arg0: any): void
+  resizeTableEdit(arg0: any): void
+  showAlignCol(arg0: any): void
+  showTableEdit(figure: JQuery): void
+  unfocusAll(arg0: any): void
 }
 
 interface Undo {
