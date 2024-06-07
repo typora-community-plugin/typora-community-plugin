@@ -93,43 +93,42 @@ export class TabsView extends View {
   }
 
   private _buildContainer() {
-    const el = document.createElement('div')
-    el.classList.add('typ-tabs-wrapper')
-    el.innerHTML = '<div class="typ-tabs"></div>'
-
-    // handle: click
-    el.addEventListener('click', event => {
-      const clickedEl = event.target as HTMLElement
-      if (clickedEl.classList.contains('typ-tab')) {
-        const tab = clickedEl
-        if (tab.classList.contains('active')) return
-        this.toggleTab(tab)
-      }
-      else if (clickedEl.classList.contains('typ-close')) {
-        if (this.tabs.size <= 1) return
-
-        const tab = clickedEl.parentElement!
-        if (tab.classList.contains('active')) {
-          const siblingTab = this.getSiblingTab(tab)
-          this.toggleTab(siblingTab)
+    const el = $('<div class="typ-tabs-wrapper"></div>')
+      .append('<div class="typ-tabs"></div>')
+      // handle: left click
+      .on('click', event => {
+        const clickedEl = event.target as HTMLElement
+        if (clickedEl.classList.contains('typ-tab')) {
+          const tab = clickedEl
+          if (tab.classList.contains('active')) return
+          this.toggleTab(tab)
         }
+        else if (clickedEl.classList.contains('typ-close')) {
+          const tab = clickedEl.parentElement!
+          this.closeTab(tab)
+        }
+      })
+      // handle: middle click
+      .on('mousedown', event => {
+        if (event.button !== 1) return
 
-        this.removeTab(tab.dataset.path!)
-      }
-    })
+        const tab = event.target as HTMLElement
+        this.closeTab(tab)
+      })
+      // handle: scroll
+      .on('wheel', (event) => {
+        event.preventDefault()
+        const el = event.target as HTMLElement
+        let tabs
+        if (tabs = el.closest('.typ-tabs-wrapper')) {
+          const evt = event.originalEvent as WheelEvent
+          tabs.scrollLeft += evt.deltaY
+        }
+      })
+      .get(0)
 
     // handle: draggable
     draggable(el, 'x')
-
-    // handle: scroll
-    el.addEventListener('wheel', event => {
-      event.preventDefault()
-      const el = event.target as HTMLElement
-      let tabs
-      if (tabs = el.closest('.typ-tabs-wrapper')) {
-        tabs.scrollLeft += event.deltaY
-      }
-    })
 
     return el
   }
@@ -216,6 +215,17 @@ export class TabsView extends View {
       this.toggleTab(this.getSiblingTab(tabEl))
       this.removeTab(filePath)
     }
+  }
+
+  closeTab(tabEl: HTMLElement) {
+    if (this.tabs.size <= 1) return
+
+    if (tabEl.classList.contains('active')) {
+      const siblingTab = this.getSiblingTab(tabEl)
+      this.toggleTab(siblingTab)
+    }
+
+    this.removeTab(tabEl.dataset.path!)
   }
 
   getSiblingTab(tabEl: HTMLElement) {
