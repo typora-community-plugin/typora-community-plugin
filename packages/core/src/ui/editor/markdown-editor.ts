@@ -67,7 +67,7 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
   }
 }
 
-
+// Avoid dead loop caused by post-processor.
 function emitEdit(this: MarkdownEditor, mutationsList: MutationRecord[]) {
   if (!isEdited(mutationsList)) return
   this.emit('edit')

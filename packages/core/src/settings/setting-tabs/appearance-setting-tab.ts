@@ -8,6 +8,7 @@ export type AppearanceSettings = {
   showSearchResultFullPath: boolean
   showRibbon: boolean
   showFileTabs: boolean
+  hideExtensionInFileTab: boolean
 }
 
 const DEFAULT_SETTINGS: AppearanceSettings = {
@@ -16,6 +17,7 @@ const DEFAULT_SETTINGS: AppearanceSettings = {
   showSearchResultFullPath: false,
   showRibbon: true,
   showFileTabs: true,
+  hideExtensionInFileTab: false,
 }
 
 export class AppearanceSettingTab extends SettingTab {
@@ -86,6 +88,16 @@ export class AppearanceSettingTab extends SettingTab {
         checkbox.checked = settings.get('showFileTabs')
         checkbox.onclick = () => {
           settings.set('showFileTabs', checkbox.checked)
+        }
+      })
+    })
+    this.addSetting(setting => {
+      setting.addName(t.hideExtensionInFileTab)
+      setting.addDescription(t.hideExtensionInFileTabDesc)
+      setting.addCheckbox(checkbox => {
+        checkbox.checked = settings.get('hideExtensionInFileTab')
+        checkbox.onclick = () => {
+          settings.set('hideExtensionInFileTab', checkbox.checked)
         }
       })
     })

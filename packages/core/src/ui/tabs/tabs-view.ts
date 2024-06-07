@@ -78,6 +78,13 @@ export class TabsView extends View {
         return [$el, offset, p2, p3]
       })
     )
+
+    this.hideTabExtension(this.app.settings.get('hideExtensionInFileTab'))
+    this.register(
+      this.app.settings.onChange('hideExtensionInFileTab', (_, isHide) => {
+        this.hideTabExtension(isHide)
+      })
+    )
   }
 
   onunload() {
@@ -175,9 +182,10 @@ export class TabsView extends View {
 
     const longPath = path.relative(this.app.vault.path, filePath)
       .replace(/(\.textbundle)[\\/]text\.(?:md|markdown)$/, '$1')
-    const shortName = truncate(path.basename(longPath), MAX_LENGHT)
+    const ext = path.extname(filePath)
+    const shortName = truncate(path.basename(longPath, ext), MAX_LENGHT)
 
-    const tab = html`<div class="typ-tab active" data-path="${filePath}" title="${longPath}" draggable="true">${shortName}<i class="typ-icon typ-close"></i></div>`
+    const tab = html`<div class="typ-tab active" data-path="${filePath}" title="${longPath}" draggable="true">${shortName}<span class="typ-file-ext">${ext}</span><i class="typ-icon typ-close"></i></div>`
 
     this.containerEl.querySelectorAll('.typ-tab')
       .forEach(el => el.classList.remove('active'))
@@ -241,5 +249,9 @@ export class TabsView extends View {
     const currentIdx = tabEls.findIndex(el => el.dataset.path === path)
     const rightTabEls = tabEls.slice(currentIdx).slice(1)
     rightTabEls.forEach(el => this.removeTab(el.dataset.path!))
+  }
+
+  hideTabExtension(isHide: boolean) {
+    $('.typ-tabs-wrapper').toggleClass('typ-hide-ext', isHide)
   }
 }

@@ -44,7 +44,9 @@
       "ribbon": "Show Ribbon",
       "ribbonDesc": "Also enable Custom Sidebar Panel",
       "fileTabs": "Show File Tabs",
-      "fileTabsDesc": "Better to enable \"App Setting -> General -> Save without asking when switch files on side panel\""
+      "fileTabsDesc": "Better to enable \"App Setting -> General -> Save without asking when switch files on side panel\"",
+      "hideExtensionInFileTab": "Hide extension in file tab",
+      "hideExtensionInFileTabDesc": "For example, file tab of \"File.md\" will be shown as \"File\"."
     },
     "hotkey": {
       "name": "Hotkey",

@@ -95,6 +95,10 @@ body.typ-tabs--enable {
     }
   }
 
+  .typ-hide-ext & .typ-file-ext {
+    display: none;
+  }
+
   .typ-close::before {
     font-size: 1.5rem;
   }

@@ -44,7 +44,9 @@
       "ribbon": "显示活动栏",
       "ribbonDesc": "同时会启用自定义侧边面板",
       "fileTabs": "显示文件标签页",
-      "fileTabsDesc": "推荐启用“应用设置 -> 通用 -> 切换文件时自动保存对上一个文件的更改”"
+      "fileTabsDesc": "推荐启用“应用设置 -> 通用 -> 切换文件时自动保存对上一个文件的更改”",
+      "hideExtensionInFileTab": "隐藏文件标签的文件扩展名",
+      "hideExtensionInFileTabDesc": "例如，文件标签 “File.md” 会显示为 “File”。"
     },
     "hotkey": {
       "name": "快捷键",

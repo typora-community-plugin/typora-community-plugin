@@ -4,7 +4,7 @@ import { File, reqnode } from 'typora'
 interface IPath {
   readonly sep: string
 
-  basename(filepath: string): string
+  basename(filepath: string, suffix?: string): string
   extname(filepath: string): string
   dirname(filepath: string): string
 
@@ -18,10 +18,11 @@ class CompatiblePath implements IPath {
 
   readonly sep = File.isWin ? '\\' : '/'
 
-  basename(filepath: string): string {
+  basename(filepath: string, suffix?: string): string {
     const segments = filepath.split(/[\\\/]+/)
     if (!segments[segments.length - 1]) segments.pop()
-    return segments.pop()
+    const base = segments.pop()
+    return suffix ? base.slice(0, -1 * suffix.length) : base
   }
 
   extname(filepath: string): string {
