@@ -1,5 +1,10 @@
 # 特性更新日志
 
+## Next version
+
+- **新增插件**
+  - [code-folding](https://github.com/typora-community-plugin/typora-plugin-code-folding): 代码折叠
+
 ## v2.0.8
 
 - feat(core/plugin): 提供 API 来支持添加状态栏按钮

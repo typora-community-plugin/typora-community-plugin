@@ -1,5 +1,10 @@
 # Feature Changelog
 
+## Next version
+
+- **New Plugin**
+  - [code-folding](https://github.com/typora-community-plugin/typora-plugin-code-folding): Code Folding
+
 ## v2.0.8
 
 - feat(core/plugin): support api to add status bar item
