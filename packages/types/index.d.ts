@@ -1,3 +1,4 @@
+/// <reference types="codemirror" />
 /// <reference types="jquery" />
 
 export declare var _options: {
@@ -323,6 +324,16 @@ interface EditHelper {
 }
 
 interface Fences {
+  /**
+   * Mapping cid to CodeMirror instance
+   */
+  queue: Record<string, CodeMirror.Editor>
+
+  /**
+   * Create a new CodeMirror instance on the `<pre>` element and add it to queue.
+   */
+  addCodeBlock(cid: string): CodeMirror.Editor
+  getCm(cid: string): CodeMirror.Editor | null
   getValue(cid: string): string
 }
 

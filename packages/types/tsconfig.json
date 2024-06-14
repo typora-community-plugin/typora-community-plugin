@@ -6,7 +6,8 @@
     "noImplicitAny": true,
     "moduleResolution": "node",
     "types": [
-      "jquery",
+      "codemirror",
+      "jquery"
     ]
   }
 }

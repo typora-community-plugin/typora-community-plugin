@@ -1,6 +1,6 @@
 {
   "name": "@typora-community-plugin/typora-types",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Types of Typora global variables.",
   "main": "",
   "types": "index.d.ts",
@@ -12,6 +12,7 @@
   "author": "plylrnsdy <https://github.com/plylrnsdy>",
   "license": "MIT",
   "devDependencies": {
+    "@types/codemirror": "^5",
     "@types/jquery": "3.3.1"
   }
 }
