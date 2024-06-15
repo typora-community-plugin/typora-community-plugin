@@ -3,7 +3,10 @@
 ## Next version
 
 - **New Plugin**
-  - [code-folding](https://github.com/typora-community-plugin/typora-plugin-code-folding): Code Folding
+  - [code-folding][]: Code Folding
+
+- **Plugin Update**
+  - [codeblock-highlight-mapper][]: Re-implements plugin so that it will not modfiy markdown
 
 ## v2.0.8
 
@@ -13,12 +16,12 @@
 - feat(core/ui/tabs): close active tab with contextmenu
 
 - **New Plugin**
-  - [drakmode](https://github.com/typora-community-plugin/typora-plugin-darkmode): Dark Mode
+  - [drakmode][]: Dark Mode
 
 ## v2.0.4
 
 - **New Plugin**
-  - [abcjs](https://github.com/typora-community-plugin/typora-plugin-abcjs): ABC Music Notation
+  - [abcjs][]: ABC Music Notation
 
 ## v2.0.0
 
@@ -92,3 +95,13 @@
 ## v2.0.0-beta.5
 
 - feat(core/plugin): support uninstall plugin
+
+
+
+[abcjs]: https://github.com/typora-community-plugin/typora-plugin-abcjs
+
+[codeblock-highlight-mapper]: https://github.com/typora-community-plugin/typora-plugin-codeblock-highlight-mapper
+
+[code-folding]: https://github.com/typora-community-plugin/typora-plugin-code-folding
+
+[drakmode]: https://github.com/typora-community-plugin/typora-plugin-darkmode

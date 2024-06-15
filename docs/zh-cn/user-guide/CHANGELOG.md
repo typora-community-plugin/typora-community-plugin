@@ -3,7 +3,10 @@
 ## Next version
 
 - **新增插件**
-  - [code-folding](https://github.com/typora-community-plugin/typora-plugin-code-folding): 代码折叠
+  - [code-folding][]: 代码折叠
+
+- **插件更新**
+  - [codeblock-highlight-mapper][]: 改变实现方式，不需要修改 Markdown 就可以实现高亮
 
 ## v2.0.8
 
@@ -13,12 +16,12 @@
 - feat(core/ui/tabs): 使用右键菜单关闭当前标签
 
 - **新增插件**
-  - [drakmode](https://github.com/typora-community-plugin/typora-plugin-darkmode): 暗黑模式
+  - [drakmode][]: 暗黑模式
 
 ## v2.0.4
 
 - **新增插件**
-  - [abcjs](https://github.com/typora-community-plugin/typora-plugin-abcjs): ABC记谱法
+  - [abcjs][]: ABC记谱法
 
 ## v2.0.0
 
@@ -92,3 +95,13 @@
 ## v2.0.0-beta.5
 
 - feat(core/plugin): 支持卸载插件
+
+
+
+[abcjs]: https://github.com/typora-community-plugin/typora-plugin-abcjs
+
+[codeblock-highlight-mapper]: https://github.com/typora-community-plugin/typora-plugin-codeblock-highlight-mapper
+
+[code-folding]: https://github.com/typora-community-plugin/typora-plugin-code-folding
+
+[drakmode]: https://github.com/typora-community-plugin/typora-plugin-darkmode
