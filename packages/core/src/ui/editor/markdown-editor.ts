@@ -70,17 +70,53 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
 // Avoid dead loop caused by post-processor.
 function emitEdit(this: MarkdownEditor, mutationsList: MutationRecord[]) {
   if (!isEdited(mutationsList)) return
+  docNodeCount = editor.nodeMap.allNodes._set.length
   this.emit('edit')
 }
 
+let docNodeCount = 0
+
 function isEdited(mutationsList: MutationRecord[]) {
-  return (
-    mutationsList.some(m => m.type === 'characterData')
-  ) || (
-      mutationsList.length === 1 &&
-      mutationsList[0].addedNodes.length &&
-      mutationsList[0].removedNodes.length
+  // change text
+  if (mutationsList.some(m => m.type === 'characterData'))
+    return true
+
+  const first = mutationsList[0]
+  if (
+    mutationsList.length === 1 && (
+      // add first (remove last) char in a parargraph
+      first.addedNodes.length &&
+      first.removedNodes.length) || (
+      // add math in a parargraph
+      matchElement(first.target, '.md-math-tex')
     )
+  ) return true
+
+  // change inline text style
+  const rest = mutationsList.slice(0, -1)
+  const [last] = mutationsList.slice(-1)
+  if (
+    rest.every(m => matchElement(m.target, 'span') &&
+    matchElement(last.target, '.md-focus'))
+  ) return true
+
+  // add/remove parargraph
+  return docNodeCount !== editor.nodeMap.allNodes._set.length
+}
+
+function matchElement(node: Node, selector: string) {
+  return isElement(node) && match(node, selector)
+}
+
+function isElement(node: Node): node is Element {
+  return node.nodeType === 1
+}
+
+function match(el: Element, selector: string) {
+  if (selector.startsWith('.'))
+    return el.classList.contains(selector.slice(1))
+  else
+    return el.tagName === selector.toUpperCase()
 }
 
 class OpenLinkInCurrentWin extends Component {
