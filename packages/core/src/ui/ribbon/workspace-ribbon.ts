@@ -32,7 +32,7 @@ interface RibbonItemButton {
 
   [BUILT_IN]?: boolean
   /**
-   * Default is `true`.
+   * @default true
    */
   visible?: boolean
   order?: number

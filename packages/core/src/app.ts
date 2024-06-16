@@ -86,7 +86,7 @@ export class App extends Events<AppEvents> {
 
     this.vault = new Vault(this)
 
-    this.settings = new Settings<AppSettings>(this, {
+    this.settings = new Settings<AppSettings>(this.vault, {
       filename: 'core',
       version: 1,
     })

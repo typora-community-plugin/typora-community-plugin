@@ -5,6 +5,7 @@ import type { App } from 'src/app'
 import { Events } from 'src/events'
 import fs from 'src/fs/filesystem'
 import { Logger } from 'src/logger'
+import { VaultConfig } from './vault-config'
 
 
 const logger = new Logger('Vault')
@@ -26,7 +27,7 @@ type VaultEvents = {
 /**
  * Mounted folder
  */
-export class Vault extends Events<VaultEvents> {
+export class Vault extends Events<VaultEvents> implements VaultConfig {
 
   private _path = File.getMountFolder()
     ?? _options.mountFolder

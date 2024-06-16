@@ -1,4 +1,4 @@
-import type { App } from "src/app"
+import type { VaultConfig } from "src/fs/vault-config"
 import { debounce } from "src/utils/debounce"
 import type { DisposeFunc } from "src/utils/types"
 
@@ -42,7 +42,7 @@ export class Settings<T extends Record<string, any>> {
   private _listeners = {} as SettingsListeners<T>
   private _migations: SettingMigrations | null
 
-  constructor(private app: App, options: SettingsOptions) {
+  constructor(private vault: VaultConfig, options: SettingsOptions) {
     this.filename = options.filename
     this.version = options.version
     this._migations = options.migations
@@ -88,7 +88,7 @@ export class Settings<T extends Record<string, any>> {
   }
 
   load() {
-    this._stores = this.app.vault.readConfigJson(this.filename, {
+    this._stores = this.vault.readConfigJson(this.filename, {
       version: this.version,
       settings: {}
     })
@@ -104,7 +104,7 @@ export class Settings<T extends Record<string, any>> {
   }
 
   private _save = () => {
-    this.app.vault.writeConfigJson(this.filename, this._stores)
+    this.vault.writeConfigJson(this.filename, this._stores)
   }
 
   save = debounce(this._save, 1e3)
