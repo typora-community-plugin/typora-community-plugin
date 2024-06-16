@@ -12,6 +12,7 @@ importers:
     specifiers:
       '@babel/core': ^7.23.2
       '@babel/preset-env': ^7.23.2
+      '@jest/globals': ^29.7.0
       '@plylrnsdy/decorate.js': ^1.0.1
       '@rollup/plugin-babel': ^6.0.4
       '@rollup/plugin-commonjs': ^25.0.7
@@ -48,6 +49,7 @@ importers:
     devDependencies:
       '@babel/core': 7.23.2
       '@babel/preset-env': 7.23.2_@babel+core@7.23.2
+      '@jest/globals': 29.7.0
       '@rollup/plugin-babel': 6.0.4_lpr4ommhxhsv6o73pocnqtvswi
       '@rollup/plugin-commonjs': 25.0.7_rollup@4.1.4
       '@rollup/plugin-node-resolve': 15.2.3_rollup@4.1.4

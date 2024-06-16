@@ -11,7 +11,7 @@
     "types": [
       "node",
       "typora",
-      "@types/jest"
+      "@types/jest",
     ],
     "skipLibCheck": true,
     "noImplicitAny": true,

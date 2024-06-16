@@ -1,5 +1,6 @@
 import type { VaultConfig } from "src/fs/vault-config"
 import { debounce } from "src/utils/debounce"
+import { noop } from "src/utils/noop"
 import type { DisposeFunc } from "src/utils/types"
 
 
@@ -51,6 +52,9 @@ export class Settings<T extends Record<string, any>> {
   }
 
   get<K extends keyof T>(key: K): T[K] {
+    if (typeof key !== 'string') {
+      throw new TypeError('`key` must be a string.')
+    }
     return this._stores.settings[key]
   }
 
@@ -59,6 +63,7 @@ export class Settings<T extends Record<string, any>> {
   }
 
   set<K extends keyof T>(key: K, value: T[K]) {
+    if (this._stores.settings[key] === value) return
     this._stores.settings[key] = value
     this._listeners[key]?.forEach(fn => fn(key, value))
     this.save()
@@ -70,6 +75,9 @@ export class Settings<T extends Record<string, any>> {
   ): DisposeFunc {
     if (!this._listeners[key]) {
       this._listeners[key] = []
+    }
+    if (this._listeners[key].includes(listener)) {
+      return noop
     }
     this._listeners[key].push(listener)
     return () => this.removeChangeListener(key, listener)
@@ -84,6 +92,7 @@ export class Settings<T extends Record<string, any>> {
     key: K,
     listener: (key: K, value: T[K]) => void
   ) {
+    if (!this._listeners[key]) return
     this._listeners[key] = this._listeners[key].filter(fn => fn !== listener)
   }
 
