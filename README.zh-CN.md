@@ -58,6 +58,7 @@
 | [darkmode][p13]                  | 适用于任意亮色主题的暗黑模式。                   |
 | [file-icon][p5]                  | 为不同类型文件显示不同图标                      |
 | [front-matter][p6]               | 自动编辑 Front Matter 的时间                  |
+| [image-location][p15]            | 相对于当前笔记目录的根目录解析图片路径             |
 | [markmap][p11]                   | 支持 Markmap                                |
 | [note-refactor][p7]              | 提取选中文本到新文件                           |
 | [note-snippets][p8]              | 使用斜线指令输入笔记片段                        |
@@ -114,3 +115,4 @@
 [p12]: https://github.com/typora-community-plugin/typora-plugin-abcjs
 [p13]: https://github.com/typora-community-plugin/typora-plugin-darkmode
 [p14]: https://github.com/typora-community-plugin/typora-plugin-code-folding
+[p15]: https://github.com/typora-community-plugin/typora-plugin-image-location

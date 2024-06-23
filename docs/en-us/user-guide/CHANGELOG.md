@@ -3,7 +3,8 @@
 ## Next version
 
 - **New Plugin**
-  - [code-folding][]: Code Folding
+  - [code-folding][]: Make your codes foldable.
+  - [image-location][]: Resolve image's location relative to vault's root.
 
 - **Plugin Update**
   - [codeblock-highlight-mapper][]: Re-implements plugin so that it will not modfiy markdown
@@ -105,3 +106,5 @@
 [code-folding]: https://github.com/typora-community-plugin/typora-plugin-code-folding
 
 [drakmode]: https://github.com/typora-community-plugin/typora-plugin-darkmode
+
+[image-location]: https://github.com/typora-community-plugin/typora-plugin-image-location

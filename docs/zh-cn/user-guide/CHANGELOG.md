@@ -4,6 +4,7 @@
 
 - **新增插件**
   - [code-folding][]: 代码折叠
+  - [image-location][]: 相对于当前笔记目录的根目录解析图片路径
 
 - **插件更新**
   - [codeblock-highlight-mapper][]: 改变实现方式，不需要修改 Markdown 就可以实现高亮
@@ -105,3 +106,5 @@
 [code-folding]: https://github.com/typora-community-plugin/typora-plugin-code-folding
 
 [drakmode]: https://github.com/typora-community-plugin/typora-plugin-darkmode
+
+[image-location]: https://github.com/typora-community-plugin/typora-plugin-image-location

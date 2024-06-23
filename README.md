@@ -53,11 +53,12 @@ You can install plugins from the Plugin Marketplace
 | [callout][p1]                    | Support Obsidian-like Callout `> [!type]`.                |
 | [codeblock-copy-button][p2]      | Add a copy button to each codeblock's top-right corner.   |
 | [codeblock-highlight-mapper][p3] | Map language A to language B for highlighting it.         |
-| [collapsible-section][p4]        | Fold/unfold markdown section.                             |
+| [collapsible-section][p4]        | Fold/unfold markdown section. Supports headings, list, codeblock, table. |
 | [code-folding][p14]              | Make your codes foldable.                                 |
 | [darkmode][p13]                  | General dark mode for any theme.                          |
 | [file-icon][p5]                  | Show different icon for different file type in file tree. |
 | [front-matter][p6]               | Auto edit front matter.                                   |
+| [image-location][p15]            | Resolve image's location relative to vault's root.        |
 | [markmap][p11]                   | Support Markmap.                                          |
 | [note-refactor][p7]              | Extract selection to new file.                            |
 | [note-snippets][p8]              | Use slash command to autocomplete note snippets.          |
@@ -109,3 +110,4 @@ If you have any problem or suggestion please open an issue [here](https://github
 [p12]: https://github.com/typora-community-plugin/typora-plugin-abcjs
 [p13]: https://github.com/typora-community-plugin/typora-plugin-darkmode
 [p14]: https://github.com/typora-community-plugin/typora-plugin-code-folding
+[p15]: https://github.com/typora-community-plugin/typora-plugin-image-location
