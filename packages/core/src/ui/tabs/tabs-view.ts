@@ -97,14 +97,14 @@ export class TabsView extends View {
       .append('<div class="typ-tabs"></div>')
       // handle: left click
       .on('click', event => {
-        const clickedEl = event.target as HTMLElement
-        if (clickedEl.classList.contains('typ-tab')) {
-          const tab = clickedEl
-          if (tab.classList.contains('active')) return
-          this.toggleTab(tab)
+        const $clickedEl = $(event.target)
+        if ($clickedEl.is('.typ-tab, .typ-file-ext')) {
+          const $tab = $clickedEl.closest('.typ-tab')
+          if ($tab.hasClass('active')) return
+          this.toggleTab($tab.get(0))
         }
-        else if (clickedEl.classList.contains('typ-close')) {
-          const tab = clickedEl.parentElement!
+        else if ($clickedEl.hasClass('typ-close')) {
+          const tab = $clickedEl.parent().get(0)
           this.closeTab(tab)
         }
       })
