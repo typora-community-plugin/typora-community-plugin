@@ -21,6 +21,7 @@ export function draggable(
   let draggingEl: HTMLElement | null
 
   containerEl.addEventListener('mousedown', event => {
+    if (event.button !== 0) return
     event.preventDefault()
     const el = event.target as HTMLElement
     draggingEl = el.closest('[draggable=true]')
@@ -28,6 +29,7 @@ export function draggable(
   })
 
   containerEl.addEventListener('mousemove', event => {
+    if (event.button !== 0) return
     const el = event.target as HTMLElement
     const dropEl = el.closest<HTMLElement>('[draggable=true]')
     if (draggingEl && dropEl && dropEl !== draggingEl) {
@@ -37,7 +39,8 @@ export function draggable(
     }
   })
 
-  document.body.addEventListener('mouseup', () => {
+  document.body.addEventListener('mouseup', event => {
+    if (event.button !== 0) return
     onChange?.()
     draggingEl?.classList.remove('typ-dragging')
     draggingEl = null
