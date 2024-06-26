@@ -1,3 +1,4 @@
+import { editor } from "typora"
 import { View } from "src/ui/view"
 import type { App } from "src/app"
 import type { Workspace } from "src/ui/workspace"
@@ -71,13 +72,34 @@ export class Sidebar extends View {
     return dispose
   }
 
+  get isShown() {
+    return editor.library.isSidebarShown()
+  }
+
   switch<T extends View>(viewClass: new (...args: any[]) => T) {
-    if (this.activeView instanceof viewClass) return
+    if (this.activeView instanceof viewClass) {
+      this.toggle()
+      return
+    }
 
     Object.values(this.internalViews).forEach(v => v.hide())
     this.activeView?.hide()
 
     this.activeView = this._children.find(c => c instanceof viewClass)! as View
     this.activeView.show()
+  }
+
+  toggle() {
+    this.isShown ? this.hide() : this.show()
+  }
+
+  show() {
+    editor.library.showSidebar()
+    this.activeView?.show()
+  }
+
+  hide() {
+    editor.library.hideSidebar()
+    this.activeView?.hide()
   }
 }
