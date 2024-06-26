@@ -43,11 +43,21 @@ export type AppPlugin = (app: App) => void
 
 /**
  * Proxy of Typora
+ *
+ * Use in development environment:
+ * @example
+ * ```ts
+ * const { app } = Typora
+ * ```
+ *
+ * Use in production environment:
+ * @example const { app } = pliginInstance
+ * @example import { app } from '@typora-community-plugin/core'
  */
 export class App extends Events<AppEvents> {
 
   /**
-   * @example '2.0.0'
+   * @example app.coreVersion  //=> '2.0.0'
    */
   get coreVersion() {
     return process.env.CORE_VERSION
@@ -135,6 +145,9 @@ export class App extends Events<AppEvents> {
     this.emit('load')
   }
 
+  /**
+   * @param link HTTP url or file path
+   */
   openLink(link: string) {
     if (link.startsWith('http') || link.startsWith('#')) {
       editor.tryOpenUrl(link)
@@ -144,6 +157,11 @@ export class App extends Events<AppEvents> {
     }
   }
 
+  /**
+   * Open Markdown file with Typora or unsupported file with default app.
+   *
+   * @param filepath path of Markdown file or unsuppoted file
+   */
   async openFile(filepath: string) {
     if (filepath.startsWith('.')) {
       filepath = path.join(path.dirname(this.workspace.activeFile), filepath)
@@ -171,6 +189,11 @@ export class App extends Events<AppEvents> {
     }
   }
 
+  /**
+   * Open unsupported file with default app.
+   *
+   * @param filepath path of unsuppoted file
+   */
   openFileWithDefaultApp(filepath: string) {
     JSBridge.invoke("shell.openItem", filepath)
   }
