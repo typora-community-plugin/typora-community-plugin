@@ -217,6 +217,7 @@ export declare var editor: Editor
 
 interface Editor {
   autoComplete: AutoComplete
+  brush: Brush
   docMenu: DocMenu
   EditHelper: EditHelper
   fences: Fences
@@ -282,8 +283,15 @@ interface AutoCompleteOptions {
   beforeApply?(text: string): string
 }
 
+interface Brush {
+  inline: {
+    output(md: string): string
+  }
+}
+
 interface DocMenu {
   getMetaNode(): Node
+  getLocalRootUrl(path?: string): string
   getValueInMeta(key: string, metaNode?: Node): string
   writeProperty(key: string, value: string): void
 }
@@ -343,10 +351,26 @@ interface ImageEdit {
   resolveImagePath(url: string): string
 }
 
+type SidebarTab = 'file-tree' | 'file-list' | 'outline' | ''
+
 interface Library {
 
+  fileList: FileListView
   fileTree: FileTreeView
   fileSearch: FileSearchView
+
+  getActiveTab(): SidebarTab
+
+  getDelegate(): FileListView | FileTreeView
+
+  isFileTabShown(): boolean
+  isOutlineShown(): boolean
+  isSidebarShown(): boolean
+
+  toggleSidebar(): void
+  show(tab?: SidebarTab): void
+  showSidebar(e?: any, t?: any): void
+  hideSidebar(e?: any): void
 
   onFileChanges(arg0:
     { type: "created" | "removed", path: string, isDir: boolean } | { type: "rename", newPath: string, oldPath: string, isDir: boolean }
@@ -365,7 +389,12 @@ interface Library {
   /**
    * Switch sidebar view.
    */
-  switch(view: '' | 'file-tree' | 'file-list' | 'outline', param1?: boolean): void
+  switch(view: SidebarTab, param1?: boolean): void
+}
+
+interface FileListView {
+  onChangeForMac(e: any): void
+  onChangeForWin(e: any, t: any, n: any): void
 }
 
 interface FileTreeView {
@@ -393,6 +422,7 @@ interface FileSearchView {
   clearContentHighlight(): void
   hide(): void
   hideSearch(param0?: boolean): void
+  isActive(): boolean
   search(query: string): void
   searchByMac(query: string): void
   searchByNode(query: string): void
