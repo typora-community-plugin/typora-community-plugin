@@ -13,7 +13,7 @@ export class PluginSettings<T extends Record<string, any>>
     manifest: PluginManifest,
     options: PluginSettingsOptions
   ) {
-    super(app, {
+    super(app.vault, {
       ...options,
       filename: `data/${manifest.id}`,
     })
