@@ -1,6 +1,12 @@
 # Feature Changelog
 
-## Next version
+## v2.0.13
+
+- feat(core/ui/ribbon): active ribbon button after click
+- fix(core/ui/sidebar): can not click same button to toggle sidebar
+- fix(core/component/draggable): can drag el with middle/right mouse button
+- fix(core/ui/tabs): can not switch tab when click the file extension
+- fix(core/ui/editor): creating new line or changing text style can not emit 'edit' event
 
 - **New Plugin**
   - [code-folding][]: Make your codes foldable.

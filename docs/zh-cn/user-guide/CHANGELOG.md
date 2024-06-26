@@ -1,6 +1,12 @@
 # 特性更新日志
 
-## Next version
+## v2.0.13
+
+- feat(core/ui/ribbon): 点击 Ribbon 时高亮
+- fix(core/ui/sidebar): 修复点击同一个 Ribbon 按钮时，不能折叠/展开侧栏的问题
+- fix(core/component/draggable): 修复可以使用非左键拖动 Ribbon 的问题
+- fix(core/ui/tabs): 修复点击到 Tab 的文件扩展名时，不能切换 Tab 的问题
+- fix(core/ui/editor): 修复创建新行不触发 edit 事件的问题
 
 - **新增插件**
   - [code-folding][]: 代码折叠
