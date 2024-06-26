@@ -92,5 +92,9 @@
       font-size: calc(.58 * var(--typ-ribbon-width));
       color: var(--control-text-color);
     }
+
+    &.top .typ-ribbon-item.active {
+      border-left: 3px solid var(--control-text-color);
+    }
   }
 }

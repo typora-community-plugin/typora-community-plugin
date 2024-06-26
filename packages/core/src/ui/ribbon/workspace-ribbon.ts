@@ -206,6 +206,11 @@ export class WorkspaceRibbon extends View {
     this.buttons = this.buttons.filter(btn => btn !== button)
   }
 
+  activeButton(id: string) {
+    $('.typ-ribbon-item').removeClass('active')
+    $(`.typ-ribbon-item[data-id="${id}"]`).addClass('active')
+  }
+
   toggleButton(button: RibbonItemButton, visible?: boolean) {
     button.visible = visible ?? !button.visible
 
@@ -251,7 +256,10 @@ export class WorkspaceRibbon extends View {
       })
     }
     if (button.onclick) {
-      itemEl.addEventListener('click', button.onclick)
+      itemEl.addEventListener('click', e => {
+        this.activeButton(button.id)
+        button.onclick(e)
+      })
     }
 
     itemEl.append(button.icon)

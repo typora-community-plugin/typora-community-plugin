@@ -12,6 +12,8 @@ import { html } from "src/utils/html"
 
 export class FileExplorer extends View {
 
+  private id = 'core.file-explorer'
+
   private _showNotSupportedFile: ShowNotSupportedFile
 
   constructor(private app: App, workspace: Workspace, private sidebar: Sidebar) {
@@ -21,13 +23,17 @@ export class FileExplorer extends View {
 
     workspace.getViewByType(WorkspaceRibbon)!.addButton({
       [BUILT_IN]: true,
-      id: 'core.file-explorer',
+      id: this.id,
       title: app.i18n.t.ribbon.files,
       icon: html`<i class="fa fa-folder-o"></i>`,
       onclick: () => sidebar.switch(FileExplorer),
     })
 
     this._showNotSupportedFile = new ShowNotSupportedFile(app)
+  }
+
+  onload() {
+    this.app.workspace.getViewByType(WorkspaceRibbon)!.activeButton(this.id)
   }
 
   show() {
