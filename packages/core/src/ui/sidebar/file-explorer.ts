@@ -63,15 +63,8 @@ class ShowNotSupportedFile extends Component {
   }
 
   onload() {
-    const fileLibraryEl = document.getElementById('file-library')
-
-    this.registerDomEvent(fileLibraryEl, 'mouseenter', () => {
-      File.SupportedFiles.indexOf = () => 1
-    })
-
-    this.registerDomEvent(fileLibraryEl, 'mouseleave', () => {
-      delete File.SupportedFiles.indexOf
-    })
+    this.register(
+      decorate.returnValue(File.SupportedFiles, 'indexOf', () => 1))
 
     this.register(
       decorate(editor.library, 'openFile', fn => (file, callback) => {
@@ -82,9 +75,5 @@ class ShowNotSupportedFile extends Component {
         }
         fn(file, callback)
       }))
-  }
-
-  onunload() {
-    delete File.SupportedFiles.indexOf
   }
 }
