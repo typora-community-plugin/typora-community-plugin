@@ -1,5 +1,15 @@
 # Feature Changelog
 
+## v2.0.14
+
+- fix(core/ui/sidebar): file tree can not show unspported files in sometime
+
+- **Plugin Update**
+  - [collapsible-section][]
+    - feat(codeblock): support using fold/unfold all codeblocks from command panel
+    - fix(codeblock): After unfolding all, then scroll down. Some codeblock is still folded.
+    - fix(codeblock): create a new codeblock will fold it
+
 ## v2.0.13
 
 - feat(core/ui/ribbon): active ribbon button after click

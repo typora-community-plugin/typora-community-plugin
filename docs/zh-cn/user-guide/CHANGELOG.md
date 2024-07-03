@@ -1,5 +1,15 @@
 # 特性更新日志
 
+## v2.0.14
+
+- fix(core/ui/sidebar): 修复文件树有时不能显示不支持的文件的问题
+
+- **插件更新**
+  - [collapsible-section][]
+    - 支持通过命令面板折叠/展开所有代码块
+    - 修复展开所有代码块后，新展示的代码块仍然折叠的问题
+    - 修复新增的代码块会被折叠的问题
+
 ## v2.0.13
 
 - feat(core/ui/ribbon): 点击 Ribbon 时高亮
@@ -108,6 +118,8 @@
 [abcjs]: https://github.com/typora-community-plugin/typora-plugin-abcjs
 
 [codeblock-highlight-mapper]: https://github.com/typora-community-plugin/typora-plugin-codeblock-highlight-mapper
+
+[collapsible-section]: https://github.com/typora-community-plugin/typora-plugin-collapsible-section
 
 [code-folding]: https://github.com/typora-community-plugin/typora-plugin-code-folding
 
