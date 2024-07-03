@@ -94,7 +94,7 @@
     }
 
     &.top .typ-ribbon-item.active {
-      border-left: 3px solid var(--control-text-color);
+      border-left: 3px solid var(--active-file-border-color);
     }
   }
 }
