@@ -63,8 +63,14 @@ class ShowNotSupportedFile extends Component {
   }
 
   onload() {
-    this.register(
-      decorate.returnValue(File.SupportedFiles, 'indexOf', () => 1))
+    File.SupportedFiles.indexOf = () => 1
+    $(document)
+      .on('drop', () => {
+        delete File.SupportedFiles.indexOf
+      })
+      .on('mouseup', () => {
+        File.SupportedFiles.indexOf = () => 1
+      })
 
     this.register(
       decorate(editor.library, 'openFile', fn => (file, callback) => {
