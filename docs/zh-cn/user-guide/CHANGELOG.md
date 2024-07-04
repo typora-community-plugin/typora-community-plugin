@@ -1,5 +1,9 @@
 # 特性更新日志
 
+## v2.0.15
+
+- fix(core/ui/sidebar): 拖放文件会意外地使用 Typora 打开它
+
 ## v2.0.14
 
 - fix(core/ui/sidebar): 修复文件树有时不能显示不支持的文件的问题

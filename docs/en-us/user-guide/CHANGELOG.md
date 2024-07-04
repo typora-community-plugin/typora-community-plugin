@@ -1,5 +1,9 @@
 # Feature Changelog
 
+## v2.0.15
+
+- fix(core/ui/sidebar): drop file will open it unexpectedly
+
 ## v2.0.14
 
 - fix(core/ui/sidebar): file tree can not show unspported files in sometime
@@ -118,6 +122,8 @@
 [abcjs]: https://github.com/typora-community-plugin/typora-plugin-abcjs
 
 [codeblock-highlight-mapper]: https://github.com/typora-community-plugin/typora-plugin-codeblock-highlight-mapper
+
+[collapsible-section]: https://github.com/typora-community-plugin/typora-plugin-collapsible-section
 
 [code-folding]: https://github.com/typora-community-plugin/typora-plugin-code-folding
 
