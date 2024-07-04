@@ -82,4 +82,8 @@ class ShowNotSupportedFile extends Component {
         fn(file, callback)
       }))
   }
+
+  onunload() {
+    delete File.SupportedFiles.indexOf
+  }
 }
