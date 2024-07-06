@@ -1,10 +1,10 @@
 import path from 'src/path'
 import { _options, editor, File, JSBridge } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
-import type { App } from 'src/app'
 import { Events } from 'src/events'
 import fs from 'src/fs/filesystem'
 import { Logger } from 'src/logger'
+import { _emitMissingEvents } from 'src/symbols'
 import { VaultConfig } from './vault-config'
 
 
@@ -33,12 +33,10 @@ export class Vault extends Events<VaultEvents> implements VaultConfig {
     ?? _options.mountFolder
     ?? path.dirname(_options.initFilePath ?? File.bundle.filePath)
 
-  constructor(private app: App) {
+  constructor() {
     super()
 
     this._registerEventHooks()
-
-    app.once('load', () => this._emitMissingEvent())
   }
 
   get id() {
@@ -86,7 +84,10 @@ export class Vault extends Events<VaultEvents> implements VaultConfig {
       })
   }
 
-  private _emitMissingEvent() {
+  /**
+   * @private
+   */
+  [_emitMissingEvents]() {
     if (this.path) {
       this.emit('mounted', this.path)
     }

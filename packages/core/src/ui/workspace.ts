@@ -12,6 +12,7 @@ import { CommandModal } from 'src/command/command-modal'
 import { QuickOpenPanel } from './quick-open-panel'
 import decorate from '@plylrnsdy/decorate.js'
 import { File, editor } from 'typora'
+import { _emitMissingEvents } from 'src/symbols'
 
 
 type WorkspaceEvents = {
@@ -49,15 +50,16 @@ export class Workspace extends Events<WorkspaceEvents> {
     this._children.push(new QuickOpenPanel(app))
 
     setTimeout(() => this._children.forEach(child => child.load()))
-
-    app.once('load', () => this._emitMissingEvent())
   }
 
   getViewByType<T extends new (...args: any) => any>(cls: T) {
     return this._children.find(view => view instanceof cls) as InstanceType<T> | undefined
   }
 
-  private _emitMissingEvent() {
+  /**
+   * @private
+   */
+  [_emitMissingEvents]() {
     if (this.activeFile) {
       this.emit('file:open', this.activeFile)
     }

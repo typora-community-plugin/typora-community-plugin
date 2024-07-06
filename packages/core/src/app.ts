@@ -22,6 +22,7 @@ import type { RibbonSettings } from 'src/ui/ribbon/workspace-ribbon'
 import { isMarkdownUrl } from 'src/utils/is-markdown-url'
 import { platform } from 'src/utils/platform'
 import type { FileURL } from 'src/utils/types'
+import { _emitMissingEvents } from 'src/symbols'
 
 
 type AppEvents = {
@@ -94,7 +95,7 @@ export class App extends Events<AppEvents> {
       window['Typora'] = window[Symbol.for(process.env.CORE_NS)]
     }
 
-    this.vault = new Vault(this)
+    this.vault = new Vault()
 
     this.settings = new Settings<AppSettings>(this.vault, {
       filename: 'core',
@@ -120,6 +121,10 @@ export class App extends Events<AppEvents> {
 
     this.hotkeyManager = new HotkeyManager(this)
 
+    this.once('load', () => {
+      this.vault[_emitMissingEvents]()
+      this.workspace[_emitMissingEvents]()
+    })
     this.vault.on('change', () => {
       this.env = this._readEnv()
       this.settings.load()
