@@ -9,7 +9,7 @@ export class GlobalSearch {
 
   openGlobalSearch(query: string) {
     const { workspace } = this.app
-    workspace.sidebar.switch(GlobalSearchView)
+    workspace.ribbon.clickButton(GlobalSearchView.id)
 
     const view = workspace.getViewByType(GlobalSearchView)
     view.setQuery(query)

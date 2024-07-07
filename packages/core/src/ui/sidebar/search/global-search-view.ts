@@ -13,6 +13,10 @@ const SELECTOR_QUERY_INPUT = '#file-library-search-input'
 
 export class GlobalSearchView extends View {
 
+  static get id() {
+    return 'core.search' as const
+  }
+
   private get sidebar() {
     return this.app.workspace.sidebar
   }
@@ -27,7 +31,7 @@ export class GlobalSearchView extends View {
 
     workspace.ribbon.addButton({
       [BUILT_IN]: true,
-      id: 'core.search',
+      id: GlobalSearchView.id,
       title: app.i18n.t.ribbon.search,
       icon: html`<i class="fa fa-search"></i>`,
       onclick: () => this.sidebar.switch(GlobalSearchView),

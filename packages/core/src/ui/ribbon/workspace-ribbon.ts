@@ -211,6 +211,10 @@ export class WorkspaceRibbon extends View {
     $(`.typ-ribbon-item[data-id="${id}"]`).addClass('active')
   }
 
+  clickButton(id: string) {
+    $(`.typ-ribbon-item[data-id="${id}"]`).get(0).click()
+  }
+
   toggleButton(button: RibbonItemButton, visible?: boolean) {
     button.visible = visible ?? !button.visible
 

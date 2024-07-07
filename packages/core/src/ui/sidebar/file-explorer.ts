@@ -11,7 +11,9 @@ import { html } from "src/utils/html"
 
 export class FileExplorer extends View {
 
-  private id = 'core.file-explorer'
+  static get id() {
+    return 'core.file-explorer' as const
+  }
 
   private get sidebar() {
     return this.app.workspace.sidebar
@@ -26,7 +28,7 @@ export class FileExplorer extends View {
 
     workspace.ribbon.addButton({
       [BUILT_IN]: true,
-      id: this.id,
+      id: FileExplorer.id,
       title: app.i18n.t.ribbon.files,
       icon: html`<i class="fa fa-folder-o"></i>`,
       onclick: () => this.sidebar.switch(FileExplorer),
@@ -36,7 +38,7 @@ export class FileExplorer extends View {
   }
 
   onload() {
-    this.app.workspace.ribbon.activeButton(this.id)
+    this.app.workspace.ribbon.activeButton(FileExplorer.id)
   }
 
   show() {
