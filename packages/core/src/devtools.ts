@@ -2,7 +2,7 @@ import path from 'src/path'
 import { ClientCommand, File, JSBridge, reqnode } from 'typora'
 import type { App } from 'src/app'
 import fs from 'src/fs/filesystem'
-import { BUILT_IN, WorkspaceRibbon } from 'src/ui/ribbon/workspace-ribbon'
+import { BUILT_IN } from 'src/ui/ribbon/workspace-ribbon'
 import { html } from 'src/utils/html'
 
 
@@ -20,17 +20,16 @@ export function devtools(app: App) {
   })
 
   function addDevtoolsRibbon() {
-    app.workspace.getViewByType(WorkspaceRibbon)!
-      .addButton({
-        [BUILT_IN]: true,
-        group: 'bottom',
-        id: 'core.devtools',
-        title: 'Devtools',
-        icon: html`<div><i class="fa fa-wrench"></i></div>`,
-        onclick() {
-          JSBridge.invoke("window.toggleDevTools")
-        }
-      })
+    app.workspace.ribbon.addButton({
+      [BUILT_IN]: true,
+      group: 'bottom',
+      id: 'core.devtools',
+      title: 'Devtools',
+      icon: html`<div><i class="fa fa-wrench"></i></div>`,
+      onclick() {
+        JSBridge.invoke("window.toggleDevTools")
+      }
+    })
   }
 
   function createLocker() {

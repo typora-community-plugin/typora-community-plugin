@@ -4,7 +4,7 @@ import type { App } from 'src/app'
 import { Component } from 'src/component'
 import { View } from 'src/ui/view'
 import type { Workspace } from "src/ui/workspace"
-import { BUILT_IN, WorkspaceRibbon } from "src/ui/ribbon/workspace-ribbon"
+import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
 import { html } from "src/utils/html"
 import { noop } from 'src/utils/noop'
 
@@ -23,7 +23,7 @@ export class GlobalSearch extends View {
 
     this.containerEl = document.getElementById('file-library-search') as HTMLElement
 
-    workspace.getViewByType(WorkspaceRibbon)!.addButton({
+    workspace.ribbon.addButton({
       [BUILT_IN]: true,
       id: 'core.search',
       title: app.i18n.t.ribbon.search,

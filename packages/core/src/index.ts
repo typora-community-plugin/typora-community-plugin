@@ -24,7 +24,11 @@ export { CodeblockPostProcessor } from './ui/editor/postprocessor/codeblock-post
 export { View } from './ui/view'
 export { EditorSuggest } from './ui/editor/suggestion/suggest'
 export { TextSuggest } from './ui/editor/suggestion/text-suggest'
+
+/** @deprecated */
 export { WorkspaceRibbon } from './ui/ribbon/workspace-ribbon'
+
+/** @deprecated */
 export { Sidebar } from './ui/sidebar/sidebar'
 
 export { default as fs } from 'src/fs/filesystem'

@@ -1,6 +1,6 @@
 import { View } from 'src/ui/view'
 import type { Workspace } from "src/ui/workspace"
-import { BUILT_IN, WorkspaceRibbon } from "src/ui/ribbon/workspace-ribbon"
+import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
 import { editor } from "typora"
 import { html } from "src/utils/html"
 import type { App } from 'src/app'
@@ -13,7 +13,7 @@ export class Outline extends View {
 
     this.containerEl = document.getElementById('outline-content') as HTMLElement
 
-    workspace.getViewByType(WorkspaceRibbon)!.addButton({
+    workspace.ribbon.addButton({
       [BUILT_IN]: true,
       id: 'core.outline',
       title: app.i18n.t.ribbon.outline,

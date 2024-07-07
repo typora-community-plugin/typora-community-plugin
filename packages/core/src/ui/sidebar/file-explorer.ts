@@ -5,7 +5,7 @@ import { Component } from 'src/component'
 import path from 'src/path'
 import { View } from 'src/ui/view'
 import type { Workspace } from "src/ui/workspace"
-import { BUILT_IN, WorkspaceRibbon } from "src/ui/ribbon/workspace-ribbon"
+import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
 import { html } from "src/utils/html"
 
 
@@ -24,7 +24,7 @@ export class FileExplorer extends View {
 
     this.containerEl = document.getElementById('file-library') as HTMLElement
 
-    workspace.getViewByType(WorkspaceRibbon)!.addButton({
+    workspace.ribbon.addButton({
       [BUILT_IN]: true,
       id: this.id,
       title: app.i18n.t.ribbon.files,
@@ -36,7 +36,7 @@ export class FileExplorer extends View {
   }
 
   onload() {
-    this.app.workspace.getViewByType(WorkspaceRibbon)!.activeButton(this.id)
+    this.app.workspace.ribbon.activeButton(this.id)
   }
 
   show() {
