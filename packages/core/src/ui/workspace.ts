@@ -7,7 +7,7 @@ import { Events } from 'src/events'
 import { MarkdownEditor } from './editor/markdown-editor'
 import { WorkspaceRibbon } from './ribbon/workspace-ribbon'
 import { Sidebar } from './sidebar/sidebar'
-import { GlobalSearch } from './sidebar/search'
+import { GlobalSearchView } from './sidebar/search/global-search-view'
 import { FileExplorer } from './sidebar/file-explorer'
 import { Outline } from './sidebar/outline'
 import { TabsView } from './tabs/tabs-view'
@@ -49,7 +49,7 @@ export class Workspace extends Events<WorkspaceEvents> {
     this._children.push(new SettingsModal(app))
     this._children.push(this.ribbon = new WorkspaceRibbon(app))
     this._children.push(this.sidebar = new Sidebar(app, [
-      new GlobalSearch(app, this),
+      new GlobalSearchView(app, this),
       new FileExplorer(app, this),
       new Outline(app, this),
     ]))

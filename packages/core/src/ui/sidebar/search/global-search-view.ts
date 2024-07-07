@@ -9,7 +9,9 @@ import { html } from "src/utils/html"
 import { noop } from 'src/utils/noop'
 
 
-export class GlobalSearch extends View {
+const SELECTOR_QUERY_INPUT = '#file-library-search-input'
+
+export class GlobalSearchView extends View {
 
   private get sidebar() {
     return this.app.workspace.sidebar
@@ -28,7 +30,7 @@ export class GlobalSearch extends View {
       id: 'core.search',
       title: app.i18n.t.ribbon.search,
       icon: html`<i class="fa fa-search"></i>`,
-      onclick: () => this.sidebar.switch(GlobalSearch),
+      onclick: () => this.sidebar.switch(GlobalSearchView),
     })
 
     this._keepSearchResult = new KeepSearchResult(app)
@@ -44,10 +46,16 @@ export class GlobalSearch extends View {
     this.sidebar.wrapperEl.classList.remove('ty-show-search', 'ty-on-search')
   }
 
-  openGlobalSearch(query: string) {
-    this.sidebar.switch(GlobalSearch)
-    $('#file-library-search-input').val(query)
-    editor.library.fileSearch.search(query)
+  getQuery() {
+    return $(SELECTOR_QUERY_INPUT).val() as string ?? ''
+  }
+
+  setQuery(query: string) {
+    $(SELECTOR_QUERY_INPUT).val(query)
+  }
+
+  startSearch() {
+    editor.library.fileSearch.search(this.getQuery())
   }
 }
 

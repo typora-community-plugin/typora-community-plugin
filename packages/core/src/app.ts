@@ -23,6 +23,7 @@ import { isMarkdownUrl } from 'src/utils/is-markdown-url'
 import { platform } from 'src/utils/platform'
 import type { FileURL } from 'src/utils/types'
 import { _emitMissingEvents } from 'src/symbols'
+import { GlobalSearch } from './ui/sidebar/search/global-search'
 
 
 type AppEvents = {
@@ -81,6 +82,10 @@ export class App extends Events<AppEvents> {
   plugins: PluginManager
   workspace: Workspace
   hotkeyManager: HotkeyManager
+
+  features = {
+    globalSearch: new GlobalSearch(this)
+  }
 
   constructor() {
     super()
