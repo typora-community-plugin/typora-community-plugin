@@ -1,4 +1,6 @@
 import './title-bar.scss'
+import decorate from '@plylrnsdy/decorate.js'
+import { File, editor } from 'typora'
 import type { App } from 'src/app'
 import type { Component } from 'src/component'
 import { noticeContainer } from 'src/components/notice'
@@ -10,8 +12,6 @@ import { TabsView } from './tabs/tabs-view'
 import { SettingsModal } from 'src/settings/settings-modal'
 import { CommandModal } from 'src/command/command-modal'
 import { QuickOpenPanel } from './quick-open-panel'
-import decorate from '@plylrnsdy/decorate.js'
-import { File, editor } from 'typora'
 import { _emitMissingEvents } from 'src/symbols'
 
 
@@ -34,6 +34,9 @@ export class Workspace extends Events<WorkspaceEvents> {
 
   private _children: Component[] = []
 
+  ribbon: WorkspaceRibbon
+  sidebar: Sidebar
+
   constructor(app: App) {
     super()
 
@@ -43,8 +46,8 @@ export class Workspace extends Events<WorkspaceEvents> {
 
     this._children.push(noticeContainer)
     this._children.push(new SettingsModal(app))
-    this._children.push(new WorkspaceRibbon(app))
-    this._children.push(new Sidebar(app, this))
+    this._children.push(this.ribbon = new WorkspaceRibbon(app))
+    this._children.push(this.sidebar = new Sidebar(app, this))
     this._children.push(new TabsView(app))
     this._children.push(new CommandModal(app))
     this._children.push(new QuickOpenPanel(app))
