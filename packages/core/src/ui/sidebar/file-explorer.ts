@@ -4,7 +4,6 @@ import type { App } from 'src/app'
 import { Component } from 'src/component'
 import path from 'src/path'
 import { View } from 'src/ui/view'
-import type { Sidebar } from './sidebar'
 import type { Workspace } from "src/ui/workspace"
 import { BUILT_IN, WorkspaceRibbon } from "src/ui/ribbon/workspace-ribbon"
 import { html } from "src/utils/html"
@@ -14,9 +13,13 @@ export class FileExplorer extends View {
 
   private id = 'core.file-explorer'
 
+  private get sidebar() {
+    return this.app.workspace.sidebar
+  }
+
   private _showNotSupportedFile: ShowNotSupportedFile
 
-  constructor(private app: App, workspace: Workspace, private sidebar: Sidebar) {
+  constructor(private app: App, workspace: Workspace) {
     super()
 
     this.containerEl = document.getElementById('file-library') as HTMLElement
@@ -26,7 +29,7 @@ export class FileExplorer extends View {
       id: this.id,
       title: app.i18n.t.ribbon.files,
       icon: html`<i class="fa fa-folder-o"></i>`,
-      onclick: () => sidebar.switch(FileExplorer),
+      onclick: () => this.sidebar.switch(FileExplorer),
     })
 
     this._showNotSupportedFile = new ShowNotSupportedFile(app)

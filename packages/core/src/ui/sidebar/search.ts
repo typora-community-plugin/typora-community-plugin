@@ -5,17 +5,20 @@ import { Component } from 'src/component'
 import { View } from 'src/ui/view'
 import type { Workspace } from "src/ui/workspace"
 import { BUILT_IN, WorkspaceRibbon } from "src/ui/ribbon/workspace-ribbon"
-import type { Sidebar } from './sidebar'
 import { html } from "src/utils/html"
 import { noop } from 'src/utils/noop'
 
 
-export class Search extends View {
+export class GlobalSearch extends View {
+
+  private get sidebar() {
+    return this.app.workspace.sidebar
+  }
 
   private _keepSearchResult: KeepSearchResult
   private _showSearchResultFullPath: ShowSearchResultFullPath
 
-  constructor(app: App, workspace: Workspace, private sidebar: Sidebar) {
+  constructor(private app: App, workspace: Workspace) {
     super()
 
     this.containerEl = document.getElementById('file-library-search') as HTMLElement
@@ -25,10 +28,10 @@ export class Search extends View {
       id: 'core.search',
       title: app.i18n.t.ribbon.search,
       icon: html`<i class="fa fa-search"></i>`,
-      onclick: () => sidebar.switch(Search),
+      onclick: () => this.sidebar.switch(GlobalSearch),
     })
 
-    this._keepSearchResult = new KeepSearchResult(app, this.sidebar)
+    this._keepSearchResult = new KeepSearchResult(app)
     this._showSearchResultFullPath = new ShowSearchResultFullPath(app)
   }
 
@@ -42,7 +45,7 @@ export class Search extends View {
   }
 
   openGlobalSearch(query: string) {
-    this.sidebar.switch(Search)
+    this.sidebar.switch(GlobalSearch)
     $('#file-library-search-input').val(query)
     editor.library.fileSearch.search(query)
   }
@@ -52,7 +55,7 @@ class KeepSearchResult extends Component {
 
   private SETTING_KEY = 'keepSearchResult' as const
 
-  constructor(private app: App, private sidebar: Sidebar) {
+  constructor(private app: App) {
     super()
 
     if (app.settings.get(this.SETTING_KEY)) {
@@ -72,7 +75,7 @@ class KeepSearchResult extends Component {
 
   showSearchPanel() {
     if (this.app.settings.get(this.SETTING_KEY))
-      this.sidebar.wrapperEl.classList.add('ty-on-search')
+      this.app.workspace.sidebar.wrapperEl.classList.add('ty-on-search')
   }
 }
 

@@ -1,11 +1,8 @@
 import { editor } from "typora"
 import type { App } from "src/app"
 import { View } from "src/ui/view"
-import type { Workspace } from "src/ui/workspace"
 import type { DisposeFunc } from "src/utils/types"
 import { FileExplorer } from "./file-explorer"
-import { Outline } from "./outline"
-import { Search } from "./search"
 
 
 /**
@@ -23,18 +20,13 @@ export class Sidebar extends View {
   activeView: View
   internalViews: View[]
 
-  constructor(private app: App, workspace: Workspace) {
+  constructor(private app: App, internalViews: View[]) {
     super()
 
     this.containerEl = document.getElementById('sidebar-content')!
     this.wrapperEl = this.containerEl.parentElement
 
-    this.internalViews = [
-      new Search(app, workspace, this),
-      new FileExplorer(app, workspace, this),
-      new Outline(app, workspace, this),
-    ]
-
+    this.internalViews = internalViews
     this.internalViews.forEach(view => this.addChild(view))
 
     this.app.settings.onChange('showRibbon', (_, isEnabled) => {
