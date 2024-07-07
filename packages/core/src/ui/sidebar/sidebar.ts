@@ -1,7 +1,8 @@
 import { editor } from "typora"
-import { View } from "src/ui/view"
 import type { App } from "src/app"
+import { View } from "src/ui/view"
 import type { Workspace } from "src/ui/workspace"
+import type { DisposeFunc } from "src/utils/types"
 import { FileExplorer } from "./file-explorer"
 import { Outline } from "./outline"
 import { Search } from "./search"
@@ -12,7 +13,7 @@ import { Search } from "./search"
  *
  * ```js
  * // Get instance
- * const sidebar = app.workspace.getViewByType(Sidebar)
+ * const sidebar = app.workspace.sidebar
  * ```
  */
 export class Sidebar extends View {
@@ -63,7 +64,7 @@ export class Sidebar extends View {
     }
   }
 
-  addChild(component: View) {
+  addChild(component: View): DisposeFunc {
     const dispose = super.addChild(component)
 
     if (!this.internalViews.includes(component) && component.containerEl) {

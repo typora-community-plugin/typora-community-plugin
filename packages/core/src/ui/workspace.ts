@@ -2,7 +2,6 @@ import './title-bar.scss'
 import decorate from '@plylrnsdy/decorate.js'
 import { File, editor } from 'typora'
 import type { App } from 'src/app'
-import type { Component } from 'src/component'
 import { noticeContainer } from 'src/components/notice'
 import { Events } from 'src/events'
 import { MarkdownEditor } from './editor/markdown-editor'
@@ -13,6 +12,7 @@ import { SettingsModal } from 'src/settings/settings-modal'
 import { CommandModal } from 'src/command/command-modal'
 import { QuickOpenPanel } from './quick-open-panel'
 import { _emitMissingEvents } from 'src/symbols'
+import type { View } from './view'
 
 
 type WorkspaceEvents = {
@@ -23,6 +23,11 @@ type WorkspaceEvents = {
 
 export class Workspace extends Events<WorkspaceEvents> {
 
+  private _children: View[] = []
+
+  ribbon: WorkspaceRibbon
+  sidebar: Sidebar
+
   activeEditor: MarkdownEditor
 
   /**
@@ -32,17 +37,10 @@ export class Workspace extends Events<WorkspaceEvents> {
     return File.bundle?.filePath
   }
 
-  private _children: Component[] = []
-
-  ribbon: WorkspaceRibbon
-  sidebar: Sidebar
-
   constructor(app: App) {
     super()
 
     this._registerEventHooks()
-
-    this.activeEditor = new MarkdownEditor(app)
 
     this._children.push(noticeContainer)
     this._children.push(new SettingsModal(app))
@@ -52,11 +50,35 @@ export class Workspace extends Events<WorkspaceEvents> {
     this._children.push(new CommandModal(app))
     this._children.push(new QuickOpenPanel(app))
 
+    this.activeEditor = new MarkdownEditor(app)
+
     setTimeout(() => this._children.forEach(child => child.load()))
   }
 
   getViewByType<T extends new (...args: any) => any>(cls: T) {
-    return this._children.find(view => view instanceof cls) as InstanceType<T> | undefined
+    let res = undefined
+    this.iterateViews(this as any, (v) => {
+      if (v instanceof cls) {
+        res = v
+        return true
+      }
+    })
+    return res as any as InstanceType<T> | undefined
+  }
+
+  /**
+   * Iterate all views in view tree.
+   *
+   * @param callback return `true` to stop iteration
+   */
+  iterateViews(view: View, callback: (view: View) => boolean | void) {
+    const children = (<any>view)._children as View[]
+    for (let i = 0; i < children.length; i++) {
+      const childView = children[i]
+      if (callback(childView)) break
+      if (!(<any>childView)._children.length) continue
+      this.iterateViews(childView, callback)
+    }
   }
 
   /**

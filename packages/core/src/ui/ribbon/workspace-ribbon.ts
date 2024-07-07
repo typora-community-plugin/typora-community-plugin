@@ -43,7 +43,7 @@ interface RibbonItemButton {
  *
  * ```js
  * // Get instance
- * const ribbon = app.workspace.getViewByType(WorkspaceRibbon)
+ * const ribbon = app.workspace.ribbon
  * ```
  */
 export class WorkspaceRibbon extends View {

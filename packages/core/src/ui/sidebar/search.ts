@@ -41,8 +41,8 @@ export class Search extends View {
     this.sidebar.wrapperEl.classList.remove('ty-show-search', 'ty-on-search')
   }
 
-  search(query: string) {
-    this.show()
+  openGlobalSearch(query: string) {
+    this.sidebar.switch(Search)
     $('#file-library-search-input').val(query)
     editor.library.fileSearch.search(query)
   }
