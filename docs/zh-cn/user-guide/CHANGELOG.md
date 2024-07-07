@@ -1,5 +1,12 @@
 # 特性更新日志
 
+## v2.0.17
+
+- fix(core/ui/sidebar): 启用“显示不支持的文件”后不能禁用
+
+- **插件更新**
+  - [tag][]: 在插件面板中点击搜索按钮，跳转到搜索面板搜索该标签
+
 ## v2.0.15
 
 - fix(core/ui/sidebar): 拖放文件会意外地使用 Typora 打开它
@@ -130,3 +137,5 @@
 [drakmode]: https://github.com/typora-community-plugin/typora-plugin-darkmode
 
 [image-location]: https://github.com/typora-community-plugin/typora-plugin-image-location
+
+[tag]: https://github.com/typora-community-plugin/typora-plugin-tag

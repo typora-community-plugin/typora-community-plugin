@@ -1,5 +1,12 @@
 # Feature Changelog
 
+## v2.0.17
+
+- fix(core/ui/sidebar): can not disable showing unsupported files
+
+- **Plugin Update**
+  - [tag][]: In tag panel, click tag's search button can jump to search panel and search it.
+
 ## v2.0.15
 
 - fix(core/ui/sidebar): drop file will open it unexpectedly
@@ -130,3 +137,5 @@
 [drakmode]: https://github.com/typora-community-plugin/typora-plugin-darkmode
 
 [image-location]: https://github.com/typora-community-plugin/typora-plugin-image-location
+
+[tag]: https://github.com/typora-community-plugin/typora-plugin-tag
