@@ -101,8 +101,11 @@ export class PluginManager {
     )
   }
 
+  /**
+   * Unload all enabled plugins
+   */
   unloadPlugins() {
-    Object.keys(this.instances)
+    Object.keys(this.enabledPlugins)
       .map(id => this.unloadPlugin(id))
   }
 
@@ -160,10 +163,14 @@ export class PluginManager {
   }
 
   disablePlugin(id: string) {
-    this.instances[id]?.unload()
-    document.getElementById(`typora-plugin:${id}`)?.remove()
+    try {
+      this.instances[id]?.unload()
+      document.getElementById(`typora-plugin:${id}`)?.remove()
+    } catch (error) {
+      logger.error(`Plugin.unload:${id}`, error)
+    }
 
-    this.enabledPlugins[id] = false
+    delete this.enabledPlugins[id]
     this._saveEnabledConfig()
   }
 
