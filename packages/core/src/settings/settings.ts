@@ -1,4 +1,4 @@
-import type { VaultConfig } from "src/fs/vault-config"
+import type { ConfigStorage } from "src/fs/config-storage"
 import { debounce } from "src/utils/debounce"
 import { noop } from "src/utils/noop"
 import type { DisposeFunc } from "src/utils/types"
@@ -43,7 +43,7 @@ export class Settings<T extends Record<string, any>> {
   private _listeners = {} as SettingsListeners<T>
   private _migations: SettingMigrations | null
 
-  constructor(private vault: VaultConfig, options: SettingsOptions) {
+  constructor(private vault: ConfigStorage, options: SettingsOptions) {
     this.filename = options.filename
     this.version = options.version
     this._migations = options.migations

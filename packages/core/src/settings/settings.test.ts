@@ -1,11 +1,11 @@
 import { jest } from '@jest/globals'
-import type { VaultConfig } from "src/fs/vault-config"
+import type { ConfigStorage } from "src/fs/config-storage"
 import { Settings } from "./settings"
 
 
 describe('class Settings', () => {
 
-  const vault = new class implements VaultConfig {
+  const vault = new class implements ConfigStorage {
     readConfigJson(filename: string, defaultValue?: any) {
       return defaultValue
     }
