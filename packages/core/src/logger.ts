@@ -1,3 +1,6 @@
+import { identity } from "src/utils/identity"
+
+
 type Level = {
   method: 'debug' | 'info' | 'warn' | 'error',
   tag: string,
@@ -5,26 +8,44 @@ type Level = {
 }
 
 const LogLevel: Record<string, Level> = {
-  DEBUG: { method: 'debug', tag: 'DEBUG', bgColor: 'gray' },
-  INFO: { method: 'info', tag: 'INFO', bgColor: 'blue' },
-  WARN: { method: 'warn', tag: 'WARN', bgColor: 'gold' },
-  ERROR: { method: 'error', tag: 'ERROR', bgColor: 'red' },
+  DEBUG: { method: 'debug', tag: 'DEBUG', bgColor: 'dimgray' },
+  INFO: { method: 'info', tag: 'INFO', bgColor: 'steelblue' },
+  WARN: { method: 'warn', tag: 'WARN', bgColor: 'darkorange' },
+  ERROR: { method: 'error', tag: 'ERROR', bgColor: 'firebrick' },
+}
+
+const RESET_STYLES = 'color:unset; background:unset; padding:unset; border-radius:unset;'
+
+function badage(message: string, bgColor: string): [string, string, string] {
+  return [
+    `%c${message}%c `,
+    `color:#fff; background:${bgColor}; padding: 2px 4px; border-radius: 4px;`,
+    RESET_STYLES,
+  ]
+}
+
+function badages(...messages: [string, string, string][]) {
+  return messages
+    .filter(identity)
+    .reduce((acc, b) => {
+      acc[0] += b[0]
+      acc.push(b[1], b[2])
+      return acc
+    }, [''])
 }
 
 export class Logger {
 
-  constructor(private scope: string) {
+  constructor(public scope?: string) {
   }
 
   private log(level: Level, messages: any[]) {
-    const time = new Date().toISOString().slice(11, -5);
-
     console[level.method](
-      `${time} %c${level.tag}%c [${this.scope}]`,
-      `color:white; background:${level.bgColor}; padding:3px 5px;`,
-      'color:unset; background:unset; padding:unset;',
+      ...badages(
+        badage('[Typora Plugin]', level.bgColor),
+        this.scope && badage(this.scope, 'gray')),
       ...messages
-    );
+    )
   }
 
   debug(...messages: any[]) {
