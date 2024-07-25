@@ -1,5 +1,9 @@
 # Feature Changelog
 
+## v2.0.20
+
+- fix(core/locales/i18n): can not try to load next locale file if first locale file failed to load
+
 ## v2.0.19
 
 - fix(core/plugin/manager): switch folder will change enabled plugins settings
