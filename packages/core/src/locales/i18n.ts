@@ -71,17 +71,14 @@ export class I18n<T> {
         const localePath = pathList[i]
         const localeText = fs.readTextSync(localePath)
 
-        if (!localeText) {
-          continue
-        }
-
         this.locale = localeList[i]
         this.resources = JSON.parse(localeText)
+        return
       }
       catch (error) {
-        logger.error('Failed to load locale data.', error)
+        logger.warn(`Failed to load locale file: lang.${localeList[i]}.json`)
+        continue
       }
-      return
     }
   }
 }
