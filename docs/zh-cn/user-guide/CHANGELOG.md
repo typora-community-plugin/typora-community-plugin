@@ -1,5 +1,13 @@
 # 特性更新日志
 
+## v2.0.19
+
+- fix(core/plugin/manager): 切换笔记目录会修改插件启用状态
+- fix(core/ui/sidebar/search): `openGlobalSearch()` 不能激活 Ribbon 按钮
+
+- **插件更新**
+  - [codeblock-highlight-mapper][]: 加快没有映射的代码块的渲染速度
+
 ## v2.0.17
 
 - fix(core/ui/sidebar): 启用“显示不支持的文件”后不能禁用

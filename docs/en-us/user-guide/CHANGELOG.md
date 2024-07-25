@@ -1,5 +1,13 @@
 # Feature Changelog
 
+## v2.0.19
+
+- fix(core/plugin/manager): switch folder will change enabled plugins settings
+- fix(core/ui/sidebar/search): `openGlobalSearch()` can not active ribbon
+
+- **Plugin Update**
+  - [codeblock-highlight-mapper][]: speed up non-mapped codeblock render
+
 ## v2.0.17
 
 - fix(core/ui/sidebar): can not disable showing unsupported files
