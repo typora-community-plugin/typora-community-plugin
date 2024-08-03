@@ -1,7 +1,7 @@
 import { _options } from 'typora'
 import type { App } from "src/app"
 import { Notice } from 'src/components/notice'
-import { format } from "src/utils/format"
+import { format } from "src/utils/string/format"
 import { HttpClient } from './http-client'
 
 

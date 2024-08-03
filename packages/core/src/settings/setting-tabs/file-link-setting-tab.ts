@@ -1,6 +1,6 @@
 import type { App } from "src/app"
 import { SettingTab } from "../setting-tab"
-import { debounce } from "src/utils/debounce"
+import { debounce } from "src/utils/function/debounce"
 
 
 export type FileLinkSettings = {

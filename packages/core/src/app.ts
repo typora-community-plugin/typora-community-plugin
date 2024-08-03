@@ -19,7 +19,7 @@ import type { PluginMarketplaceSettings } from 'src/settings/setting-tabs/plugin
 import type { CoreSettings } from 'src/settings/setting-tabs/about-tab'
 import { Workspace } from 'src/ui/workspace'
 import type { RibbonSettings } from 'src/ui/ribbon/workspace-ribbon'
-import { isMarkdownUrl } from 'src/utils/is-markdown-url'
+import { isMarkdownUrl } from 'src/utils/string/is-markdown-url'
 import { platform } from 'src/utils/platform'
 import type { FileURL } from 'src/utils/types'
 import { _emitMissingEvents } from 'src/symbols'

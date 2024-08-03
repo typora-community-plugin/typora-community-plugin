@@ -7,8 +7,8 @@ import path from 'src/path'
 import { Plugin } from "./plugin"
 import type { PluginManifest, PluginPostion } from "./plugin-manifest"
 import { PluginMarketplace } from './plugin-marketplace'
-import { debounce } from "src/utils/debounce"
-import { format } from 'src/utils/format'
+import { debounce } from "src/utils/function/debounce"
+import { format } from 'src/utils/string/format'
 import * as versions from 'src/utils/versions'
 
 

@@ -7,7 +7,7 @@ import { MarkdownPostProcessor } from "./postprocessor/postprocessor-manager"
 import { MarkdownPreProcessor } from "./preprocessor/preprocessor"
 import { EditorSelection } from "./selection"
 import { EditorSuggestManager } from "./suggestion/suggest-manager"
-import { debounce } from "src/utils/debounce"
+import { debounce } from "src/utils/function/debounce"
 import type { FileURL } from "src/utils/types"
 import { until } from "src/utils/until"
 

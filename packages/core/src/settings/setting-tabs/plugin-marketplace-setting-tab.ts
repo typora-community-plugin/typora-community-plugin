@@ -1,7 +1,7 @@
 import type { App } from "src/app"
 import { type PluginMarketInfo } from "src/plugin/plugin-marketplace"
 import { SettingTab } from "../setting-tab"
-import { debounce } from "src/utils/debounce"
+import { debounce } from "src/utils/function/debounce"
 import { uniqueId } from "src/utils/uniqueId"
 
 

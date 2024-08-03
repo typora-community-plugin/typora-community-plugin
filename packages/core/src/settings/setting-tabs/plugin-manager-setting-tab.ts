@@ -3,8 +3,8 @@ import type { App } from "src/app"
 import { Notice } from 'src/components/notice'
 import type { PluginManifest } from "src/plugin/plugin-manifest"
 import { SettingTab } from "../setting-tab"
-import { debounce } from "src/utils/debounce"
-import { format } from 'src/utils/format'
+import { debounce } from "src/utils/function/debounce"
+import { format } from 'src/utils/string/format'
 import * as versions from "src/utils/versions"
 
 

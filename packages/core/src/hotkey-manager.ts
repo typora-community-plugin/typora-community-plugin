@@ -1,5 +1,5 @@
 import type { App } from "src/app"
-import { capitalize } from 'src/utils/capitalize'
+import { capitalize } from 'src/utils/string/capitalize'
 import { platform } from "src/utils/platform"
 
 

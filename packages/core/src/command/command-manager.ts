@@ -1,7 +1,7 @@
 import type { App } from "src/app"
 import { type HotkeyScope, readableHotkey } from "src/hotkey-manager"
 import { Logger } from 'src/logger'
-import { debounce } from "src/utils/debounce"
+import { debounce } from "src/utils/function/debounce"
 import type { DisposeFunc } from "src/utils/types"
 
 

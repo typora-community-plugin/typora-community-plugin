@@ -8,7 +8,7 @@ import { Menu } from 'src/components/menu'
 import fs from 'src/fs/filesystem'
 import { View } from "src/ui/view"
 import { html } from 'src/utils/html'
-import { truncate } from 'src/utils/truncate'
+import { truncate } from 'src/utils/string/truncate'
 
 
 const MAX_LENGHT = { length: 20, omission: '…' }

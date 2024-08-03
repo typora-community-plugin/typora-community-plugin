@@ -1,7 +1,7 @@
 import { editor } from "typora"
 import { HtmlPostProcessor } from "./html-postprocessor"
 import type { ButtonOptions } from "./postprocessor"
-import { debounce } from "src/utils/debounce"
+import { debounce } from "src/utils/function/debounce"
 
 
 interface CodeblockContext {
