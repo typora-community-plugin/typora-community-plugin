@@ -59,6 +59,7 @@ You can install plugins from the Plugin Marketplace
 | [file-icon][p5]                  | Show different icon for different file type in file tree. |
 | [front-matter][p6]               | Auto edit front matter.                                   |
 | [image-location][p15]            | Resolve image's location relative to vault's root.        |
+| [image-viewer][p16]              | View all the images in the current Markdown.              |
 | [markmap][p11]                   | Support Markmap.                                          |
 | [note-refactor][p7]              | Extract selection to new file.                            |
 | [note-snippets][p8]              | Use slash command to autocomplete note snippets.          |
@@ -111,3 +112,4 @@ If you have any problem or suggestion please open an issue [here](https://github
 [p13]: https://github.com/typora-community-plugin/typora-plugin-darkmode
 [p14]: https://github.com/typora-community-plugin/typora-plugin-code-folding
 [p15]: https://github.com/typora-community-plugin/typora-plugin-image-location
+[p16]: https://github.com/typora-community-plugin/typora-plugin-image-viewer

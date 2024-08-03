@@ -1,5 +1,15 @@
 # 特性更新日志
 
+## What's Next
+
+- **新增插件**
+  - [image-viewer][]: 查看当前文档所有图片。
+
+- **插件更新**
+  - [front-matter][]
+    - feat: 禁用自动插入 `created` 或 `updated`
+    - feat: 为新笔记自动插入指定字段名
+
 ## v2.0.20
 
 - fix(core/locales/i18n): 修复在加载失败后不能再次尝试加载下一个语言文件的问题
@@ -47,6 +57,8 @@
 
 - **插件更新**
   - [codeblock-highlight-mapper][]: 改变实现方式，不需要修改 Markdown 就可以实现高亮
+  - [collapsible-section][]: 支持折叠表格
+  - [drakmode][]: 添加状态栏按钮
 
 ## v2.0.8
 
@@ -148,6 +160,10 @@
 
 [drakmode]: https://github.com/typora-community-plugin/typora-plugin-darkmode
 
+[front-matter]: https://github.com/typora-community-plugin/typora-plugin-front-matter
+
 [image-location]: https://github.com/typora-community-plugin/typora-plugin-image-location
+
+[image-viewer]: https://github.com/typora-community-plugin/typora-plugin-image-viewer
 
 [tag]: https://github.com/typora-community-plugin/typora-plugin-tag

@@ -1,5 +1,15 @@
 # Feature Changelog
 
+## What's Next
+
+- **New Plugin**
+  - [image-viewer][]: View all the images in the current Markdown.
+
+- **Plugin Update**
+  - [front-matter][]
+    - feat: can disable adding prop `created` or `updated`
+    - feat: can add property's names automatically
+
 ## v2.0.20
 
 - fix(core/locales/i18n): can not try to load next locale file if first locale file failed to load
@@ -47,6 +57,8 @@
 
 - **Plugin Update**
   - [codeblock-highlight-mapper][]: Re-implements plugin so that it will not modfiy markdown
+  - [collapsible-section][]: collapsible table
+  - [drakmode][]: status bar button
 
 ## v2.0.8
 
@@ -148,6 +160,10 @@
 
 [drakmode]: https://github.com/typora-community-plugin/typora-plugin-darkmode
 
+[front-matter]: https://github.com/typora-community-plugin/typora-plugin-front-matter
+
 [image-location]: https://github.com/typora-community-plugin/typora-plugin-image-location
+
+[image-viewer]: https://github.com/typora-community-plugin/typora-plugin-image-viewer
 
 [tag]: https://github.com/typora-community-plugin/typora-plugin-tag
