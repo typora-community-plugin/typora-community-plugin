@@ -1,4 +1,4 @@
-import type { ConfigStorage } from "src/fs/config-storage"
+import type { ConfigStorage } from "src/io/config-storage"
 import { debounce } from "src/utils/function/debounce"
 import { noop } from "src/utils/noop"
 import type { DisposeFunc } from "src/utils/types"

@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals'
-import type { ConfigStorage } from "src/fs/config-storage"
+import type { ConfigStorage } from "src/io/config-storage"
 import { Settings } from "./settings"
 
 

@@ -1,7 +1,7 @@
 import path from 'src/path'
 import { ClientCommand, File, JSBridge, reqnode } from 'typora'
 import type { App } from 'src/app'
-import fs from 'src/fs/filesystem'
+import fs from 'src/io/fs/filesystem'
 import { BUILT_IN } from 'src/ui/ribbon/workspace-ribbon'
 import { html } from 'src/utils/html'
 

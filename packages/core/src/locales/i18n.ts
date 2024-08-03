@@ -1,7 +1,7 @@
 import path from 'src/path'
 import { _options } from "typora"
-import fs from 'src/fs/filesystem'
-import { Logger } from 'src/logger'
+import fs from 'src/io/fs/filesystem'
+import { Logger } from 'src/io/logger'
 import type { ReadonlyDeep } from 'src/utils/types'
 
 

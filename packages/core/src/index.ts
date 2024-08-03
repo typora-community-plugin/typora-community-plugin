@@ -31,7 +31,7 @@ export { WorkspaceRibbon } from './ui/ribbon/workspace-ribbon'
 /** @deprecated */
 export { Sidebar } from './ui/sidebar/sidebar'
 
-export { default as fs } from 'src/fs/filesystem'
+export { default as fs } from 'src/io/fs/filesystem'
 export { default as path } from 'src/path'
 
 export { debounce } from './utils/function/debounce'

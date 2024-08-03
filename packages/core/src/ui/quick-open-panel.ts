@@ -4,7 +4,7 @@ import decorate from '@plylrnsdy/decorate.js'
 import type { App } from "src/app"
 import { Component } from "src/common/component"
 import { View } from "./view"
-import fs from 'src/fs/filesystem'
+import fs from 'src/io/fs/filesystem'
 
 
 export class QuickOpenPanel extends View {

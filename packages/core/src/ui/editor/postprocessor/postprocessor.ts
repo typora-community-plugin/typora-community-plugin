@@ -1,5 +1,5 @@
 import './postprocessor.scss'
-import { Logger } from 'src/logger'
+import { Logger } from 'src/io/logger'
 import { randomString } from "src/utils/random-string"
 
 

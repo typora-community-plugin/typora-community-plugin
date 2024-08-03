@@ -1,8 +1,8 @@
 import { _options } from 'typora'
 import type { App } from "src/app"
 import { Notice } from 'src/components/notice'
-import fs from 'src/fs/filesystem'
-import { Logger } from 'src/logger'
+import fs from 'src/io/fs/filesystem'
+import { Logger } from 'src/io/logger'
 import path from 'src/path'
 import { Plugin } from "./plugin"
 import type { PluginManifest, PluginPostion } from "./plugin-manifest"

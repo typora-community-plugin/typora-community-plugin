@@ -1,5 +1,5 @@
 import { bridge } from "typora"
-import { Shell } from "src/utils/shell"
+import { Shell } from "src/io/shell"
 import type { FileStats, FileAdapter } from "./filesystem"
 
 

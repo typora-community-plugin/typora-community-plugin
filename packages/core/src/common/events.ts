@@ -1,4 +1,4 @@
-import { Logger } from 'src/logger'
+import { Logger } from 'src/io/logger'
 import type { DisposeFunc } from "src/utils/types"
 
 

@@ -5,7 +5,7 @@ import decorate from "@plylrnsdy/decorate.js"
 import type { App } from "src/app"
 import { draggable } from 'src/components/draggable'
 import { Menu } from 'src/components/menu'
-import fs from 'src/fs/filesystem'
+import fs from 'src/io/fs/filesystem'
 import { View } from "src/ui/view"
 import { html } from 'src/utils/html'
 import { truncate } from 'src/utils/string/truncate'

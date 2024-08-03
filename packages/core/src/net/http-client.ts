@@ -1,7 +1,7 @@
 import { File, JSBridge, _options, reqnode } from 'typora'
-import fs from 'src/fs/filesystem'
+import fs from 'src/io/fs/filesystem'
 import path from 'src/path'
-import { Shell } from 'src/utils/shell'
+import { Shell } from 'src/io/shell'
 import { uniqueId } from "src/utils/uniqueId"
 
 

@@ -6,8 +6,8 @@ import * as Core from '.'
 import { Events } from 'src/common/events'
 import { GithubAPI } from 'src/net/github'
 import { HotkeyManager } from 'src/hotkey-manager'
-import fs from 'src/fs/filesystem'
-import { Vault } from "src/fs/vault"
+import fs from 'src/io/fs/filesystem'
+import { Vault } from "src/io/vault"
 import { CommandManager } from 'src/command/command-manager'
 import { I18n } from 'src/locales/i18n'
 import * as Locale from 'src/locales/lang.en.json'
