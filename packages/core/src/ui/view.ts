@@ -1,4 +1,4 @@
-import { Component } from "../component"
+import { Component } from "src/common/component"
 
 
 export abstract class View extends Component {

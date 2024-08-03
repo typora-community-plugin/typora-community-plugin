@@ -1,7 +1,7 @@
 import decorate from "@plylrnsdy/decorate.js"
 import { editor, File } from "typora"
 import type { App } from 'src/app'
-import { Component } from 'src/component'
+import { Component } from 'src/common/component'
 import path from 'src/path'
 import { View } from 'src/ui/view'
 import type { Workspace } from "src/ui/workspace"

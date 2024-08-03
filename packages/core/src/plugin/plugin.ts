@@ -1,6 +1,6 @@
 import type { App } from "src/app"
 import type { Command } from "src/command/command-manager"
-import { Component } from "src/component"
+import { Component } from "src/common/component"
 import path from 'src/path'
 import type { PluginManifest } from "./plugin-manifest"
 import { PluginSettings } from './plugin-settings'

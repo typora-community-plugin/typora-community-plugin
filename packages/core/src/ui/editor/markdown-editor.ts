@@ -1,7 +1,7 @@
 import decorate from "@plylrnsdy/decorate.js"
 import { editor } from "typora"
 import type { App } from "src/app"
-import { Component } from "src/component"
+import { Component } from "src/common/component"
 import { Events } from "src/events"
 import { MarkdownPostProcessor } from "./postprocessor/postprocessor-manager"
 import { MarkdownPreProcessor } from "./preprocessor/preprocessor"

@@ -2,7 +2,7 @@ import type { App } from './app'
 export type { App } from './app'
 export declare const app: App
 
-export { Component } from './component'
+export { Component } from './common/component'
 export { Events } from './events'
 
 export { Modal } from './components/modal'
