@@ -1,7 +1,7 @@
 import path from 'src/path'
 import { _options, editor, File, JSBridge } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
-import { Events } from 'src/events'
+import { Events } from 'src/common/events'
 import fs from 'src/fs/filesystem'
 import { Logger } from 'src/logger'
 import { _emitMissingEvents } from 'src/symbols'
