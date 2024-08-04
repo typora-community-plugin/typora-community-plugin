@@ -1,4 +1,5 @@
 import type { App } from "src/app"
+import { useEventBus } from "src/common/eventbus"
 import { type HotkeyScope, readableHotkey } from "src/hotkey-manager"
 import { Logger } from 'src/io/logger'
 import { debounce } from "src/utils/function/debounce"
@@ -25,7 +26,9 @@ export class CommandManager {
   private disposableMap: Record<string, DisposeFunc[]> = {}
 
   constructor(private app: App) {
-    app.on('load', () => {
+    const _app = useEventBus('app')
+
+    _app.on('load', () => {
       const map = app.vault.readConfigJson('hotkeys') as Record<string, Command>
       if (!map) return
 

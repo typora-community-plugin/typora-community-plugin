@@ -26,7 +26,7 @@ import { _emitMissingEvents } from 'src/symbols'
 import { GlobalSearch } from './ui/sidebar/search/global-search'
 
 
-type AppEvents = {
+export type AppEvents = {
   'load'(): void
 }
 
@@ -88,7 +88,7 @@ export class App extends Events<AppEvents> {
   }
 
   constructor() {
-    super()
+    super('app')
 
     // @ts-ignore
     window[Symbol.for(process.env.CORE_NS)] = {
@@ -124,7 +124,7 @@ export class App extends Events<AppEvents> {
 
     this.workspace = new Workspace(this)
 
-    this.hotkeyManager = new HotkeyManager(this)
+    this.hotkeyManager = new HotkeyManager()
 
     this.once('load', () => {
       this.vault[_emitMissingEvents]()

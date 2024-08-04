@@ -1,6 +1,7 @@
 import type { App } from "src/app"
 import { SettingTab } from "../setting-tab"
 import type { Command } from "src/command/command-manager"
+import { useEventBus } from "src/common/eventbus"
 import { html } from "src/utils/html"
 import { eventToHotkey, readableHotkey } from "src/hotkey-manager"
 import type { SettingItem } from "../setting-item"
@@ -17,8 +18,10 @@ export class HotkeySettingTab extends SettingTab {
   }
 
   onload() {
+    const _app = useEventBus('app')
+
     this.register(
-      this.app.on('load', () => {
+      _app.on('load', () => {
         this.containerEl.innerHTML = ''
         Object.values(this.app.commands.commandMap)
           .forEach(cmd => this.renderHotkey(cmd))

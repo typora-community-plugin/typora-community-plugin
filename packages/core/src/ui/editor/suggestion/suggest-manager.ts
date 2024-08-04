@@ -1,8 +1,8 @@
 import { editor } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
-import type { MarkdownEditor } from "../markdown-editor"
 import { EditorSuggest } from './suggest'
 import type { DisposeFunc } from "src/utils/types"
+import { useEventBus } from 'src/common/eventbus'
 
 
 export class EditorSuggestManager {
@@ -10,7 +10,9 @@ export class EditorSuggestManager {
   private _currentSuggest?: EditorSuggest<any>
   private _suggests: EditorSuggest<any>[] = []
 
-  constructor(mdEditor: MarkdownEditor) {
+  constructor() {
+    const mdEditor = useEventBus('markdown-editor')
+
     mdEditor.on('edit', this._onEdit.bind(this))
 
     decorate.beforeCall(editor.autoComplete, 'show', ([match]) => {

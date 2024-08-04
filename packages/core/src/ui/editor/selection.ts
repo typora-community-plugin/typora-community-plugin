@@ -1,12 +1,14 @@
 import { editor, type Rangy } from "typora"
-import type { MarkdownEditor } from "./markdown-editor"
+import { useEventBus } from "src/common/eventbus"
 
 
 export class EditorSelection {
 
   private selected: Rangy | null
 
-  constructor(editor: MarkdownEditor) {
+  constructor() {
+    const editor = useEventBus('markdown-editor')
+
     editor.on('edit', () => {
       this.selected = null
     })

@@ -1,6 +1,6 @@
-import type { App } from "src/app"
 import { capitalize } from 'src/utils/string/capitalize'
 import { platform } from "src/utils/platform"
+import { useEventBus } from "./common/eventbus"
 
 
 export type HotkeyScope = 'global' | 'editor'
@@ -26,8 +26,11 @@ export class HotkeyManager {
 
   editorKeybings: Record<string, EventListener[]> = {}
 
-  constructor(app: App) {
-    app.workspace.activeEditor.on('load', (editorEl) => {
+  constructor() {
+    const activeEditor = useEventBus('markdown-editor')
+
+    activeEditor.on('load', (editorEl) => {
+      // TODO move to MarkdownEditor
 
       document.body.addEventListener('keyup', this._onKeyup(this.keybings))
 

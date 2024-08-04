@@ -18,7 +18,7 @@ import { _emitMissingEvents } from 'src/symbols'
 import type { View } from './view'
 
 
-type WorkspaceEvents = {
+export type WorkspaceEvents = {
   'file:will-open'(path: string): void
   'file:open'(path: string): void
   'file:will-save'(path: string): void
@@ -41,7 +41,7 @@ export class Workspace extends Events<WorkspaceEvents> {
   }
 
   constructor(app: App) {
-    super()
+    super('workspace')
 
     this._registerEventHooks()
 

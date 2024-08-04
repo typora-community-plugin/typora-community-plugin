@@ -11,7 +11,7 @@ import { ConfigStorage } from './config-storage'
 const logger = new Logger('Vault')
 
 
-type VaultEvents = {
+export type VaultEvents = {
   /** be emitted when first mount or change folder */
   'mounted'(path: string): void
   /** be emitted when change folder */
@@ -34,7 +34,7 @@ export class Vault extends Events<VaultEvents> implements ConfigStorage {
     ?? path.dirname(_options.initFilePath ?? File.bundle.filePath)
 
   constructor() {
-    super()
+    super('vault')
 
     this._registerEventHooks()
   }

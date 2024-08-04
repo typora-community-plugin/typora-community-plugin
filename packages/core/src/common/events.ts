@@ -7,9 +7,26 @@ const logger = new Logger('Events')
 
 type EventListener = (...args: any[]) => any
 
-export class Events<E extends Record<string, EventListener>> {
+type EventDefination = Record<string, EventListener>
 
-  protected _listeners = {} as Record<keyof E, EventListener[]>
+type EventMap = Record<string, EventListener[]>
+
+const scopedListeners: Record<string, EventMap> = {}
+
+export class Events<E extends EventDefination> {
+
+  protected _listeners: Record<keyof E, EventListener[]> = {} as any
+
+  constructor(scope?: string) {
+    if (scope) {
+      if (scopedListeners[scope]) {
+        this._listeners = scopedListeners[scope] as any
+      }
+      else {
+        scopedListeners[scope] = this._listeners
+      }
+    }
+  }
 
   prependListener<K extends keyof E>(event: K, listener: E[K]): DisposeFunc {
     let listeners = this._listeners[event]

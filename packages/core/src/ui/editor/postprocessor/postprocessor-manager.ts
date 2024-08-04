@@ -1,9 +1,9 @@
 import { editor } from "typora"
-import type { App } from "src/app"
 import { PostProcessor, type RawProcessor } from './postprocessor'
 import { HtmlPostProcessor } from './html-postprocessor'
 import { CodeblockPostProcessor } from './codeblock-postprocessor'
 import type { DisposeFunc } from "src/utils/types"
+import { useEventBus } from "src/common/eventbus"
 
 
 export type TPostProcessor = RawProcessor | PostProcessor | HtmlPostProcessor | CodeblockPostProcessor
@@ -13,11 +13,14 @@ export class MarkdownPostProcessor {
   private _processors: HtmlPostProcessor[] = []
   private _codePreviewProcessors: Record<string, CodeblockPostProcessor> = {}
 
-  constructor(private app: App) {
+  constructor() {
     setTimeout(() => this._registerProcessors())
   }
 
   private _registerProcessors() {
+    const workspace = useEventBus('workspace')
+    const activeEditor = useEventBus('markdown-editor')
+
     const listener = () => this._process(this._processors)
 
     const codeblockListener = () =>
@@ -26,9 +29,9 @@ export class MarkdownPostProcessor {
           'type' in p && p.type === 'codeblock'
         ))
 
-    this.app.workspace.on('file:open', listener)
-    this.app.workspace.activeEditor.on('edit', listener)
-    this.app.workspace.activeEditor.on('scroll', codeblockListener)
+    workspace.on('file:open', listener)
+    activeEditor.on('edit', listener)
+    activeEditor.on('scroll', codeblockListener)
   }
 
   private _process(processors: HtmlPostProcessor[]) {

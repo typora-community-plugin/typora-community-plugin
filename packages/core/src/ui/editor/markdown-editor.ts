@@ -12,7 +12,7 @@ import type { FileURL } from "src/utils/types"
 import { until } from "src/utils/until"
 
 
-type MarkdownEditorEvents = {
+export type MarkdownEditorEvents = {
   'load'(editorEl: HTMLElement): void
   'edit'(): void
   'scroll'(): void
@@ -22,18 +22,16 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
 
   preProcessor = new MarkdownPreProcessor()
 
-  postProcessor: MarkdownPostProcessor
+  postProcessor = new MarkdownPostProcessor()
 
-  selection = new EditorSelection(this)
+  selection = new EditorSelection()
 
-  suggestion = new EditorSuggestManager(this)
+  suggestion = new EditorSuggestManager()
 
   private _openLinkInCurrentWin: OpenLinkInCurrentWin
 
-  constructor(private app: App) {
-    super()
-
-    this.postProcessor = new MarkdownPostProcessor(app)
+  constructor(app: App) {
+    super('markdown-editor')
 
     until(() => editor.writingArea).then(el => {
       this.emit('load', el)
