@@ -6,6 +6,9 @@
   - [image-viewer][]: View all the images in the current Markdown.
 
 - **Plugin Update**
+  - [drakmode][]
+    - fix: revert color of multi-media
+    - fix: not compatible with plugin-image-viewer
   - [front-matter][]
     - feat: can disable adding prop `created` or `updated`
     - feat: can add property's names automatically

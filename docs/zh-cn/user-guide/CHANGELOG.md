@@ -6,6 +6,9 @@
   - [image-viewer][]: 查看当前文档所有图片。
 
 - **插件更新**
+  - [drakmode][]
+    - fix: 反转了多媒体颜色的问题
+    - fix: 不兼容 [image-viewer][] 的问题
   - [front-matter][]
     - feat: 禁用自动插入 `created` 或 `updated`
     - feat: 为新笔记自动插入指定字段名
