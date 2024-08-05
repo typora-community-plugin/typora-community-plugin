@@ -3,8 +3,8 @@ import decorate from '@plylrnsdy/decorate.js'
 import { File, editor } from 'typora'
 import { noticeContainer } from 'src/components/notice'
 import { Events } from 'src/common/events'
-import { MarkdownEditor } from './editor/markdown-editor'
-import { WorkspaceRibbon } from './ribbon/workspace-ribbon'
+import type { MarkdownEditor } from './editor/markdown-editor'
+import type { WorkspaceRibbon } from './ribbon/workspace-ribbon'
 import { Sidebar } from './sidebar/sidebar'
 import { GlobalSearchView } from './sidebar/search/global-search-view'
 import { FileExplorer } from './sidebar/file-explorer'
@@ -62,7 +62,7 @@ export class Workspace extends Events<WorkspaceEvents> {
     this._children.push(new CommandModal())
     this._children.push(new QuickOpenPanel())
 
-    this.activeEditor = new MarkdownEditor()
+    this.activeEditor = useService('markdown-editor')
 
     setTimeout(() => this._children.forEach(child => child.load()))
   }
