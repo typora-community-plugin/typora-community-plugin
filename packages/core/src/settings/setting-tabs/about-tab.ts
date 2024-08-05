@@ -2,7 +2,6 @@ import path from 'src/path'
 import { coreDir, coreVersion } from 'src/common/constants'
 import { Notice } from 'src/components/notice'
 import fs from 'src/io/fs/filesystem'
-import { Logger } from 'src/io/logger'
 import { SettingTab } from "src/settings/setting-tab"
 import * as versions from 'src/utils/versions'
 import { HttpClient } from 'src/net/http-client'

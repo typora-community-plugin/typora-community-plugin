@@ -3,7 +3,6 @@ import { _options } from "typora"
 import { coreDir } from 'src/common/constants'
 import { registerService, useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
-import { Logger } from 'src/io/logger'
 import type { ReadonlyDeep } from 'src/utils/types'
 import { memorize } from 'src/utils/function/memorize'
 import * as Locale from './lang.en.json'
@@ -35,16 +34,12 @@ registerService('i18n', memorize(() => {
     userLang: useService('settings').get('displayLang'),
   })
 
-  I18n.setUserLocale(i18n.locale)
+  DEFALUT_OPTIONS.userLang = i18n.locale
 
   return i18n
 }))
 
 export class I18n<T> {
-
-  static setUserLocale(locale: string) {
-    DEFALUT_OPTIONS.userLang = locale
-  }
 
   locale: string
 

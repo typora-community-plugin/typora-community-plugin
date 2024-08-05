@@ -2,7 +2,6 @@ import path from 'src/path'
 import { useService } from 'src/common/service'
 import { Notice } from 'src/components/notice'
 import fs from 'src/io/fs/filesystem'
-import { Logger } from 'src/io/logger'
 import type { PluginManifest, PluginPostion } from "./plugin-manifest"
 
 
