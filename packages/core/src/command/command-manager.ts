@@ -1,12 +1,12 @@
-import type { App } from "src/app"
 import { useEventBus } from "src/common/eventbus"
+import { registerService, useService } from "src/common/service"
 import { type HotkeyScope, readableHotkey } from "src/hotkey-manager"
-import { Logger } from 'src/io/logger'
 import { debounce } from "src/utils/function/debounce"
+import { memorize } from "src/utils/function/memorize"
 import type { DisposeFunc } from "src/utils/types"
 
 
-const logger = new Logger('CommandManager')
+const logger = useService('logger', ['CommandManager'])
 
 
 export type Command = {
@@ -17,6 +17,9 @@ export type Command = {
   callback: () => void
 }
 
+
+registerService('command-manager', memorize(() => new CommandManager()))
+
 export class CommandManager {
 
   private defaultCommandMap: Record<string, Command> = {}
@@ -25,11 +28,13 @@ export class CommandManager {
 
   private disposableMap: Record<string, DisposeFunc[]> = {}
 
-  constructor(private app: App) {
-    const _app = useEventBus('app')
-
-    _app.on('load', () => {
-      const map = app.vault.readConfigJson('hotkeys') as Record<string, Command>
+  constructor(
+    app = useEventBus('app'),
+    private vault = useService('config-storage'),
+    private hotkeyManager = useService('hotkey-manager'),
+  ) {
+    app.on('load', () => {
+      const map = vault.readConfigJson('hotkeys') as Record<string, Command>
       if (!map) return
 
       Object.keys(map).forEach(id => {
@@ -66,8 +71,8 @@ export class CommandManager {
     if (command.hotkey) {
       disposes.push(
         command.scope === 'global'
-          ? this.app.hotkeyManager.addHotkey(command.hotkey, command.callback)
-          : this.app.hotkeyManager.addEditorHotkey(command.hotkey, command.callback))
+          ? this.hotkeyManager.addHotkey(command.hotkey, command.callback)
+          : this.hotkeyManager.addEditorHotkey(command.hotkey, command.callback))
     }
   }
 
@@ -105,6 +110,6 @@ export class CommandManager {
   }
 
   private saveConfig = debounce(() => {
-    this.app.vault.writeConfigJson('hotkeys', this.getConfig())
+    this.vault.writeConfigJson('hotkeys', this.getConfig())
   }, 1e3)
 }

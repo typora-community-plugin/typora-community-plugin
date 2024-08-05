@@ -1,8 +1,8 @@
-import { Logger } from 'src/io/logger'
+import { useService } from 'src/common/service'
 import { PostProcessor } from "./postprocessor"
 
 
-const logger = new Logger('HtmlPostProcessor')
+const logger = useService('logger', ['HtmlPostProcessor'])
 
 
 export class HtmlPostProcessor extends PostProcessor {

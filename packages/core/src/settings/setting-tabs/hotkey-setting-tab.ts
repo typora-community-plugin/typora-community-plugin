@@ -1,4 +1,4 @@
-import type { App } from "src/app"
+import { useService } from "src/common/service"
 import { SettingTab } from "../setting-tab"
 import type { Command } from "src/command/command-manager"
 import { useEventBus } from "src/common/eventbus"
@@ -10,20 +10,22 @@ import type { SettingItem } from "../setting-item"
 export class HotkeySettingTab extends SettingTab {
 
   get name() {
-    return this.app.i18n.t.settingTabs.hotkey.name
+    return this.i18n.t.settingTabs.hotkey.name
   }
 
-  constructor(private app: App) {
+  constructor(
+    private app = useEventBus('app'),
+    private i18n = useService('i18n'),
+    private commands = useService('command-manager'),
+  ) {
     super()
   }
 
   onload() {
-    const _app = useEventBus('app')
-
     this.register(
-      _app.on('load', () => {
+      this.app.on('load', () => {
         this.containerEl.innerHTML = ''
-        Object.values(this.app.commands.commandMap)
+        Object.values(this.commands.commandMap)
           .forEach(cmd => this.renderHotkey(cmd))
       }))
   }
@@ -45,7 +47,7 @@ export class HotkeySettingTab extends SettingTab {
     hotkey = hotkey.split('+').join(' + ')
 
     setting.addRemovableTag(hotkey, () => {
-      this.app.commands.setCommandHotkey(id, null)
+      this.commands.setCommandHotkey(id, null)
       this.addCreateHotkeyButton(setting, id)
     })
   }
@@ -56,7 +58,7 @@ export class HotkeySettingTab extends SettingTab {
       btn.onclick = () => {
         btn.remove()
         setting.addButton(el => {
-          el.innerText = this.app.i18n.t.settingTabs.hotkey.waitHotkey
+          el.innerText = this.i18n.t.settingTabs.hotkey.waitHotkey
           el.classList.add('primary')
           el.onkeyup = event => {
             el.onkeyup = null
@@ -64,7 +66,7 @@ export class HotkeySettingTab extends SettingTab {
             setting.controls.innerHTML = ''
             const hotkey = readableHotkey(eventToHotkey(event))
             this.addHotkey(setting, id, hotkey)
-            this.app.commands.setCommandHotkey(id, hotkey)
+            this.commands.setCommandHotkey(id, hotkey)
           }
           setTimeout(() => el.focus())
         })

@@ -2,7 +2,8 @@ import './tabs-view.scss'
 import path from 'src/path'
 import { editor } from "typora"
 import decorate from "@plylrnsdy/decorate.js"
-import type { App } from "src/app"
+import { useService } from 'src/common/service'
+import { useEventBus } from 'src/common/eventbus'
 import { draggable } from 'src/components/draggable'
 import { Menu } from 'src/components/menu'
 import fs from 'src/io/fs/filesystem'
@@ -19,16 +20,21 @@ export class TabsView extends View {
 
   private tabPos: Map<string, number> = new Map()
 
-  constructor(private app: App) {
+  constructor(
+    private settings = useService('settings'),
+    private i18n = useService('i18n'),
+    private vault = useService('vault'),
+    private workspace = useEventBus('workspace'),
+  ) {
     super()
 
-    this.app.settings.onChange('showFileTabs', (_, isEnabled) => {
+    settings.onChange('showFileTabs', (_, isEnabled) => {
       isEnabled ? this.load() : this.unload()
     })
   }
 
   load() {
-    if (!this.app.settings.get('showFileTabs')) {
+    if (!this.settings.get('showFileTabs')) {
       return
     }
     super.load()
@@ -44,25 +50,28 @@ export class TabsView extends View {
     document.body.classList.add('typ-tabs--enable')
 
     this.register(
-      this.app.workspace.on('file:will-open', () => {
-        this.tabPos.set(this.app.workspace.activeFile, editorContainer.scrollTop)
+      this.workspace.on('file:will-open', () => {
+        this.tabPos.set(
+          useService('workspace').activeFile,
+          editorContainer.scrollTop
+        )
       }))
 
     this.register(
-      this.app.workspace.on('file:open', (file) => {
+      this.workspace.on('file:open', (file) => {
         this.addTab(file)
         if (!this.tabPos.get(file)) return
         setTimeout(() => editorContainer.scrollTop = this.tabPos.get(file), 100)
       }))
 
     this.register(
-      this.app.vault.on('file:delete', this.removeTab.bind(this)))
+      this.vault.on('file:delete', this.removeTab.bind(this)))
 
     this.register(
-      this.app.vault.on('file:rename', this.renameTab.bind(this)))
+      this.vault.on('file:rename', this.renameTab.bind(this)))
 
     this.register(
-      this.app.vault.on('directory:rename', (oldDirPath, newDirPath) => {
+      this.vault.on('directory:rename', (oldDirPath, newDirPath) => {
         Array.from(this.tabs.keys())
           .filter(path => path.startsWith(oldDirPath))
           .forEach(path => {
@@ -79,9 +88,9 @@ export class TabsView extends View {
       })
     )
 
-    this.hideTabExtension(this.app.settings.get('hideExtensionInFileTab'))
+    this.hideTabExtension(this.settings.get('hideExtensionInFileTab'))
     this.register(
-      this.app.settings.onChange('hideExtensionInFileTab', (_, isHide) => {
+      this.settings.onChange('hideExtensionInFileTab', (_, isHide) => {
         this.hideTabExtension(isHide)
       })
     )
@@ -134,7 +143,7 @@ export class TabsView extends View {
   }
 
   private _setupContextMenu() {
-    const { t } = this.app.i18n
+    const { t } = this.i18n
     const menu = new Menu()
 
     this.registerDomEvent(this.containerEl, 'contextmenu', (event: MouseEvent) => {
@@ -179,7 +188,7 @@ export class TabsView extends View {
       return
     }
 
-    const longPath = path.relative(this.app.vault.path, filePath)
+    const longPath = path.relative(this.vault.path, filePath)
       .replace(/(\.textbundle)[\\/]text\.(?:md|markdown)$/, '$1')
     const ext = path.extname(filePath)
     const shortName = truncate(path.basename(longPath, ext), MAX_LENGHT)

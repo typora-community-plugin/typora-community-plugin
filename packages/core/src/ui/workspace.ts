@@ -1,7 +1,6 @@
 import './title-bar.scss'
 import decorate from '@plylrnsdy/decorate.js'
 import { File, editor } from 'typora'
-import type { App } from 'src/app'
 import { noticeContainer } from 'src/components/notice'
 import { Events } from 'src/common/events'
 import { MarkdownEditor } from './editor/markdown-editor'
@@ -16,6 +15,8 @@ import { CommandModal } from 'src/command/command-modal'
 import { QuickOpenPanel } from './quick-open-panel'
 import { _emitMissingEvents } from 'src/symbols'
 import type { View } from './view'
+import { registerService, useService } from 'src/common/service'
+import { memorize } from 'src/utils/function/memorize'
 
 
 export type WorkspaceEvents = {
@@ -23,6 +24,10 @@ export type WorkspaceEvents = {
   'file:open'(path: string): void
   'file:will-save'(path: string): void
 }
+
+
+registerService('workspace', memorize(() => new Workspace()))
+registerService('sidebar', memorize(() => useService('workspace').sidebar))
 
 export class Workspace extends Events<WorkspaceEvents> {
 
@@ -40,24 +45,24 @@ export class Workspace extends Events<WorkspaceEvents> {
     return File.bundle?.filePath
   }
 
-  constructor(app: App) {
+  constructor() {
     super('workspace')
 
     this._registerEventHooks()
 
     this._children.push(noticeContainer)
-    this._children.push(new SettingsModal(app))
-    this._children.push(this.ribbon = new WorkspaceRibbon(app))
-    this._children.push(this.sidebar = new Sidebar(app, [
-      new GlobalSearchView(app, this),
-      new FileExplorer(app, this),
-      new Outline(app, this),
+    this._children.push(new SettingsModal())
+    this._children.push(this.ribbon = useService('ribbon'))
+    this._children.push(this.sidebar = new Sidebar(() => [
+      new GlobalSearchView(),
+      new FileExplorer(),
+      new Outline(),
     ]))
-    this._children.push(new TabsView(app))
-    this._children.push(new CommandModal(app))
-    this._children.push(new QuickOpenPanel(app))
+    this._children.push(new TabsView())
+    this._children.push(new CommandModal())
+    this._children.push(new QuickOpenPanel())
 
-    this.activeEditor = new MarkdownEditor(app)
+    this.activeEditor = new MarkdownEditor()
 
     setTimeout(() => this._children.forEach(child => child.load()))
   }

@@ -1,14 +1,16 @@
-import type { App } from "src/app"
 import { GlobalSearchView } from "./global-search-view"
+import { useService } from "src/common/service"
 
 
 export class GlobalSearch {
 
-  constructor(private app: App) {
+  constructor(
+    private workspace = useService('workspace'),
+  ) {
   }
 
   openGlobalSearch(query: string) {
-    const { workspace } = this.app
+    const { workspace } = this
     workspace.ribbon.clickButton(GlobalSearchView.id)
 
     const view = workspace.getViewByType(GlobalSearchView)
@@ -17,7 +19,7 @@ export class GlobalSearch {
   }
 
   getGlobalSearchQuery() {
-    const view = this.app.workspace.getViewByType(GlobalSearchView)
+    const view = this.workspace.getViewByType(GlobalSearchView)
     return view.getQuery()
   }
 }

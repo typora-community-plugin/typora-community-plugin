@@ -1,12 +1,13 @@
 import './workspace-ribbon.scss'
 import decorate from '@plylrnsdy/decorate.js'
 import { editor, File } from 'typora'
-import type { App } from 'src/app'
+import { registerService, useService } from 'src/common/service'
 import { draggable } from 'src/components/draggable'
 import { Menu } from 'src/components/menu'
 import { html } from 'src/utils/html'
 import { View } from 'src/ui/view'
 import type { DisposeFunc } from 'src/utils/types'
+import { memorize } from 'src/utils/function/memorize'
 
 
 export type RibbonSettings = {
@@ -38,6 +39,9 @@ interface RibbonItemButton {
   order?: number
 }
 
+
+registerService('ribbon', memorize(() => new WorkspaceRibbon()))
+
 /**
  * @example
  *
@@ -50,14 +54,18 @@ export class WorkspaceRibbon extends View {
 
   private buttons = [] as RibbonItemButton[]
 
-  constructor(private app: App) {
+  constructor(
+    private settings = useService('settings'),
+    private i18n = useService('i18n'),
+    private commands = useService('command-manager'),
+  ) {
     super()
 
-    app.settings.setDefault(DEFAULT_SETTINGS)
+    settings.setDefault(DEFAULT_SETTINGS)
 
     this._addDefaultButton()
 
-    this.app.settings.onChange('showRibbon', (_, isEnabled) => {
+    settings.onChange('showRibbon', (_, isEnabled) => {
       isEnabled ? this.load() : this.unload()
     })
   }
@@ -71,7 +79,7 @@ export class WorkspaceRibbon extends View {
   }
 
   load() {
-    if (!this.app.settings.get('showRibbon')) {
+    if (!this.settings.get('showRibbon')) {
       return
     }
     super.load()
@@ -113,7 +121,7 @@ export class WorkspaceRibbon extends View {
           const btn = this.buttons.find(btn => btn.id === icon.dataset.id)
           btn.order = i
         })
-      this.app.settings.set('ribbonState', this.getState())
+      this.settings.set('ribbonState', this.getState())
     })
 
     return container.get(0)
@@ -144,7 +152,7 @@ export class WorkspaceRibbon extends View {
   }
 
   private _addDefaultButton() {
-    const { t } = this.app.i18n
+    const { t } = this.i18n
 
     const menu = new Menu()
       .addItem(item => {
@@ -157,7 +165,7 @@ export class WorkspaceRibbon extends View {
         item
           .setKey('plugin-settings')
           .setTitle(t.ribbon.settingOfPlugin)
-          .onClick(() => this.app.commands.run('settings:open'))
+          .onClick(() => this.commands.run('settings:open'))
       })
 
     this.addChild(menu)
@@ -166,7 +174,7 @@ export class WorkspaceRibbon extends View {
       [BUILT_IN]: true,
       group: 'bottom',
       id: 'core.settings',
-      title: this.app.i18n.t.ribbon.settings,
+      title: this.i18n.t.ribbon.settings,
       icon: html`<i class="fa fa-cog"></i>`,
       onclick(event) {
         menu.showAtMouseEvent(event)
@@ -179,7 +187,7 @@ export class WorkspaceRibbon extends View {
       throw Error('[WorkspaceRibbon] Button\'s id duplicated!')
     }
 
-    const state = this.app.settings.get('ribbonState')[button.id]
+    const state = this.settings.get('ribbonState')[button.id]
     if (state) {
       button.visible = state.visible
       button.order = state.order
@@ -222,7 +230,7 @@ export class WorkspaceRibbon extends View {
       ? this.showButton(button)
       : this.hideButton(button)
 
-    this.app.settings.set('ribbonState', this.getState())
+    this.settings.set('ribbonState', this.getState())
   }
 
   showButton(button: RibbonItemButton) {

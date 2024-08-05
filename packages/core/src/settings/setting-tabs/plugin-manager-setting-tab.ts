@@ -1,5 +1,5 @@
 import './plugin-manager-setting-tab.scss'
-import type { App } from "src/app"
+import { useService } from 'src/common/service'
 import { Notice } from 'src/components/notice'
 import type { PluginManifest } from "src/plugin/plugin-manifest"
 import { SettingTab } from "../setting-tab"
@@ -11,15 +11,18 @@ import * as versions from "src/utils/versions"
 export class PluginsManagerSettingTab extends SettingTab {
 
   get name() {
-    return this.app.i18n.t.settingTabs.plugins.name
+    return this.i18n.t.settingTabs.plugins.name
   }
 
-  constructor(private app: App) {
+  constructor(
+    private i18n = useService('i18n'),
+    private plugins = useService('plugin-manager'),
+  ) {
     super()
   }
 
   show() {
-    const t = this.app.i18n.t.settingTabs.plugins
+    const t = this.i18n.t.settingTabs.plugins
 
     this.addSetting(setting => {
       setting.addName(t.searchPlugin)
@@ -31,7 +34,7 @@ export class PluginsManagerSettingTab extends SettingTab {
     })
 
     this.addSetting(setting => {
-      setting.addTitle(format(t.titleInstalled, [Object.keys(this.app.plugins.manifests).length]))
+      setting.addTitle(format(t.titleInstalled, [Object.keys(this.plugins.manifests).length]))
 
       setting.addButton(button => {
         button.title = t.checkForUpdate
@@ -54,9 +57,9 @@ export class PluginsManagerSettingTab extends SettingTab {
   }
 
   private async checkForUpdate() {
-    const { manifests, marketplace } = this.app.plugins
+    const { manifests, marketplace } = this.plugins
     const ids = Object.keys(manifests)
-    const text = this.app.i18n.t.settingTabs.plugins.checkingForUpdate
+    const text = this.i18n.t.settingTabs.plugins.checkingForUpdate
     const notice = new Notice(format(text, [0, ids.length]), 0)
 
     if (!marketplace.isLoaded) {
@@ -86,7 +89,7 @@ export class PluginsManagerSettingTab extends SettingTab {
   private renderPluginList(query: string = '') {
     query = query.toLowerCase()
     this.cleanPluginList()
-    Object.values(this.app.plugins.manifests)
+    Object.values(this.plugins.manifests)
       .filter(p => !query || (p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query)))
       .sort((a, b) => a.name.localeCompare(b.name))
       .forEach(p => this.renderPlugin(p))
@@ -98,9 +101,9 @@ export class PluginsManagerSettingTab extends SettingTab {
   }
 
   private renderPlugin(manifest: PluginManifest) {
-    const { plugins } = this.app
+    const { plugins } = this
     const { marketplace } = plugins
-    const t = this.app.i18n.t.settingTabs.plugins
+    const t = this.i18n.t.settingTabs.plugins
 
     this.addSetting(setting => {
       const info = marketplace.getPlugin(manifest.id)

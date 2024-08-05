@@ -1,4 +1,4 @@
-import type { App } from "src/app"
+import { useService } from "src/common/service"
 import { SettingTab } from "../setting-tab"
 
 
@@ -23,18 +23,21 @@ const DEFAULT_SETTINGS: AppearanceSettings = {
 export class AppearanceSettingTab extends SettingTab {
 
   get name() {
-    return this.app.i18n.t.settingTabs.appearance.name
+    return this.i18n.t.settingTabs.appearance.name
   }
 
-  constructor(private app: App) {
+  constructor(
+    private settings = useService('settings'),
+    private i18n = useService('i18n'),
+  ) {
     super()
 
-    app.settings.setDefault(DEFAULT_SETTINGS)
+    settings.setDefault(DEFAULT_SETTINGS)
   }
 
   onload() {
-    const { settings } = this.app
-    const t = this.app.i18n.t.settingTabs.appearance
+    const { settings } = this
+    const t = this.i18n.t.settingTabs.appearance
 
     this.addSettingTitle(t.fileExplorer)
     this.addSetting(setting => {

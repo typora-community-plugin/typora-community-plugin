@@ -1,8 +1,8 @@
 import './command-modal.scss'
-import type { App } from 'src/app'
 import { Modal } from "../components/modal"
 import type { Command } from './command-manager'
 import { html } from '../utils/html'
+import { useService } from 'src/common/service'
 
 
 export class CommandModal extends Modal {
@@ -14,22 +14,26 @@ export class CommandModal extends Modal {
   private filteredCommands: Command[]
   private selected = -1
 
-  constructor(private app: App) {
+  constructor(
+    private i18n = useService('i18n'),
+    private commandsMgr = useService('command-manager'),
+    private markdownEditor = useService('markdown-editor'),
+  ) {
     super()
   }
 
   onload() {
-    const t = this.app.i18n.t.commandModal
+    const t = this.i18n.t.commandModal
 
     this.register(
-      this.app.commands.register({
+      this.commandsMgr.register({
         id: 'command:open',
         title: t.commandOpen,
         scope: 'global',
         hotkey: 'F1',
         callback: () => {
           this.updateCommands(
-            Object.values(this.app.commands.commandMap)
+            Object.values(this.commandsMgr.commandMap)
           )
           this.show()
         }
@@ -95,12 +99,12 @@ export class CommandModal extends Modal {
 
   private onSelect = (id: string) => {
     this.hide()
-    this.app.commands.run(id)
+    this.commandsMgr.run(id)
   }
 
   show() {
     super.show()
-    this.app.workspace.activeEditor.selection.save()
+    this.markdownEditor.selection.save()
     this.input.focus()
   }
 
@@ -108,7 +112,7 @@ export class CommandModal extends Modal {
     super.hide()
     this.input.value = ""
     this.selected = -1
-    this.app.workspace.activeEditor.selection.restore()
+    this.markdownEditor.selection.restore()
   }
 
   private updateCommands(commands: Command[]) {

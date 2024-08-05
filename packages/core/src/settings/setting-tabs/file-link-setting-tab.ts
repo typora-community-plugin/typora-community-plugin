@@ -1,4 +1,4 @@
-import type { App } from "src/app"
+import { useService } from "src/common/service"
 import { SettingTab } from "../setting-tab"
 import { debounce } from "src/utils/function/debounce"
 
@@ -20,18 +20,21 @@ const DEFAULT_SETTINGS: FileLinkSettings = {
 export class FileLinkSettingTab extends SettingTab {
 
   get name() {
-    return this.app.i18n.t.settingTabs.fileLink.name
+    return this.i18n.t.settingTabs.fileLink.name
   }
 
-  constructor(private app: App) {
+  constructor(
+    private settings = useService('settings'),
+    private i18n = useService('i18n'),
+  ) {
     super()
 
-    app.settings.setDefault(DEFAULT_SETTINGS)
+    settings.setDefault(DEFAULT_SETTINGS)
   }
 
   onload() {
-    const { settings } = this.app
-    const t = this.app.i18n.t.settingTabs.fileLink
+    const { settings } = this
+    const t = this.i18n.t.settingTabs.fileLink
 
     this.addSetting(setting => {
       setting.addName(t.openLinkInCurrentWin)

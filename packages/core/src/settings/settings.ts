@@ -1,5 +1,7 @@
+import { registerService, useService } from "src/common/service"
 import type { ConfigStorage } from "src/io/config-storage"
 import { debounce } from "src/utils/function/debounce"
+import { memorize } from "src/utils/function/memorize"
 import { noop } from "src/utils/noop"
 import type { DisposeFunc } from "src/utils/types"
 
@@ -27,6 +29,14 @@ type SettingsListeners<T> = Record<
   Array<(key: keyof T, value: T[keyof T]) => void>
 >
 
+
+registerService('settings', memorize(() =>
+  new Settings({
+    filename: 'core',
+    version: 1,
+  })
+))
+
 export class Settings<T extends Record<string, any>> {
 
   filename: string
@@ -43,7 +53,10 @@ export class Settings<T extends Record<string, any>> {
   private _listeners = {} as SettingsListeners<T>
   private _migations: SettingMigrations | null
 
-  constructor(private vault: ConfigStorage, options: SettingsOptions) {
+  constructor(
+    options: SettingsOptions,
+    private vault: ConfigStorage = useService('config-storage')
+  ) {
     this.filename = options.filename
     this.version = options.version
     this._migations = options.migations

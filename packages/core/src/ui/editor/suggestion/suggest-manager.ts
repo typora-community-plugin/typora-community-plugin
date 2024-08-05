@@ -10,10 +10,11 @@ export class EditorSuggestManager {
   private _currentSuggest?: EditorSuggest<any>
   private _suggests: EditorSuggest<any>[] = []
 
-  constructor() {
-    const mdEditor = useEventBus('markdown-editor')
+  constructor(
+    markdownEditor = useEventBus('markdown-editor')
+  ) {
 
-    mdEditor.on('edit', this._onEdit.bind(this))
+    markdownEditor.on('edit', this._onEdit.bind(this))
 
     decorate.beforeCall(editor.autoComplete, 'show', ([match]) => {
       if (editor.autoComplete.state.all !== match)

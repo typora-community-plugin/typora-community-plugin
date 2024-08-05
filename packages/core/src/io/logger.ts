@@ -1,3 +1,5 @@
+import { registerService } from "src/common/service"
+import { memorize } from "src/utils/function/memorize"
 import { identity } from "src/utils/identity"
 
 
@@ -33,6 +35,9 @@ function badages(...messages: [string, string, string][]) {
       return acc
     }, [''])
 }
+
+
+registerService('logger', memorize(([scope]) => new Logger(scope)))
 
 export class Logger {
 

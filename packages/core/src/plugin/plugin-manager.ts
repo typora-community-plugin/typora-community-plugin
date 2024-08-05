@@ -1,5 +1,4 @@
 import { _options } from 'typora'
-import type { App } from "src/app"
 import { Notice } from 'src/components/notice'
 import fs from 'src/io/fs/filesystem'
 import { Logger } from 'src/io/logger'
@@ -10,10 +9,14 @@ import { PluginMarketplace } from './plugin-marketplace'
 import { debounce } from "src/utils/function/debounce"
 import { format } from 'src/utils/string/format'
 import * as versions from 'src/utils/versions'
+import { registerService, useService } from 'src/common/service'
+import { memorize } from 'src/utils/function/memorize'
+import { coreVersion } from 'src/common/constants'
 
 
-const logger = new Logger('PluginManager')
+const logger = useService('logger', ['PluginManager'])
 
+registerService('plugin-manager', memorize(() => new PluginManager()))
 
 export class PluginManager {
 
@@ -28,24 +31,30 @@ export class PluginManager {
 
   marketplace: PluginMarketplace
 
-  constructor(private app: App) {
-    this.marketplace = new PluginMarketplace(app)
+  constructor(
+    private vault = useService('vault'),
+    private i18n = useService('i18n'),
+    private env = useService('env'),
+  ) {
+    setTimeout(() => {
+      this.marketplace = new PluginMarketplace()
+    })
   }
 
   get pluginsDataDir() {
-    return path.join(this.app.vault.configDir, 'data')
+    return path.join(this.vault.configDir, 'data')
   }
 
   async loadFromVault() {
-    const { PLUGIN_GLOBAL_DIR } = this.app.env
+    const { PLUGIN_GLOBAL_DIR } = this.env
 
     this.globalPluginsDir = PLUGIN_GLOBAL_DIR
-      ? PLUGIN_GLOBAL_DIR.replace(/\{VAULT\}/g, this.app.vault.path)
+      ? PLUGIN_GLOBAL_DIR.replace(/\{VAULT\}/g, this.vault.path)
       : path.join(this.globalRootDir, 'plugins')
 
-    this.vaultPluginsDir = path.join(this.app.vault.configDir, 'plugins')
+    this.vaultPluginsDir = path.join(this.vault.configDir, 'plugins')
 
-    this.enabledPlugins = this.app.vault.readConfigJson('plugins')
+    this.enabledPlugins = this.vault.readConfigJson('plugins')
 
     await this.loadManifests()
     await this.loadPlugins()
@@ -116,7 +125,7 @@ export class PluginManager {
       const module = await import('file://' + path.join(manifest.dir!, 'main.js') + `?v=${manifest.version}`)
 
       const PluginImplement = module.default
-      this.instances[id] = new PluginImplement(this.app, manifest)
+      this.instances[id] = new PluginImplement(useService('app'), manifest)
 
       const cssPath = path.join(manifest.dir!, 'style.css')
       await fs.exists(cssPath)
@@ -136,10 +145,10 @@ export class PluginManager {
   }
 
   async enablePlugin(id: string) {
-    if (versions.compare(this.app.coreVersion, this.manifests[id].minCoreVersion) < 0) {
+    if (versions.compare(coreVersion(), this.manifests[id].minCoreVersion) < 0) {
       this.disablePlugin(id)
 
-      const msg = format(this.app.i18n.t.pluginManager.needNewerCoreVersion, this.manifests[id])
+      const msg = format(this.i18n.t.pluginManager.needNewerCoreVersion, this.manifests[id])
       new Notice(msg)
       return
     }
@@ -176,7 +185,7 @@ export class PluginManager {
 
   async updatePlugin(id: string) {
     const { marketplace } = this
-    const t = this.app.i18n.t.pluginManager
+    const t = this.i18n.t.pluginManager
     const manifest = this.manifests[id]
 
     const info = marketplace.getPlugin(id)
@@ -206,6 +215,6 @@ export class PluginManager {
   }
 
   private _saveEnabledConfig = debounce(() => {
-    this.app.vault.writeConfigJson('plugins', this.enabledPlugins)
+    this.vault.writeConfigJson('plugins', this.enabledPlugins)
   }, 1e3)
 }

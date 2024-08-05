@@ -1,7 +1,7 @@
 import decorate from "@plylrnsdy/decorate.js"
 import { editor } from "typora"
-import type { App } from "src/app"
 import { Component } from "src/common/component"
+import { registerService, useService } from "src/common/service"
 import { Events } from "src/common/events"
 import { MarkdownPostProcessor } from "./postprocessor/postprocessor-manager"
 import { MarkdownPreProcessor } from "./preprocessor/preprocessor"
@@ -10,6 +10,7 @@ import { EditorSuggestManager } from "./suggestion/suggest-manager"
 import { debounce } from "src/utils/function/debounce"
 import type { FileURL } from "src/utils/types"
 import { until } from "src/utils/until"
+import { memorize } from "src/utils/function/memorize"
 
 
 export type MarkdownEditorEvents = {
@@ -17,6 +18,9 @@ export type MarkdownEditorEvents = {
   'edit'(): void
   'scroll'(): void
 }
+
+
+registerService('markdown-editor', memorize(() => new MarkdownEditor()))
 
 export class MarkdownEditor extends Events<MarkdownEditorEvents> {
 
@@ -28,9 +32,9 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
 
   suggestion = new EditorSuggestManager()
 
-  private _openLinkInCurrentWin: OpenLinkInCurrentWin
+  private _openLinkInCurrentWin = new OpenLinkInCurrentWin()
 
-  constructor(app: App) {
+  constructor() {
     super('markdown-editor')
 
     until(() => editor.writingArea).then(el => {
@@ -48,8 +52,6 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
         debounce(() => this.emit('scroll'), 200)
       )
     })
-
-    this._openLinkInCurrentWin = new OpenLinkInCurrentWin(app)
   }
 
   openFile(file: string | FileURL) {
@@ -119,16 +121,18 @@ function match(el: Element, selector: string) {
 
 class OpenLinkInCurrentWin extends Component {
 
-  constructor(private app: App) {
+  constructor(
+    settings = useService('settings')
+  ) {
     super()
 
     const SETTING_KEY = 'openLinkInCurrentWin'
 
-    if (app.settings.get(SETTING_KEY)) {
+    if (settings.get(SETTING_KEY)) {
       this.load()
     }
 
-    app.settings.onChange(SETTING_KEY, (_, isEnabled) => {
+    settings.onChange(SETTING_KEY, (_, isEnabled) => {
       isEnabled ? this.load() : this.unload()
     })
   }
@@ -140,7 +144,7 @@ class OpenLinkInCurrentWin extends Component {
       decorate(editor, tryOpenUrl, fn => (url, param1) => {
 
         if (!(url.startsWith('#') || url.startsWith('http'))) {
-          this.app.openFile(unescape(url))
+          useService('app').openFile(unescape(url))
           return
         }
 

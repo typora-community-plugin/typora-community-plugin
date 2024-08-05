@@ -1,10 +1,10 @@
 import path from "src/path"
 import { JSBridge, editor } from "typora"
 import decorate from '@plylrnsdy/decorate.js'
-import type { App } from "src/app"
 import { Component } from "src/common/component"
-import { View } from "./view"
+import { useService } from "src/common/service"
 import fs from 'src/io/fs/filesystem'
+import { View } from "./view"
 
 
 export class QuickOpenPanel extends View {
@@ -12,11 +12,11 @@ export class QuickOpenPanel extends View {
   private _ignoreFile: IgnoreFile
   private _quickOpenInCurrentWin: QuickOpenInCurrentWin
 
-  constructor(private app: App) {
+  constructor() {
     super()
 
-    this._ignoreFile = new IgnoreFile(app)
-    this._quickOpenInCurrentWin = new QuickOpenInCurrentWin(app)
+    this._ignoreFile = new IgnoreFile()
+    this._quickOpenInCurrentWin = new QuickOpenInCurrentWin()
   }
 
 }
@@ -25,25 +25,28 @@ class IgnoreFile extends Component {
 
   private _ignoredFiles: string[] = []
 
-  constructor(private app: App) {
+  constructor(
+    private vault = useService('vault'),
+    private settings = useService('settings'),
+  ) {
     super()
 
     const SETTING_KEY = 'ignoreFile'
 
-    if (app.settings.get(SETTING_KEY)) {
+    if (settings.get(SETTING_KEY)) {
       this.load()
     }
 
-    app.settings.onChange(SETTING_KEY, (_, isEnabled) => {
+    settings.onChange(SETTING_KEY, (_, isEnabled) => {
       isEnabled ? this.load() : this.unload()
     })
   }
 
   onload() {
 
-    this._buildIgnoredFiles(this.app.settings.get('ignoreFileGlob'))
+    this._buildIgnoredFiles(this.settings.get('ignoreFileGlob'))
 
-    this.app.settings.onChange('ignoreFileGlob', (_, glob) =>
+    this.settings.onChange('ignoreFileGlob', (_, glob) =>
       this._buildIgnoredFiles(glob)
     )
 
@@ -75,13 +78,13 @@ class IgnoreFile extends Component {
   }
 
   onunload() {
-    editor.quickOpenPanel.cacheFolder(this.app.vault.path)
+    editor.quickOpenPanel.cacheFolder(this.vault.path)
   }
 
   private _buildIgnoredFiles(glob: string) {
     this._ignoredFiles = glob
       .split(',')
-      .map(folder => path.join(this.app.vault.path, folder))
+      .map(folder => path.join(this.vault.path, folder))
   }
 
   private _removeIgnoredFiles() {
@@ -93,16 +96,18 @@ class IgnoreFile extends Component {
 
 class QuickOpenInCurrentWin extends Component {
 
-  constructor(app: App) {
+  constructor(
+    settings = useService('settings'),
+  ) {
     super()
 
     const SETTING_KEY = 'quickOpenInCurrentWin'
 
-    if (app.settings.get(SETTING_KEY)) {
+    if (settings.get(SETTING_KEY)) {
       this.load()
     }
 
-    app.settings.onChange(SETTING_KEY, (_, isEnabled) => {
+    settings.onChange(SETTING_KEY, (_, isEnabled) => {
       isEnabled ? this.load() : this.unload()
     })
   }

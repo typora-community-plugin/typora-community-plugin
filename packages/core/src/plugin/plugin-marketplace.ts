@@ -1,12 +1,12 @@
 import path from 'src/path'
-import type { App } from 'src/app'
+import { useService } from 'src/common/service'
 import { Notice } from 'src/components/notice'
 import fs from 'src/io/fs/filesystem'
 import { Logger } from 'src/io/logger'
 import type { PluginManifest, PluginPostion } from "./plugin-manifest"
 
 
-const logger = new Logger('PluginMarketplace')
+const logger = useService('logger', ['PluginMarketplace'])
 
 
 export type PluginMarketInfo = Pick<PluginManifest, "id" | "name" | "description" | "author" | "repo" | "platforms"> & {
@@ -21,7 +21,11 @@ export class PluginMarketplace {
     return !!this.pluginList.length
   }
 
-  constructor(private app: App) {
+  constructor(
+    private i18n = useService('i18n'),
+    private github = useService('github'),
+    private plugins = useService('plugin-manager'),
+  ) {
   }
 
   getPlugin(id: string) {
@@ -31,22 +35,22 @@ export class PluginMarketplace {
   getPluginNewestVersion(info: PluginMarketInfo) {
     return info.newestVersion
       ? Promise.resolve(info.newestVersion)
-      : this.app.github.getReleaseInfo(info.repo)
+      : this.github.getReleaseInfo(info.repo)
         .then(data => data.tag_name)
   }
 
   loadCommunityPlugins(): Promise<PluginMarketInfo[]> {
-    return this.app.github.getJSON('typora-community-plugin/typora-plugin-releases', 'main', 'community-plugins.json')
+    return this.github.getJSON('typora-community-plugin/typora-plugin-releases', 'main', 'community-plugins.json')
       .then(res => this.pluginList = res ?? [])
   }
 
   installPlugin(info: PluginMarketInfo, pos: PluginPostion) {
     return this.getPluginNewestVersion(info)
-      .then(version => this.app.github.downloadThenUnzipToTemp(info.repo, version, 'plugin.zip'))
+      .then(version => this.github.downloadThenUnzipToTemp(info.repo, version, 'plugin.zip'))
       .then(tmp => {
         const dir = pos === 'global'
-          ? this.app.plugins.globalPluginsDir
-          : this.app.plugins.vaultPluginsDir
+          ? this.plugins.globalPluginsDir
+          : this.plugins.vaultPluginsDir
         const root = path.join(dir, info.id)
 
         return fs.readText(path.join(tmp, 'manifest.json'))
@@ -54,12 +58,12 @@ export class PluginMarketplace {
           .then(manifest => {
             if (info.id !== manifest.id) {
               fs.remove(tmp)
-              new Notice(this.app.i18n.t.pluginMarketplace.idNotCorrect)
+              new Notice(this.i18n.t.pluginMarketplace.idNotCorrect)
             }
             else {
               manifest.postion = pos
               manifest.dir = root
-              this.app.plugins.manifests[manifest.id] = manifest
+              this.plugins.manifests[manifest.id] = manifest
 
               return fs.mkdir(dir)
                 .then(() => fs.trash(root))

@@ -1,9 +1,9 @@
 import './postprocessor.scss'
-import { Logger } from 'src/io/logger'
+import { useService } from 'src/common/service'
 import { randomString } from "src/utils/random-string"
 
 
-const logger = new Logger('PostProcessor')
+const logger = useService('logger', ['PostProcessor'])
 
 
 export type ButtonMouseEventListener<T> = (event: MouseEvent & { target: HTMLElement }, context: T) => void

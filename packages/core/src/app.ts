@@ -3,7 +3,9 @@ import './variables.scss'
 import path from 'src/path'
 import { JSBridge, _options, editor } from 'typora'
 import * as Core from '.'
+import { coreDir, coreVersion, platform } from 'src/common/constants'
 import { Events } from 'src/common/events'
+import { registerService, useService } from 'src/common/service'
 import { GithubAPI } from 'src/net/github'
 import { HotkeyManager } from 'src/hotkey-manager'
 import fs from 'src/io/fs/filesystem'
@@ -19,18 +21,18 @@ import type { PluginMarketplaceSettings } from 'src/settings/setting-tabs/plugin
 import type { CoreSettings } from 'src/settings/setting-tabs/about-tab'
 import { Workspace } from 'src/ui/workspace'
 import type { RibbonSettings } from 'src/ui/ribbon/workspace-ribbon'
+import { GlobalSearch } from './ui/sidebar/search/global-search'
 import { isMarkdownUrl } from 'src/utils/string/is-markdown-url'
-import { platform } from 'src/utils/platform'
+import { memorize } from './utils/function/memorize'
 import type { FileURL } from 'src/utils/types'
 import { _emitMissingEvents } from 'src/symbols'
-import { GlobalSearch } from './ui/sidebar/search/global-search'
 
 
 export type AppEvents = {
   'load'(): void
 }
 
-type EnvironmentVairables = {
+export type EnvironmentVairables = {
   TYPORA_EXTENSION_ENV?: "development"
   PLUGIN_CORE_PATH?: string
   PLUGIN_GLOBAL_DIR?: string
@@ -39,9 +41,18 @@ type EnvironmentVairables = {
   [key: string]: any
 }
 
-type AppSettings = FileLinkSettings & AppearanceSettings & PluginMarketplaceSettings & CoreSettings & RibbonSettings
+export type AppSettings =
+  FileLinkSettings
+  & AppearanceSettings
+  & PluginMarketplaceSettings
+  & CoreSettings
+  & RibbonSettings
 
 export type AppPlugin = (app: App) => void
+
+
+registerService('app', memorize(() => new App()))
+registerService('env', () => useService('config-storage').readConfigJson('env'))
 
 /**
  * Proxy of Typora
@@ -61,30 +72,24 @@ export class App extends Events<AppEvents> {
   /**
    * @example app.coreVersion  //=> '2.0.0'
    */
-  get coreVersion() {
-    return process.env.CORE_VERSION
-  }
+  readonly coreVersion = coreVersion()
 
-  get coreDir() {
-    return process.env.IS_DEV
-      ? import.meta.url.slice(8, -7)
-      : path.join(_options.userDataPath, 'plugins', this.coreVersion)
-  }
+  readonly coreDir = coreDir()
 
   readonly platform = platform()
 
-  vault: Vault
-  settings: Settings<AppSettings>
-  i18n: I18n<typeof Locale>
-  commands: CommandManager
-  env: EnvironmentVairables
-  github: GithubAPI
-  plugins: PluginManager
-  workspace: Workspace
-  hotkeyManager: HotkeyManager
+  vault: Vault = useService('vault')
+  settings: Settings<AppSettings> = useService('settings')
+  i18n: I18n<typeof Locale> = useService('i18n')
+  env: EnvironmentVairables = useService('env')
+  github: GithubAPI = useService('github')
+  hotkeyManager: HotkeyManager = useService('hotkey-manager')
+  commands: CommandManager = useService('command-manager')
+  plugins: PluginManager = useService('plugin-manager')
+  workspace: Workspace = useService('workspace')
 
   features = {
-    globalSearch: new GlobalSearch(this)
+    globalSearch: new GlobalSearch()
   }
 
   constructor() {
@@ -100,48 +105,18 @@ export class App extends Events<AppEvents> {
       window['Typora'] = window[Symbol.for(process.env.CORE_NS)]
     }
 
-    this.vault = new Vault()
-
-    this.settings = new Settings<AppSettings>(this.vault, {
-      filename: 'core',
-      version: 1,
-    })
-
-    this.i18n = new I18n<typeof Locale>({
-      localePath: path.join(this.coreDir, 'locales'),
-      userLang: this.settings.get('displayLang'),
-    })
-
-    I18n.setUserLocale(this.i18n.locale)
-
-    this.commands = new CommandManager(this)
-
-    this.env = this._readEnv()
-
-    this.github = new GithubAPI(this)
-
-    this.plugins = new PluginManager(this)
-
-    this.workspace = new Workspace(this)
-
-    this.hotkeyManager = new HotkeyManager()
-
     this.once('load', () => {
       this.vault[_emitMissingEvents]()
       this.workspace[_emitMissingEvents]()
     })
     this.vault.on('change', () => {
-      this.env = this._readEnv()
+      this.env = useService('env')
       this.settings.load()
       this.plugins.unloadPlugins()
       this.start()
     })
 
     document.head.insertAdjacentHTML('beforeend', `<link rel="stylesheet" id="typora-plugin-core" href="file://${path.join(this.coreDir, 'core.css')}" crossorigin="anonymous"></link>`)
-  }
-
-  private _readEnv(): EnvironmentVairables {
-    return this.vault.readConfigJson('env')
   }
 
   use(plugin: AppPlugin) {

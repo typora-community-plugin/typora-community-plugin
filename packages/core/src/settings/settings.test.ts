@@ -16,10 +16,10 @@ describe('class Settings', () => {
 
   let settings: Settings<any>
   beforeEach(() => {
-    settings = new Settings<any>(vault, {
+    settings = new Settings<any>({
       filename: 'test',
       version: 1,
-    })
+    }, vault)
   })
 
   describe('get()', () => {

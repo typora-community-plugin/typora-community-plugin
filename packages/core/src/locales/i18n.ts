@@ -1,11 +1,15 @@
 import path from 'src/path'
 import { _options } from "typora"
+import { coreDir } from 'src/common/constants'
+import { registerService, useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
 import { Logger } from 'src/io/logger'
 import type { ReadonlyDeep } from 'src/utils/types'
+import { memorize } from 'src/utils/function/memorize'
+import * as Locale from './lang.en.json'
 
 
-const logger = new Logger('I18n')
+const logger = useService('logger', ['I18n'])
 
 
 type I18nBaseOptions = {
@@ -23,6 +27,18 @@ type I18nOptions<T> = I18nFileOptions | I18nJsonOptions<T>
 const DEFALUT_OPTIONS: I18nBaseOptions = {
   defaultLang: 'en',
 }
+
+
+registerService('i18n', memorize(() => {
+  const i18n = new I18n<typeof Locale>({
+    localePath: path.join(coreDir(), 'locales'),
+    userLang: useService('settings').get('displayLang'),
+  })
+
+  I18n.setUserLocale(i18n.locale)
+
+  return i18n
+}))
 
 export class I18n<T> {
 

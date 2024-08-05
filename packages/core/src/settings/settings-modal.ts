@@ -1,5 +1,5 @@
 import './settings-modal.scss'
-import type { App } from "src/app"
+import { useService } from 'src/common/service'
 import { Modal } from "src/components/modal"
 import { html } from 'src/utils/html'
 import type { SettingTab } from './setting-tab'
@@ -26,16 +26,19 @@ export class SettingsModal extends Modal {
 
   activeTab: SettingTab
 
-  constructor(private app: App) {
+  constructor(
+    private i18n = useService('i18n'),
+    private commands = useService('command-manager'),
+    private plugins = useService('plugin-manager'),
+  ) {
     super()
   }
 
   onload() {
-    const { app } = this
-    const t = app.i18n.t.settingModal
+    const t = this.i18n.t.settingModal
 
     this.register(
-      app.commands.register({
+      this.commands.register({
         id: 'settings:open',
         title: t.commandOpen,
         scope: 'global',
@@ -58,17 +61,17 @@ export class SettingsModal extends Modal {
     })
 
     this.addGroupTitle(t.groupCore)
-    this.addTab(new FileLinkSettingTab(app))
-    this.addTab(new AppearanceSettingTab(app))
-    this.addTab(new HotkeySettingTab(app))
-    this.addTab(new PluginMarketplaceSettingTab(app))
-    this.addTab(new PluginsManagerSettingTab(app))
-    this.addTab(new AboutTab(app))
+    this.addTab(new FileLinkSettingTab())
+    this.addTab(new AppearanceSettingTab())
+    this.addTab(new HotkeySettingTab())
+    this.addTab(new PluginMarketplaceSettingTab())
+    this.addTab(new PluginsManagerSettingTab())
+    this.addTab(new AboutTab())
 
-    setTimeout(() => this.addGroupTitle(t.groupPlugins))
+    this.addGroupTitle(t.groupPlugins)
 
-    if (!app.plugins.marketplace.isLoaded) {
-      app.plugins.marketplace.loadCommunityPlugins()
+    if (!this.plugins.marketplace.isLoaded) {
+      this.plugins.marketplace.loadCommunityPlugins()
     }
 
     // fix: clicking on the link in setting modal (out of editor) will close Typora unexpectly
@@ -77,7 +80,7 @@ export class SettingsModal extends Modal {
       if (el.tagName === 'A' && el.getAttribute('href')) {
         event.preventDefault()
         event.stopPropagation()
-        app.openLink(el.getAttribute('href'))
+        useService('app').openLink(el.getAttribute('href'))
       }
     })
   }

@@ -1,8 +1,9 @@
 import { _options } from 'typora'
-import type { App } from "src/app"
+import { registerService, useService } from 'src/common/service'
 import { Notice } from 'src/components/notice'
 import { format } from "src/utils/string/format"
 import { HttpClient } from './http-client'
+import { memorize } from 'src/utils/function/memorize'
 
 
 interface GithubProxy {
@@ -54,30 +55,36 @@ const moeyyCn: GithubProxy = {
   raw: 'https://moeyy.cn/gh-proxy/' + github.raw,
 }
 
+
+registerService('github', memorize(() => new GithubAPI()))
+
 export class GithubAPI {
 
   proxies: GithubProxy[] = [github, ghproxyNet, ghproxyOrg, ghpsCc, gh$proxyCom, moeyyCn]
 
   private uri: GithubProxy
 
-  constructor(app: App) {
+  constructor(
+    settings = useService('settings'),
+    i18n = useService('i18n')
+  ) {
 
     const getUri = (id = 'github') => {
       const uri = this.proxies.find(uri => uri.id === id)
 
       if (!uri) {
         // to wait css loaded
-        setTimeout(() => new Notice(app.i18n.t.githubAPI.proxyNotFound), 5e3)
-        app.settings.set('githubProxy', 'github')
+        setTimeout(() => new Notice(i18n.t.githubAPI.proxyNotFound), 5e3)
+        settings.set('githubProxy', 'github')
         return github
       }
 
       return uri
     }
 
-    this.uri = getUri(app.settings.get('githubProxy'))
+    this.uri = getUri(settings.get('githubProxy'))
 
-    app.settings.onChange('githubProxy', (_, id) => {
+    settings.onChange('githubProxy', (_, id) => {
       this.uri = getUri(id)
     })
   }

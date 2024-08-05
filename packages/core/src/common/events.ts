@@ -1,8 +1,8 @@
-import { Logger } from 'src/io/logger'
+import { useService } from "./service"
 import type { DisposeFunc } from "src/utils/types"
 
 
-const logger = new Logger('Events')
+const logger = useService('logger', ['Events'])
 
 
 type EventListener = (...args: any[]) => any

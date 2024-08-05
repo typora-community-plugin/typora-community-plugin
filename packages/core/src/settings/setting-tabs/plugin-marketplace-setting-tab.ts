@@ -1,5 +1,6 @@
-import type { App } from "src/app"
-import { type PluginMarketInfo } from "src/plugin/plugin-marketplace"
+import { useService } from "src/common/service"
+import { platform } from "src/common/constants"
+import type { PluginMarketInfo } from "src/plugin/plugin-marketplace"
 import { SettingTab } from "../setting-tab"
 import { debounce } from "src/utils/function/debounce"
 import { uniqueId } from "src/utils/uniqueId"
@@ -22,27 +23,32 @@ const DEFAULT_SETTINGS: PluginMarketplaceSettings = {
 export class PluginMarketplaceSettingTab extends SettingTab {
 
   get name() {
-    return this.app.i18n.t.settingTabs.pluginMarketplace.name
+    return this.i18n.t.settingTabs.pluginMarketplace.name
   }
 
-  constructor(private app: App) {
+  constructor(
+    private settings = useService('settings'),
+    private i18n = useService('i18n'),
+    private github = useService('github'),
+    private plugins = useService('plugin-manager'),
+  ) {
     super()
 
-    app.settings.setDefault(DEFAULT_SETTINGS)
-    app.settings.onChange('githubProxy', () => {
+    settings.setDefault(DEFAULT_SETTINGS)
+    settings.onChange('githubProxy', () => {
       this.loadPluginList()
     })
   }
 
   onload() {
-    const { settings } = this.app
-    const t = this.app.i18n.t.settingTabs.pluginMarketplace
+    const { settings } = this
+    const t = this.i18n.t.settingTabs.pluginMarketplace
 
     this.addSetting(setting => {
       setting.addName(t.githubProxy)
       setting.addDescription(t.githubProxyDesc)
       setting.addSelect({
-        options: this.app.github.proxies.map(u => u.id),
+        options: this.github.proxies.map(u => u.id),
         selected: settings.get('githubProxy'),
         onchange: event => settings.set('githubProxy', event.target.value)
       })
@@ -84,7 +90,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     const version = +uniqueId()
 
     this.cleanPluginList()
-    this.app.plugins.marketplace.loadCommunityPlugins()
+    this.plugins.marketplace.loadCommunityPlugins()
       .then(() => {
         if (version <= this._pluginListVersion) return
         this._pluginListVersion = version
@@ -94,7 +100,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
 
   private renderPluginList(query: string = '') {
     query = query.toLowerCase()
-    this.app.plugins.marketplace.pluginList
+    this.plugins.marketplace.pluginList
       .filter(p => !query || (p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query)))
       .forEach(p => this.renderPlugin(p))
   }
@@ -105,7 +111,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
   }
 
   private renderPlugin(info: PluginMarketInfo) {
-    const t = this.app.i18n.t.settingTabs.pluginMarketplace
+    const t = this.i18n.t.settingTabs.pluginMarketplace
 
     this.addSetting(setting => {
       setting.containerEl.classList.add('typ-plugin-item')
@@ -122,15 +128,15 @@ export class PluginMarketplaceSettingTab extends SettingTab {
       })
       setting.addDescription(info.description)
 
-      if (!info.platforms.includes(this.app.platform)) return
-      if (this.app.plugins.manifests[info.id]) return
+      if (!info.platforms.includes(platform())) return
+      if (this.plugins.manifests[info.id]) return
 
       setting.addButton(button => {
         button.innerHTML = '<span class="fa fa-cloud-download"></span> ' + t.installToGlobal
         button.title = t.installToGlobalDesc
         button.classList.add('primary')
         button.onclick = () =>
-          this.app.plugins.marketplace.installPlugin(info, 'global')
+          this.plugins.marketplace.installPlugin(info, 'global')
             .then(() => setting.controls.remove())
       })
 
@@ -139,7 +145,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
         button.title = t.installToVaultDesc
         button.classList.add('primary')
         button.onclick = () =>
-          this.app.plugins.marketplace.installPlugin(info, 'vault')
+          this.plugins.marketplace.installPlugin(info, 'vault')
             .then(() => setting.controls.remove())
       })
     })

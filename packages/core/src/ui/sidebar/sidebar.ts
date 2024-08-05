@@ -1,5 +1,5 @@
 import { editor } from "typora"
-import type { App } from "src/app"
+import { useService } from "src/common/service"
 import { View } from "src/ui/view"
 import type { DisposeFunc } from "src/utils/types"
 import { FileExplorer } from "./file-explorer"
@@ -20,22 +20,27 @@ export class Sidebar extends View {
   activeView: View
   internalViews: View[]
 
-  constructor(private app: App, internalViews: View[]) {
+  constructor(
+    internalViews: () => View[],
+    private settings = useService('settings'),
+  ) {
     super()
 
     this.containerEl = document.getElementById('sidebar-content')!
     this.wrapperEl = this.containerEl.parentElement
 
-    this.internalViews = internalViews
-    this.internalViews.forEach(view => this.addChild(view))
+    setTimeout(() => {
+      this.internalViews = internalViews()
+      this.internalViews.forEach(view => this.addChild(view))
+    }, 1)
 
-    this.app.settings.onChange('showRibbon', (_, isEnabled) => {
+    settings.onChange('showRibbon', (_, isEnabled) => {
       isEnabled ? this.load() : this.unload()
     })
   }
 
   load() {
-    if (!this.app.settings.get('showRibbon')) {
+    if (!this.settings.get('showRibbon')) {
       return
     }
     super.load()

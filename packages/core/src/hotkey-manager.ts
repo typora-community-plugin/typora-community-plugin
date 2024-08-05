@@ -1,6 +1,8 @@
 import { capitalize } from 'src/utils/string/capitalize'
-import { platform } from "src/utils/platform"
+import { platform } from "src/common/constants"
 import { useEventBus } from "./common/eventbus"
+import { registerService } from './common/service'
+import { memorize } from './utils/function/memorize'
 
 
 export type HotkeyScope = 'global' | 'editor'
@@ -20,16 +22,19 @@ const arrowKeys: Record<string, string> = {
   'arrowright': '→',
 }
 
+
+registerService('hotkey-manager', memorize(() => new HotkeyManager()))
+
 export class HotkeyManager {
 
   keybings: Record<string, EventListener[]> = {}
 
   editorKeybings: Record<string, EventListener[]> = {}
 
-  constructor() {
-    const activeEditor = useEventBus('markdown-editor')
-
-    activeEditor.on('load', (editorEl) => {
+  constructor(
+    markdownEditor = useEventBus('markdown-editor')
+  ) {
+    markdownEditor.on('load', (editorEl) => {
       // TODO move to MarkdownEditor
 
       document.body.addEventListener('keyup', this._onKeyup(this.keybings))

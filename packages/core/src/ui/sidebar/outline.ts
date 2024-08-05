@@ -1,24 +1,27 @@
 import { View } from 'src/ui/view'
-import type { Workspace } from "src/ui/workspace"
 import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
 import { editor } from "typora"
 import { html } from "src/utils/html"
-import type { App } from 'src/app'
+import { useService } from 'src/common/service'
 
 
 export class Outline extends View {
 
-  constructor(app: App, workspace: Workspace) {
+  constructor(
+    i18n = useService('i18n'),
+    ribbon = useService('ribbon'),
+    sidebar = useService('sidebar'),
+  ) {
     super()
 
     this.containerEl = document.getElementById('outline-content') as HTMLElement
 
-    workspace.ribbon.addButton({
+    ribbon.addButton({
       [BUILT_IN]: true,
       id: 'core.outline',
-      title: app.i18n.t.ribbon.outline,
+      title: i18n.t.ribbon.outline,
       icon: html`<i class="fa fa-list"></i>`,
-      onclick: () => app.workspace.sidebar.switch(Outline),
+      onclick: () => sidebar.switch(Outline),
     })
   }
 
