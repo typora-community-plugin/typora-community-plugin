@@ -1,7 +1,7 @@
 import { useEventBus } from "src/common/eventbus"
 import { registerService, useService } from "src/common/service"
 import { type HotkeyScope, readableHotkey } from "src/hotkey-manager"
-import { debounce } from "src/utils/function/debounce"
+import { debounced } from "src/utils/decorator/debounced"
 import { memorize } from "src/utils/function/memorize"
 import type { DisposeFunc } from "src/utils/types"
 
@@ -109,7 +109,8 @@ export class CommandManager {
       .reduce((o, k) => (o[k] = this.commandMap[k], o), {} as Record<string, Command>)
   }
 
-  private saveConfig = debounce(() => {
+  @debounced(1e3)
+  private saveConfig() {
     this.vault.writeConfigJson('hotkeys', this.getConfig())
-  }, 1e3)
+  }
 }

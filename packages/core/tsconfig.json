@@ -7,6 +7,7 @@
     "module": "ESNext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "experimentalDecorators": true,
 
     "types": [
       "node",

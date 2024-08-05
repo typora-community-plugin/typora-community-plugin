@@ -1,6 +1,6 @@
 import { registerService, useService } from "src/common/service"
 import type { ConfigStorage } from "src/io/config-storage"
-import { debounce } from "src/utils/function/debounce"
+import { debounced } from "src/utils/decorator/debounced"
 import { memorize } from "src/utils/function/memorize"
 import { noop } from "src/utils/noop"
 import type { DisposeFunc } from "src/utils/types"
@@ -125,11 +125,10 @@ export class Settings<T extends Record<string, any>> {
     this._migations.hasMigrated = false
   }
 
-  private _save = () => {
+  @debounced(1e3)
+  save() {
     this.vault.writeConfigJson(this.filename, this._stores)
   }
-
-  save = debounce(this._save, 1e3)
 
   migrateTo(newVersion: number, transform: (oldStores: SettingsFile<any>) => any) {
     this._stores = transform(this._stores)

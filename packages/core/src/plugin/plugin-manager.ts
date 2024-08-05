@@ -1,12 +1,11 @@
 import { _options } from 'typora'
 import { Notice } from 'src/components/notice'
 import fs from 'src/io/fs/filesystem'
-import { Logger } from 'src/io/logger'
 import path from 'src/path'
 import { Plugin } from "./plugin"
 import type { PluginManifest, PluginPostion } from "./plugin-manifest"
 import { PluginMarketplace } from './plugin-marketplace'
-import { debounce } from "src/utils/function/debounce"
+import { debounced } from 'src/utils/decorator/debounced'
 import { format } from 'src/utils/string/format'
 import * as versions from 'src/utils/versions'
 import { registerService, useService } from 'src/common/service'
@@ -214,7 +213,8 @@ export class PluginManager {
     return fs.remove(manifest.dir!)
   }
 
-  private _saveEnabledConfig = debounce(() => {
+  @debounced(1e3)
+  private _saveEnabledConfig() {
     this.vault.writeConfigJson('plugins', this.enabledPlugins)
-  }, 1e3)
+  }
 }
