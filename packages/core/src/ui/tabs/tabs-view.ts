@@ -4,8 +4,8 @@ import { editor } from "typora"
 import decorate from "@plylrnsdy/decorate.js"
 import { useService } from 'src/common/service'
 import { useEventBus } from 'src/common/eventbus'
-import { draggable } from 'src/components/draggable'
-import { Menu } from 'src/components/menu'
+import { draggable } from 'src/ui/components/draggable'
+import { Menu } from 'src/ui/components/menu'
 import fs from 'src/io/fs/filesystem'
 import { View } from "src/ui/view"
 import { html } from 'src/utils/html'

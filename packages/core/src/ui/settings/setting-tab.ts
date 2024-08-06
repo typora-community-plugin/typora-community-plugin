@@ -1,8 +1,8 @@
 import './setting-tab.scss'
-import type { App } from "../app"
-import type { Plugin } from "../plugin/plugin"
-import { View } from "../ui/view"
-import { html } from "../utils/html"
+import type { App } from "src/app"
+import type { Plugin } from "src/plugin/plugin"
+import { View } from "../view"
+import { html } from "src/utils/html"
 import { SettingItem } from "./setting-item"
 
 

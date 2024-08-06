@@ -1,6 +1,6 @@
 import { _options } from 'typora'
 import { registerService, useService } from 'src/common/service'
-import { Notice } from 'src/components/notice'
+import { Notice } from 'src/ui/components/notice'
 import { format } from "src/utils/string/format"
 import { HttpClient } from './http-client'
 import { memorize } from 'src/utils/function/memorize'

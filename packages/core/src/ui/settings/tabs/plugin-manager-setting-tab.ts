@@ -1,6 +1,6 @@
 import './plugin-manager-setting-tab.scss'
 import { useService } from 'src/common/service'
-import { Notice } from 'src/components/notice'
+import { Notice } from 'src/ui/components/notice'
 import type { PluginManifest } from "src/plugin/plugin-manifest"
 import { SettingTab } from "../setting-tab"
 import { debounce } from "src/utils/function/debounce"

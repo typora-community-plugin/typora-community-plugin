@@ -5,23 +5,23 @@ export declare const app: App
 export { Component } from './common/component'
 export { Events } from './common/events'
 
-export { Modal } from './components/modal'
-export { Notice } from './components/notice'
-
 export { I18n } from './locales/i18n'
 
 export type { PluginManifest } from './plugin/plugin-manifest'
 export { PluginSettings } from './plugin/plugin-settings'
 export { Plugin } from './plugin/plugin'
 
-export { SettingTab } from './settings/setting-tab'
-export { SettingItem } from './settings/setting-item'
+export { View } from './ui/view'
+export { Modal } from './ui/components/modal'
+export { Notice } from './ui/components/notice'
+
+export { SettingTab } from './ui/settings/setting-tab'
+export { SettingItem } from './ui/settings/setting-item'
 
 export { PostProcessor } from './ui/editor/postprocessor/postprocessor'
 export { HtmlPostProcessor } from './ui/editor/postprocessor/html-postprocessor'
 export { CodeblockPostProcessor } from './ui/editor/postprocessor/codeblock-postprocessor'
 
-export { View } from './ui/view'
 export { EditorSuggest } from './ui/editor/suggestion/suggest'
 export { TextSuggest } from './ui/editor/suggestion/text-suggest'
 

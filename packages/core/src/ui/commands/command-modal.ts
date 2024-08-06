@@ -1,7 +1,7 @@
 import './command-modal.scss'
 import { Modal } from "../components/modal"
-import type { Command } from './command-manager'
-import { html } from '../utils/html'
+import type { Command } from 'src/command/command-manager'
+import { html } from 'src/utils/html'
 import { useService } from 'src/common/service'
 
 

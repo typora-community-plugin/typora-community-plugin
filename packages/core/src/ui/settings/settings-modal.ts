@@ -1,14 +1,14 @@
 import './settings-modal.scss'
 import { useService } from 'src/common/service'
-import { Modal } from "src/components/modal"
+import { Modal } from "src/ui/components/modal"
 import { html } from 'src/utils/html'
 import type { SettingTab } from './setting-tab'
-import { HotkeySettingTab } from "./setting-tabs/hotkey-setting-tab"
-import { FileLinkSettingTab } from './setting-tabs/file-link-setting-tab'
-import { AppearanceSettingTab } from "./setting-tabs/appearance-setting-tab"
-import { PluginMarketplaceSettingTab } from './setting-tabs/plugin-marketplace-setting-tab'
-import { PluginsManagerSettingTab } from "./setting-tabs/plugin-manager-setting-tab"
-import { AboutTab } from './setting-tabs/about-tab'
+import { HotkeySettingTab } from "./tabs/hotkey-setting-tab"
+import { FileLinkSettingTab } from './tabs/file-link-setting-tab'
+import { AppearanceSettingTab } from "./tabs/appearance-setting-tab"
+import { PluginMarketplaceSettingTab } from './tabs/plugin-marketplace-setting-tab'
+import { PluginsManagerSettingTab } from "./tabs/plugin-manager-setting-tab"
+import { AboutTab } from './tabs/about-tab'
 
 
 /**

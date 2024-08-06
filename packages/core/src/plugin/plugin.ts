@@ -4,8 +4,8 @@ import { Component } from "src/common/component"
 import path from 'src/path'
 import type { PluginManifest } from "./plugin-manifest"
 import { PluginSettings } from './plugin-settings'
-import { SettingsModal } from "src/settings/settings-modal"
-import type { SettingTab } from "src/settings/setting-tab"
+import { SettingsModal } from "src/ui/settings/settings-modal"
+import type { SettingTab } from "src/ui/settings/setting-tab"
 import type { TPostProcessor } from 'src/ui/editor/postprocessor/postprocessor-manager'
 import type { TPreProcessor } from 'src/ui/editor/preprocessor/preprocessor'
 

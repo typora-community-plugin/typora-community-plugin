@@ -1,5 +1,5 @@
 import { _options } from 'typora'
-import { Notice } from 'src/components/notice'
+import { Notice } from 'src/ui/components/notice'
 import fs from 'src/io/fs/filesystem'
 import path from 'src/path'
 import { Plugin } from "./plugin"
