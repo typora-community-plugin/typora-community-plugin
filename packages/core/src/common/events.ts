@@ -17,7 +17,7 @@ export class Events<E extends EventDefination> {
 
   protected _listeners: Record<keyof E, EventListener[]> = {} as any
 
-  constructor(scope?: string) {
+  constructor(private scope?: string) {
     if (scope) {
       if (scopedListeners[scope]) {
         this._listeners = scopedListeners[scope] as any
@@ -62,14 +62,14 @@ export class Events<E extends EventDefination> {
   protected emit<K extends keyof E>(event: K, ...args: Parameters<E[K]>) {
 
     if (process.env.IS_DEV) {
-      logger.debug(`emit: ${event as string}`, ...args)
+      logger.debug(`${this.scope} @${event as string}\n`, ...args)
     }
 
     try {
       this._listeners[event]?.forEach(fn => fn(...args))
     }
     catch (error) {
-      logger.error(`emit: ${event as string}`, error)
+      logger.error(`${this.scope} @${event as string}\n`, error)
     }
   }
 }
