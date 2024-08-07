@@ -1,6 +1,6 @@
 {
   "name": "@typora-community-plugin/typora-types",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Types of Typora global variables.",
   "main": "",
   "types": "index.d.ts",
