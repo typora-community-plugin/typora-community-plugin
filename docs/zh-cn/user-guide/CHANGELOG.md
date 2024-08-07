@@ -2,6 +2,8 @@
 
 ## What's Next
 
+- fix(core/ui/components): 修复抬起鼠标时，会触发保存设置的问题
+
 - **新增插件**
   - [image-viewer][]: 查看当前文档所有图片。
 
@@ -12,6 +14,10 @@
   - [front-matter][]
     - feat: 禁用自动插入 `created` 或 `updated`
     - feat: 为新笔记自动插入指定字段名
+  - [image-location][]
+    - feat: 相对于当前笔记目录的根目录解析 Front Matter 属性 `typora-root-url`
+    - feat: 图片上传命令，支持占位符 `${vault}`（它会被解析为当前笔记目录的根路径）
+    - feat: 插入图片时，简化图片绝对路径为相对于 当前笔记目录的根目录 的相对路径
 
 ## v2.0.20
 

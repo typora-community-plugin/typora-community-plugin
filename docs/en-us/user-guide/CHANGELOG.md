@@ -2,6 +2,8 @@
 
 ## What's Next
 
+- fix(core/ui/components): save settings useless when mouse up
+
 - **New Plugin**
   - [image-viewer][]: View all the images in the current Markdown.
 
@@ -12,6 +14,10 @@
   - [front-matter][]
     - feat: can disable adding prop `created` or `updated`
     - feat: can add property's names automatically
+  - [image-location][]
+    - feat: Resolve Front Matter `typora-root-url` relative to the vault's root
+    - feat: Image Upload Command supports instruction `${vault}`
+    - feat: Simplify the image's absolute path to relative path from vault root
 
 ## v2.0.20
 
