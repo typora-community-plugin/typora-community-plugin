@@ -6,6 +6,9 @@ import { noop } from "src/utils/noop"
 import type { DisposeFunc } from "src/utils/types"
 
 
+const logger = useService('logger', ['Settings'])
+
+
 export interface SettingsOptions {
   /**
    * Filename relative to typora config folder `.typora`
@@ -78,7 +81,16 @@ export class Settings<T extends Record<string, any>> {
   set<K extends keyof T>(key: K, value: T[K]) {
     if (this._stores.settings[key] === value) return
     this._stores.settings[key] = value
-    this._listeners[key]?.forEach(fn => fn(key, value))
+
+    this._listeners[key]?.forEach(fn => {
+      try {
+        fn(key, value)
+      }
+      catch (error) {
+        logger.error(`${this.filename} :${key.toString()}=${value} failed to call a listener.\n`, error)
+      }
+    })
+
     this.save()
   }
 
@@ -127,6 +139,7 @@ export class Settings<T extends Record<string, any>> {
 
   @debounced(1e3)
   save() {
+    logger.debug(`Saving settings to ${this.filename}.json`)
     this.vault.writeConfigJson(this.filename, this._stores)
   }
 
