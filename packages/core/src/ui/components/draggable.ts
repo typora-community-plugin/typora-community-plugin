@@ -26,9 +26,18 @@ export function draggable(
     const el = event.target as HTMLElement
     draggingEl = el.closest('[draggable=true]')
     draggingEl?.classList.add('typ-dragging')
+
+    const onMouseUp = (event: MouseEvent) => {
+      if (event.button !== 0) return
+      onChange?.()
+      draggingEl?.classList.remove('typ-dragging')
+      draggingEl = null
+      document.body.removeEventListener('mouseup', onMouseUp)
+    }
+    document.body.addEventListener('mouseup', onMouseUp)
   })
 
-  containerEl.addEventListener('mousemove', event => {
+  containerEl.addEventListener('mousemove', (event: MouseEvent) => {
     if (event.button !== 0) return
     const el = event.target as HTMLElement
     const dropEl = el.closest<HTMLElement>('[draggable=true]')
@@ -37,12 +46,5 @@ export function draggable(
       dropEl.insertAdjacentElement(pos, draggingEl)
       dropEl.style.cssText = ''
     }
-  })
-
-  document.body.addEventListener('mouseup', event => {
-    if (event.button !== 0) return
-    onChange?.()
-    draggingEl?.classList.remove('typ-dragging')
-    draggingEl = null
   })
 }
