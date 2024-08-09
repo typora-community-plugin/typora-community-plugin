@@ -42,10 +42,9 @@ export function registerService<K extends keyof ServiceMap>
 }
 
 export function useService<K extends keyof ServiceMap>(id: K, args?: any[]) {
-  try {
-    return (<any>services[id])(args) as ReturnType<ServiceMap[K]>
+  if (!services[id]) {
+    throw Error(`Service "${id}" is not registered.`)
   }
-  catch (error) {
-    console.error(`[Typora Plugin] Service "${id}" is not registered.`)
-  }
+
+  return (<any>services[id])(args) as ReturnType<ServiceMap[K]>
 }
