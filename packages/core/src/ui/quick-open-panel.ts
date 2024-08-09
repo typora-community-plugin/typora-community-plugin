@@ -46,9 +46,10 @@ class IgnoreFile extends Component {
 
     this._buildIgnoredFiles(this.settings.get('ignoreFileGlob'))
 
-    this.settings.onChange('ignoreFileGlob', (_, glob) =>
-      this._buildIgnoredFiles(glob)
-    )
+    this.register(
+      this.settings.onChange('ignoreFileGlob', (_, glob) =>
+        this._buildIgnoredFiles(glob)
+      ))
 
     // ignore files in folders
     this._removeIgnoredFiles()
