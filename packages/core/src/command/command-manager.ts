@@ -35,11 +35,12 @@ export class CommandManager {
   ) {
     app.on('load', () => {
       const map = vault.readConfigJson('hotkeys') as Record<string, Command>
-      if (!map) return
 
-      Object.keys(map).forEach(id => {
-        this.setCommandHotkey(id, map[id].hotkey!)
-      })
+      Object.keys(this.commandMap)
+        .forEach(id => this.resetCommandHotkey(id))
+
+      Object.keys(map)
+        .forEach(id => this.setCommandHotkey(id, map[id].hotkey!))
     })
   }
 
@@ -64,16 +65,19 @@ export class CommandManager {
   }
 
   private bindHotkey(command: Command) {
-    this.disposableMap[command.id].forEach(fn => fn())
+    if (!command.hotkey) return
 
     const disposes = this.disposableMap[command.id] = [] as DisposeFunc[]
 
-    if (command.hotkey) {
-      disposes.push(
-        command.scope === 'global'
-          ? this.hotkeyManager.addHotkey(command.hotkey, command.callback)
-          : this.hotkeyManager.addEditorHotkey(command.hotkey, command.callback))
-    }
+    disposes.push(
+      command.scope === 'global'
+        ? this.hotkeyManager.addHotkey(command.hotkey, command.callback)
+        : this.hotkeyManager.addEditorHotkey(command.hotkey, command.callback))
+  }
+
+  private unbindHotkey(command: Command) {
+    this.disposableMap[command.id].forEach(fn => fn())
+    delete this.disposableMap[command.id]
   }
 
   run(commandId: string) {
@@ -100,6 +104,7 @@ export class CommandManager {
   }
 
   resetCommandHotkey(commandId: string) {
+    this.unbindHotkey(this.commandMap[commandId])
     this.setCommandHotkey(commandId, this.defaultCommandMap[commandId].hotkey!)
   }
 
