@@ -14,6 +14,11 @@ export default {
       entryPoints: [sourcePath],
       outdir: "dist",
       write: false,
+      define: {
+        'process.env.IS_PROD': 'false',
+        'process.env.IS_DEV': 'false',
+        'process.env.IS_TEST': 'true',
+      },
       plugins: [
         typora,
       ],

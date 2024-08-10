@@ -23,7 +23,9 @@ await esbuild.build({
   define: {
     'process.env.CORE_NS': `"typora-plugin-core@v2"`,
     'process.env.CORE_VERSION': `"${packageInfo.version}"`,
+    'process.env.IS_PROD': `${IS_PROD}`,
     'process.env.IS_DEV': `${IS_DEV}`,
+    'process.env.IS_TEST': 'false',
     'process.env.BUILD_TIME': `"${new Date().toLocaleString('zh-cn')}"`,
   },
   plugins: [
