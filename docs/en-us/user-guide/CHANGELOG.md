@@ -1,9 +1,13 @@
 # Feature Changelog
 
+## v2.1.4
+
+- fix(core/command/manager): failed to unregister command
+
 ## v2.1.3
 
 - fix(core/command/manager): after changed vault, not reset user's hotkey
-fix(core/settings): listener failed will stop othor listeners and setting's save
+- fix(core/settings): listener failed will stop other listeners and setting's save
 - fix(core/ui/components): save settings useless when mouse up
 - fix(core/ui/quick-open-panel): miss registering event listener disposer
 

@@ -1,5 +1,9 @@
 # 特性更新日志
 
+## v2.1.4
+
+- fix(core/command/manager): 反注册命令失败的问题
+
 ## v2.1.3
 
 - fix(core/command/manager): 改变目录后，没有重置所有用户快捷键的问题
