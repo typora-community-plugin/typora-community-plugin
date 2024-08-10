@@ -1,8 +1,11 @@
 # Feature Changelog
 
-## What's Next
+## v2.1.3
 
+- fix(core/command/manager): after changed vault, not reset user's hotkey
+fix(core/settings): listener failed will stop othor listeners and setting's save
 - fix(core/ui/components): save settings useless when mouse up
+- fix(core/ui/quick-open-panel): miss registering event listener disposer
 
 - **New Plugin**
   - [image-viewer][]: View all the images in the current Markdown.

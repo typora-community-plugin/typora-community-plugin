@@ -1,8 +1,11 @@
 # 特性更新日志
 
-## What's Next
+## v2.1.3
 
+- fix(core/command/manager): 改变目录后，没有重置所有用户快捷键的问题
+- fix(core/settings): 监听器抛出异常后，阻止设置保存和其他监听器执行的问题
 - fix(core/ui/components): 修复抬起鼠标时，会触发保存设置的问题
+- fix(core/ui/quick-open-panel): 缺少注册事件监听器销毁回调的问题
 
 - **新增插件**
   - [image-viewer][]: 查看当前文档所有图片。
