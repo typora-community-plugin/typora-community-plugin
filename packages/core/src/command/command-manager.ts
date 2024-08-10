@@ -77,7 +77,7 @@ export class CommandManager {
 
   private unbindHotkey(command: Command) {
     this.disposableMap[command.id].forEach(fn => fn())
-    delete this.disposableMap[command.id]
+    this.disposableMap[command.id] = []
   }
 
   run(commandId: string) {
