@@ -39,6 +39,14 @@ function badages(...messages: [string, string, string][]) {
 
 registerService('logger', memorize(([scope]) => new Logger(scope)))
 
+
+export interface ILogger {
+  debug(...messages: any[]): void
+  info(...messages: any[]): void
+  warn(...messages: any[]): void
+  error(...messages: any[]): void
+}
+
 export class Logger {
 
   constructor(public scope?: string) {

@@ -2,7 +2,7 @@ import type { App, AppSettings, EnvironmentVairables } from "src/app"
 import type { CommandManager } from "src/command/command-manager"
 import type { HotkeyManager } from "src/hotkey-manager"
 import type { ConfigStorage } from "src/io/config-storage"
-import type { Logger } from "src/io/logger"
+import type { ILogger } from "src/io/logger"
 import type { Vault } from "src/io/vault"
 import type { I18n } from "src/locales/i18n"
 import * as Locale from 'src/locales/lang.en.json'
@@ -23,7 +23,7 @@ type ServiceMap = {
   'github'(): GithubAPI
   'hotkey-manager'(): HotkeyManager
   'i18n'(): I18n<typeof Locale>
-  'logger'(): Logger
+  'logger'(): ILogger
   'plugin-manager'(): PluginManager
   'settings'(): Settings<AppSettings>
   'vault'(): Vault

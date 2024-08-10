@@ -1,25 +1,16 @@
 import { jest } from '@jest/globals'
-import type { ConfigStorage } from "src/io/config-storage"
+import 'src/setup-test-env'
 import { Settings } from "./settings"
 
 
 describe('class Settings', () => {
-
-  const vault = new class implements ConfigStorage {
-    readConfigJson(filename: string, defaultValue?: any) {
-      return defaultValue
-    }
-    writeConfigJson(filename: string, config: any): Promise<void> {
-      return Promise.resolve()
-    }
-  }
 
   let settings: Settings<any>
   beforeEach(() => {
     settings = new Settings<any>({
       filename: 'test',
       version: 1,
-    }, vault)
+    })
   })
 
   describe('get()', () => {
