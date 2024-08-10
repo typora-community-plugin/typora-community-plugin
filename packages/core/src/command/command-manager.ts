@@ -1,8 +1,7 @@
 import { useEventBus } from "src/common/eventbus"
-import { registerService, useService } from "src/common/service"
+import { useService } from "src/common/service"
 import { type HotkeyScope, readableHotkey } from "src/hotkey-manager"
 import { debounced } from "src/utils/decorator/debounced"
-import { memorize } from "src/utils/function/memorize"
 import type { DisposeFunc } from "src/utils/types"
 
 
@@ -17,8 +16,6 @@ export type Command = {
   callback: () => void
 }
 
-
-registerService('command-manager', memorize(() => new CommandManager()))
 
 export class CommandManager {
 

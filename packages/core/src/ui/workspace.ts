@@ -15,8 +15,7 @@ import { CommandModal } from './commands/command-modal'
 import { QuickOpenPanel } from './quick-open-panel'
 import { _emitMissingEvents } from 'src/symbols'
 import type { View } from './view'
-import { registerService, useService } from 'src/common/service'
-import { memorize } from 'src/utils/function/memorize'
+import { useService } from 'src/common/service'
 
 
 export type WorkspaceEvents = {
@@ -25,9 +24,6 @@ export type WorkspaceEvents = {
   'file:will-save'(path: string): void
 }
 
-
-registerService('workspace', memorize(() => new Workspace()))
-registerService('sidebar', memorize(() => useService('workspace').sidebar))
 
 export class Workspace extends Events<WorkspaceEvents> {
 

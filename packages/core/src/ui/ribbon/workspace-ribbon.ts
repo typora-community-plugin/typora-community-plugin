@@ -1,13 +1,12 @@
 import './workspace-ribbon.scss'
 import decorate from '@plylrnsdy/decorate.js'
 import { editor, File } from 'typora'
-import { registerService, useService } from 'src/common/service'
+import { useService } from 'src/common/service'
 import { draggable } from 'src/ui/components/draggable'
 import { Menu } from 'src/ui/components/menu'
 import { html } from 'src/utils/html'
 import { View } from 'src/ui/view'
 import type { DisposeFunc } from 'src/utils/types'
-import { memorize } from 'src/utils/function/memorize'
 
 
 export type RibbonSettings = {
@@ -39,8 +38,6 @@ interface RibbonItemButton {
   order?: number
 }
 
-
-registerService('ribbon', memorize(() => new WorkspaceRibbon()))
 
 /**
  * @example

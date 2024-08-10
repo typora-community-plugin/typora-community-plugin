@@ -1,9 +1,8 @@
 import { _options } from 'typora'
-import { registerService, useService } from 'src/common/service'
+import { useService } from 'src/common/service'
 import { Notice } from 'src/ui/components/notice'
 import { format } from "src/utils/string/format"
 import { HttpClient } from './http-client'
-import { memorize } from 'src/utils/function/memorize'
 
 
 interface GithubProxy {
@@ -55,8 +54,6 @@ const moeyyCn: GithubProxy = {
   raw: 'https://moeyy.cn/gh-proxy/' + github.raw,
 }
 
-
-registerService('github', memorize(() => new GithubAPI()))
 
 export class GithubAPI {
 

@@ -1,7 +1,6 @@
-import { registerService, useService } from "src/common/service"
+import { useService } from "src/common/service"
 import type { ConfigStorage } from "src/io/config-storage"
 import { debounced } from "src/utils/decorator/debounced"
-import { memorize } from "src/utils/function/memorize"
 import { noop } from "src/utils/noop"
 import type { DisposeFunc } from "src/utils/types"
 
@@ -32,13 +31,6 @@ type SettingsListeners<T> = Record<
   Array<(key: keyof T, value: T[keyof T]) => void>
 >
 
-
-registerService('settings', memorize(() =>
-  new Settings({
-    filename: 'core',
-    version: 1,
-  })
-))
 
 export class Settings<T extends Record<string, any>> {
 

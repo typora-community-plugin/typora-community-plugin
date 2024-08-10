@@ -1,8 +1,6 @@
 import { capitalize } from 'src/utils/string/capitalize'
 import { platform } from "src/common/constants"
 import { useEventBus } from "./common/eventbus"
-import { registerService } from './common/service'
-import { memorize } from './utils/function/memorize'
 
 
 export type HotkeyScope = 'global' | 'editor'
@@ -22,8 +20,6 @@ const arrowKeys: Record<string, string> = {
   'arrowright': '→',
 }
 
-
-registerService('hotkey-manager', memorize(() => new HotkeyManager()))
 
 export class HotkeyManager {
 

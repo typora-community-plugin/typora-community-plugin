@@ -8,14 +8,11 @@ import { PluginMarketplace } from './plugin-marketplace'
 import { debounced } from 'src/utils/decorator/debounced'
 import { format } from 'src/utils/string/format'
 import * as versions from 'src/utils/versions'
-import { registerService, useService } from 'src/common/service'
-import { memorize } from 'src/utils/function/memorize'
+import { useService } from 'src/common/service'
 import { coreVersion } from 'src/common/constants'
 
 
 const logger = useService('logger', ['PluginManager'])
-
-registerService('plugin-manager', memorize(() => new PluginManager()))
 
 export class PluginManager {
 

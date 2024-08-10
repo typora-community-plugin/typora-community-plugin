@@ -5,7 +5,7 @@ import { JSBridge, _options, editor } from 'typora'
 import * as Core from '.'
 import { coreDir, coreVersion, platform } from 'src/common/constants'
 import { Events } from 'src/common/events'
-import { registerService, useService } from 'src/common/service'
+import { useService } from 'src/common/service'
 import type { GithubAPI } from 'src/net/github'
 import type { HotkeyManager } from 'src/hotkey-manager'
 import fs from 'src/io/fs/filesystem'
@@ -23,7 +23,6 @@ import type { Workspace } from 'src/ui/workspace'
 import type { RibbonSettings } from 'src/ui/ribbon/workspace-ribbon'
 import { GlobalSearch } from './ui/sidebar/search/global-search'
 import { isMarkdownUrl } from 'src/utils/string/is-markdown-url'
-import { memorize } from './utils/function/memorize'
 import type { FileURL } from 'src/utils/types'
 import { _emitMissingEvents } from 'src/symbols'
 
@@ -50,9 +49,6 @@ export type AppSettings =
 
 export type AppPlugin = (app: App) => void
 
-
-registerService('app', memorize(() => new App()))
-registerService('env', () => useService('config-storage').readConfigJson('env'))
 
 /**
  * Proxy of Typora

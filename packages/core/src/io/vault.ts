@@ -2,11 +2,10 @@ import path from 'src/path'
 import { _options, editor, File, JSBridge } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
 import { Events } from 'src/common/events'
-import { registerService, useService } from 'src/common/service'
+import { useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
 import { _emitMissingEvents } from 'src/symbols'
 import { ConfigStorage } from './config-storage'
-import { memorize } from 'src/utils/function/memorize'
 
 
 const logger = useService('logger', ['Vault'])
@@ -25,9 +24,6 @@ export type VaultEvents = {
   'file:rename'(oldPath: string, newPath: string): void
 }
 
-
-registerService('vault', memorize(() => new Vault()))
-registerService('config-storage', () => useService('vault'))
 
 /**
  * Mounted folder

@@ -1,7 +1,7 @@
 import decorate from "@plylrnsdy/decorate.js"
 import { editor } from "typora"
 import { Component } from "src/common/component"
-import { registerService, useService } from "src/common/service"
+import { useService } from "src/common/service"
 import { Events } from "src/common/events"
 import { MarkdownPostProcessor } from "./postprocessor/postprocessor-manager"
 import { MarkdownPreProcessor } from "./preprocessor/preprocessor"
@@ -10,7 +10,6 @@ import { EditorSuggestManager } from "./suggestion/suggest-manager"
 import { debounce } from "src/utils/function/debounce"
 import type { FileURL } from "src/utils/types"
 import { until } from "src/utils/until"
-import { memorize } from "src/utils/function/memorize"
 
 
 export type MarkdownEditorEvents = {
@@ -19,8 +18,6 @@ export type MarkdownEditorEvents = {
   'scroll'(): void
 }
 
-
-registerService('markdown-editor', memorize(() => new MarkdownEditor()))
 
 export class MarkdownEditor extends Events<MarkdownEditorEvents> {
 
