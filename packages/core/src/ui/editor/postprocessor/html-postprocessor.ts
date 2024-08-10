@@ -2,10 +2,13 @@ import { useService } from 'src/common/service'
 import { PostProcessor } from "./postprocessor"
 
 
-const logger = useService('logger', ['HtmlPostProcessor'])
-
-
 export class HtmlPostProcessor extends PostProcessor {
+
+  constructor(
+    protected logger = useService('logger', ['HtmlPostProcessor'])
+  ) {
+    super()
+  }
 
   private _selector = ''
 
@@ -29,7 +32,7 @@ export class HtmlPostProcessor extends PostProcessor {
       elements.forEach(this.process, this)
     }
     catch (error) {
-      logger.error(error)
+      this.logger.error(error)
     }
   }
 

@@ -5,9 +5,6 @@ import fs from 'src/io/fs/filesystem'
 import type { ReadonlyDeep } from 'src/utils/types'
 
 
-const logger = useService('logger', ['I18n'])
-
-
 type I18nBaseOptions = {
   defaultLang?: string
   userLang?: string
@@ -31,7 +28,10 @@ export class I18n<T> {
 
   private resources: T
 
-  constructor(options: I18nOptions<T>) {
+  constructor(
+    options: I18nOptions<T>,
+    private logger = useService('logger', ['I18n'])
+  ) {
     const {
       defaultLang,
       userLang,
@@ -73,7 +73,7 @@ export class I18n<T> {
         return
       }
       catch (error) {
-        logger.warn(`Failed to load locale file: lang.${localeList[i]}.json`)
+        this.logger.warn(`Failed to load locale file: lang.${localeList[i]}.json`)
         continue
       }
     }

@@ -1,5 +1,5 @@
 import path from "./path"
-import "./io/logger"
+import { Logger } from "./io/logger"
 import { App } from "./app"
 import { coreDir } from "./common/constants"
 import { CommandManager } from "./command/command-manager"
@@ -16,6 +16,9 @@ import { Workspace } from "./ui/workspace"
 import { MarkdownEditor } from "./ui/editor/markdown-editor"
 import { WorkspaceRibbon } from "./ui/ribbon/workspace-ribbon"
 
+
+
+registerService('logger', memorize(([scope]) => new Logger(scope)))
 
 registerService('app', memorize(() => new App()))
 registerService('env', () =>

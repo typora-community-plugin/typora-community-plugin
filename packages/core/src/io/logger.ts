@@ -1,5 +1,3 @@
-import { registerService } from "src/common/service"
-import { memorize } from "src/utils/function/memorize"
 import { identity } from "src/utils/identity"
 
 
@@ -15,6 +13,7 @@ const LogLevel: Record<string, Level> = {
   WARN: { method: 'warn', tag: 'WARN', bgColor: 'darkorange' },
   ERROR: { method: 'error', tag: 'ERROR', bgColor: 'firebrick' },
 }
+
 
 const RESET_STYLES = 'color:unset; background:unset; padding:unset; border-radius:unset;'
 
@@ -35,9 +34,6 @@ function badages(...messages: [string, string, string][]) {
       return acc
     }, [''])
 }
-
-
-registerService('logger', memorize(([scope]) => new Logger(scope)))
 
 
 export interface ILogger {

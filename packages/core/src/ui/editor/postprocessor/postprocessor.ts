@@ -3,9 +3,6 @@ import { useService } from 'src/common/service'
 import { randomString } from "src/utils/random-string"
 
 
-const logger = useService('logger', ['PostProcessor'])
-
-
 export type ButtonMouseEventListener<T> = (event: MouseEvent & { target: HTMLElement }, context: T) => void
 
 export interface ButtonOptions<T = any> {
@@ -17,14 +14,20 @@ export interface ButtonOptions<T = any> {
 
 export type RawProcessor = (el: HTMLElement) => void
 
+
 export class PostProcessor {
+
+  constructor(
+    protected logger = useService('logger', ['PostProcessor'])
+  ) {
+  }
 
   _process(el: HTMLElement) {
     try {
       this.process(el)
     }
     catch (e) {
-      logger.error(e)
+      this.logger.error(e)
     }
   }
 

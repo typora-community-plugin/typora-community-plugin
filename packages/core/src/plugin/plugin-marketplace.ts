@@ -5,9 +5,6 @@ import fs from 'src/io/fs/filesystem'
 import type { PluginManifest, PluginPostion } from "./plugin-manifest"
 
 
-const logger = useService('logger', ['PluginMarketplace'])
-
-
 export type PluginMarketInfo = Pick<PluginManifest, "id" | "name" | "description" | "author" | "repo" | "platforms"> & {
   newestVersion?: string
 }
@@ -21,6 +18,7 @@ export class PluginMarketplace {
   }
 
   constructor(
+    private logger = useService('logger', ['PluginMarketplace']),
     private i18n = useService('i18n'),
     private github = useService('github'),
     private plugins = useService('plugin-manager'),
@@ -71,7 +69,7 @@ export class PluginMarketplace {
           })
       })
       .catch(error => {
-        logger.error(error)
+        this.logger.error(error)
         new Notice(error.message)
       })
   }

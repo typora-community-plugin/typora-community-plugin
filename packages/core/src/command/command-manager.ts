@@ -5,9 +5,6 @@ import { debounced } from "src/utils/decorator/debounced"
 import type { DisposeFunc } from "src/utils/types"
 
 
-const logger = useService('logger', ['CommandManager'])
-
-
 export type Command = {
   id: string
   title: string
@@ -27,6 +24,7 @@ export class CommandManager {
 
   constructor(
     app = useEventBus('app'),
+    private logger = useService('logger', ['CommandManager']),
     private vault = useService('config-storage'),
     private hotkeyManager = useService('hotkey-manager'),
   ) {
@@ -82,7 +80,7 @@ export class CommandManager {
       this.commandMap[commandId]?.callback()
     }
     catch (error) {
-      logger.error(`run:${commandId}`, error)
+      this.logger.error(`run:${commandId}`, error)
     }
   }
 

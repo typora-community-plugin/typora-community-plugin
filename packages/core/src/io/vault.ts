@@ -8,9 +8,6 @@ import { _emitMissingEvents } from 'src/symbols'
 import { ConfigStorage } from './config-storage'
 
 
-const logger = useService('logger', ['Vault'])
-
-
 export type VaultEvents = {
   /** be emitted when first mount or change folder */
   'mounted'(path: string): void
@@ -34,7 +31,9 @@ export class Vault extends Events<VaultEvents> implements ConfigStorage {
     ?? _options.mountFolder
     ?? path.dirname(_options.initFilePath ?? File.bundle.filePath)
 
-  constructor() {
+  constructor(
+    protected logger = useService('logger', ['Vault'])
+  ) {
     super('vault')
 
     this._registerEventHooks()
@@ -68,7 +67,7 @@ export class Vault extends Events<VaultEvents> implements ConfigStorage {
       const text = fs.readTextSync(configPath)
       return JSON.parse(text)
     } catch (error) {
-      logger.warn(`Failed to load config "${filename}.json"`)
+      this.logger.warn(`Failed to load config "${filename}.json"`)
       return defaultValue
     }
   }
@@ -81,7 +80,7 @@ export class Vault extends Events<VaultEvents> implements ConfigStorage {
       .catch(() => fs.mkdir(dirname))
       .then(() => fs.writeText(configPath, JSON.stringify(config, null, 2)))
       .catch(error => {
-        logger.error(`Failed to save config "${filename}.json".`, error)
+        this.logger.error(`Failed to save config "${filename}.json".`, error)
       })
   }
 

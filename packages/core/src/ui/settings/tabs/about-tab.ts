@@ -8,12 +8,10 @@ import { HttpClient } from 'src/net/http-client'
 import { useService } from 'src/common/service'
 
 
-const logger = useService('logger', ['AboutTab'])
-
-
 export type CoreSettings = {
   displayLang: string
 }
+
 
 export class AboutTab extends SettingTab {
 
@@ -22,6 +20,7 @@ export class AboutTab extends SettingTab {
   }
 
   constructor(
+    private logger = useService('logger', ['AboutTab']),
     private settings = useService('settings'),
     private i18n = useService('i18n'),
     private github = useService('github')
@@ -101,7 +100,7 @@ export class AboutTab extends SettingTab {
         }
       })
       .catch(error => {
-        logger.error(error)
+        this.logger.error(error)
         new Notice(error.message)
       })
   }

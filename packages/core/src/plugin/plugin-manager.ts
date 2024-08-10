@@ -12,8 +12,6 @@ import { useService } from 'src/common/service'
 import { coreVersion } from 'src/common/constants'
 
 
-const logger = useService('logger', ['PluginManager'])
-
 export class PluginManager {
 
   globalRootDir = path.join(_options.userDataPath, 'plugins')
@@ -28,6 +26,7 @@ export class PluginManager {
   marketplace: PluginMarketplace
 
   constructor(
+    private logger = useService('logger', ['PluginManager']),
     private vault = useService('vault'),
     private i18n = useService('i18n'),
     private env = useService('env'),
@@ -92,7 +91,7 @@ export class PluginManager {
 
         this.manifests[manifest.id] = manifest
       })
-      .catch((error) => logger.error(error))
+      .catch((error) => this.logger.error(error))
   }
 
   /**
@@ -130,7 +129,7 @@ export class PluginManager {
         .catch(() => { })
     }
     catch (error) {
-      logger.error(`Plugin.load:${id}`, error)
+      this.logger.error(`Plugin.load:${id}`, error)
     }
   }
 
@@ -156,7 +155,7 @@ export class PluginManager {
     try {
       this.instances[id].load()
     } catch (error) {
-      logger.error(error)
+      this.logger.error(error)
     }
 
     if (this.styles[id]) {
@@ -172,7 +171,7 @@ export class PluginManager {
       this.instances[id]?.unload()
       document.getElementById(`typora-plugin:${id}`)?.remove()
     } catch (error) {
-      logger.error(`Plugin.unload:${id}`, error)
+      this.logger.error(`Plugin.unload:${id}`, error)
     }
 
     delete this.enabledPlugins[id]

@@ -2,9 +2,6 @@ import { useService } from "./service"
 import type { DisposeFunc } from "src/utils/types"
 
 
-const logger = useService('logger', ['Events'])
-
-
 type EventListener = (...args: any[]) => any
 
 type EventDefination = Record<string, EventListener>
@@ -17,7 +14,10 @@ export class Events<E extends EventDefination> {
 
   protected _listeners: Record<keyof E, EventListener[]> = {} as any
 
-  constructor(private scope?: string) {
+  constructor(
+    private scope?: string,
+    protected logger = useService('logger', ['Events'])
+  ) {
     if (scope) {
       if (scopedListeners[scope]) {
         this._listeners = scopedListeners[scope] as any
@@ -62,14 +62,14 @@ export class Events<E extends EventDefination> {
   protected emit<K extends keyof E>(event: K, ...args: Parameters<E[K]>) {
 
     if (process.env.IS_DEV) {
-      logger.debug(`${this.scope} @${event as string}\n`, ...args)
+      this.logger.debug(`${this.scope} @${event as string}\n`, ...args)
     }
 
     try {
       this._listeners[event]?.forEach(fn => fn(...args))
     }
     catch (error) {
-      logger.error(`${this.scope} @${event as string}\n`, error)
+      this.logger.error(`${this.scope} @${event as string}\n`, error)
     }
   }
 }
