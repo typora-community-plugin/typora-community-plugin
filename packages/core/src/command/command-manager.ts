@@ -16,11 +16,11 @@ export type Command = {
 
 export class CommandManager {
 
-  private defaultCommandMap: Record<string, Command> = {}
+  protected defaultCommandMap: Record<string, Command> = {}
 
   commandMap: Record<string, Command> = {}
 
-  private disposableMap: Record<string, DisposeFunc[]> = {}
+  protected disposableMap: Record<string, DisposeFunc[]> = {}
 
   constructor(
     app = useEventBus('app'),
@@ -59,7 +59,7 @@ export class CommandManager {
     delete this.defaultCommandMap[command.id]
   }
 
-  private bindHotkey(command: Command) {
+  protected bindHotkey(command: Command) {
     if (!command.hotkey) return
 
     const disposes = this.disposableMap[command.id] = [] as DisposeFunc[]
@@ -70,7 +70,7 @@ export class CommandManager {
         : this.hotkeyManager.addEditorHotkey(command.hotkey, command.callback))
   }
 
-  private unbindHotkey(command: Command) {
+  protected unbindHotkey(command: Command) {
     this.disposableMap[command.id].forEach(fn => fn())
     this.disposableMap[command.id] = []
   }
