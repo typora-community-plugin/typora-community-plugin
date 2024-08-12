@@ -22,7 +22,9 @@ registerService('logger', memorize(([scope]) => new Logger(scope)))
 
 registerService('app', memorize(() => new App()))
 registerService('env', () =>
-  useService('config-storage').readConfigJson('env'))
+  // @ts-ignore
+  window[Symbol.for(`${process.env.CORE_NS}:env`)] ?? {}
+)
 
 registerService('command-manager', memorize(() => new CommandManager()))
 
