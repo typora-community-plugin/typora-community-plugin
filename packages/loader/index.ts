@@ -17,6 +17,9 @@ import { File, _options, bridge, reqnode } from 'typora'
     ? env.PLUGIN_CORE_PATH.replace(/\{VAULT\}/, mountFolder)
     : `./${loaderConfig.coreVersion}/core.js`
 
+  // @ts-ignore
+  window[Symbol.for(`${process.env.CORE_NS}:env`)] = env
+
   import(pluginCore)
 
 })()
