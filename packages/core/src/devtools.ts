@@ -8,13 +8,16 @@ import { html } from 'src/utils/html'
 
 export function devtools(app: App) {
 
+  if (process.env.IS_DEV) {
+    ClientCommand.toggleDevTools()
+  }
+
   if (app.env.PLUGIN_WIN_ID && File.isNode) {
     createLocker()
   }
 
   app.once('load', () => {
-    if (app.env.TYPORA_EXTENSION_ENV === 'development') {
-      ClientCommand.toggleDevTools()
+    if (process.env.IS_DEV) {
       addDevtoolsRibbon()
     }
   })
