@@ -8,18 +8,14 @@ import { html } from 'src/utils/html'
 
 export function devtools(app: App) {
 
-  if (process.env.IS_DEV) {
-    ClientCommand.toggleDevTools()
-  }
+  ClientCommand.toggleDevTools()
 
-  if (app.env.PLUGIN_WIN_ID && File.isNode) {
+  if (File.isNode) {
     createLocker()
   }
 
   app.once('load', () => {
-    if (process.env.IS_DEV) {
-      addDevtoolsRibbon()
-    }
+    addDevtoolsRibbon()
   })
 
   function addDevtoolsRibbon() {
@@ -38,7 +34,7 @@ export function devtools(app: App) {
   function createLocker() {
     const nodeFs: typeof import('fs') = reqnode('fs')
     const lockerDir = path.join(app.plugins.globalRootDir, '_lock')
-    const winLocker = path.join(lockerDir, `win-${app.env.PLUGIN_WIN_ID}`)
+    const winLocker = path.join(lockerDir, 'win-test')
     const ac = new AbortController()
 
     fs.access(lockerDir)

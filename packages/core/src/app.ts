@@ -34,7 +34,6 @@ export type AppEvents = {
 export type EnvironmentVairables = {
   PLUGIN_CORE_PATH?: string
   PLUGIN_GLOBAL_DIR?: string
-  PLUGIN_WIN_ID?: string
 
   [key: string]: any
 }
