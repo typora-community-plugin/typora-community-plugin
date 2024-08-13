@@ -9,12 +9,12 @@ import { debounced } from 'src/utils/decorator/debounced'
 import { format } from 'src/utils/string/format'
 import * as versions from 'src/utils/versions'
 import { useService } from 'src/common/service'
-import { coreVersion } from 'src/common/constants'
+import { coreVersion, globalRootDir } from 'src/common/constants'
 
 
 export class PluginManager {
 
-  globalRootDir = path.join(_options.userDataPath, 'plugins')
+  globalRootDir = globalRootDir()
   globalPluginsDir = ''
   vaultPluginsDir = ''
 
@@ -45,7 +45,7 @@ export class PluginManager {
 
     this.globalPluginsDir = PLUGIN_GLOBAL_DIR
       ? PLUGIN_GLOBAL_DIR.replace(/\{VAULT\}/g, this.vault.path)
-      : path.join(this.globalRootDir, 'plugins')
+      : path.join(globalRootDir(), 'plugins')
 
     this.vaultPluginsDir = path.join(this.vault.configDir, 'plugins')
 

@@ -5,9 +5,15 @@ import { constant } from "src/utils/constant"
 
 export const coreVersion = constant(process.env.CORE_VERSION)
 
+export const globalRootDir = constant(
+  process.env.IS_PROD
+    ? path.join(_options.userDataPath, 'plugins')
+    : import.meta.url.slice(8, -7)
+)
+
 export const coreDir = constant(
   process.env.IS_PROD
-    ? path.join(_options.userDataPath, 'plugins', coreVersion())
+    ? path.join(globalRootDir(), coreVersion())
     : process.env.IS_DEV
       ? import.meta.url.slice(8, -7)
       : ''

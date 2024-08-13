@@ -1,6 +1,7 @@
 import path from 'src/path'
 import { ClientCommand, File, JSBridge, reqnode } from 'typora'
 import type { App } from 'src/app'
+import { globalRootDir } from 'src/common/constants'
 import fs from 'src/io/fs/filesystem'
 import { BUILT_IN } from 'src/ui/ribbon/workspace-ribbon'
 import { html } from 'src/utils/html'
@@ -33,7 +34,7 @@ export function devtools(app: App) {
 
   function createLocker() {
     const nodeFs: typeof import('fs') = reqnode('fs')
-    const lockerDir = path.join(app.plugins.globalRootDir, '_lock')
+    const lockerDir = path.join(globalRootDir(), '_lock')
     const winLocker = path.join(lockerDir, 'win-test')
     const ac = new AbortController()
 
