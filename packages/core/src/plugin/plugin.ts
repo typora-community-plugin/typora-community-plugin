@@ -1,6 +1,7 @@
 import type { App } from "src/app"
 import type { Command } from "src/command/command-manager"
 import { Component } from "src/common/component"
+import { useService } from "src/common/service"
 import path from 'src/path'
 import type { PluginManifest } from "./plugin-manifest"
 import { PluginSettings } from './plugin-settings'
@@ -29,19 +30,20 @@ export abstract class Plugin<T extends Record<string, any> = {}>
 
   constructor(
     protected app: App,
-    public manifest: PluginManifest
+    public manifest: PluginManifest,
+    private config = useService('config-repository'),
   ) {
     super()
   }
 
   get dataPath() {
-    return path.join(this.app.vault.dataDir, `${this.manifest.id}.json`)
+    return path.join(this.config.dataDir, `${this.manifest.id}.json`)
   }
 
   registerSettings(settings: PluginSettings<any>) {
     this._settings = settings
     this.register(
-      this.app.vault.on('change', () => this._settings.load()))
+      this.config.on('switch', () => this._settings.load()))
   }
 
   registerSettingTab(tab: SettingTab) {

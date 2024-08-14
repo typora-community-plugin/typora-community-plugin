@@ -14,11 +14,17 @@ export class HotkeySettingTab extends SettingTab {
   }
 
   constructor(
+    config = useService('config-repository'),
     private app = useEventBus('app'),
     private i18n = useService('i18n'),
     private commands = useService('command-manager'),
   ) {
     super()
+
+    config.on('switch', () => {
+      this.containerEl.innerHTML = ''
+      this.onload()
+    })
   }
 
   onload() {

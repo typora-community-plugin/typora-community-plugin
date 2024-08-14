@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals'
 import { registerService } from "./common/service"
-import type { ConfigStorage } from "./io/config-storage"
+import type { ConfigRepository } from "./io/config-repository"
 import { memorize } from "./utils/function/memorize"
 
 
@@ -15,16 +15,13 @@ registerService('app', memorize(() => (
   } as any
 )))
 
-registerService('config-storage', memorize(() =>
-  new class implements ConfigStorage {
-    readConfigJson(filename: string, defaultValue?: any) {
-      return defaultValue
-    }
-    writeConfigJson(filename: string, config: any): Promise<void> {
-      return Promise.resolve()
-    }
-  }
-))
+registerService('config-repository', memorize(() => (
+  {
+    readConfigJson: jest.fn()
+      .mockImplementation((filename, defaultValue) => defaultValue),
+    writeConfigJson: jest.fn(),
+  } as any
+)))
 
 registerService('hotkey-manager', memorize(() => (
   {

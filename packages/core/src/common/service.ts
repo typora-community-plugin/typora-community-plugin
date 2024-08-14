@@ -1,7 +1,7 @@
 import type { App, AppSettings, EnvironmentVairables } from "src/app"
 import type { CommandManager } from "src/command/command-manager"
 import type { HotkeyManager } from "src/hotkey-manager"
-import type { ConfigStorage } from "src/io/config-storage"
+import type { ConfigRepository } from "src/io/config-repository"
 import type { ILogger } from "src/io/logger"
 import type { Vault } from "src/io/vault"
 import type { I18n } from "src/locales/i18n"
@@ -18,7 +18,7 @@ import type { Workspace } from "src/ui/workspace"
 type ServiceMap = {
   'app'(): App
   'command-manager'(): CommandManager
-  'config-storage'(): ConfigStorage
+  'config-repository'(): ConfigRepository
   'env'(): EnvironmentVairables
   'github'(): GithubAPI
   'hotkey-manager'(): HotkeyManager

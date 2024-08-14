@@ -23,23 +23,20 @@ export class CommandManager {
   protected disposableMap: Record<string, DisposeFunc[]> = {}
 
   constructor(
-    app = useEventBus('app'),
     private logger = useService('logger', ['CommandManager']),
-    private vault = useService('config-storage'),
+    private config = useService('config-repository'),
     private hotkeyManager = useService('hotkey-manager'),
   ) {
-    app.on('load', () => {
-      const map = vault.readConfigJson('hotkeys') as Record<string, Command>
+    this.loadConfig()
 
-      Object.keys(this.commandMap)
-        .forEach(id => this.resetCommandHotkey(id))
-
-      Object.keys(map)
-        .forEach(id => this.setCommandHotkey(id, map[id].hotkey!))
-    })
+    config.on('switch', () => this.loadConfig())
   }
 
   register(command: Command) {
+    if (command.id in this.defaultCommandMap) {
+      this.logger.error(`command ${command.id} already registered`)
+    }
+
     this.defaultCommandMap[command.id] = command
     this.commandMap[command.id] = Object.create(command)
     this.disposableMap[command.id] = []
@@ -103,6 +100,16 @@ export class CommandManager {
     this.setCommandHotkey(commandId, this.defaultCommandMap[commandId].hotkey!)
   }
 
+  private loadConfig() {
+    const map = this.config.readConfigJson('hotkeys') as Record<string, Command>
+
+    Object.keys(this.commandMap)
+      .forEach(id => this.resetCommandHotkey(id))
+
+    Object.keys(map)
+      .forEach(id => this.setCommandHotkey(id, map[id].hotkey!))
+  }
+
   private getConfig() {
     return Object.keys(this.commandMap)
       .filter(id => Object.keys(this.commandMap[id]).length)
@@ -111,6 +118,6 @@ export class CommandManager {
 
   @debounced(1e3)
   private saveConfig() {
-    this.vault.writeConfigJson('hotkeys', this.getConfig())
+    this.config.writeConfigJson('hotkeys', this.getConfig())
   }
 }

@@ -20,6 +20,7 @@ export class AboutTab extends SettingTab {
   }
 
   constructor(
+    config = useService('config-repository'),
     private logger = useService('logger', ['AboutTab']),
     private settings = useService('settings'),
     private i18n = useService('i18n'),
@@ -28,6 +29,10 @@ export class AboutTab extends SettingTab {
     super()
 
     settings.setDefault({ displayLang: i18n.locale })
+    config.on('switch', () => {
+      this.containerEl.innerHTML = ''
+      this.onload()
+    })
   }
 
   onload() {

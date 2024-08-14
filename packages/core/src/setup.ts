@@ -5,6 +5,7 @@ import { coreDir } from "./common/constants"
 import { CommandManager } from "./command/command-manager"
 import { registerService, useService } from "./common/service"
 import { HotkeyManager } from "./hotkey-manager"
+import { ConfigRepository } from "./io/config-repository"
 import { Vault } from "./io/vault"
 import { DEFALUT_OPTIONS, I18n } from "./locales/i18n"
 import { GithubAPI } from "./net/github"
@@ -42,7 +43,7 @@ registerService('i18n', memorize(() => {
 }))
 
 registerService('vault', memorize(() => new Vault()))
-registerService('config-storage', () => useService('vault'))
+registerService('config-repository', memorize(() => new ConfigRepository()))
 
 registerService('github', memorize(() => new GithubAPI()))
 

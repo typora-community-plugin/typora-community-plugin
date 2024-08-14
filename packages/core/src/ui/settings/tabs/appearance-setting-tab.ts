@@ -27,12 +27,17 @@ export class AppearanceSettingTab extends SettingTab {
   }
 
   constructor(
+    config = useService('config-repository'),
     private settings = useService('settings'),
     private i18n = useService('i18n'),
   ) {
     super()
 
     settings.setDefault(DEFAULT_SETTINGS)
+    config.on('switch', () => {
+      this.containerEl.innerHTML = ''
+      this.onload()
+    })
   }
 
   onload() {

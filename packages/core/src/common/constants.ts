@@ -19,6 +19,10 @@ export const coreDir = constant(
       : ''
 )
 
+export const globalConfigDir = constant(
+  path.join(globalRootDir(), 'settings')
+)
+
 export const platform = constant(
   (process?.platform as 'win32' | 'linux') ?? 'darwin'
 )

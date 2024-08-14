@@ -1,5 +1,4 @@
 import { useService } from "src/common/service"
-import type { ConfigStorage } from "src/io/config-storage"
 import { debounced } from "src/utils/decorator/debounced"
 import { noop } from "src/utils/noop"
 import type { DisposeFunc } from "src/utils/types"
@@ -37,10 +36,7 @@ export class Settings<T extends Record<string, any>> {
     return this._stores.version
   }
 
-  set version(value: number) {
-    this._stores.version = value
-  }
-
+  private _defaultSettings = {} as T
   private _stores = { settings: {} } as SettingsFile<T>
   private _listeners = {} as SettingsListeners<T>
   private _migations: SettingMigrations | null
@@ -48,10 +44,13 @@ export class Settings<T extends Record<string, any>> {
   constructor(
     options: SettingsOptions,
     private logger = useService('logger', ['Settings']),
-    private vault: ConfigStorage = useService('config-storage')
+    private config = useService('config-repository')
   ) {
     this.filename = options.filename
-    this.version = options.version
+    this._stores = {
+      version: options.version,
+      settings: Object.create(this._defaultSettings),
+    }
     this._migations = options.migations
 
     this.load()
@@ -65,13 +64,18 @@ export class Settings<T extends Record<string, any>> {
   }
 
   setDefault<T extends object>(settings: T) {
-    this._stores.settings = Object.assign({}, settings, this._stores.settings)
+    Object.assign(this._defaultSettings, settings)
   }
 
   set<K extends keyof T>(key: K, value: T[K]) {
     if (this._stores.settings[key] === value) return
     this._stores.settings[key] = value
 
+    this._emit(key, value)
+    this.save()
+  }
+
+  private _emit<K extends keyof T>(key: K, value: T[K]) {
     this._listeners[key]?.forEach(fn => {
       try {
         fn(key, value)
@@ -80,8 +84,6 @@ export class Settings<T extends Record<string, any>> {
         this.logger.error(`${this.filename} :${key.toString()}=${value} failed to call a listener.\n`, error)
       }
     })
-
-    this.save()
   }
 
   addChangeListener<K extends keyof T>(
@@ -112,9 +114,21 @@ export class Settings<T extends Record<string, any>> {
   }
 
   load() {
-    this._stores = this.vault.readConfigJson(this.filename, {
+    const oldSettings = this._stores.settings
+
+    this._stores = this.config.readConfigJson(this.filename, {
       version: this.version,
-      settings: {}
+      settings: {},
+    })
+
+    this._stores.settings = Object.assign(
+      Object.create(this._defaultSettings),
+      this._stores.settings
+    )
+
+    Object.keys(this._defaultSettings).forEach((key: keyof T) => {
+      if (this._stores.settings[key] === oldSettings[key]) return
+      this._emit(key, this._stores.settings[key])
     })
 
     if (!this._migations) return
@@ -130,12 +144,12 @@ export class Settings<T extends Record<string, any>> {
   @debounced(1e3)
   save() {
     this.logger.debug(`Saving settings to ${this.filename}.json`)
-    this.vault.writeConfigJson(this.filename, this._stores)
+    this.config.writeConfigJson(this.filename, this._stores)
   }
 
   migrateTo(newVersion: number, transform: (oldStores: SettingsFile<any>) => any) {
     this._stores = transform(this._stores)
-    this.version = newVersion
+    this._stores.version = newVersion
   }
 
 }

@@ -5,7 +5,6 @@ import { Events } from 'src/common/events'
 import { useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
 import { _emitMissingEvents } from 'src/symbols'
-import { ConfigStorage } from './config-storage'
 
 
 export type VaultEvents = {
@@ -25,7 +24,7 @@ export type VaultEvents = {
 /**
  * Mounted folder
  */
-export class Vault extends Events<VaultEvents> implements ConfigStorage {
+export class Vault extends Events<VaultEvents> {
 
   private _path = File.getMountFolder()
     ?? _options.mountFolder
@@ -57,31 +56,18 @@ export class Vault extends Events<VaultEvents> implements ConfigStorage {
 
   /**
    * Read json in `configDir`
+   * @deprecated
    *
    * @param filename File name without extension name `.json`
    * @returns JSON Object
    */
   readConfigJson(filename: string, defaultValue: any = {}): any {
-    try {
-      const configPath = path.join(this.configDir, filename + '.json')
-      const text = fs.readTextSync(configPath)
-      return JSON.parse(text)
-    } catch (error) {
-      this.logger.warn(`Failed to load config "${filename}.json"`)
-      return defaultValue
-    }
   }
 
+  /**
+   * @deprecated
+   */
   writeConfigJson(filename: string, config: any) {
-    const configPath = path.join(this.configDir, filename + '.json')
-    const dirname = path.dirname(configPath)
-    return fs
-      .access(dirname)
-      .catch(() => fs.mkdir(dirname))
-      .then(() => fs.writeText(configPath, JSON.stringify(config, null, 2)))
-      .catch(error => {
-        this.logger.error(`Failed to save config "${filename}.json".`, error)
-      })
   }
 
   /**

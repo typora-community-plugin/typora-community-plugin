@@ -15,10 +15,16 @@ export class PluginsManagerSettingTab extends SettingTab {
   }
 
   constructor(
+    config = useService('config-repository'),
     private i18n = useService('i18n'),
     private plugins = useService('plugin-manager'),
   ) {
     super()
+
+    config.on('switch', () => {
+      this.containerEl.innerHTML = ''
+      this.onload()
+    })
   }
 
   show() {

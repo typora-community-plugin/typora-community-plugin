@@ -27,6 +27,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
   }
 
   constructor(
+    config = useService('config-repository'),
     private settings = useService('settings'),
     private i18n = useService('i18n'),
     private github = useService('github'),
@@ -37,6 +38,10 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     settings.setDefault(DEFAULT_SETTINGS)
     settings.onChange('githubProxy', () => {
       this.loadPluginList()
+    })
+    config.on('switch', () => {
+      this.containerEl.innerHTML = ''
+      this.onload()
     })
   }
 

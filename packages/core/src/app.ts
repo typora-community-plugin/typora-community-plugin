@@ -25,6 +25,7 @@ import { GlobalSearch } from './ui/sidebar/search/global-search'
 import { isMarkdownUrl } from 'src/utils/string/is-markdown-url'
 import type { FileURL } from 'src/utils/types'
 import { _emitMissingEvents } from 'src/symbols'
+import { ConfigRepository } from './io/config-repository'
 
 
 export type AppEvents = {
@@ -73,6 +74,7 @@ export class App extends Events<AppEvents> {
   readonly platform = platform()
 
   vault: Vault = useService('vault')
+  config: ConfigRepository = useService('config-repository')
   settings: Settings<AppSettings> = useService('settings')
   i18n: I18n<typeof Locale> = useService('i18n')
   env: EnvironmentVairables = useService('env')
@@ -103,8 +105,7 @@ export class App extends Events<AppEvents> {
       this.vault[_emitMissingEvents]()
       this.workspace[_emitMissingEvents]()
     })
-    this.vault.on('change', () => {
-      this.env = useService('env')
+    this.config.on('switch', () => {
       this.settings.load()
       this.plugins.unloadPlugins()
       this.start()

@@ -27,6 +27,7 @@ export class PluginManager {
 
   constructor(
     private logger = useService('logger', ['PluginManager']),
+    private config = useService('config-repository'),
     private vault = useService('vault'),
     private i18n = useService('i18n'),
     private env = useService('env'),
@@ -37,7 +38,7 @@ export class PluginManager {
   }
 
   get pluginsDataDir() {
-    return path.join(this.vault.configDir, 'data')
+    return path.join(this.config.configDir, 'data')
   }
 
   async loadFromVault() {
@@ -47,9 +48,9 @@ export class PluginManager {
       ? PLUGIN_GLOBAL_DIR.replace(/\{VAULT\}/g, this.vault.path)
       : path.join(globalRootDir(), 'plugins')
 
-    this.vaultPluginsDir = path.join(this.vault.configDir, 'plugins')
+    this.vaultPluginsDir = path.join(this.config.configDir, 'plugins')
 
-    this.enabledPlugins = this.vault.readConfigJson('plugins')
+    this.enabledPlugins = this.config.readConfigJson('plugins')
 
     await this.loadManifests()
     await this.loadPlugins()
@@ -211,6 +212,6 @@ export class PluginManager {
 
   @debounced(1e3)
   private _saveEnabledConfig() {
-    this.vault.writeConfigJson('plugins', this.enabledPlugins)
+    this.config.writeConfigJson('plugins', this.enabledPlugins)
   }
 }
