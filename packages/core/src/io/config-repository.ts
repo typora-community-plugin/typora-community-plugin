@@ -23,6 +23,8 @@ export class ConfigRepository extends Events<ConfigEvents> {
   ) {
     super('Config')
 
+    this._autoSelectConfig()
+
     setTimeout(() => {
       const commands = useService('command-manager')
 
@@ -53,7 +55,7 @@ export class ConfigRepository extends Events<ConfigEvents> {
 
     vault.on('change', () => {
       if (this.isUsingGlobalConfig) return
-      this.useVaultConfig()
+      this._autoSelectConfig()
     })
   }
 
@@ -69,6 +71,12 @@ export class ConfigRepository extends Events<ConfigEvents> {
     return path.join(this.configDir, 'data')
   }
 
+  private _autoSelectConfig() {
+    this.useVaultConfig()
+    fs.access(this.vault.configDir)
+      .catch(() => this.useGlobalConfig())
+  }
+
   useGlobalConfig() {
     if (this.isUsingGlobalConfig) return
     this._configDir = globalConfigDir()
@@ -80,6 +88,10 @@ export class ConfigRepository extends Events<ConfigEvents> {
     if (!this.isUsingGlobalConfig) return
     this._configDir = this.vault.configDir
     this._isUsingGlobalConfig = false
+
+    fs.access(this.vault.configDir)
+      .catch(() => fs.mkdir(this.vault.configDir))
+
     this.emit('switch')
   }
 
