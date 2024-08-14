@@ -1,13 +1,15 @@
 import path from 'src/path'
 import { ClientCommand, File, JSBridge, reqnode } from 'typora'
-import type { App } from 'src/app'
 import { globalRootDir } from 'src/common/constants'
 import fs from 'src/io/fs/filesystem'
 import { BUILT_IN } from 'src/ui/ribbon/workspace-ribbon'
 import { html } from 'src/utils/html'
+import { useService } from './common/service'
 
 
-export function devtools(app: App) {
+export function devtools(
+  ribbon = useService('ribbon'),
+) {
 
   ClientCommand.toggleDevTools()
 
@@ -15,22 +17,16 @@ export function devtools(app: App) {
     createLocker()
   }
 
-  app.once('load', () => {
-    addDevtoolsRibbon()
+  ribbon.addButton({
+    [BUILT_IN]: true,
+    group: 'bottom',
+    id: 'core.devtools',
+    title: 'Devtools',
+    icon: html`<div><i class="fa fa-wrench"></i></div>`,
+    onclick() {
+      JSBridge.invoke("window.toggleDevTools")
+    }
   })
-
-  function addDevtoolsRibbon() {
-    app.workspace.ribbon.addButton({
-      [BUILT_IN]: true,
-      group: 'bottom',
-      id: 'core.devtools',
-      title: 'Devtools',
-      icon: html`<div><i class="fa fa-wrench"></i></div>`,
-      onclick() {
-        JSBridge.invoke("window.toggleDevTools")
-      }
-    })
-  }
 
   function createLocker() {
     const nodeFs: typeof import('fs') = reqnode('fs')

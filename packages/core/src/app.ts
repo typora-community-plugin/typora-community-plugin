@@ -113,11 +113,6 @@ export class App extends Events<AppEvents> {
     document.head.insertAdjacentHTML('beforeend', `<link rel="stylesheet" id="typora-plugin-core" href="file://${path.join(this.coreDir, 'core.css')}" crossorigin="anonymous"></link>`)
   }
 
-  use(plugin: AppPlugin) {
-    plugin(this)
-    return this
-  }
-
   async start() {
     await this.plugins.loadFromVault()
 
