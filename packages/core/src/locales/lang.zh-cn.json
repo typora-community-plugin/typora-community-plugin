@@ -3,6 +3,10 @@
     "commandOpen": "打开命令面板",
     "placeholder": "输入文本过滤命令"
   },
+  "config": {
+    "commandUseGlobalConfig": "使用全局设置",
+    "commandUseVaultConfig": "使用本地设置"
+  },
   "githubAPI": {
     "proxyNotFound": "Github 代理失效，已自动恢复为默认设置。"
   },
@@ -94,7 +98,8 @@
     "outline": "大纲",
     "settings": "设置",
     "settingOfApp": "打开应用设置",
-    "settingOfPlugin": "打开插件设置"
+    "globalSettingOfPlugin": "打开插件设置 (全局)",
+    "vaultSettingOfPlugin": "打开插件设置 (本地)"
   },
   "tabview": {
     "close": "关闭标签",

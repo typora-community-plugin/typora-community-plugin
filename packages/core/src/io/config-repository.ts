@@ -27,29 +27,23 @@ export class ConfigRepository extends Events<ConfigEvents> {
 
     setTimeout(() => {
       const commands = useService('command-manager')
+      const i18n = useService('i18n')
 
       commands.register({
         id: 'command:global-config',
-        title: 'Use global config',
-        scope: 'global',
-        callback: () => this.useGlobalConfig(),
-      })
-
-      commands.register({
-        id: 'command:vault-config',
-        title: 'Use vault config',
-        scope: 'global',
-        callback: () => this.useVaultConfig(),
-      })
-
-      commands.register({
-        id: 'command:del-vault-config',
-        title: 'Delete vault config',
+        title: i18n.t.config.commandUseGlobalConfig,
         scope: 'global',
         callback: () => {
           this.useGlobalConfig()
           fs.remove(this.vault.configDir)
         },
+      })
+
+      commands.register({
+        id: 'command:vault-config',
+        title: i18n.t.config.commandUseVaultConfig,
+        scope: 'global',
+        callback: () => this.useVaultConfig(),
       })
     })
 

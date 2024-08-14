@@ -3,6 +3,10 @@
     "commandOpen": "Open Command Panel",
     "placeholder": "Filter commands by text inputed"
   },
+  "config": {
+    "commandUseGlobalConfig": "Use global settings",
+    "commandUseVaultConfig": "Use vault settings"
+  },
   "githubAPI": {
     "proxyNotFound": "Github proxy is removed and has been automatically reverted to the default settings."
   },
@@ -94,7 +98,8 @@
     "outline": "Outline",
     "settings": "Settings",
     "settingOfApp": "Open App Settings",
-    "settingOfPlugin": "Open Plugin Settings"
+    "globalSettingOfPlugin": "Open Plugin Settings (Global)",
+    "vaultSettingOfPlugin": "Open Plugin Settings (Vault)"
   },
   "tabview": {
     "close": "Close",

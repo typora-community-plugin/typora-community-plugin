@@ -52,6 +52,7 @@ export class WorkspaceRibbon extends View {
   private buttons = [] as RibbonItemButton[]
 
   constructor(
+    private config = useService('config-repository'),
     private settings = useService('settings'),
     private i18n = useService('i18n'),
     private commands = useService('command-manager'),
@@ -152,18 +153,6 @@ export class WorkspaceRibbon extends View {
     const { t } = this.i18n
 
     const menu = new Menu()
-      .addItem(item => {
-        item
-          .setKey('app-settings')
-          .setTitle(t.ribbon.settingOfApp)
-          .onClick(() => File.megaMenu.showPreferencePanel())
-      })
-      .addItem(item => {
-        item
-          .setKey('plugin-settings')
-          .setTitle(t.ribbon.settingOfPlugin)
-          .onClick(() => this.commands.run('settings:open'))
-      })
 
     this.addChild(menu)
 
@@ -173,8 +162,26 @@ export class WorkspaceRibbon extends View {
       id: 'core.settings',
       title: this.i18n.t.ribbon.settings,
       icon: html`<i class="fa fa-cog"></i>`,
-      onclick(event) {
-        menu.showAtMouseEvent(event)
+      onclick: (event) => {
+        menu
+          .empty()
+          .addItem(item => {
+            item
+              .setKey('app-settings')
+              .setTitle(t.ribbon.settingOfApp)
+              .onClick(() => File.megaMenu.showPreferencePanel())
+          })
+          .addItem(item => {
+            item
+              .setKey('plugin-settings')
+              .setTitle(
+                this.config.isUsingGlobalConfig
+                  ? t.ribbon.globalSettingOfPlugin
+                  : t.ribbon.vaultSettingOfPlugin
+              )
+              .onClick(() => this.commands.run('settings:open'))
+          })
+          .showAtMouseEvent(event)
       },
     })
   }
