@@ -26,10 +26,6 @@ export type VaultEvents = {
  */
 export class Vault extends Events<VaultEvents> {
 
-  private _path = File.getMountFolder()
-    ?? _options.mountFolder
-    ?? path.dirname(_options.initFilePath ?? File.bundle.filePath)
-
   constructor(
     protected logger = useService('logger', ['Vault'])
   ) {
@@ -37,6 +33,10 @@ export class Vault extends Events<VaultEvents> {
 
     this._registerEventHooks()
   }
+
+  private _path = File.getMountFolder()
+    ?? _options.mountFolder
+    ?? path.dirname(_options.initFilePath ?? File.bundle.filePath)
 
   get id() {
     return hashCode(this.path)
@@ -52,22 +52,6 @@ export class Vault extends Events<VaultEvents> {
 
   get dataDir() {
     return path.join(this.configDir, 'data')
-  }
-
-  /**
-   * Read json in `configDir`
-   * @deprecated
-   *
-   * @param filename File name without extension name `.json`
-   * @returns JSON Object
-   */
-  readConfigJson(filename: string, defaultValue: any = {}): any {
-  }
-
-  /**
-   * @deprecated
-   */
-  writeConfigJson(filename: string, config: any) {
   }
 
   /**
