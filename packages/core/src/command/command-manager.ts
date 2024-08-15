@@ -23,13 +23,13 @@ export class CommandManager {
   protected disposableMap: Record<string, DisposeFunc[]> = {}
 
   constructor(
+    app = useEventBus('app'),
     private logger = useService('logger', ['CommandManager']),
     private config = useService('config-repository'),
     private hotkeyManager = useService('hotkey-manager'),
   ) {
-    this.loadConfig()
-
-    config.on('switch', () => this.loadConfig())
+    // after plugin loaded (command registered), load command hotkeys
+    app.on('load', () => this.loadConfig())
   }
 
   register(command: Command) {

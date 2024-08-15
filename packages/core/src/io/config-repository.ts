@@ -30,7 +30,7 @@ export class ConfigRepository extends Events<ConfigEvents> {
       const i18n = useService('i18n')
 
       commands.register({
-        id: 'command:global-config',
+        id: 'config:global',
         title: i18n.t.config.commandUseGlobalConfig,
         scope: 'global',
         callback: () => {
@@ -40,7 +40,7 @@ export class ConfigRepository extends Events<ConfigEvents> {
       })
 
       commands.register({
-        id: 'command:vault-config',
+        id: 'config:vault',
         title: i18n.t.config.commandUseVaultConfig,
         scope: 'global',
         callback: () => this.useVaultConfig(),

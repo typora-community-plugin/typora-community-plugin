@@ -1,31 +1,6 @@
 {
   "version": 1,
   "settings": {
-    "displayLang": "en",
-    "githubProxy": "github",
-    "showNotSupportedFile": true,
-    "keepSearchResult": true,
-    "showSearchResultFullPath": true,
-    "showRibbon": true,
-    "showFileTabs": true,
-    "hideExtensionInFileTab": false,
-    "openLinkInCurrentWin": true,
-    "quickOpenInCurrentWin": true,
-    "ignoreFile": true,
-    "ignoreFileGlob": "ignoredFolder",
-    "ribbonState": {
-      "core.search": {
-        "visible": true,
-        "order": 0
-      },
-      "core.file-explorer": {
-        "visible": true,
-        "order": 1
-      },
-      "core.outline": {
-        "visible": true,
-        "order": 2
-      }
-    }
+    "showNotSupportedFile": false
   }
 }
