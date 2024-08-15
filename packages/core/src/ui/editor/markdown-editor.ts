@@ -29,10 +29,14 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
 
   suggestion = new EditorSuggestManager()
 
-  private _openLinkInCurrentWin = new OpenLinkInCurrentWin()
+  private _openLinkInCurrentWin: OpenLinkInCurrentWin
 
   constructor() {
     super('markdown-editor')
+
+    setTimeout(() => {
+      this._openLinkInCurrentWin = new OpenLinkInCurrentWin()
+    })
 
     until(() => editor.writingArea).then(el => {
       this.emit('load', el)

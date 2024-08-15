@@ -16,7 +16,7 @@ export type RibbonSettings = {
   }>
 }
 
-const DEFAULT_SETTINGS: RibbonSettings = {
+export const DEFAULT_RIBBON_SETTINGS: RibbonSettings = {
   ribbonState: {},
 }
 
@@ -59,7 +59,7 @@ export class WorkspaceRibbon extends View {
   ) {
     super()
 
-    settings.setDefault(DEFAULT_SETTINGS)
+    settings.setDefault(DEFAULT_RIBBON_SETTINGS)
 
     this._addDefaultButton()
 

@@ -16,7 +16,7 @@ export type PluginMarketplaceSettings = {
   githubProxy: string
 }
 
-const DEFAULT_SETTINGS: PluginMarketplaceSettings = {
+export const DEFAULT_PLUGIN_MARKETPLACE_SETTINGS: PluginMarketplaceSettings = {
   githubProxy: 'github',
 }
 
@@ -35,7 +35,6 @@ export class PluginMarketplaceSettingTab extends SettingTab {
   ) {
     super()
 
-    settings.setDefault(DEFAULT_SETTINGS)
     settings.onChange('githubProxy', () => {
       this.loadPluginList()
     })

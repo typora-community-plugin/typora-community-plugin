@@ -69,11 +69,13 @@ class KeepSearchResult extends Component {
   ) {
     super()
 
-    if (settings.get(this.SETTING_KEY)) {
+    const { SETTING_KEY } = this
+
+    if (settings.get(SETTING_KEY)) {
       this.load()
     }
 
-    settings.onChange(this.SETTING_KEY, (_, isEnabled) => {
+    settings.onChange(SETTING_KEY, (_, isEnabled) => {
       isEnabled ? this.load() : this.unload()
     })
   }

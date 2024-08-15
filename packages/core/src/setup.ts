@@ -15,7 +15,10 @@ import * as Locale from './locales/lang.en.json'
 import { Settings } from "./settings/settings"
 import { Workspace } from "./ui/workspace"
 import { MarkdownEditor } from "./ui/editor/markdown-editor"
-import { WorkspaceRibbon } from "./ui/ribbon/workspace-ribbon"
+import { DEFAULT_RIBBON_SETTINGS, WorkspaceRibbon } from "./ui/ribbon/workspace-ribbon"
+import { DEFAULT_APPEARANCE_SETTINGS } from "./ui/settings/tabs/appearance-setting-tab"
+import { DEFAULT_FILE_LINK_SETTINGS } from "./ui/settings/tabs/file-link-setting-tab"
+import { DEFAULT_PLUGIN_MARKETPLACE_SETTINGS } from "./ui/settings/tabs/plugin-marketplace-setting-tab"
 
 
 
@@ -47,12 +50,19 @@ registerService('config-repository', memorize(() => new ConfigRepository()))
 
 registerService('github', memorize(() => new GithubAPI()))
 
-registerService('settings', memorize(() =>
-  new Settings({
+registerService('settings', memorize(() => {
+  const settings = new Settings<any>({
     filename: 'core',
     version: 1,
   })
-))
+
+  settings.setDefault(DEFAULT_FILE_LINK_SETTINGS)
+  settings.setDefault(DEFAULT_APPEARANCE_SETTINGS)
+  settings.setDefault(DEFAULT_PLUGIN_MARKETPLACE_SETTINGS)
+  settings.setDefault(DEFAULT_RIBBON_SETTINGS)
+
+  return settings
+}))
 
 registerService('plugin-manager', memorize(() => new PluginManager()))
 

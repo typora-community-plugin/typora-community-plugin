@@ -10,7 +10,7 @@ export type FileLinkSettings = {
   ignoreFileGlob: string
 }
 
-const DEFAULT_SETTINGS: FileLinkSettings = {
+export const DEFAULT_FILE_LINK_SETTINGS: FileLinkSettings = {
   openLinkInCurrentWin: true,
   quickOpenInCurrentWin: true,
   ignoreFile: true,
@@ -30,7 +30,6 @@ export class FileLinkSettingTab extends SettingTab {
   ) {
     super()
 
-    settings.setDefault(DEFAULT_SETTINGS)
     config.on('switch', () => {
       this.containerEl.innerHTML = ''
       this.onload()

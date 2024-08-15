@@ -15,8 +15,10 @@ export class QuickOpenPanel extends View {
   constructor() {
     super()
 
-    this._ignoreFile = new IgnoreFile()
-    this._quickOpenInCurrentWin = new QuickOpenInCurrentWin()
+    setTimeout(() => {
+      this._ignoreFile = new IgnoreFile()
+      this._quickOpenInCurrentWin = new QuickOpenInCurrentWin()
+    })
   }
 
 }

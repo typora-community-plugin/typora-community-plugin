@@ -11,7 +11,7 @@ export type AppearanceSettings = {
   hideExtensionInFileTab: boolean
 }
 
-const DEFAULT_SETTINGS: AppearanceSettings = {
+export const DEFAULT_APPEARANCE_SETTINGS: AppearanceSettings = {
   showNotSupportedFile: false,
   keepSearchResult: false,
   showSearchResultFullPath: false,
@@ -33,7 +33,6 @@ export class AppearanceSettingTab extends SettingTab {
   ) {
     super()
 
-    settings.setDefault(DEFAULT_SETTINGS)
     config.on('switch', () => {
       this.containerEl.innerHTML = ''
       this.onload()
