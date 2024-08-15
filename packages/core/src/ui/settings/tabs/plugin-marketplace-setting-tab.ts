@@ -27,7 +27,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
   }
 
   constructor(
-    config = useService('config-repository'),
+    private config = useService('config-repository'),
     private settings = useService('settings'),
     private i18n = useService('i18n'),
     private github = useService('github'),
@@ -143,6 +143,8 @@ export class PluginMarketplaceSettingTab extends SettingTab {
           this.plugins.marketplace.installPlugin(info, 'global')
             .then(() => setting.controls.remove())
       })
+
+      if (this.config.isUsingGlobalConfig) return
 
       setting.addButton(button => {
         button.innerHTML = '<span class="fa fa-cloud-download"></span> ' + t.installToVault
