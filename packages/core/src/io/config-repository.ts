@@ -66,8 +66,8 @@ export class ConfigRepository extends Events<ConfigEvents> {
   }
 
   private _autoSelectConfig() {
-    this.useVaultConfig()
     fs.access(this.vault.configDir)
+      .then(() => this.useVaultConfig())
       .catch(() => this.useGlobalConfig())
   }
 
@@ -79,7 +79,7 @@ export class ConfigRepository extends Events<ConfigEvents> {
   }
 
   useVaultConfig() {
-    if (!this.isUsingGlobalConfig) return
+    if (this._configDir === this.vault.configDir) return
     this._configDir = this.vault.configDir
     this._isUsingGlobalConfig = false
 
