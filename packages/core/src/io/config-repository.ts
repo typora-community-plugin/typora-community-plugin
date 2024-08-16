@@ -71,21 +71,23 @@ export class ConfigRepository extends Events<ConfigEvents> {
       .catch(() => this.useGlobalConfig())
   }
 
-  useGlobalConfig() {
+  private useGlobalConfig() {
     if (this.isUsingGlobalConfig) return
     this._configDir = globalConfigDir()
     this._isUsingGlobalConfig = true
     this.emit('switch')
   }
 
-  useVaultConfig() {
+  private useVaultConfig() {
     if (this._configDir === this.vault.configDir) return
     this._configDir = this.vault.configDir
     this._isUsingGlobalConfig = false
 
     fs.access(this.vault.configDir)
-      .catch(() => fs.mkdir(this.vault.configDir))
-      .then(() => fs.copy(globalConfigDir(), this.vault.configDir))
+      .catch(() =>
+        fs.mkdir(this.vault.configDir)
+          .then(() => fs.copy(globalConfigDir(), this.vault.configDir))
+      )
       .then(() => this.emit('switch'))
   }
 

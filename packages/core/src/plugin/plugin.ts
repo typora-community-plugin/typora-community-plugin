@@ -42,8 +42,7 @@ export abstract class Plugin<T extends Record<string, any> = {}>
 
   registerSettings(settings: PluginSettings<any>) {
     this._settings = settings
-    this.register(
-      this.config.on('switch', () => this._settings.load()))
+    this._settings.load()
   }
 
   registerSettingTab(tab: SettingTab) {
