@@ -38,6 +38,10 @@ export class MacFS implements FileAdapter {
     return Shell.run(`mkdir -p '${dirpath}'`) as Promise<void>
   }
 
+  copy(src: string, dest: string): Promise<void> {
+    return Shell.run(`cp -r '${src}' '${dest}'`) as Promise<void>
+  }
+
   move(src: string, dest: string): Promise<void> {
     return Shell.run(`mv -f '${src}' '${dest}'`) as Promise<void>
   }

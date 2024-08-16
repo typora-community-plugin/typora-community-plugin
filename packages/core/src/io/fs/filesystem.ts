@@ -11,6 +11,7 @@ export interface FileAdapter {
   stat(filepath: string): Promise<FileStats>
 
   mkdir(dirpath: string): Promise<void>
+  copy(src: string, dest: string): Promise<void>
   move(src: string, dest: string): Promise<void>
   list(dirpath: string): Promise<string[]>
 

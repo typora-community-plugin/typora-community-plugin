@@ -26,6 +26,10 @@ export class NodeFS implements FileAdapter {
       .then(() => void 0)
   }
 
+  copy(src: string, dest: string): Promise<void> {
+    return fsp.cp(src, dest, { recursive: true })
+  }
+
   move(src: string, dest: string): Promise<void> {
     return fsp.rename(src, dest)
       .catch(() => {
