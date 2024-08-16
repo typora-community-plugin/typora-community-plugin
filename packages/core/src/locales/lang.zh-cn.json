@@ -4,8 +4,8 @@
     "placeholder": "输入文本过滤命令"
   },
   "config": {
-    "commandUseGlobalConfig": "使用全局设置",
-    "commandUseVaultConfig": "使用本地设置"
+    "commandUseGlobalConfig": "使用全局设置 (从本地删除 `.typora`)",
+    "commandUseVaultConfig": "使用本地设置 (添加 `.typora` 到本地)"
   },
   "githubAPI": {
     "proxyNotFound": "Github 代理失效，已自动恢复为默认设置。"

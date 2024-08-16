@@ -4,8 +4,8 @@
     "placeholder": "Filter commands by text inputed"
   },
   "config": {
-    "commandUseGlobalConfig": "Use global settings",
-    "commandUseVaultConfig": "Use vault settings"
+    "commandUseGlobalConfig": "Use global settings (remove `.typora` from vault)",
+    "commandUseVaultConfig": "Use vault settings (add `.typora` to vault)"
   },
   "githubAPI": {
     "proxyNotFound": "Github proxy is removed and has been automatically reverted to the default settings."

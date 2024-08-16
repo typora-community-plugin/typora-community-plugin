@@ -85,8 +85,8 @@ export class ConfigRepository extends Events<ConfigEvents> {
 
     fs.access(this.vault.configDir)
       .catch(() => fs.mkdir(this.vault.configDir))
-
-    this.emit('switch')
+      .then(() => fs.copy(globalConfigDir(), this.vault.configDir))
+      .then(() => this.emit('switch'))
   }
 
   /**
