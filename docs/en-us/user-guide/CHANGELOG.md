@@ -1,5 +1,17 @@
 # Feature Changelog
 
+## v2.2.2
+
+- feat(core/io/config): support global settings
+
+- **BREAKING CHANGE**
+  - refactor(core/io/vault): remove `vault.readConfigJson()` and `vault.writeConfigJson()`
+
+- **Plugin Update**
+  - [collapsible-section][]
+    - feat: can disable automatic codeblock folding when manual folding is supported
+    - feat: automatically fold codeblock only when the number of code lines exceeds the limit
+
 ## v2.1.4
 
 - fix(core/command/manager): failed to unregister command

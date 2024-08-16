@@ -1,5 +1,17 @@
 # 特性更新日志
 
+## v2.2.2
+
+- feat(core/io/config): 支持全局设置
+
+- **破坏性变更**
+  - refactor(core/io/vault): 移除方法 `vault.readConfigJson()` 和 `vault.writeConfigJson()`
+
+- **插件更新**
+  - [collapsible-section][]
+    - feat: 保留手动折叠同时，支持禁用自动折叠
+    - feat: 代码行数超过限制时才自动折叠
+
 ## v2.1.4
 
 - fix(core/command/manager): 反注册命令失败的问题
