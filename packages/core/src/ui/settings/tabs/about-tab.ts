@@ -4,7 +4,7 @@ import { Notice } from 'src/ui/components/notice'
 import fs from 'src/io/fs/filesystem'
 import { SettingTab } from "src/ui/settings/setting-tab"
 import * as versions from 'src/utils/versions'
-import { HttpClient } from 'src/net/http-client'
+import * as net from 'src/net/net'
 import { useService } from 'src/common/service'
 
 
@@ -111,7 +111,7 @@ export class AboutTab extends SettingTab {
   }
 
   installCore(url: string) {
-    return HttpClient.downloadThenUnzipToTemp(url)
+    return net.downloadThenUnzipToTemp(url)
       .then(async tmp => {
         const root = path.join(coreDir(), '..')
         const files = await fs.list(tmp)

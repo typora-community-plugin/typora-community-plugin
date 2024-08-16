@@ -2,7 +2,7 @@ import { _options } from 'typora'
 import { useService } from 'src/common/service'
 import { Notice } from 'src/ui/components/notice'
 import { format } from "src/utils/string/format"
-import { HttpClient } from './http-client'
+import * as net from './net'
 
 
 interface GithubProxy {
@@ -125,6 +125,6 @@ export class GithubAPI {
    */
   downloadThenUnzipToTemp(repo: string, id: string, asset: string) {
     const url = this.getReleaseUrl(repo, id, asset)
-    return HttpClient.downloadThenUnzipToTemp(url)
+    return net.downloadThenUnzipToTemp(url)
   }
 }
