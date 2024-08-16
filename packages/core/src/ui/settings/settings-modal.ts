@@ -27,11 +27,16 @@ export class SettingsModal extends Modal {
   activeTab: SettingTab
 
   constructor(
+    config = useService('config-repository'),
     private i18n = useService('i18n'),
     private commands = useService('command-manager'),
     private plugins = useService('plugin-manager'),
   ) {
     super()
+
+    config.on('switch', () =>
+      this.openTab(this._children[0] as SettingTab)
+    )
   }
 
   onload() {
