@@ -109,9 +109,6 @@ export class ConfigRepository extends Events<ConfigEvents> {
   }
 
   writeConfigJson(filename: string, config: any) {
-    if (this.isUsingGlobalConfig)
-      return Promise.reject(new Error('Cannot write vault config to global config directory.'))
-
     const configPath = path.join(this.configDir, filename + '.json')
     const dirname = path.dirname(configPath)
     return fs
