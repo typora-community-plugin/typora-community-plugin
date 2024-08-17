@@ -1,5 +1,9 @@
 # Feature Changelog
 
+## v2.2.3
+
+- fix(core/io/config): can not save global settings
+
 ## v2.2.2
 
 - feat(core/io/config): support global settings

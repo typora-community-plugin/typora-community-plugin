@@ -1,5 +1,9 @@
 # 特性更新日志
 
+## v2.2.3
+
+- fix(core/io/config): 修复不能保存全局设置的问题
+
 ## v2.2.2
 
 - feat(core/io/config): 支持全局设置
