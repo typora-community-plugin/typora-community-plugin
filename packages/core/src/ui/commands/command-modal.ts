@@ -31,6 +31,7 @@ export class CommandModal extends Modal {
         title: t.commandOpen,
         scope: 'global',
         hotkey: 'F1',
+        showInCommandPanel: false,
         callback: () => {
           this.updateCommands(
             Object.values(this.commandsMgr.commandMap)
@@ -116,7 +117,9 @@ export class CommandModal extends Modal {
   }
 
   private updateCommands(commands: Command[]) {
-    this.commands = this.filteredCommands = commands
+    this.commands = this.filteredCommands = commands.filter(
+      c => c.showInCommandPanel
+    )
     this.renderCommands()
   }
 

@@ -10,6 +10,10 @@ export type Command = {
   title: string
   scope: HotkeyScope
   hotkey?: string | null
+  /**
+   * @default true
+   */
+  showInCommandPanel?: boolean
   callback: () => void
 }
 
@@ -35,6 +39,10 @@ export class CommandManager {
   register(command: Command) {
     if (command.id in this.defaultCommandMap) {
       this.logger.error(`command ${command.id} already registered`)
+    }
+
+    if (command.showInCommandPanel == null) {
+      command.showInCommandPanel = true
     }
 
     this.defaultCommandMap[command.id] = command
