@@ -1,5 +1,14 @@
 # 特性更新日志
 
+## v2.2.5
+
+- fix(core/commands): 从命令面板中隐藏“打开命令面板”的命令
+- fix(core/ui/components/menu): 英文菜单项宽度不足
+
+- **插件更新**
+  - [note-snippets][]
+    - fix: 修复不能从全局设置中加载笔记片段的问题
+
 ## v2.2.3
 
 - fix(core/io/config): 修复不能保存全局设置的问题
@@ -197,5 +206,7 @@
 [image-location]: https://github.com/typora-community-plugin/typora-plugin-image-location
 
 [image-viewer]: https://github.com/typora-community-plugin/typora-plugin-image-viewer
+
+[note-snippets]: https://github.com/typora-community-plugin/typora-plugin-note-snippets
 
 [tag]: https://github.com/typora-community-plugin/typora-plugin-tag

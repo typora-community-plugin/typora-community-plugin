@@ -1,5 +1,14 @@
 # Feature Changelog
 
+## v2.2.5
+
+- fix(core/commands): show useless command "Open command panel" in command panel
+- fix(core/ui/components/menu): width is not enough in English
+
+- **Plugin Update**
+  - [note-snippets][]
+    - fix: can not load snippets form global settings
+
 ## v2.2.3
 
 - fix(core/io/config): can not save global settings
@@ -197,5 +206,7 @@
 [image-location]: https://github.com/typora-community-plugin/typora-plugin-image-location
 
 [image-viewer]: https://github.com/typora-community-plugin/typora-plugin-image-viewer
+
+[note-snippets]: https://github.com/typora-community-plugin/typora-plugin-note-snippets
 
 [tag]: https://github.com/typora-community-plugin/typora-plugin-tag
