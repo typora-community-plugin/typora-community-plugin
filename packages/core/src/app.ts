@@ -170,6 +170,7 @@ export class App extends Events<AppEvents> {
    * @param filepath path of unsuppoted file
    */
   openFileWithDefaultApp(filepath: string) {
-    JSBridge.invoke("shell.openItem", filepath)
+    return fs.access(filepath)
+      .then(() => JSBridge.invoke("shell.openItem", filepath))
   }
 }
