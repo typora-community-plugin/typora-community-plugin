@@ -1,6 +1,7 @@
 {
   "version": 1,
   "settings": {
-    "showNotSupportedFile": false
+    "showNotSupportedFile": false,
+    "displayLang": "en"
   }
 }

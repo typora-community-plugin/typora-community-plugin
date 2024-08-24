@@ -1,3 +1,4 @@
+import './menu.scss'
 import { View } from "src/ui/view"
 import { html } from "src/utils/html"
 
