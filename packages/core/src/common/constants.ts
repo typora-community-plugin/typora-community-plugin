@@ -24,5 +24,5 @@ export const globalConfigDir = constant(
 )
 
 export const platform = constant(
-  (process?.platform as 'win32' | 'linux') ?? 'darwin'
+  (window?.process?.platform as 'win32' | 'linux') ?? 'darwin'
 )
