@@ -10,6 +10,25 @@
 
 
 
+## 预览
+
+| Ribbon & 多文件标签页                   | 命令面板                                   |
+| :-----------------------------------: | :---------------------------------------: |
+| ![](./docs/assets/base.jpg)           | ![](./docs/assets/command-modal.jpg)      |
+| 配置对话框                              | 插件市场                                   |
+| ![](./docs/assets/settings-modal.jpg) | ![](./docs/assets/plugin-marketplace.jpg) |
+
+
+
+### 兼容性
+
+| 已测试  |                 |                 |                 |
+| :----: | --------------- | --------------- | --------------- |
+| Typora | v1.5.x - v1.9.x | v1.5.x - v1.9.x | v1.4.8 - v1.9.4 |
+| 系统    | Windows 10      | Ubuntu 22       | macOS 10.13, 14 |
+
+
+
 ## 特性 <small>([更新日志](./docs/zh-cn/user-guide/CHANGELOG.md))</small>
 
 - 插件管理
@@ -24,46 +43,27 @@
 
 
 
-### 兼容性
-
-| 已测试  |                 |                 |             |
-| :----: | --------------- | --------------- | ----------- |
-| Typora | v1.5.x - v1.9.x | v1.5.x - v1.9.x | v1.4.8      |
-| 系统    | Windows 10      | Ubuntu 22       | macOS 10.13 |
-
-
-
-## 预览
-
-| Ribbon & 多文件标签页                   | 命令面板                                   |
-| :-----------------------------------: | :---------------------------------------: |
-| ![](./docs/assets/base.jpg)           | ![](./docs/assets/command-modal.jpg)      |
-| 配置对话框                              | 插件市场                                   |
-| ![](./docs/assets/settings-modal.jpg) | ![](./docs/assets/plugin-marketplace.jpg) |
-
-
-
 ### 已有插件
 
 这些插件可通过插件市场安装
 
 | 插件                              | 描述                                        |
 | -------------------------------- | ------------------------------------------ |
-| [abcjs][p12]                     | 支持在代码块中使用 ABC 记谱法。                 |
+| [abcjs][p12]                     | 支持在多行代码块中使用 ABC 记谱法。              |
 | [callout][p1]                    | 支持标注块语法 `> [!type]`                    |
 | [codeblock-copy-button][p2]      | 在多行代码块右上角添加一个复制按钮。              |
 | [codeblock-highlight-mapper][p3] | 将语言 A 映射为语言 B，使用语言 B 的语法高亮代码。 |
-| [collapsible-section][p4]        | 折叠/展开 Markdown 章节、列表、代码块           |
-| [code-folding][p14]              | 令代码块中的代码可折叠。                        |
+| [collapsible-section][p4]        | 折叠/展开 Markdown 章节、列表、代码块、表格      |
+| [code-folding][p14]              | 令多行代码块中的代码可折叠。                     |
 | [darkmode][p13]                  | 适用于任意亮色主题的暗黑模式。                   |
 | [file-icon][p5]                  | 为不同类型文件显示不同图标                      |
-| [front-matter][p6]               | 自动编辑 Front Matter 的时间                  |
+| [front-matter][p6]               | 自动编辑 Front Matter，包括创建时间、编辑时间等   |
 | [image-location][p15]            | 相对于当前笔记目录的根目录解析图片路径             |
 | [image-viewer][p16]              | 查看当前文档所有图片                           |
-| [markmap][p11]                   | 支持 Markmap                                |
+| [markmap][p11]                   | 支持在多行代码块中使用 Markmap                  |
 | [note-refactor][p7]              | 提取选中文本到新文件                           |
 | [note-snippets][p8]              | 使用斜线指令输入笔记片段                        |
-| [tag][p9]                        | 高亮 `#tag` 语法                             |
+| [tag][p9]                        | 高亮 `#tag` 语法，提供标签面板管理和搜索标签      |
 | [wikilink][p10]                  | 支持通过 `[[text]]` 链接跳转                  |
 
 

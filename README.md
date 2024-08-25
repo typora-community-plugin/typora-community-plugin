@@ -10,6 +10,25 @@ To be on the safe side, install an open source plugin that can review the source
 
 
 
+## Preview
+
+| Ribbon & Multi File Tabs              | Command Panel                             |
+| :-----------------------------------: | :---------------------------------------: |
+| ![](./docs/assets/base.jpg)           | ![](./docs/assets/command-modal.jpg)      |
+| Settings Modal                        | Plugin Marketplace                        |
+| ![](./docs/assets/settings-modal.jpg) | ![](./docs/assets/plugin-marketplace.jpg) |
+
+
+
+## Compatible
+
+| Tested |                 |                 |                 |
+| :----: | --------------- | --------------- | --------------- |
+| Typora | v1.5.x - v1.9.x | v1.5.x - v1.9.x | v1.4.8 - v1.9.4 |
+| OS     | Windows 10      | Ubuntu 22       | macOS 10.13, 14 |
+
+
+
 ## Features <small>([CHANGELOG](./docs/en-us/user-guide/CHANGELOG.md))</small>
 
 - Plugin Manage
@@ -21,25 +40,6 @@ To be on the safe side, install an open source plugin that can review the source
 - [x] Custom command hotkey
 - [x] I18n: follow system or manual configure, now support English and Chinese
 - [x] Compatible with macOS
-
-
-
-### Compatible
-
-| Tested |                 |                 |             |
-| :----: | --------------- | --------------- | ----------- |
-| Typora | v1.5.x - v1.9.x | v1.5.x - v1.9.x | v1.4.8      |
-| OS     | Windows 10      | Ubuntu 22       | macOS 10.13 |
-
-
-
-## Preview
-
-| Ribbon & Multi File Tabs              | Command Panel                             |
-| :-----------------------------------: | :---------------------------------------: |
-| ![](./docs/assets/base.jpg)           | ![](./docs/assets/command-modal.jpg)      |
-| Settings Modal                        | Plugin Marketplace                        |
-| ![](./docs/assets/settings-modal.jpg) | ![](./docs/assets/plugin-marketplace.jpg) |
 
 
 
@@ -60,7 +60,7 @@ You can install plugins from the Plugin Marketplace
 | [front-matter][p6]               | Auto edit front matter.                                   |
 | [image-location][p15]            | Resolve image's location relative to vault's root.        |
 | [image-viewer][p16]              | View all the images in the current Markdown.              |
-| [markmap][p11]                   | Support Markmap.                                          |
+| [markmap][p11]                   | Support Markmap in codeblock.                             |
 | [note-refactor][p7]              | Extract selection to new file.                            |
 | [note-snippets][p8]              | Use slash command to autocomplete note snippets.          |
 | [tag][p9]                        | Support tag like `#tag`.                                  |
