@@ -75,10 +75,6 @@ export class SettingsModal extends Modal {
 
     this.addGroupTitle(t.groupPlugins)
 
-    if (!this.plugins.marketplace.isLoaded) {
-      this.plugins.marketplace.loadCommunityPlugins()
-    }
-
     // fix: clicking on the link in setting modal (out of editor) will close Typora unexpectly
     this.containerEl.addEventListener('click', event => {
       const el = event.target as HTMLElement
