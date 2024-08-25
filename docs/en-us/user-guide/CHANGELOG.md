@@ -1,5 +1,9 @@
 # Feature Changelog
 
+## v2.2.6
+
+- fix(core): can not run in macOS
+
 ## v2.2.5
 
 - fix(core/commands): show useless command "Open command panel" in command panel
