@@ -32,7 +32,7 @@ export class GlobalSearchView extends View {
       [BUILT_IN]: true,
       id: GlobalSearchView.id,
       title: i18n.t.ribbon.search,
-      icon: html`<i class="fa fa-search"></i>`,
+      icon: html`<i class="fa fa-search typ-lighter-icon"></i>`,
       onclick: () => sidebar.switch(GlobalSearchView),
     })
   }

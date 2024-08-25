@@ -8,3 +8,14 @@
     filter: drop-shadow($shadow);
   }
 }
+
+.typ-icon {
+  &.typ-close::before {
+    content: '×';
+    padding-left: 6px;
+    font-style: normal;
+    font-size: 1.2rem;
+    line-height: 1.2rem;
+    vertical-align: middle;
+  }
+}

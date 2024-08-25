@@ -20,7 +20,7 @@ export class Outline extends View {
       [BUILT_IN]: true,
       id: 'core.outline',
       title: i18n.t.ribbon.outline,
-      icon: html`<i class="fa fa-list"></i>`,
+      icon: html`<i class="fa fa-list typ-lighter-icon"></i>`,
       onclick: () => sidebar.switch(Outline),
     })
   }
