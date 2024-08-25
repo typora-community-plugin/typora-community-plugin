@@ -141,7 +141,9 @@ export default function typoraPlugin(options: Options) {
  * Try closing Typora which running the plugin in development.
  */
 export async function closeTypora() {
-  const lockDir = path.join(process.env.USERPROFILE, '.typora/community-plugins/_lock')
+  console.log('Closing Typora...')
+
+  const lockDir = path.join(process.cwd(), 'node_modules/@typora-community-plugin/core/dist/_lock')
 
   await fs.access(lockDir)
     .catch(() => fs.mkdir(lockDir))
@@ -153,6 +155,8 @@ export async function closeTypora() {
  * Install the compiled plugin files into the vault for testing.
  */
 export async function installDevPlugin(valut?: string) {
+  console.log('Installing plugin...')
+
   const root = path.dirname(process.argv[1])
 
   valut ??= `${root}/test/vault`
