@@ -394,12 +394,16 @@ interface Library {
 
 interface FileListView {
   onChangeForMac(e: any): void
-  onChangeForWin(e: any, t: any, n: any): void
+  onChangeForWin(filepath: string, isChangeType: boolean, n: any[]): void
 }
 
 interface FileTreeView {
   expandNode($el: JQuery, filepath: string, callback: Function): void
   renderNode(file: TFile, notSort?: boolean): JQuery
+
+  onChangeForMac(e: any): void
+  onChangeForWin(filepath: string, t: any[], type?: "add" | "change" | "unlink"): void
+  onRemoveFile(filepath: string, parentFolder?: TFile): void
 }
 
 interface TFile {
