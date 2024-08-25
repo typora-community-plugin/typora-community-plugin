@@ -6,7 +6,6 @@ import { useService } from 'src/common/service'
 import { useEventBus } from 'src/common/eventbus'
 import { draggable } from 'src/ui/components/draggable'
 import { Menu } from 'src/ui/components/menu'
-import fs from 'src/io/fs/filesystem'
 import { View } from "src/ui/view"
 import { html } from 'src/utils/html'
 import { truncate } from 'src/utils/string/truncate'
@@ -210,20 +209,13 @@ export class TabsView extends View {
 
   async toggleTab(tabEl: HTMLElement) {
     const filePath = tabEl.dataset.path!
-    const isExists = await fs.exists(filePath)
 
-    if (isExists) {
-      this.containerEl.querySelectorAll('.typ-tab')
-        .forEach(el => el.classList.remove('active'))
+    this.containerEl.querySelectorAll('.typ-tab')
+      .forEach(el => el.classList.remove('active'))
 
-      tabEl.classList.add('active')
+    tabEl.classList.add('active')
 
-      editor.library.openFile(filePath)
-    }
-    else {
-      this.toggleTab(this.getSiblingTab(tabEl))
-      this.removeTab(filePath)
-    }
+    editor.library.openFile(filePath, (e: any) => console.log(e))
   }
 
   closeTab(tabEl: HTMLElement) {

@@ -72,7 +72,7 @@ export class PluginManager {
   private async _readPluginsDir(pluginsPath: string) {
     if (!pluginsPath) return []
 
-    return fs.exists(pluginsPath)
+    return fs.access(pluginsPath)
       .then(() => fs.list(pluginsPath))
       .then((dirnames) =>
         dirnames.map(dir => path.join(pluginsPath, dir))
@@ -83,8 +83,8 @@ export class PluginManager {
   loadManifest(postion: PluginPostion, pluginPath: string) {
     const manifestPath = path.join(pluginPath, 'manifest.json')
 
-    return fs.exists(manifestPath)
-      .then(() => fs.readText(manifestPath))
+    return fs.access(manifestPath)
+      .then(() => fs.readTextSync(manifestPath))
       .then(text => {
         const manifest = JSON.parse(text) as PluginManifest
         manifest.postion = postion
@@ -124,8 +124,8 @@ export class PluginManager {
       this.instances[id] = new PluginImplement(useService('app'), manifest)
 
       const cssPath = path.join(manifest.dir!, 'style.css')
-      await fs.exists(cssPath)
-        .then(() => fs.readText(cssPath))
+      await fs.access(cssPath)
+        .then(() => fs.readTextSync(cssPath))
         .then(cssText => { this.styles[id] = cssText })
         .catch(() => { })
     }
