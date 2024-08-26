@@ -4,21 +4,14 @@
 
 body.typ-tabs--enable {
 
-  .md-notification-container,
-  #zoom-hint,
-  #md-searchpanel,
-  #write {
-    top: 32px;
+  content {
+    top: 2rem;
   }
 
-  .unibody-window {
-    .md-notification-container {
-      padding-top: 29px;
-    }
+  &.unibody-window {
 
-    #zoom-hint,
-    #md-searchpanel {
-      top: 61px;
+    content {
+      top: 3.75rem;
     }
   }
 }
@@ -55,6 +48,7 @@ body.typ-tabs--enable {
   .unibody-window & {
     margin-top: 28px;
   }
+
   .html-for-mac & {
     margin-top: 22px;
   }
@@ -73,7 +67,7 @@ body.typ-tabs--enable {
   display: flex;
   padding: 0;
   min-width: 100%;
-  height: 32px;
+  height: 2rem;
 
   &::after {
     @extend %typ-tabs__child;
