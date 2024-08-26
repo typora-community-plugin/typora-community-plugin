@@ -1,9 +1,14 @@
 # Feature Changelog
 
+## v2.2.13
+
+- fix(core/ui/settings): border disapear when fullscreen
+- fix(core/ui/tabs): having gap in fullscreen on macOS
+
 ## v2.2.11
 
 - fix(core/io/vault): can not handle file change event on macOS
-- fix(core/ui/tabs): havig gap between header and tabs
+- fix(core/ui/tabs): having gap between header and tabs on macOS
 - refactor(core/ui): unify indicator's width (active ribbon, active file, active tab)
 
 ## v2.2.8

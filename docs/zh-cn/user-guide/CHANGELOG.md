@@ -1,9 +1,14 @@
 # 特性更新日志
 
+## v2.2.13
+
+- fix(core/ui/settings): 修复全屏时边框线消失的问题
+- fix(core/ui/tabs): 修复在 macOS 全屏下头部标题和文件标签页之间存在空隙的问题
+
 ## v2.2.11
 
 - fix(core/io/vault): 修复在 macOS 不能触发文件变更事件的问题
-- fix(core/ui/tabs): 修复头部标题和文件标签页之间存在空隙的问题
+- fix(core/ui/tabs): 修复在 macOS 头部标题和文件标签页之间存在空隙的问题
 - refactor(core/ui): 统一活动指示器的宽度（活动 Ribbon、活动文件、活动 Tab）
 
 ## v2.2.8
