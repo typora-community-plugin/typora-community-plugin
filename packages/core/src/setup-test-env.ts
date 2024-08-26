@@ -1,8 +1,10 @@
 import { jest } from '@jest/globals'
 import { registerService } from "./common/service"
-import type { ConfigRepository } from "./io/config-repository"
 import { memorize } from "./utils/function/memorize"
 
+
+// @ts-ignore
+globalThis['window'] = {}
 
 registerService('logger', memorize(() =>
   new class { debug() { } info() { } warn() { } error() { } }

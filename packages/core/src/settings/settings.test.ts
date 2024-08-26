@@ -53,14 +53,12 @@ describe('class Settings', () => {
       settings.setDefault(defaultSettings)
 
       // @ts-ignore
-      expect(settings._stores.settings).toEqual(defaultSettings)
+      expect(settings._stores.settings).toEqual({})
+      // @ts-ignore
+      expect(Object.getPrototypeOf(settings._stores.settings)).toEqual(defaultSettings)
     })
 
     it('should merge default settings with existing _stores.settings', () => {
-      // @ts-ignore
-      settings._stores.settings = {
-        existingKey: 'existingValue'
-      }
       settings.set('existingKey', 'existingValue')
 
       const defaultSettings = {
@@ -70,20 +68,14 @@ describe('class Settings', () => {
 
       settings.setDefault(defaultSettings)
 
-      // @ts-ignore
-      expect(settings._stores.settings).toEqual({
-        existingKey: 'existingValue',
-        key1: 'value1',
-        key2: 'value2',
-      })
+      expect(settings.get('existingKey')).toBe('existingValue')
+      expect(settings.get('key1')).toBe('value1')
+      expect(settings.get('key2')).toBe('value2')
     })
 
     it('should not override existing settings with default settings', () => {
-      // @ts-ignore
-      settings._stores.settings = {
-        overlappingKey: 'oldValue',
-        existingKey: 'existingValue',
-      }
+      settings.set('overlappingKey', 'oldValue')
+      settings.set('existingKey', 'existingValue')
 
       const defaultSettings = {
         overlappingKey: 'newValue',
@@ -92,12 +84,9 @@ describe('class Settings', () => {
 
       settings.setDefault(defaultSettings)
 
-      // @ts-ignore
-      expect(settings._stores.settings).toEqual({
-        overlappingKey: 'oldValue', // this value should not be overriden
-        existingKey: 'existingValue',
-        key1: 'value1',
-      })
+      expect(settings.get('overlappingKey')).toBe('oldValue')
+      expect(settings.get('existingKey')).toBe('existingValue')
+      expect(settings.get('key1')).toBe('value1')
     })
   })
 
