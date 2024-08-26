@@ -48,9 +48,11 @@ body.typ-tabs--enable {
   .unibody-window & {
     margin-top: 28px;
   }
-
   .html-for-mac & {
     margin-top: 22px;
+  }
+  .html-for-mac.typora-fullscreen & {
+    margin-top: 0;
   }
 }
 
