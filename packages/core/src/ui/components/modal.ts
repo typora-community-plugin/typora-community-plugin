@@ -1,6 +1,6 @@
 import './modal.scss'
 import { View } from "../view"
-import { html } from 'src/utils/html'
+import { html } from 'src/utils'
 
 
 export class Modal extends View {

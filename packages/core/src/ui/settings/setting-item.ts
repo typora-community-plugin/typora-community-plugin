@@ -1,8 +1,7 @@
 import './setting-item.scss'
 import { EditableTable } from 'src/ui/components/editable-table'
 import { View } from "src/ui/view"
-import { html } from "src/utils/html"
-import { noop } from 'src/utils/noop'
+import { html, noop } from 'src/utils'
 
 
 type SelectOptions = {

@@ -1,6 +1,6 @@
 import './menu.scss'
 import { View } from "src/ui/view"
-import { html } from "src/utils/html"
+import { html } from "src/utils"
 
 
 interface MenuPositionDef {

@@ -3,8 +3,7 @@ import { editor } from "typora"
 import { Component } from 'src/common/component'
 import { View } from 'src/ui/view'
 import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
-import { html } from "src/utils/html"
-import { noop } from 'src/utils/noop'
+import { html, noop } from 'src/utils'
 import { useService } from 'src/common/service'
 
 

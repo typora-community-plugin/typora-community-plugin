@@ -1,6 +1,6 @@
 import './postprocessor.scss'
 import { useService } from 'src/common/service'
-import { randomString } from "src/utils/random-string"
+import { randomString } from "src/utils"
 
 
 export type ButtonMouseEventListener<T> = (event: MouseEvent & { target: HTMLElement }, context: T) => void

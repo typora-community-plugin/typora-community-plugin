@@ -1,7 +1,7 @@
 import { _options } from 'typora'
 import { useService } from 'src/common/service'
 import { Notice } from 'src/ui/components/notice'
-import { format } from "src/utils/string/format"
+import { format } from "src/utils"
 import * as net from './net'
 
 

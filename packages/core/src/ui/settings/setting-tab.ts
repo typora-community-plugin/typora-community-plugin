@@ -2,7 +2,7 @@ import './setting-tab.scss'
 import type { App } from "src/app"
 import type { Plugin } from "src/plugin/plugin"
 import { View } from "../view"
-import { html } from "src/utils/html"
+import { html } from "src/utils"
 import { SettingItem } from "./setting-item"
 
 

@@ -1,7 +1,7 @@
 import { useEventBus } from "src/common/eventbus"
 import { useService } from "src/common/service"
 import { type HotkeyScope, readableHotkey } from "src/hotkey-manager"
-import { debounced } from "src/utils/decorator/debounced"
+import { debounced } from "src/utils"
 import type { DisposeFunc } from "src/utils/types"
 
 

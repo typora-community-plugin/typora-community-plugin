@@ -1,7 +1,7 @@
 import { View } from 'src/ui/view'
 import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
 import { editor } from "typora"
-import { html } from "src/utils/html"
+import { html } from "src/utils"
 import { useService } from 'src/common/service'
 
 

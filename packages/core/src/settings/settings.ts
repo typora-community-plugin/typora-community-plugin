@@ -1,6 +1,5 @@
 import { useService } from "src/common/service"
-import { debounced } from "src/utils/decorator/debounced"
-import { noop } from "src/utils/noop"
+import { debounced, noop } from "src/utils"
 import type { DisposeFunc } from "src/utils/types"
 
 

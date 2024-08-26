@@ -1,4 +1,4 @@
-import { identity } from "src/utils/identity"
+import { identity } from "src/utils"
 
 
 type Level = {

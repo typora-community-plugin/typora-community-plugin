@@ -7,8 +7,7 @@ import { useEventBus } from 'src/common/eventbus'
 import { draggable } from 'src/ui/components/draggable'
 import { Menu } from 'src/ui/components/menu'
 import { View } from "src/ui/view"
-import { html } from 'src/utils/html'
-import { truncate } from 'src/utils/string/truncate'
+import { html, truncate } from 'src/utils'
 
 
 const MAX_LENGHT = { length: 20, omission: '…' }

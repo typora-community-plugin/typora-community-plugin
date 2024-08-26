@@ -1,4 +1,4 @@
-import { capitalize } from 'src/utils/string/capitalize'
+import { capitalize } from 'src/utils'
 import { platform } from "src/common/constants"
 import { useEventBus } from "./common/eventbus"
 

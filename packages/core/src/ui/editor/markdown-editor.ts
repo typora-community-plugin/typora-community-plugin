@@ -7,9 +7,9 @@ import { MarkdownPostProcessor } from "./postprocessor/postprocessor-manager"
 import { MarkdownPreProcessor } from "./preprocessor/preprocessor"
 import { EditorSelection } from "./selection"
 import { EditorSuggestManager } from "./suggestion/suggest-manager"
-import { debounce } from "src/utils/schedule/debounce"
+import { debounce } from "src/utils"
 import type { FileURL } from "src/utils/types"
-import { until } from "src/utils/until"
+import { until } from "src/utils"
 
 
 export type MarkdownEditorEvents = {

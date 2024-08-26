@@ -2,7 +2,7 @@ import { useService } from "src/common/service"
 import { SettingTab } from "../setting-tab"
 import type { Command } from "src/command/command-manager"
 import { useEventBus } from "src/common/eventbus"
-import { html } from "src/utils/html"
+import { html } from "src/utils"
 import { eventToHotkey, readableHotkey } from "src/hotkey-manager"
 import type { SettingItem } from "../setting-item"
 

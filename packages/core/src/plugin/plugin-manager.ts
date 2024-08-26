@@ -5,8 +5,7 @@ import path from 'src/path'
 import { Plugin } from "./plugin"
 import type { PluginManifest, PluginPostion } from "./plugin-manifest"
 import { PluginMarketplace } from './plugin-marketplace'
-import { debounced } from 'src/utils/decorator/debounced'
-import { format } from 'src/utils/string/format'
+import { debounced, format } from 'src/utils'
 import * as versions from 'src/utils/versions'
 import { useService } from 'src/common/service'
 import { coreVersion, globalRootDir } from 'src/common/constants'

@@ -1,7 +1,7 @@
 import './settings-modal.scss'
 import { useService } from 'src/common/service'
 import { Modal } from "src/ui/components/modal"
-import { html } from 'src/utils/html'
+import { html } from 'src/utils'
 import type { SettingTab } from './setting-tab'
 import { HotkeySettingTab } from "./tabs/hotkey-setting-tab"
 import { FileLinkSettingTab } from './tabs/file-link-setting-tab'

@@ -1,6 +1,6 @@
 import './editable-table.scss'
 import { View } from "../view"
-import { html } from "src/utils/html"
+import { html } from "src/utils"
 
 
 type TableHeader<T extends object> = {

@@ -2,7 +2,7 @@ import { File, JSBridge, _options } from 'typora'
 import fs from 'src/io/fs/filesystem'
 import path from 'src/path'
 import { Shell } from 'src/io/shell'
-import { uniqueId } from "src/utils/uniqueId"
+import { uniqueId } from "src/utils"
 import { unzip } from 'src/common/zlib'
 
 

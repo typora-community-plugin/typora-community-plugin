@@ -3,8 +3,7 @@ import { useService } from 'src/common/service'
 import { Notice } from 'src/ui/components/notice'
 import type { PluginManifest } from "src/plugin/plugin-manifest"
 import { SettingTab } from "../setting-tab"
-import { debounce } from "src/utils/schedule/debounce"
-import { format } from 'src/utils/string/format'
+import { debounce, format } from "src/utils"
 import * as versions from "src/utils/versions"
 
 

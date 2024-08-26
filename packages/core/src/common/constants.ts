@@ -1,6 +1,6 @@
 import { _options } from "typora"
 import path from "src/path"
-import { constant } from "src/utils/constant"
+import { constant } from "src/utils"
 
 
 export const coreVersion = constant(process.env.CORE_VERSION)

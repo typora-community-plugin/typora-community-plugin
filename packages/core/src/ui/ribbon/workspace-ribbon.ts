@@ -4,7 +4,7 @@ import { editor, File } from 'typora'
 import { useService } from 'src/common/service'
 import { draggable } from 'src/ui/components/draggable'
 import { Menu } from 'src/ui/components/menu'
-import { html } from 'src/utils/html'
+import { html } from 'src/utils'
 import { View } from 'src/ui/view'
 import type { DisposeFunc } from 'src/utils/types'
 
