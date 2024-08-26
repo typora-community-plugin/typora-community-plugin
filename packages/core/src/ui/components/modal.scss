@@ -22,7 +22,7 @@
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  border: 1px solid var(--window-border-color);
+  border: 1px solid rgb(var(--typ-border-color));
   background: var(--bg-color);
   @include shadow(0 1rem 2rem rgba(var(--typ-shadow-color), .5));
 }

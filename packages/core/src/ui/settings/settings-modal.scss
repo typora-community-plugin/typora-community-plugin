@@ -17,7 +17,7 @@
 
 .typ-sidebar {
   overflow: auto;
-  border-right: 1px solid var(--window-border-color);
+  border-right: 1px solid rgb(var(--typ-border-color));
 
   .typ-nav__group-title {
     color: var(--control-text-color);

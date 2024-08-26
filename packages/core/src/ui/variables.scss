@@ -10,24 +10,27 @@
   --typ-color-red-4: 168, 7, 26;
   --typ-color-red-5: 92, 0, 17;
 
-  --typ-color-gray-1: 200, 200, 200;
-  --typ-color-gray-2: 150, 150, 150;
-  --typ-color-gray-3: 100, 100, 100;
-  --typ-color-gray-4: 50, 50, 50;
+  --typ-color-gray-1: 220, 220, 220;
+  --typ-color-gray-2: 200, 200, 200;
+  --typ-color-gray-3: 150, 150, 150;
+  --typ-color-gray-4: 100, 100, 100;
+  --typ-color-gray-5: 50, 50, 50;
 
   --typ-indicator-width: 2px;
 
-  --typ-text-color: var(--typ-color-gray-4);
+  --typ-text-color: var(--typ-color-gray-5);
 
-  --typ-light-bg-color: var(--typ-color-gray-1);
+  --typ-light-bg-color: var(--typ-color-gray-2);
 
-  --typ-shadow-color: var(--typ-color-gray-1);
+  --typ-shadow-color: var(--typ-color-gray-2);
+
+  --typ-border-color: var(--typ-color-gray-1);
 
   @media (prefers-color-scheme: dark) {
-    --typ-text-color: var(--typ-color-gray-1);
+    --typ-text-color: var(--typ-color-gray-2);
 
-    --typ-light-bg-color: var(--typ-color-gray-4);
+    --typ-light-bg-color: var(--typ-color-gray-5);
 
-    --typ-shadow-color: var(--typ-color-gray-4);
+    --typ-shadow-color: var(--typ-color-gray-5);
   }
 }

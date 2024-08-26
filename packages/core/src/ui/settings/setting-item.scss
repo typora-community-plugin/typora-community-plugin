@@ -9,7 +9,7 @@
   margin-right: 0;
 
   &:not(:last-child:has(table)) {
-    border-bottom: solid 1px var(--window-border-color);
+    border-bottom: solid 1px rgb(var(--typ-border-color));
   }
 
   @at-root .typ-setting-info {
