@@ -1,3 +1,4 @@
+import './file-explorer.scss'
 import decorate from "@plylrnsdy/decorate.js"
 import { editor, File } from "typora"
 import { Component } from 'src/common/component'

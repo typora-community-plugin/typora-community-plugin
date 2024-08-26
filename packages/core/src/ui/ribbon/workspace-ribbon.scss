@@ -102,7 +102,7 @@
     }
 
     &.top .typ-ribbon-item.active {
-      border-left: 2px solid var(--active-file-border-color);
+      border-left: var(--typ-indicator-width) solid var(--active-file-border-color);
     }
   }
 }
