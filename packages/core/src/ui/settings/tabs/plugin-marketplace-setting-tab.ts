@@ -2,7 +2,7 @@ import { useService } from "src/common/service"
 import { platform } from "src/common/constants"
 import type { PluginMarketInfo } from "src/plugin/plugin-marketplace"
 import { SettingTab } from "../setting-tab"
-import { debounce } from "src/utils/function/debounce"
+import { debounce } from "src/utils/schedule/debounce"
 import { uniqueId } from "src/utils/uniqueId"
 
 

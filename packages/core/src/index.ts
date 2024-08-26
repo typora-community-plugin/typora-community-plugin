@@ -34,7 +34,7 @@ export { Sidebar } from './ui/sidebar/sidebar'
 export { default as fs } from 'src/io/fs/filesystem'
 export { default as path } from 'src/path'
 
-export { debounce } from './utils/function/debounce'
+export { debounce } from './utils/schedule/debounce'
 export { format } from './utils/string/format'
 export { html } from './utils/html'
 export { until } from './utils/until'

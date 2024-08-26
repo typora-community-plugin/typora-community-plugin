@@ -1,4 +1,4 @@
-import { debounce } from "src/utils/function/debounce"
+import { debounce } from "src/utils/schedule/debounce"
 
 
 export function debounced(delay: number): MethodDecorator {
