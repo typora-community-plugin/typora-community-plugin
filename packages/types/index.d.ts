@@ -373,7 +373,7 @@ interface Library {
   hideSidebar(e?: any): void
 
   onFileChanges(arg0:
-    { type: "created" | "removed", path: string, isDir: boolean } | { type: "rename", newPath: string, oldPath: string, isDir: boolean }
+    Array<{ type: "created" | "removed", path: string, isDir: boolean } | { type: "rename", newPath: string, oldPath: string, isDir: boolean }>
   ): void
 
   /**
