@@ -1,5 +1,10 @@
 # 特性更新日志
 
+## v2.2.8
+
+- pref(core): 提高在 macOS 上的性能
+- refactor(core/ui/ribbon): 活动栏图标更小、线条更细
+
 ## v2.2.6
 
 - fix(core): 修复不能在 macOS 上使用的问题

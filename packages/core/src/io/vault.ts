@@ -86,15 +86,14 @@ export class Vault extends Events<VaultEvents> {
           this.emit('file:delete', file)
         })
       )
-      : decorate.parameters(editor.library, 'onFileChanges', ([arg0]) => {
-        if (arg0.type === 'rename') {
-          const type = arg0.isDir ? 'directory' : 'file'
-          this.emit(`${type}:rename`, arg0.oldPath, arg0.newPath)
+      : decorate.afterCall(editor.library, 'onFileChanges', ([event]) => {
+        if (event.type === 'rename') {
+          const type = event.isDir ? 'directory' : 'file'
+          this.emit(`${type}:rename`, event.oldPath, event.newPath)
         }
-        else if (arg0.type === 'removed') {
-          this.emit('file:delete', arg0.path)
+        else if (event.type === 'removed') {
+          this.emit('file:delete', event.path)
         }
-        return [arg0]
       })
   }
 }

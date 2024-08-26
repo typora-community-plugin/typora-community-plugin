@@ -1,5 +1,10 @@
 # Feature Changelog
 
+## v2.2.8
+
+- pref(core): speed up in macOS
+- refactor(core/ui/ribbon): icon's stroke lighter
+
 ## v2.2.6
 
 - fix(core): can not run in macOS

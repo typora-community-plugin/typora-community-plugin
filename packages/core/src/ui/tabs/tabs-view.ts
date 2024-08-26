@@ -215,7 +215,7 @@ export class TabsView extends View {
 
     tabEl.classList.add('active')
 
-    editor.library.openFile(filePath, (e: any) => console.log(e))
+    editor.library.openFile(filePath)
   }
 
   closeTab(tabEl: HTMLElement) {
