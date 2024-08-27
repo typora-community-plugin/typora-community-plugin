@@ -1,9 +1,14 @@
 # 特性更新日志
 
+## v2.2.15
+
+- fix(core/ui/tabs): 修复在 macOS 全屏下头部标题和文件标签页之间存在空隙的问题
+- fix(core/ui/commands): 命令列表过长时，无法完全展示
+
 ## v2.2.13
 
 - fix(core/ui/settings): 修复全屏时边框线消失的问题
-- fix(core/ui/tabs): 修复在 macOS 全屏下头部标题和文件标签页之间存在空隙的问题
+- ~~fix(core/ui/tabs): 修复在 macOS 全屏下头部标题和文件标签页之间存在空隙的问题~~
 
 ## v2.2.11
 

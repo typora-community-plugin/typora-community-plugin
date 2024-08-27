@@ -1,9 +1,14 @@
 # Feature Changelog
 
+## v2.2.15
+
+- fix(core/ui/tabs): having gap in fullscreen on macOS
+- fix(core/ui/commands): can not show all commands if too many commands
+
 ## v2.2.13
 
 - fix(core/ui/settings): border disapear when fullscreen
-- fix(core/ui/tabs): having gap in fullscreen on macOS
+- ~~fix(core/ui/tabs): having gap in fullscreen on macOS~~
 
 ## v2.2.11
 
