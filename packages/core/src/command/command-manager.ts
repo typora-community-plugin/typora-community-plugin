@@ -58,14 +58,16 @@ export class CommandManager {
   }
 
   unregister(command: Command) {
-    this.disposableMap[command.id].forEach(fn => fn())
-    delete this.disposableMap[command.id]
+    this.unbindHotkey(this.commandMap[command.id])
     delete this.commandMap[command.id]
     delete this.defaultCommandMap[command.id]
   }
 
   protected bindHotkey(command: Command) {
-    if (!command.hotkey) return
+    if (!command.hotkey) {
+      this.unbindHotkey(command)
+      return
+    }
 
     const disposes = this.disposableMap[command.id] = [] as DisposeFunc[]
 
