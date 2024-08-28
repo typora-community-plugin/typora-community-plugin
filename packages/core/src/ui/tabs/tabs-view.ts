@@ -238,6 +238,7 @@ export class TabsView extends View {
     const tab = this.tabs.get(oldPath)!
     tab.dataset.path = newPath
     tab.innerHTML = `${path.basename(newPath)}<i class="typ-icon typ-close"></i>`
+    this.tabs.delete(oldPath)
     this.tabs.set(newPath, tab)
   }
 
