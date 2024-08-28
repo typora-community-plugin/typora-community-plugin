@@ -1,5 +1,10 @@
 # Feature Changelog
 
+## v2.2.17
+
+- fix(core/commands): can not unbind hotkey
+- fix(core/ui/tabs): lost tab after renamed file
+
 ## v2.2.15
 
 - fix(core/ui/tabs): having gap in fullscreen on macOS

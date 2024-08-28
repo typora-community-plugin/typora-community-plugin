@@ -1,5 +1,10 @@
 # 特性更新日志
 
+## v2.2.17
+
+- fix(core/commands): 修复不能解绑默认快捷键的问题
+- fix(core/ui/tabs): 重命名文件后 Tab 丢失的问题
+
 ## v2.2.15
 
 - fix(core/ui/tabs): 修复在 macOS 全屏下头部标题和文件标签页之间存在空隙的问题
