@@ -27,16 +27,20 @@ export class SettingsModal extends Modal {
   activeTab: SettingTab
 
   constructor(
-    config = useService('config-repository'),
+    private config = useService('config-repository'),
     private i18n = useService('i18n'),
     private commands = useService('command-manager'),
-    private plugins = useService('plugin-manager'),
   ) {
     super()
 
-    config.on('switch', () =>
+    config.on('switch', () => {
+      const t = i18n.t.settingModal
+      $('.typ-modal__header', this.containerEl).text(
+        this.config.isUsingGlobalConfig
+          ? t.titleGlobal
+          : t.titleVault)
       this.openTab(this._children[0] as SettingTab)
-    )
+    })
   }
 
   onload() {
@@ -55,7 +59,10 @@ export class SettingsModal extends Modal {
 
     this.modal.classList.add('typ-settings-modal')
 
-    this.addHeader(t.title)
+    this.addHeader(this.config.isUsingGlobalConfig
+      ? t.titleGlobal
+      : t.titleVault
+    )
     this.addBody(body => {
       body.append(
         this.sidebar = html`<div class="typ-sidebar"></div>`,

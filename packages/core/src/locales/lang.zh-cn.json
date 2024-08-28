@@ -20,7 +20,8 @@
   },
   "settingModal": {
     "commandOpen": "打开插件配置对话框",
-    "title": "设置",
+    "titleGlobal": "全局设置",
+    "titleVault": "本地设置",
     "groupCore": "核心设置",
     "groupPlugins": "社区插件设置"
   },

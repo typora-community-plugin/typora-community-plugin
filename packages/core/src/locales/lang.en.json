@@ -20,7 +20,8 @@
   },
   "settingModal": {
     "commandOpen": "Open Plugin Settings Modal",
-    "title": "Settings",
+    "titleGlobal": "Global Settings",
+    "titleVault": "Vault Settings",
     "groupCore": "Core",
     "groupPlugins": "Community Plugins"
   },
