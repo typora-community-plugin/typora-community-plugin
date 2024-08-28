@@ -4,6 +4,7 @@ import { useService } from "src/common/service"
 import path from "src/path"
 import fs from "src/io/fs/filesystem"
 import { globalConfigDir } from "src/common/constants"
+import type { DisposeFunc } from "src/utils/types"
 
 
 export type ConfigEvents = {
@@ -14,6 +15,7 @@ export type ConfigEvents = {
 export class ConfigRepository extends Events<ConfigEvents> {
 
   private _isUsingGlobalConfig = true
+  private _disposeCommand: DisposeFunc
 
   private _configDir = globalConfigDir()
 
@@ -24,28 +26,6 @@ export class ConfigRepository extends Events<ConfigEvents> {
     super('Config')
 
     this._autoSelectConfig()
-
-    setTimeout(() => {
-      const commands = useService('command-manager')
-      const i18n = useService('i18n')
-
-      commands.register({
-        id: 'config:global',
-        title: i18n.t.config.commandUseGlobalConfig,
-        scope: 'global',
-        callback: () => {
-          this.useGlobalConfig()
-          fs.remove(this.vault.configDir)
-        },
-      })
-
-      commands.register({
-        id: 'config:vault',
-        title: i18n.t.config.commandUseVaultConfig,
-        scope: 'global',
-        callback: () => this.useVaultConfig(),
-      })
-    })
 
     vault.on('change', () => {
       if (this.isUsingGlobalConfig) return
@@ -73,14 +53,40 @@ export class ConfigRepository extends Events<ConfigEvents> {
 
   private useGlobalConfig() {
     if (this.isUsingGlobalConfig) return
+    this._disposeCommand?.()
+
+    const commands = useService('command-manager')
+    const i18n = useService('i18n')
+
     this._configDir = globalConfigDir()
+    this._disposeCommand = commands.register({
+      id: 'config:vault',
+      title: i18n.t.config.commandUseVaultConfig,
+      scope: 'global',
+      callback: () => this.useVaultConfig(),
+    })
     this._isUsingGlobalConfig = true
+
     this.emit('switch')
   }
 
   private useVaultConfig() {
     if (this._configDir === this.vault.configDir) return
+    this._disposeCommand?.()
+
+    const commands = useService('command-manager')
+    const i18n = useService('i18n')
+
     this._configDir = this.vault.configDir
+    this._disposeCommand = commands.register({
+      id: 'config:global',
+      title: i18n.t.config.commandUseGlobalConfig,
+      scope: 'global',
+      callback: () => {
+        this.useGlobalConfig()
+        fs.remove(this.vault.configDir)
+      },
+    })
     this._isUsingGlobalConfig = false
 
     fs.access(this.vault.configDir)
