@@ -35,6 +35,7 @@ type ServiceMap = {
 }
 
 const services: Partial<ServiceMap> = {}
+const stacks: string[] = []
 
 export function registerService<K extends keyof ServiceMap>
   (id: K, factory: (args: any[]) => ReturnType<ServiceMap[K]>) {
@@ -43,8 +44,17 @@ export function registerService<K extends keyof ServiceMap>
 
 export function useService<K extends keyof ServiceMap>(id: K, args?: any[]) {
   if (!services[id]) {
-    throw Error(`Service "${id}" is not registered.`)
+    throw Error(`[Service] "${id}" is not registered.`)
+  }
+  if (stacks.includes(id)) {
+    throw Error(`[Service] Circular dependency detected: ${[...stacks, id].join(' → ')}`)
   }
 
-  return (<any>services[id])(args) as ReturnType<ServiceMap[K]>
+  stacks.push(id)
+
+  const service = (<any>services[id])(args) as ReturnType<ServiceMap[K]>
+
+  stacks.pop()
+
+  return service
 }
