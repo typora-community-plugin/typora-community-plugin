@@ -19,12 +19,11 @@ class MacFileStats implements FileStats {
 export class MacFS implements FileAdapter {
 
   access(filepath: string): Promise<void> {
-    return this.exists(filepath)
-      .then(bool => bool ? Promise.resolve() : Promise.reject())
+    return Shell.run(`test -e '${filepath}'`) as Promise<void>
   }
 
   exists(filepath: string): Promise<boolean> {
-    return Shell.run(`test -e '${filepath}'`)
+    return this.access(filepath)
       .then(() => true)
       .catch(() => false)
   }
