@@ -1,5 +1,10 @@
 # 特性更新日志
 
+## v2.2.19
+
+- refactor(core/ui/settings): 设置对话框显示它是全局还是本地配置
+- fix(core/io/config): 命令面板中显示切换到当前配置的无用命令
+
 ## v2.2.17
 
 - fix(core/commands): 修复不能解绑默认快捷键的问题

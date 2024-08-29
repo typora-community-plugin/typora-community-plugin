@@ -1,5 +1,10 @@
 # Feature Changelog
 
+## v2.2.19
+
+- refactor(core/ui/settings): settings modal header shows it is gloabl or vault
+- fix(core/io/config): can switch to current settings in command panel
+
 ## v2.2.17
 
 - fix(core/commands): can not unbind hotkey
