@@ -211,6 +211,9 @@ export class PluginManager {
 
   @debounced(1e3)
   private _saveEnabledConfig() {
-    this.config.writeConfigJson('plugins', this.enabledPlugins)
+    const enabledPlugins = Object.keys(this.enabledPlugins)
+      .sort()
+      .reduce((o, id) => (o[id] = this.enabledPlugins[id], o), {} as any)
+    this.config.writeConfigJson('plugins', enabledPlugins)
   }
 }
