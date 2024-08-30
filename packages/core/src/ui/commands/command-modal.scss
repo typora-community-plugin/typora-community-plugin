@@ -43,12 +43,14 @@
   padding-bottom: .3rem;
   max-height: 30rem;
   overflow-y: auto;
+
+  font-size: 13px;
+  color: #666;
+  text-wrap: nowrap;
 }
 
 .typ-command-modal__item {
   padding: .2rem .6rem;
-  font-size: .875rem;
-  color: #666;
 
   &:hover,
   &.active {
