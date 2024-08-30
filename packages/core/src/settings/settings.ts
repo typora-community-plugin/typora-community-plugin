@@ -29,6 +29,11 @@ type SettingsListeners<T> = Record<
 
 export class Settings<T extends Record<string, any>> {
 
+  private _settingsDir: string
+  private get _isSettingsLoaded() {
+    return this._settingsDir === this.config.configDir
+  }
+
   filename: string
 
   get version() {
@@ -113,6 +118,13 @@ export class Settings<T extends Record<string, any>> {
   }
 
   load() {
+    if (this._isSettingsLoaded) {
+      return
+    }
+    else {
+      this._settingsDir = this.config.configDir
+    }
+
     const oldSettings = this._stores.settings
 
     this._stores = this.config.readConfigJson(this.filename, {
