@@ -55,17 +55,20 @@ export class ConfigRepository extends Events<ConfigEvents> {
     if (this.isUsingGlobalConfig) return
     this._disposeCommand?.()
 
-    const commands = useService('command-manager')
-    const i18n = useService('i18n')
-
     this._configDir = globalConfigDir()
-    this._disposeCommand = commands.register({
-      id: 'config:vault',
-      title: i18n.t.config.commandUseVaultConfig,
-      scope: 'global',
-      callback: () => this.useVaultConfig(),
-    })
     this._isUsingGlobalConfig = true
+
+    this.once('switch', () => {
+      const commands = useService('command-manager')
+      const i18n = useService('i18n')
+
+      this._disposeCommand = commands.register({
+        id: 'config:vault',
+        title: i18n.t.config.commandUseVaultConfig,
+        scope: 'global',
+        callback: () => this.useVaultConfig(),
+      })
+    })
 
     this.emit('switch')
   }
@@ -74,20 +77,23 @@ export class ConfigRepository extends Events<ConfigEvents> {
     if (this._configDir === this.vault.configDir) return
     this._disposeCommand?.()
 
-    const commands = useService('command-manager')
-    const i18n = useService('i18n')
-
     this._configDir = this.vault.configDir
-    this._disposeCommand = commands.register({
-      id: 'config:global',
-      title: i18n.t.config.commandUseGlobalConfig,
-      scope: 'global',
-      callback: () => {
-        this.useGlobalConfig()
-        fs.remove(this.vault.configDir)
-      },
-    })
     this._isUsingGlobalConfig = false
+
+    this.once('switch', () => {
+      const commands = useService('command-manager')
+      const i18n = useService('i18n')
+
+      this._disposeCommand = commands.register({
+        id: 'config:global',
+        title: i18n.t.config.commandUseGlobalConfig,
+        scope: 'global',
+        callback: () => {
+          this.useGlobalConfig()
+          fs.remove(this.vault.configDir)
+        },
+      })
+    })
 
     fs.access(this.vault.configDir)
       .catch(() =>

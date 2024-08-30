@@ -63,6 +63,8 @@ export type AppPlugin = (app: App) => void
  */
 export class App extends Events<AppEvents> {
 
+  private _isReady = false
+
   /**
    * @example app.coreVersion  //=> '2.0.0'
    */
@@ -74,17 +76,17 @@ export class App extends Events<AppEvents> {
 
   vault: Vault = useService('vault')
   config: ConfigRepository = useService('config-repository')
-  settings: Settings<AppSettings> = useService('settings')
-  i18n: I18n<typeof Locale> = useService('i18n')
+  settings: Settings<AppSettings>
+  i18n: I18n<typeof Locale>
   env: EnvironmentVairables = useService('env')
-  github: GithubAPI = useService('github')
+  github: GithubAPI
   hotkeyManager: HotkeyManager = useService('hotkey-manager')
-  commands: CommandManager = useService('command-manager')
-  plugins: PluginManager = useService('plugin-manager')
-  workspace: Workspace = useService('workspace')
+  commands: CommandManager
+  plugins: PluginManager
+  workspace: Workspace
 
-  features = {
-    globalSearch: new GlobalSearch()
+  features: {
+    globalSearch: GlobalSearch
   }
 
   constructor() {
@@ -100,6 +102,20 @@ export class App extends Events<AppEvents> {
       window['Typora'] = window[Symbol.for(process.env.CORE_NS)]
     }
 
+    debugger
+
+    this.config.once('switch', () => {
+      this.settings = useService('settings')
+      this.i18n = useService('i18n')
+      this.github = useService('github')
+      this.commands = useService('command-manager')
+      this.plugins = useService('plugin-manager')
+      this.workspace = useService('workspace')
+      this.features = {
+        globalSearch: new GlobalSearch()
+      }
+      this._isReady = true
+    })
     this.config.on('switch', () => {
       this.settings.load()
       this.plugins.unloadPlugins()
@@ -110,6 +126,8 @@ export class App extends Events<AppEvents> {
   }
 
   async start() {
+    if (!this._isReady) return
+
     await this.plugins.loadFromVault()
 
     this.emit('load')
