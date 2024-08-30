@@ -43,10 +43,6 @@
   .info-panel-tab-wrapper {
     display: none;
   }
-
-  .sidebar-content {
-    top: 18px;
-  }
 }
 
 /**
@@ -64,11 +60,8 @@
 
   border-right: 1px solid rgba(0, 0, 0, .07);
 
-  .html-for-mac & {
+  .html-for-mac.mac-seamless-mode & {
     padding-top: 28px;
-  }
-  .html-for-mac.typora-fullscreen {
-    padding-top: 0;
   }
 
   .typora-node.megamenu-opened &,

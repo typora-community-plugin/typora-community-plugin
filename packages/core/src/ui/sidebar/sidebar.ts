@@ -1,3 +1,4 @@
+import './sidebar.scss'
 import { editor } from "typora"
 import { useService } from "src/common/service"
 import { View } from "src/ui/view"

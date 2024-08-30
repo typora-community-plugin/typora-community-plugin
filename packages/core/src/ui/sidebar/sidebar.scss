@@ -1,0 +1,13 @@
+//
+// The `document.body`'s class `.mac-seamless-mode` is default layout which
+// using the web `<titlebar>`.
+//
+// After entered fullscreen, it will remove `.mac-seamless-mode` and add
+// `.typora-fullscreen`.
+//
+// After left fullscreen, it do not adding `.mac-seamless-mode` to use the web
+// titlebar but use the native titlebar.
+//
+.mac-seamless-mode #typora-sidebar {
+  padding-top: 28px;
+}
