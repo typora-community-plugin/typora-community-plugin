@@ -43,6 +43,11 @@
   .info-panel-tab-wrapper {
     display: none;
   }
+
+  // Hide sidbar header on Windows/Linux
+  &.typora-node .sidebar-content {
+    top: 18px;
+  }
 }
 
 /**
