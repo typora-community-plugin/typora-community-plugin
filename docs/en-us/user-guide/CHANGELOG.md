@@ -1,8 +1,12 @@
 # Feature Changelog
 
+## v2.2.21
+
+- fix(core/ui): layout problem on Windows/Linux from v2.2.20
+
 ## v2.2.20
 
-- fix(core/ui): layout promble on macOS
+- fix(core/ui): layout problem on macOS
 
 ## v2.2.19
 
