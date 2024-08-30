@@ -4,10 +4,17 @@ It likes to be the tabs of the browser, can simulate opening multiple files.
 
 Better to enable "App Setting → General → Save without asking when switch files on side panel"
 
-## 预览
+## Preview
 
 ![file-tabs](../../assets/user/file-tabs.jpg)
 
-## 配置
+## Usage
+
+- Open a file will create a tab automatically;
+- Click a tab will switch to the file;
+- Drag a tab to sort;
+- Right click a tab will show a menu, you can: close current tab, close other tabs, close right tabs.
+
+## Setting
 
 Open "Settings" Model → "Appearance" → "Advanced", check/uncheck "Show File Tabs" can show/hide File Tabs.
