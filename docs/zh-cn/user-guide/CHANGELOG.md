@@ -1,5 +1,9 @@
 # 特性更新日志
 
+## v2.2.20
+
+- fix(core/ui): 修复 macOS 下的布局问题
+
 ## v2.2.19
 
 - refactor(core/ui/settings): 设置对话框显示它是全局还是本地配置

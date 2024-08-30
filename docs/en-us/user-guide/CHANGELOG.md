@@ -1,5 +1,9 @@
 # Feature Changelog
 
+## v2.2.20
+
+- fix(core/ui): layout promble on macOS
+
 ## v2.2.19
 
 - refactor(core/ui/settings): settings modal header shows it is gloabl or vault
