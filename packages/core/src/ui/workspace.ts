@@ -13,9 +13,9 @@ import { TabsView } from './tabs/tabs-view'
 import { SettingsModal } from './settings/settings-modal'
 import { CommandModal } from './commands/command-modal'
 import { QuickOpenPanel } from './quick-open-panel'
-import { _emitMissingEvents } from 'src/symbols'
 import type { View } from './view'
 import { useService } from 'src/common/service'
+import { useEventBus } from 'src/common/eventbus'
 
 
 export type WorkspaceEvents = {
@@ -41,8 +41,12 @@ export class Workspace extends Events<WorkspaceEvents> {
     return File.bundle?.filePath
   }
 
-  constructor() {
+  constructor(
+    app = useEventBus('app')
+  ) {
     super('workspace')
+
+    app.once('load', () => this._emitMissingEvents())
 
     this._registerEventHooks()
 
@@ -89,10 +93,7 @@ export class Workspace extends Events<WorkspaceEvents> {
     }
   }
 
-  /**
-   * @private
-   */
-  [_emitMissingEvents]() {
+  private _emitMissingEvents() {
     if (this.activeFile) {
       this.emit('file:open', this.activeFile)
     }

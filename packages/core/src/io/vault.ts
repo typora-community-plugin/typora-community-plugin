@@ -4,7 +4,7 @@ import decorate from '@plylrnsdy/decorate.js'
 import { Events } from 'src/common/events'
 import { useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
-import { _emitMissingEvents } from 'src/symbols'
+import { useEventBus } from 'src/common/eventbus'
 
 
 export type VaultEvents = {
@@ -27,9 +27,12 @@ export type VaultEvents = {
 export class Vault extends Events<VaultEvents> {
 
   constructor(
+    app = useEventBus('app'),
     protected logger = useService('logger', ['Vault'])
   ) {
     super('vault')
+
+    app.once('load', () => this._emitMissingEvents())
 
     this._registerEventHooks()
   }
@@ -54,10 +57,7 @@ export class Vault extends Events<VaultEvents> {
     return path.join(this.configDir, 'data')
   }
 
-  /**
-   * @private
-   */
-  [_emitMissingEvents]() {
+  private _emitMissingEvents() {
     if (this.path) {
       this.emit('mounted', this.path)
     }

@@ -24,7 +24,6 @@ import type { RibbonSettings } from 'src/ui/ribbon/workspace-ribbon'
 import { GlobalSearch } from './ui/sidebar/search/global-search'
 import { isMarkdownUrl } from 'src/utils'
 import type { FileURL } from 'src/utils/types'
-import { _emitMissingEvents } from 'src/symbols'
 import { ConfigRepository } from './io/config-repository'
 
 
@@ -101,10 +100,6 @@ export class App extends Events<AppEvents> {
       window['Typora'] = window[Symbol.for(process.env.CORE_NS)]
     }
 
-    this.once('load', () => {
-      this.vault[_emitMissingEvents]()
-      this.workspace[_emitMissingEvents]()
-    })
     this.config.on('switch', () => {
       this.settings.load()
       this.plugins.unloadPlugins()
