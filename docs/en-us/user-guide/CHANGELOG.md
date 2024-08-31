@@ -1,5 +1,9 @@
 # Feature Changelog
 
+## v2.2.22
+
+- fix(core/io/config): can not load i18n correctly
+
 ## v2.2.21
 
 - fix(core/ui): layout problem on Windows/Linux from v2.2.20

@@ -1,5 +1,9 @@
 # 特性更新日志
 
+## v2.2.22
+
+- fix(core/io/config): 修复不能正确加载语言文件的问题
+
 ## v2.2.21
 
 - fix(core/ui): 修复来自 v2.2.20 的 Windows/Linux 下的布局问题
