@@ -40,7 +40,7 @@
 
 
 
-**PS:** After installation, Ribbon & Multi File Tabs will be shown by default. You can hide them in the Setting Modal.
+**PS:** After installation, [Ribbon](./3-ribbon.md) & [Multi File Tabs](./3-file-tabs.md) will be shown by default. You can hide them in the Setting Modal.
 
 
 

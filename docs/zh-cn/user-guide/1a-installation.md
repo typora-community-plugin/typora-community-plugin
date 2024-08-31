@@ -40,7 +40,15 @@
 
 
 
-**PS:** 安装成功后，默认显示 Ribbon & 多文件标签页。可以在设置中手动隐藏。
+**PS:** 安装成功后，默认显示 [活动栏](./3-ribbon.md) 和 [多文件标签页](./3-file-tabs.md)。可以在设置中手动隐藏。
+
+
+
+### 切换中文语言
+
+按下 <kbd>Ctrl</kbd>+<kbd>.</kbd> 打开插件设置对话框，在“About”选项卡 → “Language”下拉框中选择“zh-cn”，然后重启 Typora 即可。
+
+![](../../assets/user/settings-lang-zh.jpg)
 
 
 
