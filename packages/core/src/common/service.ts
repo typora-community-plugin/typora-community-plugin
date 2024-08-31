@@ -36,6 +36,9 @@ type ServiceMap = {
 
 const services: Partial<ServiceMap> = {}
 const stacks: string[] = []
+const fixedSerivcesLoadingOrder: (keyof ServiceMap)[] = [
+  'app', 'config-repository', 'settings', 'i18n', 'workspace'
+]
 
 export function registerService<K extends keyof ServiceMap>
   (id: K, factory: (args: any[]) => ReturnType<ServiceMap[K]>) {
@@ -43,11 +46,23 @@ export function registerService<K extends keyof ServiceMap>
 }
 
 export function useService<K extends keyof ServiceMap>(id: K, args?: any[]) {
-  if (!services[id]) {
-    throw Error(`[Service] "${id}" is not registered.`)
-  }
-  if (stacks.includes(id)) {
-    throw Error(`[Service] Circular dependency detected: ${[...stacks, id].join(' → ')}`)
+  if (process.env.IS_DEV) {
+
+    if (!services[id]) {
+      throw Error(`[Service] "${id}" is not registered.`)
+    }
+    if (stacks.includes(id)) {
+      throw Error(`[Service] Circular dependency detected: ${[...stacks, id].join(' → ')}`)
+    }
+    if (fixedSerivcesLoadingOrder.includes(id)) {
+      const index = fixedSerivcesLoadingOrder.indexOf(id)
+      if (index !== 0) {
+        throw Error(`[Service] "${id}" should be loaded before: ${fixedSerivcesLoadingOrder.slice(0, index).join(' → ')}`)
+      }
+      else {
+        fixedSerivcesLoadingOrder.shift()
+      }
+    }
   }
 
   stacks.push(id)
