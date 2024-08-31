@@ -235,6 +235,8 @@ interface Editor {
   /** Editor writing area `div#write` */
   writingArea: HTMLElement
 
+  getNode(cid: string): Node
+
   /**
    * Get current note's markdown string.
    */
@@ -307,6 +309,9 @@ export declare class Node {
   __proto__: {
     constructor: typeof Node
   }
+
+  get(key: string): any
+  set(key: string, value: any): void
 }
 
 interface NodeAttribute {
