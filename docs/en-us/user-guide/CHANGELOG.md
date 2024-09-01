@@ -1,5 +1,10 @@
 # Feature Changelog
 
+## Next version
+
+- **New Plugin**
+  - [wavedrom][]: Use Wavedrom in codeblock
+
 ## v2.2.22
 
 - fix(core/io/config): can not load i18n correctly
@@ -257,3 +262,5 @@
 [note-snippets]: https://github.com/typora-community-plugin/typora-plugin-note-snippets
 
 [tag]: https://github.com/typora-community-plugin/typora-plugin-tag
+
+[wavedrom]: https://github.com/typora-community-plugin/typora-plugin-wavedrom

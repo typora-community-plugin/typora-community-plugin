@@ -45,7 +45,7 @@ To be on the safe side, install an open source plugin that can review the source
 
 ### Plugins
 
-You can install plugins from the Plugin Marketplace
+You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from the Plugin Marketplace:
 
 | Plugins                          | Description                                               |
 | -------------------------------- | --------------------------------------------------------- |
@@ -64,6 +64,7 @@ You can install plugins from the Plugin Marketplace
 | [note-refactor][p7]              | Extract selection to new file.                            |
 | [note-snippets][p8]              | Use slash command to autocomplete note snippets.          |
 | [tag][p9]                        | Support tag like `#tag`.                                  |
+| [wavedrom][p17]                  | Support WaveDrom in codeblock.                            |
 | [wikilink][p10]                  | Suport wikilink like `[[text]]`.                          |
 
 
@@ -113,3 +114,4 @@ If you have any problem or suggestion please open an issue [here](https://github
 [p14]: https://github.com/typora-community-plugin/typora-plugin-code-folding
 [p15]: https://github.com/typora-community-plugin/typora-plugin-image-location
 [p16]: https://github.com/typora-community-plugin/typora-plugin-image-viewer
+[p17]: https://github.com/typora-community-plugin/typora-plugin-wavedrom

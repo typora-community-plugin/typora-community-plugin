@@ -1,5 +1,10 @@
 # 特性更新日志
 
+## Next version
+
+- **新增插件**
+  - [wavedrom][]: 在多行代码块中使用 Wavedrom
+
 ## v2.2.22
 
 - fix(core/io/config): 修复不能正确加载语言文件的问题
@@ -257,3 +262,5 @@
 [note-snippets]: https://github.com/typora-community-plugin/typora-plugin-note-snippets
 
 [tag]: https://github.com/typora-community-plugin/typora-plugin-tag
+
+[wavedrom]: https://github.com/typora-community-plugin/typora-plugin-wavedrom

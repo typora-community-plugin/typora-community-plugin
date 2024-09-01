@@ -43,9 +43,9 @@
 
 
 
-### 已有插件
+### 现有插件
 
-这些插件可通过插件市场安装
+这些插件可通过插件市场[安装](./docs/zh-cn/user-guide/2-plugin-installation.md)：
 
 | 插件                              | 描述                                        |
 | -------------------------------- | ------------------------------------------ |
@@ -64,6 +64,7 @@
 | [note-refactor][p7]              | 提取选中文本到新文件                           |
 | [note-snippets][p8]              | 使用斜线指令输入笔记片段                        |
 | [tag][p9]                        | 高亮 `#tag` 语法，提供标签面板管理和搜索标签      |
+| [wavedrom][p17]                  | 支持在多行代码块中使用 WaveDrom                 |
 | [wikilink][p10]                  | 支持通过 `[[text]]` 链接跳转                  |
 
 
@@ -118,3 +119,4 @@
 [p14]: https://github.com/typora-community-plugin/typora-plugin-code-folding
 [p15]: https://github.com/typora-community-plugin/typora-plugin-image-location
 [p16]: https://github.com/typora-community-plugin/typora-plugin-image-viewer
+[p17]: https://github.com/typora-community-plugin/typora-plugin-wavedrom
