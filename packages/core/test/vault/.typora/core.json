@@ -2,6 +2,20 @@
   "version": 1,
   "settings": {
     "showNotSupportedFile": false,
-    "displayLang": "en"
+    "displayLang": "en",
+    "ribbonState": {
+      "core.search": {
+        "visible": true,
+        "order": 0
+      },
+      "core.file-explorer": {
+        "visible": true,
+        "order": 1
+      },
+      "core.outline": {
+        "visible": true,
+        "order": 2
+      }
+    }
   }
 }

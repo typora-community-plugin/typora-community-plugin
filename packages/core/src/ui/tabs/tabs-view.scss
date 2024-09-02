@@ -1,8 +1,4 @@
-/*
- * override base-control.user.css
- *********************************************/
-
-body.typ-tabs--enable {
+body.typ-file-tabs--enable {
 
   content {
     top: 2rem;
@@ -16,30 +12,17 @@ body.typ-tabs--enable {
   }
 }
 
-/*
- * Tabs
- *********************************************/
-
-.typ-tabs-wrapper {
-  --typ-tab-border-color: rgba(0, 0, 0, 0.07);
-
-  @media (prefers-color-scheme: dark) {
-    --typ-tab-border-color: #555;
-  }
-
+.typ-file-tabs {
   position: fixed;
   top: 0;
-
-  width: calc(100% - var(--typ-ribbon-width));
-  overflow: hidden;
-
-  background: var(--bg-color);
 
   .typora-node.megamenu-opened &,
   .typora-node.typora-sourceview-on &,
   .typora-node.show-preference-panel & {
     display: none;
   }
+
+  width: calc(100% - var(--typ-ribbon-width));
 
   .pin-outline & {
     width: calc(100% - var(--typ-ribbon-width) - var(--sidebar-width));
@@ -50,55 +33,5 @@ body.typ-tabs--enable {
   }
   .html-for-mac.mac-seamless-mode & {
     margin-top: 22px;
-  }
-}
-
-%typ-tabs__child {
-  display: inline-block;
-  padding: 7px 6px 0 8px;
-  height: 100%;
-  border-bottom: 1px solid var(--typ-tab-border-color);
-  color: #777;
-  white-space: nowrap;
-}
-
-.typ-tabs {
-  display: flex;
-  padding: 0;
-  min-width: 100%;
-  height: 2rem;
-
-  &::after {
-    @extend %typ-tabs__child;
-
-    content: '';
-    flex: 1;
-  }
-}
-
-.typ-tab {
-  @extend %typ-tabs__child;
-
-  &.active {
-    padding-top: 5px;
-    border: 1px solid var(--typ-tab-border-color);
-    border-top: var(--typ-indicator-width) solid var(--active-file-border-color);
-    border-bottom: 1px solid transparent;
-
-    &:first-child {
-      border-left: 1px solid transparent;
-    }
-  }
-
-  .typ-hide-ext & .typ-file-ext {
-    display: none;
-  }
-
-  .typ-close::before {
-    font-size: 1.5rem;
-  }
-
-  &:only-child .typ-close {
-    display: none;
   }
 }
