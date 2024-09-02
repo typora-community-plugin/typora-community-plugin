@@ -35,3 +35,7 @@ body.typ-file-tabs--enable {
     margin-top: 22px;
   }
 }
+
+.typ-file-ext--hide .typ-file-ext {
+  display: none;
+}

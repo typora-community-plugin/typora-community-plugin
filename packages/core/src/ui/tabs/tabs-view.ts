@@ -7,14 +7,14 @@ import { useService } from 'src/common/service'
 import { useEventBus } from 'src/common/eventbus'
 import { Menu } from 'src/ui/components/menu'
 import { Tab, TabContainer } from 'src/ui/components/tabs'
-import { html, truncate } from 'src/utils'
+import { truncate } from 'src/utils'
 
 
 const MAX_LENGHT = { length: 20, omission: '…' }
 
 export class TabsView extends Component {
 
-  private container: TabContainer
+  private container: FileTabContainer
 
   private tabs: Map<string, HTMLElement> = new Map()
 
@@ -41,7 +41,7 @@ export class TabsView extends Component {
   }
 
   onload() {
-    this.container ??= new TabContainer({
+    this.container ??= new FileTabContainer({
       className: 'typ-file-tabs',
       onToggle: (tabId) => this.toggleTab(tabId),
       onClose: (tabId) => this.removeTab(tabId),
@@ -185,6 +185,13 @@ export class TabsView extends Component {
   }
 }
 
+class FileTabContainer extends TabContainer {
+
+  hideTabExtension(isHide: boolean) {
+    $('.typ-file-tabs').toggleClass('typ-file-ext--hide', isHide)
+  }
+}
+
 class FileTab extends Tab {
   constructor(filePath: string, vault = useService('vault')) {
     const longPath = path.relative(vault.path, filePath)
@@ -194,7 +201,7 @@ class FileTab extends Tab {
 
     super({
       id: filePath,
-      text: () => html`<span>${shortName}</span><span class="typ-file-ext">${ext}</span>`,
+      text: () => $(`<span>${shortName}</span><span class="typ-file-ext">${ext}</span>`),
       title: longPath,
     })
   }

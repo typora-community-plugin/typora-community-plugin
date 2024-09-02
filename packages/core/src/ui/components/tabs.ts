@@ -70,10 +70,6 @@ export class TabContainer extends View {
     tabEl.replaceWith(tab.containerEl)
   }
 
-  hideTabExtension(isHide: boolean) {
-    $('.typ-tabs-wrapper').toggleClass('typ-hide-ext', isHide)
-  }
-
   activeTab(tabEl: HTMLElement) {
     this.container.querySelectorAll('.typ-tab')
       .forEach(el => el.classList.remove('active'))
@@ -117,7 +113,7 @@ export class TabContainer extends View {
 
 interface TabProps {
   id: string
-  text: string | (() => HTMLElement)
+  text: string | (() => HTMLElement | JQuery<HTMLElement>)
   title?: string
 }
 
