@@ -1,6 +1,7 @@
 import './menu.scss'
-import { View } from "src/ui/view"
 import { html } from "src/utils"
+import { Closeable, View } from '../common/view'
+import { Component } from 'src/common/component'
 
 
 interface MenuPositionDef {
@@ -8,12 +9,14 @@ interface MenuPositionDef {
   y: number
 }
 
-export class Menu extends View {
+export class Menu extends View implements Closeable {
+
+  private component = new Component()
 
   constructor() {
     super()
     this.containerEl = $('<ul class="dropdown-menu context-menu" role="menu">')
-      .on('click', () => this.hide())
+      .on('click', () => this.close())
       .get(0)
 
     document.body.append(this.containerEl)
@@ -52,7 +55,7 @@ export class Menu extends View {
   showAtPosition(position: MenuPositionDef): this {
     this.containerEl.style.top = position.y + 'px'
     this.containerEl.style.left = position.x + 'px'
-    this.show()
+    this.open()
     return this
   }
 
@@ -61,19 +64,19 @@ export class Menu extends View {
    *
    * Do not use it directly. Use `showAtMouseEvent()` or `showAtPosition()` instead.
    */
-  show() {
+  open() {
     setTimeout(() => {
       this.containerEl.style.display = 'block'
-      this.registerDomEvent(document.body, 'click', event => {
+      this.component.registerDomEvent(document.body, 'click', event => {
         if ((<HTMLElement>event.target).closest('.context-menu')) return
-        this.hide()
+        this.close()
       })
     })
   }
 
-  hide(): this {
+  close(): this {
     this.containerEl.style.display = 'none'
-    this.unload()
+    this.component.unload()
     return this
   }
 }

@@ -9,6 +9,7 @@ import { AppearanceSettingTab } from "./tabs/appearance-setting-tab"
 import { PluginMarketplaceSettingTab } from './tabs/plugin-marketplace-setting-tab'
 import { PluginsManagerSettingTab } from "./tabs/plugin-manager-setting-tab"
 import { AboutTab } from './tabs/about-tab'
+import { Component } from 'src/common/component'
 
 
 /**
@@ -19,12 +20,15 @@ import { AboutTab } from './tabs/about-tab'
  * const modal = app.workspace.getViewByType(SettingsModal)
  * ```
  */
-export class SettingsModal extends Modal {
+export class SettingsModal extends Component {
+
+  private modal: Modal
 
   private sidebar: HTMLElement
   private main: HTMLElement
 
   activeTab: SettingTab
+  private tabs: SettingTab[] = []
 
   constructor(
     private config = useService('config-repository'),
@@ -35,11 +39,11 @@ export class SettingsModal extends Modal {
 
     config.on('switch', () => {
       const t = i18n.t.settingModal
-      $('.typ-modal__header', this.containerEl).text(
+      this.modal.setHeader(
         this.config.isUsingGlobalConfig
           ? t.titleGlobal
           : t.titleVault)
-      this.openTab(this._children[0] as SettingTab)
+      this.openTab(this.tabs[0])
     })
   }
 
@@ -52,25 +56,37 @@ export class SettingsModal extends Modal {
         title: t.commandOpen,
         scope: 'global',
         hotkey: 'Ctrl+.',
-        callback: () => this.show(),
+        callback: () => this.modal.open(),
       }))
 
-    super.onload()
-
-    this.modal.classList.add('typ-settings-modal')
-
-    this.addHeader(this.config.isUsingGlobalConfig
-      ? t.titleGlobal
-      : t.titleVault
-    )
-    this.addBody(body => {
-      body.append(
-        this.sidebar = html`<div class="typ-sidebar"></div>`,
-        this.main = html`<div class="typ-main"></div>`,
-      )
-
-      this.sidebar.addEventListener('click', this.onItemClick)
+    this.modal = new Modal({
+      className: 'typ-settings-modal'
     })
+      .then(el => {
+        // fix: clicking on the link in setting modal (out of editor) will close Typora unexpectly
+        el.addEventListener('click', event => {
+          const el = event.target as HTMLElement
+          if (el.tagName === 'A' && el.getAttribute('href')) {
+            event.preventDefault()
+            event.stopPropagation()
+            useService('app').openLink(el.getAttribute('href'))
+          }
+        })
+      })
+      .setHeader(this.config.isUsingGlobalConfig
+        ? t.titleGlobal
+        : t.titleVault
+      )
+      .setBody(body => {
+        body.append(
+          this.sidebar = html`<div class="typ-sidebar"></div>`,
+          this.main = html`<div class="typ-main"></div>`,
+        )
+
+        this.sidebar.addEventListener('click', this.onItemClick)
+      })
+
+    super.onload()
 
     this.addGroupTitle(t.groupCore)
     this.addTab(new FileLinkSettingTab())
@@ -81,23 +97,13 @@ export class SettingsModal extends Modal {
     this.addTab(new AboutTab())
 
     this.addGroupTitle(t.groupPlugins)
-
-    // fix: clicking on the link in setting modal (out of editor) will close Typora unexpectly
-    this.containerEl.addEventListener('click', event => {
-      const el = event.target as HTMLElement
-      if (el.tagName === 'A' && el.getAttribute('href')) {
-        event.preventDefault()
-        event.stopPropagation()
-        useService('app').openLink(el.getAttribute('href'))
-      }
-    })
   }
 
   private onItemClick = (event: MouseEvent) => {
     const el = event.target as HTMLElement
     if (!el.classList.contains("typ-nav__item")) return
 
-    const tabs = this._children as SettingTab[]
+    const tabs = this.tabs as SettingTab[]
     const name = el.dataset.name!
     this.openTab(tabs.find(tab => tab.name === name)!)
   }
@@ -107,10 +113,13 @@ export class SettingsModal extends Modal {
   }
 
   addTab(tab: SettingTab) {
-    this.addChild(tab)
+    this.tabs.push(tab)
 
-    if (this._children.length === 1) {
-      this.activeTab = this._children[0] as SettingTab
+    // @deprecated
+    tab.load()
+
+    if (this.tabs.length === 1) {
+      this.activeTab = this.tabs[0] as SettingTab
       setTimeout(() => this.openTab(this.activeTab))
     }
 
@@ -118,25 +127,26 @@ export class SettingsModal extends Modal {
       html`<div class="typ-nav__item" data-name="${tab.name}">${tab.name}</div>`
     )
 
-    setTimeout(() => {
-      tab.containerEl.classList.add('typ-setting-tab')
-      this.main.append(tab.containerEl)
-    })
-
     return () => this.removeTab(tab)
   }
 
   removeTab(tab: SettingTab) {
     this.sidebar.querySelector(`.typ-nav__item[data-name="${tab.name}"]`)?.remove()
-    this.removeChild(tab)
+    this.tabs = this.tabs.filter(t => t !== tab)
   }
 
   openTab(tab: SettingTab) {
     this.sidebar.querySelector('.active')?.classList.remove('active')
     this.sidebar.querySelector(`[data-name="${tab.name}"]`)!.classList.add('active')
 
+    this.activeTab?.containerEl?.remove()
+    // @deprecated
     this.activeTab?.hide()
+
     this.activeTab = tab
-    tab.show()
+
+    this.main.append(tab.containerEl)
+    // @deprecated
+    this.activeTab?.show()
   }
 }

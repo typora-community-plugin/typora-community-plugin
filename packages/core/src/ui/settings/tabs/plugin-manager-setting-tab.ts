@@ -20,13 +20,14 @@ export class PluginsManagerSettingTab extends SettingTab {
   ) {
     super()
 
+    setTimeout(() => this.render(), 1e3)
     config.on('switch', () => {
       this.containerEl.innerHTML = ''
-      this.onload()
+      this.render()
     })
   }
 
-  show() {
+  render() {
     const t = this.i18n.t.settingTabs.plugins
 
     this.addSetting(setting => {
@@ -52,13 +53,6 @@ export class PluginsManagerSettingTab extends SettingTab {
     })
 
     this.renderPluginList()
-
-    super.show()
-  }
-
-  hide() {
-    this.containerEl.innerHTML = ''
-    super.hide()
   }
 
   private async checkForUpdate() {
@@ -88,7 +82,7 @@ export class PluginsManagerSettingTab extends SettingTab {
       notice.message = format(text, [+i + 1, ids.length])
     }
 
-    notice.hide()
+    notice.close()
   }
 
   private renderPluginList(query: string = '') {

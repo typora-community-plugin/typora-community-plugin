@@ -37,13 +37,15 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     settings.onChange('githubProxy', () => {
       this.loadPluginList()
     })
+
+    this.render()
     config.on('switch', () => {
       this.containerEl.innerHTML = ''
-      this.onload()
+      this.render()
     })
   }
 
-  onload() {
+  render() {
     const { settings } = this
     const t = this.i18n.t.settingTabs.pluginMarketplace
 
@@ -75,16 +77,8 @@ export class PluginMarketplaceSettingTab extends SettingTab {
         button.onclick = () => this.loadPluginList()
       })
     })
-  }
 
-  show() {
     this.loadPluginList()
-    super.show()
-  }
-
-  hide() {
-    this.cleanPluginList()
-    super.hide()
   }
 
   private _pluginListVersion = 0

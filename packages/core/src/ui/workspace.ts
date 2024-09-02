@@ -13,9 +13,10 @@ import { TabsView } from './tabs/tabs-view'
 import { SettingsModal } from './settings/settings-modal'
 import { CommandModal } from './commands/command-modal'
 import { QuickOpenPanel } from './quick-open-panel'
-import type { View } from './view'
-import { useService } from 'src/common/service'
+import type { View } from './common/view'
+import type { Component } from 'src/common/component'
 import { useEventBus } from 'src/common/eventbus'
+import { useService } from 'src/common/service'
 
 
 export type WorkspaceEvents = {
@@ -27,7 +28,7 @@ export type WorkspaceEvents = {
 
 export class Workspace extends Events<WorkspaceEvents> {
 
-  private _children: View[] = []
+  private _children: Component[] = []
 
   ribbon: WorkspaceRibbon
   sidebar: Sidebar
@@ -83,8 +84,8 @@ export class Workspace extends Events<WorkspaceEvents> {
    *
    * @param callback return `true` to stop iteration
    */
-  iterateViews(view: View, callback: (view: View) => boolean | void) {
-    const children = (<any>view)._children as View[]
+  iterateViews(view: Component, callback: (view: Component) => boolean | void) {
+    const children = (<any>view)._children as Component[]
     for (let i = 0; i < children.length; i++) {
       const childView = children[i]
       if (callback(childView)) break

@@ -1,7 +1,7 @@
 import './setting-tab.scss'
 import type { App } from "src/app"
 import type { Plugin } from "src/plugin/plugin"
-import { View } from "../view"
+import { View } from "src/ui/common/view"
 import { html } from "src/utils"
 import { SettingItem } from "./setting-item"
 
@@ -12,11 +12,7 @@ export abstract class SettingTab extends View {
 
   constructor() {
     super()
-    this.containerEl = html`<div class="typ-setting-tab" style="display: none;"></div>`
-  }
-
-  onunload() {
-    this.containerEl.remove()
+    this.containerEl = html`<div class="typ-setting-tab"></div>`
   }
 
   addSettingTitle(text: string) {
@@ -26,9 +22,34 @@ export abstract class SettingTab extends View {
   addSetting(build: (setting: SettingItem) => void) {
     const setting = new SettingItem()
     build(setting)
-    this.addChild(setting)
     this.containerEl.append(setting.containerEl)
   }
+
+  /**
+   * @deprecated compatible with old api (<=2.2.22)
+   */
+  load() {
+    // @ts-ignore
+    this.onload?.()
+  }
+
+  /**
+   * @deprecated compatible with old api (<=2.2.22)
+   */
+  unload() {
+    // @ts-ignore
+    this.onunload?.()
+  }
+
+  /**
+   * @deprecated compatible with old api (<=2.2.22)
+   */
+  show() { }
+
+  /**
+   * @deprecated compatible with old api (<=2.2.22)
+   */
+  hide() { }
 }
 
 export abstract class PluginSettingTab extends SettingTab {

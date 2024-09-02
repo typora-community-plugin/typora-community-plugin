@@ -1,15 +1,15 @@
 import decorate from '@plylrnsdy/decorate.js'
 import { editor } from "typora"
 import { Component } from 'src/common/component'
-import { View } from 'src/ui/view'
 import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
 import { html, noop } from 'src/utils'
 import { useService } from 'src/common/service'
+import { SidebarPanel } from '../sidebar-panel'
 
 
 const SELECTOR_QUERY_INPUT = '#file-library-search-input'
 
-export class GlobalSearchView extends View {
+export class GlobalSearchView extends SidebarPanel {
 
   static get id() {
     return 'core.search' as const
@@ -20,29 +20,26 @@ export class GlobalSearchView extends View {
 
   constructor(
     i18n = useService('i18n'),
-    ribbon = useService('ribbon'),
-    private sidebar = useService('sidebar'),
   ) {
     super()
 
     this.containerEl = document.getElementById('file-library-search') as HTMLElement
 
-    ribbon.addButton({
+    this.addRibbonButton({
       [BUILT_IN]: true,
       id: GlobalSearchView.id,
       title: i18n.t.ribbon.search,
       icon: html`<i class="fa fa-search typ-lighter-icon"></i>`,
-      onclick: () => sidebar.switch(GlobalSearchView),
     })
   }
 
-  show() {
+  onshow() {
     editor.library.fileSearch.show()
     this._keepSearchResult.showSearchPanel()
   }
 
-  hide() {
-    this.sidebar.wrapperEl.classList.remove('ty-show-search', 'ty-on-search')
+  onhide() {
+    $('#typora-sidebar').removeClass('ty-show-search ty-on-search')
   }
 
   getQuery() {
@@ -87,7 +84,7 @@ class KeepSearchResult extends Component {
 
   showSearchPanel() {
     if (this.settings.get(this.SETTING_KEY))
-      this.sidebar.wrapperEl.classList.add('ty-on-search')
+      $('#typora-sidebar').addClass('ty-on-search')
   }
 }
 

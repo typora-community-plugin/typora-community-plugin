@@ -33,13 +33,14 @@ export class AppearanceSettingTab extends SettingTab {
   ) {
     super()
 
+    this.render()
     config.on('switch', () => {
       this.containerEl.innerHTML = ''
-      this.onload()
+      this.render()
     })
   }
 
-  onload() {
+  render() {
     const { settings } = this
     const t = this.i18n.t.settingTabs.appearance
 
@@ -108,9 +109,5 @@ export class AppearanceSettingTab extends SettingTab {
         }
       })
     })
-  }
-
-  onunload() {
-    this.containerEl.remove()
   }
 }

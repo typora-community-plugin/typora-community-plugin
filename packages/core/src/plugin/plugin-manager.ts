@@ -197,7 +197,7 @@ export class PluginManager {
 
     return marketplace.installPlugin(info, manifest.postion)
       .then(() => isEnabled && this.enablePlugin(id))
-      .then(() => new Notice(format(t.updateSuccessful, manifest)))
+      .then(() => { new Notice(format(t.updateSuccessful, manifest)) })
   }
 
   uninstallPlugin(id: string) {

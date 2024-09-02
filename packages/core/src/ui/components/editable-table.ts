@@ -1,5 +1,5 @@
 import './editable-table.scss'
-import { View } from "../view"
+import { View } from "src/ui/common/view"
 import { html } from "src/utils"
 
 

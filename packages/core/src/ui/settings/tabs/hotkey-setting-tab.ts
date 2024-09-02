@@ -5,6 +5,7 @@ import { useEventBus } from "src/common/eventbus"
 import { html } from "src/utils"
 import { eventToHotkey, readableHotkey } from "src/hotkey-manager"
 import type { SettingItem } from "../setting-item"
+import { Component } from "src/common/component"
 
 
 export class HotkeySettingTab extends SettingTab {
@@ -15,25 +16,24 @@ export class HotkeySettingTab extends SettingTab {
 
   constructor(
     config = useService('config-repository'),
-    private app = useEventBus('app'),
+    app = useEventBus('app'),
     private i18n = useService('i18n'),
     private commands = useService('command-manager'),
   ) {
     super()
 
+    app.once('load', () => {
+      this.render()
+    })
     config.on('switch', () => {
       this.containerEl.innerHTML = ''
-      this.onload()
+      this.render()
     })
   }
 
-  onload() {
-    this.register(
-      this.app.on('load', () => {
-        this.containerEl.innerHTML = ''
-        Object.values(this.commands.commandMap)
-          .forEach(cmd => this.renderHotkey(cmd))
-      }))
+  render() {
+    Object.values(this.commands.commandMap)
+      .forEach(cmd => this.renderHotkey(cmd))
   }
 
   private renderHotkey(cmd: Command) {

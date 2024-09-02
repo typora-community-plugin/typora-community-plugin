@@ -11,7 +11,9 @@ export type { PluginManifest } from './plugin/plugin-manifest'
 export { PluginSettings } from './plugin/plugin-settings'
 export { Plugin } from './plugin/plugin'
 
-export { View } from './ui/view'
+/** @deprecated */
+export { ViewLegacy as View } from './ui/common/view-legacy'
+
 export { Modal } from './ui/components/modal'
 export { Notice } from './ui/components/notice'
 
@@ -30,6 +32,8 @@ export { WorkspaceRibbon } from './ui/ribbon/workspace-ribbon'
 
 /** @deprecated */
 export { Sidebar } from './ui/sidebar/sidebar'
+
+export { SidebarPanel } from './ui/sidebar/sidebar-panel'
 
 export { default as fs } from 'src/io/fs/filesystem'
 export { default as path } from 'src/path'

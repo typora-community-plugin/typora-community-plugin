@@ -1,9 +1,11 @@
 import './sidebar.scss'
 import { editor } from "typora"
 import { useService } from "src/common/service"
-import { View } from "src/ui/view"
+import { View } from "src/ui/common/view"
 import type { DisposeFunc } from "src/utils/types"
 import { FileExplorer } from "./file-explorer"
+import { Component } from 'src/common/component'
+import type { SidebarPanel } from './sidebar-panel'
 
 
 /**
@@ -14,25 +16,24 @@ import { FileExplorer } from "./file-explorer"
  * const sidebar = app.workspace.sidebar
  * ```
  */
-export class Sidebar extends View {
+export class Sidebar extends Component {
 
-  wrapperEl: HTMLElement
+  private container = new SidebarContainer()
 
-  activeView: View
-  internalViews: View[]
+  private activeView: SidebarPanel
+  private internalPanels: SidebarPanel[] = []
+  private panels: SidebarPanel[] = []
 
   constructor(
-    internalViews: () => View[],
+    internalPanels: () => SidebarPanel[],
     private settings = useService('settings'),
   ) {
     super()
 
-    this.containerEl = document.getElementById('sidebar-content')!
-    this.wrapperEl = this.containerEl.parentElement
 
     setTimeout(() => {
-      this.internalViews = internalViews()
-      this.internalViews.forEach(view => this.addChild(view))
+      this.internalPanels = internalPanels()
+      this.internalPanels.forEach(view => this.addChild(view))
     }, 1)
 
     settings.onChange('showRibbon', (_, isEnabled) => {
@@ -48,43 +49,56 @@ export class Sidebar extends View {
   }
 
   onload() {
-    this._children.forEach((view: View) => {
-      view.load()
-      if (!this.internalViews.includes(view) && view.containerEl) {
-        this.containerEl.append(view.containerEl)
-      }
-    })
+    this.panels.forEach((panel) => this.addChild(panel))
   }
 
   onunload() {
-    if (!this.internalViews.includes(this.activeView)) {
+    if (!this.internalPanels.includes(this.activeView)) {
       this.switch(FileExplorer)
     }
   }
 
-  addChild(component: View): DisposeFunc {
-    const dispose = super.addChild(component)
-
-    if (!this.internalViews.includes(component) && component.containerEl) {
-      this.containerEl.append(component.containerEl)
+  addChild(panel: any): DisposeFunc {
+    if (!this.internalPanels.includes(panel) && panel.el) {
+      this.container.addPanel(panel)
     }
-    return dispose
+
+    // @deprecated
+    (<SidebarPanel>panel).load()
+
+    this.container.containerEl.append(panel.containerEl)
+
+    this.panels.push(panel)
+    return () => this.removeChild(panel)
+  }
+
+  removeChild(panel: any): void {
+    if (this.internalPanels.includes(panel)) {
+      return
+    }
+    if (this.panels.includes(panel)) {
+      this.panels = this.panels.filter((v) => v !== panel)
+      panel.el?.remove();
+
+      // @deprecated
+      (<SidebarPanel>panel).unload()
+    }
   }
 
   get isShown() {
     return editor.library.isSidebarShown()
   }
 
-  switch<T extends View>(viewClass: new (...args: any[]) => T) {
+  switch<T extends SidebarPanel>(viewClass: new (...args: any[]) => T) {
     if (this.activeView instanceof viewClass) {
       this.toggle()
       return
     }
 
-    Object.values(this.internalViews).forEach(v => v.hide())
+    Object.values(this.internalPanels).forEach(v => v.hide())
     this.activeView?.hide()
 
-    this.activeView = this._children.find(c => c instanceof viewClass)! as View
+    this.activeView = this.panels.find(c => c instanceof viewClass)!
     this.activeView.show()
   }
 
@@ -102,3 +116,20 @@ export class Sidebar extends View {
     this.activeView?.hide()
   }
 }
+
+class SidebarContainer extends View {
+
+  wrapperEl: HTMLElement
+
+  constructor() {
+    super()
+
+    this.containerEl = document.getElementById('sidebar-content')!
+    this.wrapperEl = this.containerEl.parentElement
+  }
+
+  addPanel(panel: SidebarPanel) {
+    this.containerEl.append(panel.containerEl)
+  }
+}
+

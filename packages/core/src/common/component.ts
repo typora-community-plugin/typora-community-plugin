@@ -1,7 +1,7 @@
 import type { DisposeFunc } from "src/utils/types"
 
 
-export abstract class Component {
+export class Component {
 
   protected _loaded = false
   protected _disposables: DisposeFunc[] = []

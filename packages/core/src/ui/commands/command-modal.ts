@@ -3,9 +3,12 @@ import { Modal } from "../components/modal"
 import type { Command } from 'src/command/command-manager'
 import { html } from 'src/utils'
 import { useService } from 'src/common/service'
+import { Component } from 'src/common/component'
 
 
-export class CommandModal extends Modal {
+export class CommandModal extends Component {
+
+  private modal: Modal
 
   private input: HTMLInputElement
   private results: HTMLElement
@@ -36,28 +39,27 @@ export class CommandModal extends Modal {
           this.updateCommands(
             Object.values(this.commandsMgr.commandMap)
           )
-          this.show()
+          this.open()
         }
       }))
 
+    this.modal = new Modal({ className: 'typ-command-modal' })
+      .setBody(body => {
+        $(body)
+          .on('keyup', this.onKeyup as any)
+          .append(
+            $('<div class="typ-command-modal__form"></div>')
+              .append(this.input =
+                html`<input type="text" placeholder="${t.placeholder}" />` as any)
+          )
+          .append(this.results =
+            $('<div class="typ-command-modal__results stopselect"></div>')
+              .on('click', this.onItemClick as any)
+              .get(0)
+          )
+      })
+
     super.onload()
-
-    this.modal.classList.add('typ-command-modal')
-
-    this.addBody(body => {
-      $(body)
-        .on('keyup', this.onKeyup as any)
-        .append(
-          $('<div class="typ-command-modal__form"></div>')
-            .append(this.input =
-              html`<input type="text" placeholder="${t.placeholder}" />` as any)
-        )
-        .append(this.results =
-          $('<div class="typ-command-modal__results stopselect"></div>')
-            .on('click', this.onItemClick as any)
-            .get(0)
-        )
-    })
   }
 
   private onKeyup = (event: KeyboardEvent) => {
@@ -99,18 +101,18 @@ export class CommandModal extends Modal {
   }
 
   private onSelect = (id: string) => {
-    this.hide()
+    this.close()
     this.commandsMgr.run(id)
   }
 
-  show() {
-    super.show()
+  open() {
+    this.modal.open()
     this.markdownEditor.selection.save()
     this.input.focus()
   }
 
-  hide() {
-    super.hide()
+  close() {
+    this.modal.close()
     this.input.value = ""
     this.selected = -1
     this.markdownEditor.selection.restore()

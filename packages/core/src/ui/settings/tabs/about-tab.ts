@@ -29,13 +29,15 @@ export class AboutTab extends SettingTab {
     super()
 
     settings.setDefault({ displayLang: i18n.locale })
+
+    this.render()
     config.on('switch', () => {
       this.containerEl.innerHTML = ''
-      this.onload()
+      this.render()
     })
   }
 
-  onload() {
+  render() {
     const t = this.i18n.t.settingTabs.about
 
     this.addSettingTitle(this.name)

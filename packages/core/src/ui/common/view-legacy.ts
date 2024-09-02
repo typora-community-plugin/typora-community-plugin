@@ -1,7 +1,10 @@
 import { Component } from "src/common/component"
 
 
-export abstract class View extends Component {
+/**
+ * @deprecated compatible with old api (<=2.2.22)
+ */
+export abstract class ViewLegacy extends Component {
 
   containerEl: HTMLElement
 

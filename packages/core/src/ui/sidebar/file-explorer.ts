@@ -3,13 +3,13 @@ import decorate from "@plylrnsdy/decorate.js"
 import { editor, File } from "typora"
 import { Component } from 'src/common/component'
 import path from 'src/path'
-import { View } from 'src/ui/view'
 import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
 import { html } from "src/utils"
 import { useService } from "src/common/service"
+import { SidebarPanel } from './sidebar-panel'
 
 
-export class FileExplorer extends View {
+export class FileExplorer extends SidebarPanel {
 
   static get id() {
     return 'core.file-explorer' as const
@@ -19,19 +19,16 @@ export class FileExplorer extends View {
 
   constructor(
     i18n = useService('i18n'),
-    private ribbon = useService('ribbon'),
-    private sidebar = useService('sidebar'),
   ) {
     super()
 
     this.containerEl = document.getElementById('file-library') as HTMLElement
 
-    ribbon.addButton({
+    this.addRibbonButton({
       [BUILT_IN]: true,
       id: FileExplorer.id,
       title: i18n.t.ribbon.files,
       icon: html`<i class="fa fa-folder-o"></i>`,
-      onclick: () => this.sidebar.switch(FileExplorer),
     })
   }
 
@@ -39,13 +36,13 @@ export class FileExplorer extends View {
     this.ribbon.activeButton(FileExplorer.id)
   }
 
-  show() {
+  onshow() {
     editor.library.fileSearch.hide()
     editor.library.switch("", true)
   }
 
-  hide() {
-    this.sidebar.wrapperEl.classList.remove('active-tab-files')
+  onhide() {
+    $('#typora-sidebar').removeClass('active-tab-files')
   }
 }
 

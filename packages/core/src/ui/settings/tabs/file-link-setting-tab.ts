@@ -30,13 +30,14 @@ export class FileLinkSettingTab extends SettingTab {
   ) {
     super()
 
+    this.render()
     config.on('switch', () => {
       this.containerEl.innerHTML = ''
-      this.onload()
+      this.render()
     })
   }
 
-  onload() {
+  render() {
     const { settings } = this
     const t = this.i18n.t.settingTabs.fileLink
 
@@ -78,9 +79,5 @@ export class FileLinkSettingTab extends SettingTab {
         }, 1e3)
       })
     })
-  }
-
-  onunload() {
-    this.containerEl.remove()
   }
 }

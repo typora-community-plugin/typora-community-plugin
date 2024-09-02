@@ -1,6 +1,6 @@
 import './setting-item.scss'
 import { EditableTable } from 'src/ui/components/editable-table'
-import { View } from "src/ui/view"
+import { View } from "src/ui/common/view"
 import { html, noop } from 'src/utils'
 
 
@@ -144,7 +144,6 @@ export class SettingItem extends View {
   addTable(build: (table: EditableTable<any>) => void) {
     const table = new EditableTable()
     build(table)
-    this.addChild(table)
     this.containerEl.append(table.containerEl)
   }
 }

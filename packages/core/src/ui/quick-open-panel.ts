@@ -4,10 +4,9 @@ import decorate from '@plylrnsdy/decorate.js'
 import { Component } from "src/common/component"
 import { useService } from "src/common/service"
 import fs from 'src/io/fs/filesystem'
-import { View } from "./view"
 
 
-export class QuickOpenPanel extends View {
+export class QuickOpenPanel extends Component {
 
   private _ignoreFile: IgnoreFile
   private _quickOpenInCurrentWin: QuickOpenInCurrentWin

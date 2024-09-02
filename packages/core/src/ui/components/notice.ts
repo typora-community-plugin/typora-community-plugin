@@ -1,13 +1,15 @@
+import { Component } from 'src/common/component'
 import './notice.scss'
-import { View } from 'src/ui/view'
+import { Closeable, View } from 'src/ui/common/view'
 import { html } from 'src/utils'
 
 
-class NoticeContainer extends View {
+class NoticeContainer extends Component implements Closeable {
+
+  containerEl: HTMLElement
 
   onload() {
-    this.containerEl = html`<div class="typ-notice__container"></div>`
-    this.hide()
+    this.containerEl = html`<div class="typ-notice__container" style="display: none;"></div>`
     document.body.append(this.containerEl)
   }
 
@@ -15,11 +17,11 @@ class NoticeContainer extends View {
     this.containerEl.remove()
   }
 
-  show() {
+  open() {
     this.containerEl.style.display = 'block'
   }
 
-  hide() {
+  close() {
     if (this.containerEl.children.length > 0) return
     this.containerEl.style.display = 'none'
   }
@@ -27,28 +29,27 @@ class NoticeContainer extends View {
 
 export const noticeContainer = new NoticeContainer()
 
-export class Notice {
-
-  private el: HTMLElement
+export class Notice extends View {
 
   /**
    * @param delay Hide notice after `delay` ms. `delay = 0` will not be hidden.
    */
   constructor(message: string, delay = 5000) {
-    this.el = html`<div class="typ-notice">${message}</div>`
+    super()
+    this.containerEl = html`<div class="typ-notice">${message}</div>`
 
-    noticeContainer.containerEl.append(this.el)
-    noticeContainer.show()
+    noticeContainer.containerEl.append(this.containerEl)
+    noticeContainer.open()
 
-    delay && setTimeout(() => this.hide(), delay)
+    delay && setTimeout(() => this.close(), delay)
   }
 
   set message(msg: string) {
-    this.el.innerText = msg
+    this.containerEl.innerText = msg
   }
 
-  hide() {
-    this.el.remove()
-    noticeContainer.hide()
+  close() {
+    this.containerEl.remove()
+    noticeContainer.close()
   }
 }
