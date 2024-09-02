@@ -9,7 +9,7 @@ import { useEventBus } from './common/eventbus'
 
 
 export function devtools(
-  config = useEventBus('config-repository'),
+  app = useEventBus('app'),
 ) {
 
   ClientCommand.toggleDevTools()
@@ -18,7 +18,7 @@ export function devtools(
     createLocker()
   }
 
-  config.once('switch', () => {
+  app.once('load', () => {
     const ribbon = useService('ribbon')
 
     ribbon.addButton({
