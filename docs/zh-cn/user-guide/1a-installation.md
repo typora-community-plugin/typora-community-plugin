@@ -48,6 +48,21 @@
 
 
 
+### 安装失败
+
+安装后，没有显示活动栏和多文件标签页，请按以下步骤检查：
+
+- 打开开发人员工具，检查是否有报错
+  - Windows/Linux: 使用快捷键 <kbd>Shift</kbd>+<kbd>F12</kbd> 打开开发人员工具
+  - macOS: 菜单栏“帮助” → “启用调试”，然后右键单击编辑区，选择“检查元素”，打开开发人员工具
+- 如果有报错，请截图或复制日志，在 [Issues][issues] 中反馈。
+- 如果没报错
+  1. 修改 `loader.json` 文件中的 `"debug":false` 为 `"debug":true` ，然后重启 Typora
+  2. 打开开发人员工具 Console 选项卡，在 Filter 输入框中输入 `core.js` 过滤日志
+  3. 截图或复制日志，在 [Issues][issues] 中反馈。
+
+
+
 ### 切换中文语言
 
 按下 <kbd>Ctrl</kbd>+<kbd>.</kbd> 打开插件设置对话框，在“About”选项卡 → “Language”下拉框中选择“zh-cn”，然后重启 Typora 即可。
@@ -56,5 +71,6 @@
 
 
 
+[issues]: https://github.com/typora-community-plugin/typora-community-plugin/issues
 [release]: https://github.com/typora-community-plugin/typora-community-plugin/releases
 [ws]: https://github.com/typora-community-plugin/typora-community-plugin/issues/9
