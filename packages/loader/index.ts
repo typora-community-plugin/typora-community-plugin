@@ -18,7 +18,12 @@ import { File, _options, bridge, reqnode } from 'typora'
     : `./${loaderConfig.coreVersion}/core.js`
 
   // @ts-ignore
-  window[Symbol.for(`${process.env.CORE_NS}:env`)] = env
+  window[Symbol.for(`${process.env.CORE_NS}:env`)] = {
+    ...env,
+    debug: loaderConfig.debug,
+  }
+
+  console.log(`[Typora Plugin Loader] Start importing "${pluginCore}"`)
 
   import(pluginCore)
 

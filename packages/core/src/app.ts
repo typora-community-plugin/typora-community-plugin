@@ -102,8 +102,6 @@ export class App extends Events<AppEvents> {
       window['Typora'] = window[Symbol.for(process.env.CORE_NS)]
     }
 
-    debugger
-
     this.config.once('switch', () => {
       this.settings = useService('settings')
       this.i18n = useService('i18n')

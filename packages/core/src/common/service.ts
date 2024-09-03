@@ -13,6 +13,7 @@ import type { MarkdownEditor } from "src/ui/editor/markdown-editor"
 import type { WorkspaceRibbon } from "src/ui/ribbon/workspace-ribbon"
 import type { Sidebar } from "src/ui/sidebar/sidebar"
 import type { Workspace } from "src/ui/workspace"
+import { isDebug } from "./constants"
 
 
 type ServiceMap = {
@@ -66,6 +67,8 @@ export function useService<K extends keyof ServiceMap>(id: K, args?: any[]) {
   }
 
   stacks.push(id)
+
+  if (isDebug()) console.log(`[Service] Loading "${stacks.join(' → ')}"...`)
 
   const service = (<any>services[id])(args) as ReturnType<ServiceMap[K]>
 
