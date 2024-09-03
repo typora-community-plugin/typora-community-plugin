@@ -98,6 +98,12 @@ export class TabContainer extends View {
     this.props.onClose(tabId)
   }
 
+  closeOtherTabs(tabEl: HTMLElement) {
+    Array.from(this.container.children)
+      .filter(el => el !== tabEl)
+      .forEach(el => this.closeTab(el as HTMLElement))
+  }
+
   closeRightTabs(tabEl: HTMLElement) {
     const tabEls = Array.from(this.container.children) as HTMLElement[]
     const currentIdx = tabEls.findIndex(el => el.dataset.id === tabEl.dataset.id!)

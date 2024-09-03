@@ -174,9 +174,7 @@ export class TabsView extends Component {
 
   removeOthers(path: string) {
     editor.library.openFile(path)
-    for (const [p, el] of this.tabs.entries()) {
-      p !== path && this.container.closeTab(el)
-    }
+    this.container.closeOtherTabs(this.tabs.get(path)!)
   }
 
   removeRight(path: string) {
