@@ -6,6 +6,8 @@ import { BUILT_IN } from 'src/ui/ribbon/workspace-ribbon'
 import { html } from 'src/utils'
 import { useService } from './common/service'
 import { useEventBus } from './common/eventbus'
+import { SettingsModal } from './ui/settings/settings-modal'
+import { EditaleTableTestTab } from './ui/components/editable-table-test'
 
 
 export function devtools(
@@ -13,10 +15,6 @@ export function devtools(
 ) {
 
   ClientCommand.toggleDevTools()
-
-  if (File.isNode) {
-    createLocker()
-  }
 
   app.once('load', () => {
     const ribbon = useService('ribbon')
@@ -31,7 +29,13 @@ export function devtools(
         JSBridge.invoke("window.toggleDevTools")
       }
     })
+
+    registerTestTab()
   })
+
+  if (File.isNode) {
+    createLocker()
+  }
 
   function createLocker() {
     const nodeFs: typeof import('fs') = reqnode('fs')
@@ -48,5 +52,10 @@ export function devtools(
           JSBridge.invoke("window.close")
         }
       }))
+  }
+
+  function registerTestTab(app = useService('app')) {
+    app.workspace.getViewByType(SettingsModal)!
+      .addTab(new EditaleTableTestTab())
   }
 }
