@@ -27,10 +27,7 @@ export class ConfigRepository extends Events<ConfigEvents> {
 
     this._autoSelectConfig()
 
-    vault.on('change', () => {
-      if (this.isUsingGlobalConfig) return
-      this._autoSelectConfig()
-    })
+    vault.on('change', () => this._autoSelectConfig())
   }
 
   get isUsingGlobalConfig() {

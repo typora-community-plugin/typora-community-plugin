@@ -1,5 +1,9 @@
 # Feature Changelog
 
+## v2.3.3
+
+- fix(core/io/config): can not switch from global settings to vault settings
+
 ## v2.3.2
 
 - refactor(core/ui): decouple controllors from ui views

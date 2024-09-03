@@ -1,9 +1,13 @@
 # 特性更新日志
 
+## v2.3.3
+
+- fix(core/io/config): 修复不能从全局设置切换到本地配置的问题
+
 ## v2.3.2
 
 - refactor(core/ui): 解耦控制器和 UI 视图
-- fix(core/io/config): 启动后首次加载配置时，无法加载全局配置
+- fix(core/io/config): 修复启动后首次加载配置时，无法加载全局配置的问题
 - chore(core,loader): 支持修改 `loader.json` 的 debug 属性为 `true` 打印用于调试的日志
 
 - **新增插件**
