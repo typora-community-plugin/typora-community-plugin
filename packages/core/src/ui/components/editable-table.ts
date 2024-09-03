@@ -1,6 +1,6 @@
 import './editable-table.scss'
 import { View } from "src/ui/common/view"
-import { html } from "src/utils"
+import { debounce, html } from "src/utils"
 
 
 type TableHeader<T extends object> = {
@@ -145,10 +145,10 @@ export class EditableTable<T extends Record<string, any>> extends View {
         .empty()
         .append(
           $(`<input type="${type}" value="${this.data[r][prop] ?? ''}">`)
-            .on('change', event => {
+            .on('input', debounce(event => {
               this.data[r][prop] = (<HTMLInputElement>event.target).value as any
               this.rowChangeHandlers.forEach(fn => fn(this.data[r]))
-            }))
+            }, 1e3)))
     })
   }
 }
