@@ -1,8 +1,10 @@
 # 特性更新日志
 
-## Next version v2.3.0
+## v2.3.2
 
 - refactor(core/ui): 解耦控制器和 UI 视图
+- fix(core/io/config): 启动后首次加载配置时，无法加载全局配置
+- chore(core,loader): 支持修改 `loader.json` 的 debug 属性为 `true` 打印用于调试的日志
 
 - **新增插件**
   - [wavedrom][]: 在多行代码块中使用 Wavedrom

@@ -1,8 +1,10 @@
 # Feature Changelog
 
-## Next version v2.3.0
+## v2.3.2
 
 - refactor(core/ui): decouple controllors from ui views
+- fix(core/io/config): can not load global settings if it has not vault settings
+- chore(core,loader): set `loader.json`'s `debug` property to `true`, so that we can print logs for debugging
 
 - **New Plugin**
   - [wavedrom][]: Use Wavedrom in codeblock
