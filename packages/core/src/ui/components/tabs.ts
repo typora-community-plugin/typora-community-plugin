@@ -24,6 +24,8 @@ export class TabContainer extends View {
         .on('click', event => {
           const $clickedEl = $(event.target)
           const $tab = $clickedEl.closest('.typ-tab')
+          if (!$tab.length) return
+
           const tabId = $tab.data('id')
           if ($clickedEl.hasClass('typ-close')) {
             this.props.onClose(tabId)
@@ -36,7 +38,12 @@ export class TabContainer extends View {
         // handle: middle click
         .on('mousedown', event => {
           if (event.button !== 1) return
-          const tabId = $(event.target as HTMLElement).data('id')
+
+          const $clickedEl = $(event.target)
+          const $tab = $clickedEl.closest('.typ-tab')
+          if (!$tab.length) return
+
+          const tabId = $tab.data('id')
           this.props.onClose(tabId)
         })
         // handle: scroll
