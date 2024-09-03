@@ -1,6 +1,8 @@
 # Feature Changelog
 
-## Next version
+## Next version v2.3.0
+
+- refactor(core/ui): decouple controllors from ui views
 
 - **New Plugin**
   - [wavedrom][]: Use Wavedrom in codeblock

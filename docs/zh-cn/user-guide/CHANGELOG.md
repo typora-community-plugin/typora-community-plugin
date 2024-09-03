@@ -1,6 +1,8 @@
 # 特性更新日志
 
-## Next version
+## Next version v2.3.0
+
+- refactor(core/ui): 解耦控制器和 UI 视图
 
 - **新增插件**
   - [wavedrom][]: 在多行代码块中使用 Wavedrom
