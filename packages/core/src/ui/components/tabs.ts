@@ -24,20 +24,20 @@ export class TabContainer extends View {
         .on('click', event => {
           const $clickedEl = $(event.target)
           const $tab = $clickedEl.closest('.typ-tab')
+          const tabId = $tab.data('id')
           if ($clickedEl.hasClass('typ-close')) {
-            this.closeTab($tab.get(0))
+            this.props.onClose(tabId)
           }
           else {
             if ($tab.hasClass('active')) return
-            this.toggleTab($tab.get(0))
+            this.props.onToggle(tabId)
           }
         })
         // handle: middle click
         .on('mousedown', event => {
           if (event.button !== 1) return
-
-          const tab = event.target as HTMLElement
-          this.closeTab(tab)
+          const tabId = $(event.target as HTMLElement).data('id')
+          this.props.onClose(tabId)
         })
         // handle: scroll
         .on('wheel', (event) => {
@@ -57,7 +57,7 @@ export class TabContainer extends View {
   }
 
   showTab(tabEl: HTMLElement) {
-    tabEl.parentElement!.parentElement!.scrollLeft = tabEl.offsetLeft
+    this.containerEl.scrollLeft = tabEl.offsetLeft
   }
 
   addTab(tab: Tab) {
@@ -71,31 +71,17 @@ export class TabContainer extends View {
   }
 
   activeTab(tabEl: HTMLElement) {
-    this.container.querySelectorAll('.typ-tab')
-      .forEach(el => el.classList.remove('active'))
+    $('.typ-tab.active', this.containerEl).removeClass('active')
 
     tabEl.classList.add('active')
-  }
-
-  toggleTab(tabEl: HTMLElement) {
-    const tabId = tabEl.dataset.id!
-
-    this.container.querySelectorAll('.typ-tab')
-      .forEach(el => el.classList.remove('active'))
-
-    tabEl.classList.add('active')
-
-    this.props.onToggle(tabId)
   }
 
   closeTab(tabEl: HTMLElement) {
     if (tabEl.classList.contains('active')) {
       const siblingTab = this.getSiblingTab(tabEl)
-      this.toggleTab(siblingTab)
+      this.activeTab(siblingTab)
+      this.props.onToggle(siblingTab.dataset.id!)
     }
-
-    const tabId = tabEl.dataset.id!
-    this.props.onClose(tabId)
   }
 
   closeOtherTabs(tabEl: HTMLElement) {

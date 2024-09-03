@@ -122,7 +122,7 @@ export class TabsView extends Component {
           item
             .setKey('removeTab')
             .setTitle(t.tabview.close)
-            .onClick(() => this.container.closeTab(tabEl[0]))
+            .onClick(() => this.removeTab(clickedTabPath))
         })
       }
 
@@ -169,6 +169,7 @@ export class TabsView extends Component {
   }
 
   removeTab(path: string) {
+    this.container.closeTab(this.tabs.get(path)!)
     this.tabs.get(path)?.remove()
     this.tabs.delete(path)
   }
