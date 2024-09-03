@@ -162,9 +162,10 @@ export class TabsView extends Component {
     if (!this.tabs.has(oldPath)) return
 
     const tab = this.tabs.get(oldPath)!
-    this.container.renameTab(tab, new FileTab(newPath))
+    const newTab = new FileTab(newPath)
+    this.container.renameTab(tab, newTab)
     this.tabs.delete(oldPath)
-    this.tabs.set(newPath, tab)
+    this.tabs.set(newPath, newTab.containerEl)
   }
 
   removeTab(path: string) {
