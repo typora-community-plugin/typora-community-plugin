@@ -17,7 +17,7 @@ export class ConfigRepository extends Events<ConfigEvents> {
   private _isUsingGlobalConfig = true
   private _disposeCommand: DisposeFunc
 
-  private _configDir = globalConfigDir()
+  private _configDir: string
 
   constructor(
     protected logger = useService('logger', ['Config']),
@@ -52,7 +52,7 @@ export class ConfigRepository extends Events<ConfigEvents> {
   }
 
   private useGlobalConfig() {
-    if (this.isUsingGlobalConfig) return
+    if (this._configDir === globalConfigDir()) return
     this._disposeCommand?.()
 
     this._configDir = globalConfigDir()
