@@ -15,4 +15,6 @@ Open Markdown links in current window, try:
 - [doc2.md](./subfolder/doc2.md)
 - [doc2.md#Heading 2](./subfolder/doc2.md#Heading 2)
 - [doc2.md#anchor](./subfolder/doc2.md#anchor)
+- 非相对路径 [带空格 文档.md](带空格 文档.md) 
+- 相对路径 [带空格 文档.md](./带空格 文档.md) 
 

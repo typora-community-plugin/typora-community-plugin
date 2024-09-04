@@ -139,7 +139,7 @@ export class App extends Events<AppEvents> {
       editor.tryOpenUrl(link)
     }
     else {
-      this.openFile(unescape(link))
+      this.openFile(decodeURIComponent(link))
     }
   }
 

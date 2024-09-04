@@ -144,11 +144,14 @@ class OpenLinkInCurrentWin extends Component {
     this.register(
       decorate(editor, tryOpenUrl, fn => (url, param1) => {
 
+        // handle: file path
         if (!(url.startsWith('#') || url.startsWith('http'))) {
-          useService('app').openFile(unescape(url))
+          useService('app').openFile(decodeURIComponent(url))
           return
         }
 
+        // handle: only anchor `#anchor`
+        // handle: http url
         return fn(url, param1)
       }))
   }
