@@ -1,5 +1,11 @@
 # Feature Changelog
 
+## v2.3.9
+
+- fix(core/app): can not open link with chinese
+- fix(core/app): can not open non-absolute path without prefix `.`
+- fix(core/app): can not open link wrapped with `<>`
+
 ## v2.3.6
 
 - fix(core/ui/tab/plugin-manager): can not refresh list atfer uninstall & reinstall plugin
