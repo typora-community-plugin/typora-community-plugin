@@ -41,15 +41,13 @@ export abstract class SettingTab extends View {
     this.onunload?.()
   }
 
-  /**
-   * @deprecated compatible with old api (<=2.2.22)
-   */
-  show() { }
+  show() { this.onshow() }
 
-  /**
-   * @deprecated compatible with old api (<=2.2.22)
-   */
-  hide() { }
+  onshow() { }
+
+  hide() { this.onhide() }
+
+  onhide() { }
 }
 
 export abstract class PluginSettingTab extends SettingTab {

@@ -140,13 +140,11 @@ export class SettingsModal extends Component {
     this.sidebar.querySelector(`[data-name="${tab.name}"]`)!.classList.add('active')
 
     this.activeTab?.containerEl?.remove()
-    // @deprecated
-    this.activeTab?.hide()
+    this.activeTab.hide()
 
     this.activeTab = tab
 
     this.main.append(tab.containerEl)
-    // @deprecated
-    this.activeTab?.show()
+    this.activeTab.show()
   }
 }

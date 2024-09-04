@@ -27,6 +27,11 @@ export class PluginsManagerSettingTab extends SettingTab {
     })
   }
 
+  onshow() {
+    this.containerEl.innerHTML = ''
+    this.render()
+  }
+
   render() {
     const t = this.i18n.t.settingTabs.plugins
 
