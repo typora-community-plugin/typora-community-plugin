@@ -1,5 +1,10 @@
 # Feature Changelog
 
+## v2.3.6
+
+- fix(core/ui/tab/plugin-manager): can not refresh list atfer uninstall & reinstall plugin
+- fix(core/app): can not open link with anchor
+
 ## v2.3.4
 
 - fix(core/ui/components/tabs): can not "close other tabs" & "close right tabs"

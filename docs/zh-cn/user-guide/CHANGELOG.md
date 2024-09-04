@@ -1,5 +1,10 @@
 # 特性更新日志
 
+## v2.3.6
+
+- fix(core/ui/tab/plugin-manager): 修复卸载再重新安装插件后，无法显示该插件的问题
+- fix(core/app): 修复无法打开带锚点的超链接的问题
+
 ## v2.3.4
 
 - fix(core/ui/components/tabs): 修复不能“关闭其他标签”和“关闭右侧标签”的问题
