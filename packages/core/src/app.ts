@@ -156,7 +156,7 @@ export class App extends Events<AppEvents> {
     let url: FileURL = { pathname: filepath }
     const basename = path.basename(filepath)
     if (basename.includes('#')) {
-      url = await fs.exists(filepath)
+      url = await fs.access(filepath)
         .then(() => url)
         .catch(() => {
           const hashSplitorIdx = filepath.lastIndexOf('#')
