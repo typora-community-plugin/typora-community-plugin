@@ -4,6 +4,8 @@ import { File, reqnode } from 'typora'
 interface IPath {
   readonly sep: string
 
+  isAbsolute(path: string): boolean
+
   basename(filepath: string, suffix?: string): string
   extname(filepath: string): string
   dirname(filepath: string): string
@@ -14,9 +16,13 @@ interface IPath {
   relative(from: string, to: string): string
 }
 
-class CompatiblePath implements IPath {
+class MacPath implements IPath {
 
   readonly sep = File.isWin ? '\\' : '/'
+
+  isAbsolute(path: string): boolean {
+    return path.startsWith('/')
+  }
 
   basename(filepath: string, suffix?: string): string {
     const segments = filepath.split(/[\\\/]+/)
@@ -76,6 +82,6 @@ class CompatiblePath implements IPath {
 
 const path: IPath = File.isNode
   ? reqnode('path') as typeof import('path')
-  : new CompatiblePath()
+  : new MacPath()
 
 export default path
