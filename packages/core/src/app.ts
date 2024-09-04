@@ -149,9 +149,13 @@ export class App extends Events<AppEvents> {
    * @param filepath path of Markdown file or unsuppoted file
    */
   async openFile(filepath: string) {
+    if (filepath.startsWith('<')) {
+      // handle: `[](<file path.md>)`
+      filepath = filepath.slice(1, -1)
+    }
     if (!path.isAbsolute(filepath)) {
-      // handle: non absolute path. like `test.md`
-      // handle: relative path. like `./test.md`
+      // handle: non absolute path. like `[](test.md)`
+      // handle: relative path. like `[](./test.md)`
       filepath = path.join(path.dirname(this.workspace.activeFile), filepath)
     }
 
