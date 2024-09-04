@@ -1,5 +1,9 @@
 # Feature Changelog
 
+## v2.3.4
+
+- fix(core/ui/components/tabs): can not "close other tabs" & "close right tabs"
+
 ## v2.3.3
 
 - fix(core/io/config): can not switch from global settings to vault settings
