@@ -112,35 +112,35 @@ export class WorkspaceRibbon extends Component {
     const { t } = this.i18n
 
     const menu = new Menu()
-
-    this.addButton({
-      [BUILT_IN]: true,
-      group: 'bottom',
-      id: 'core.settings',
-      title: this.i18n.t.ribbon.settings,
-      icon: html`<i class="fa fa-cog"></i>`,
-      onclick: (event) => {
-        menu
-          .empty()
-          .addItem(item => {
-            item
-              .setKey('app-settings')
-              .setTitle(t.ribbon.settingOfApp)
-              .onClick(() => File.megaMenu.showPreferencePanel())
-          })
-          .addItem(item => {
-            item
-              .setKey('plugin-settings')
-              .setTitle(
-                this.config.isUsingGlobalConfig
-                  ? t.ribbon.globalSettingOfPlugin
-                  : t.ribbon.vaultSettingOfPlugin
-              )
-              .onClick(() => this.commands.run('settings:open'))
-          })
-          .showAtMouseEvent(event)
-      },
-    })
+    this.register(
+      this.addButton({
+        [BUILT_IN]: true,
+        group: 'bottom',
+        id: 'core.settings',
+        title: this.i18n.t.ribbon.settings,
+        icon: html`<i class="fa fa-cog"></i>`,
+        onclick: (event) => {
+          menu
+            .empty()
+            .addItem(item => {
+              item
+                .setKey('app-settings')
+                .setTitle(t.ribbon.settingOfApp)
+                .onClick(() => File.megaMenu.showPreferencePanel())
+            })
+            .addItem(item => {
+              item
+                .setKey('plugin-settings')
+                .setTitle(
+                  this.config.isUsingGlobalConfig
+                    ? t.ribbon.globalSettingOfPlugin
+                    : t.ribbon.vaultSettingOfPlugin
+                )
+                .onClick(() => this.commands.run('settings:open'))
+            })
+            .showAtMouseEvent(event)
+        },
+      }))
   }
 
   addButton(button: RibbonItemButton): DisposeFunc {

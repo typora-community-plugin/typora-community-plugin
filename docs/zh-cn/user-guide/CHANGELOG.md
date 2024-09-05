@@ -1,8 +1,12 @@
 # 特性更新日志
 
-## v2.3.13
+## Next version
 
 - fix(core/ui/ribbon): 修复关闭活动栏后不能再次显示的问题
+
+## v2.3.13
+
+- ~~fix(core/ui/ribbon): 修复关闭活动栏后不能再次显示的问题~~
 - fix(core/ui/editor/link): 修复添加给有后缀文件添加 `.md` 的问题
 
 ## v2.3.11
