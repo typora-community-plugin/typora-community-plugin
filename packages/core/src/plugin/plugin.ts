@@ -9,6 +9,8 @@ import { SettingsModal } from "src/ui/settings/settings-modal"
 import type { SettingTab } from "src/ui/settings/setting-tab"
 import type { TPostProcessor } from 'src/ui/editor/postprocessor/postprocessor-manager'
 import type { TPreProcessor } from 'src/ui/editor/preprocessor/preprocessor'
+import type { MarkdownEditor } from "src/ui/editor/markdown-editor"
+import type { EditorSuggest } from "src/ui/editor/suggestion/suggest"
 
 
 interface StatusBarItemOptions {
@@ -58,14 +60,26 @@ export abstract class Plugin<T extends Record<string, any> = {}>
       this.app.commands.register(command))
   }
 
+  registerMarkdownEvent(...args: Parameters<MarkdownEditor['on']>) {
+    this.register(
+      useService('markdown-editor').on(...args))
+  }
+
   registerMarkdownPreProcessor(processor: TPreProcessor) {
     this.register(
-      this.app.workspace.activeEditor.preProcessor.register(processor))
+      useService('markdown-editor').preProcessor.register(processor))
   }
 
   registerMarkdownPostProcessor(processor: TPostProcessor) {
     this.register(
-      this.app.workspace.activeEditor.postProcessor.register(processor))
+      useService('markdown-editor').postProcessor.register(processor))
+  }
+
+  registerMarkdownSugguest(suggest: EditorSuggest<any>) {
+    this.register(
+      useService('markdown-editor').suggestion.register(
+        suggest
+      ))
   }
 
   addStatusBarItem(options?: StatusBarItemOptions) {

@@ -12,7 +12,7 @@
 // typora-plugin-tag /src/features/use-sugguest.ts
 
 this.register(
-  this.app.workspace.getViewByType(WorkspaceRibbon)!.addButton({
+  this.app.workspace.ribbon.addButton({
     // ...
     onclick: () => sidebar.switch(TagPanel),
   })
@@ -25,10 +25,10 @@ this.register(
 // typora-plugin-tag /src/features/use-sugguest.ts
 
 this.register(
-  sidebar.addChild(new TagPanel(plugin, this)))
+  this.app.workspace.sidebar.addChild(new TagPanel(plugin, this)))
 ```
 
-其中 TagPanel 继承自 View，实现 `show()` 方法渲染面板。
+其中 TagPanel 继承自 SidebarPanel，实现 `onshow()` 方法渲染面板。
 
 
 

@@ -6,15 +6,12 @@
 
 ## 使用
 
-使用 `register()` 注册，在 `Suggestion` 添加注册自定义 `Suggest` 实例：
+使用 `registerMarkdownSuggest()` 注册自定义 `Suggest` 实例：
 
 ```ts
 // typora-plugin-note-snippets /src/main.ts
 
-this.register(
-  this.app.workspace.activeEditor.suggestion.register(
-    this.suggest
-  ))
+this.registerMarkdownSuggest(this.suggest)
 ```
 
 自定义 `Suggest` 继承自 `EditorSuggest`（或其子类 `TextSuggest`）。
