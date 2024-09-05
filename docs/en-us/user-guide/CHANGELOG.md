@@ -1,5 +1,9 @@
 # Feature Changelog
 
+## v2.3.10
+
+- refactor(core/plugin): expose new API to register MarkdownEditor events & sugguest
+
 ## v2.3.9
 
 - fix(core/app): can not open link with chinese

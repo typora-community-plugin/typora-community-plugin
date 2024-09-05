@@ -1,5 +1,9 @@
 # 特性更新日志
 
+## v2.3.10
+
+- refactor(core/plugin): 暴露新 API 来注册 MarkdownEditor 事件 & 输入建议
+
 ## v2.3.9
 
 - fix(core/app): 修复不能打开中文链接的问题
