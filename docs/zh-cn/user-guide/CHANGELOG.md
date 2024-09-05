@@ -1,5 +1,9 @@
 # 特性更新日志
 
+## v2.3.11
+
+- feat(croe/ui/editor): 超链接支持无后缀文件名时自动添加 `.md` 后缀，作为 Markdown 打开（类似 Obsidian）。默认关闭
+
 ## v2.3.10
 
 - refactor(core/plugin): 暴露新 API 来注册 MarkdownEditor 事件 & 输入建议

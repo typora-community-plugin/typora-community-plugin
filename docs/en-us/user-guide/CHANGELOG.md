@@ -1,5 +1,9 @@
 # Feature Changelog
 
+## v2.3.11
+
+- feat(croe/ui/editor): support markdown path without extension
+
 ## v2.3.10
 
 - refactor(core/plugin): expose new API to register MarkdownEditor events & sugguest
