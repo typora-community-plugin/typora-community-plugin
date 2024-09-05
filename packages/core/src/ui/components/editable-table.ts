@@ -127,16 +127,18 @@ export class EditableTable<T extends Record<string, any>> extends View {
     if (tr === this.editingRowEl) return
 
     if (this.editingRowEl) {
+      const r = +this.editingRowEl!.dataset.r!
+      this.editingRowEl.classList.remove('typ-editing')
       Array.from(this.editingRowEl.cells)
         .slice(0, -1)
         .forEach((td, i) => {
-          const r = +this.editingRowEl!.dataset.r!
           td.innerText = this.data[r][this.headers[i].prop] ?? ''
         })
     }
     this.editingRowEl = tr
 
     const r = +tr.dataset.r!
+    this.editingRowEl.classList.add('typ-editing')
     Array.from(tr.cells).forEach((td, i) => {
       const { type, prop } = this.headers[i] ?? {}
       if (!type) return
@@ -149,6 +151,8 @@ export class EditableTable<T extends Record<string, any>> extends View {
               this.data[r][prop] = (<HTMLInputElement>event.target).value as any
               this.rowChangeHandlers.forEach(fn => fn(this.data[r]))
             }, 1e3)))
+
+      el.closest('td').querySelector('input')?.focus()
     })
   }
 }
