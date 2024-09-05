@@ -1,7 +1,10 @@
 {
   "version": 1,
   "settings": {
-    "showNotSupportedFile": false,
+    "showNotSupportedFile": true,
+    "mdLinkWithoutExtension": true,
+    "keepSearchResult": true,
+    "showSearchResultFullPath": true,
     "displayLang": "en",
     "ribbonState": {
       "core.search": {
@@ -16,7 +19,6 @@
         "visible": true,
         "order": 2
       }
-    },
-    "mdLinkWithoutExtension": true
+    }
   }
 }

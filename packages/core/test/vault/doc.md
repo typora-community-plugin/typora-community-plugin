@@ -22,4 +22,5 @@ Open Markdown links in current window, try:
 	- [doc2](subfolder/doc2)
 	- with anchor [doc2#Heading 2](./subfolder/doc2#Heading 2)
 	- chinese [带空格 文档](带空格 文档) 
+	- not md [data.json](data.json)
 

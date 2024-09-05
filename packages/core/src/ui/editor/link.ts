@@ -1,7 +1,8 @@
-import { editor } from "typora"
 import decorate from "@plylrnsdy/decorate.js"
+import { editor } from "typora"
 import { Component } from "src/common/component"
 import { useService } from "src/common/service"
+import path from "src/path"
 
 
 const tryOpenUrl = editor.tryOpenUrl_ ? 'tryOpenUrl_' : 'tryOpenUrl'
@@ -28,11 +29,12 @@ export class MarkdownLinkWitoutExtension extends Component {
     this.register(
       decorate.parameters(editor, tryOpenUrl, ([url, param1]) => {
         if (!(url.startsWith('#') || url.startsWith('http'))) {
-          let [path, hash = ''] = url.split('#')
-          if (!path.endsWith('.md')) {
-            path += '.md'
+          let [filepath, hash] = url.split('#')
+          const ext = path.extname(filepath)
+          if (!ext) {
+            filepath += '.md'
           }
-          url = path + (hash && `#${hash}`)
+          url = filepath + (hash ? `#${hash}` : '')
         }
         return [url, param1]
       }))
