@@ -1,5 +1,10 @@
 # Feature Changelog
 
+## v2.3.13
+
+- fix(core/ui/ribbon): can not show ribbon after hided it
+- fix(core/ui/editor/link): add `.md` if filepath has extension
+
 ## v2.3.11
 
 - feat(croe/ui/editor): support markdown path without extension
