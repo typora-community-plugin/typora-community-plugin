@@ -28,8 +28,12 @@
   "settingTabs": {
     "fileLink": {
       "name": "File & Link",
+      "link": "Link",
       "openLinkInCurrentWin": "Open Markdown links in current window",
       "openLinkInCurrentWinDesc": "Ctrl(⌘)+Click to open Markdown links will open Markdown file in current window. Enable it better if use File Tabs.",
+      "mdLinkWithoutExtension": "Markdown link without extension",
+      "mdLinkWithoutExtensionDesc": "Markdown link can be used without the extension `.md`, e.g. `[Note](note)` will open `note.md`",
+      "quickOpen": "Quick Open",
       "quickOpenInCurrentWin": "Quick open file in current window",
       "quickOpenInCurrentWinDesc": "Choose file in quick open panel will open Markdown file in current window. Enable it better if use File Tabs.",
       "ignoreFileGlob": "Ignore folder in quick open panel",

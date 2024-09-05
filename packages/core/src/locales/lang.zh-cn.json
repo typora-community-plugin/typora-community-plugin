@@ -28,8 +28,12 @@
   "settingTabs": {
     "fileLink": {
       "name": "文件与链接",
+      "link": "链接",
       "openLinkInCurrentWin": "在当前窗口打开 Markdown 超链接",
       "openLinkInCurrentWinDesc": "Ctrl(⌘)+鼠标单击 Markdown 超链接会直接在当前窗口打开。若使用文件标签页推荐启用该选项。",
+      "mdLinkWithoutExtension": "无后缀 Markdown 超链接",
+      "mdLinkWithoutExtensionDesc": "Markdown 超链接中没有指定文件后缀时，会添加 `.md` 作为后缀来打开。如：`[Note](note)` 会打开 `note.md`",
+      "quickOpen": "快速打开面板",
       "quickOpenInCurrentWin": "在当前窗口快速打开文件",
       "quickOpenInCurrentWinDesc": "在快速打开面板中选取文件会直接在当前窗口打开。若使用文件标签页推荐启用该选项。",
       "ignoreFileGlob": "在快速打开面板中排除指定文件夹",

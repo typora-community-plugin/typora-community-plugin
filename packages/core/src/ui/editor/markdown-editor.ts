@@ -30,12 +30,14 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
   suggestion = new EditorSuggestManager()
 
   private _openLinkInCurrentWin: OpenLinkInCurrentWin
+  private _markdownLinkWitoutExtension: MarkdownLinkWitoutExtension
 
   constructor() {
     super('markdown-editor')
 
     setTimeout(() => {
       this._openLinkInCurrentWin = new OpenLinkInCurrentWin()
+      this._markdownLinkWitoutExtension = new MarkdownLinkWitoutExtension()
     })
 
     until(() => editor.writingArea).then(el => {
@@ -98,7 +100,7 @@ function isEdited(mutationsList: MutationRecord[]) {
   const [last] = mutationsList.slice(-1)
   if (
     rest.every(m => matchElement(m.target, 'span') &&
-    matchElement(last.target, '.md-focus'))
+      matchElement(last.target, '.md-focus'))
   ) return true
 
   // add/remove parargraph
@@ -118,6 +120,41 @@ function match(el: Element, selector: string) {
     return el.classList.contains(selector.slice(1))
   else
     return el.tagName === selector.toUpperCase()
+}
+
+class MarkdownLinkWitoutExtension extends Component {
+
+  constructor(
+    settings = useService('settings')
+  ) {
+    super()
+
+    const SETTING_KEY = 'mdLinkWithoutExtension'
+
+    if (settings.get(SETTING_KEY)) {
+      this.load()
+    }
+
+    settings.onChange(SETTING_KEY, (_, isEnabled) => {
+      isEnabled ? this.load() : this.unload()
+    })
+  }
+
+  onload() {
+    const tryOpenUrl = editor.tryOpenUrl_ ? 'tryOpenUrl_' : 'tryOpenUrl'
+
+    this.register(
+      decorate.parameters(editor, tryOpenUrl, ([url, param1]) => {
+        if (!(url.startsWith('#') || url.startsWith('http'))) {
+          let [path, hash = ''] = url.split('#')
+          if (!path.endsWith('.md')) {
+            path += '.md'
+          }
+          url = path + (hash && `#${hash}`)
+        }
+        return [url, param1]
+      }))
+  }
 }
 
 class OpenLinkInCurrentWin extends Component {

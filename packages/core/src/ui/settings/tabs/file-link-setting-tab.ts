@@ -5,6 +5,7 @@ import { debounce } from "src/utils"
 
 export type FileLinkSettings = {
   openLinkInCurrentWin: boolean
+  mdLinkWithoutExtension: boolean
   quickOpenInCurrentWin: boolean
   ignoreFile: boolean
   ignoreFileGlob: string
@@ -12,6 +13,7 @@ export type FileLinkSettings = {
 
 export const DEFAULT_FILE_LINK_SETTINGS: FileLinkSettings = {
   openLinkInCurrentWin: true,
+  mdLinkWithoutExtension: false,
   quickOpenInCurrentWin: true,
   ignoreFile: true,
   ignoreFileGlob: '.git',
@@ -41,6 +43,8 @@ export class FileLinkSettingTab extends SettingTab {
     const { settings } = this
     const t = this.i18n.t.settingTabs.fileLink
 
+    this.addSettingTitle(t.link)
+
     this.addSetting(setting => {
       setting.addName(t.openLinkInCurrentWin)
       setting.addDescription(t.openLinkInCurrentWinDesc)
@@ -51,6 +55,19 @@ export class FileLinkSettingTab extends SettingTab {
         }
       })
     })
+
+    this.addSetting(setting => {
+      setting.addName(t.mdLinkWithoutExtension)
+      setting.addDescription(t.mdLinkWithoutExtensionDesc)
+      setting.addCheckbox(checkbox => {
+        checkbox.checked = settings.get('mdLinkWithoutExtension')
+        checkbox.onclick = () => {
+          settings.set('mdLinkWithoutExtension', checkbox.checked)
+        }
+      })
+    })
+
+    this.addSettingTitle(t.quickOpen)
 
     this.addSetting(setting => {
       setting.addName(t.quickOpenInCurrentWin)
