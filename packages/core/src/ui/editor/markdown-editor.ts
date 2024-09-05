@@ -1,15 +1,12 @@
-import decorate from "@plylrnsdy/decorate.js"
 import { editor } from "typora"
-import { Component } from "src/common/component"
-import { useService } from "src/common/service"
 import { Events } from "src/common/events"
 import { MarkdownPostProcessor } from "./postprocessor/postprocessor-manager"
 import { MarkdownPreProcessor } from "./preprocessor/preprocessor"
 import { EditorSelection } from "./selection"
 import { EditorSuggestManager } from "./suggestion/suggest-manager"
-import { debounce } from "src/utils"
+import { MarkdownLinkWitoutExtension, OpenLinkInCurrentWin } from "./link"
+import { debounce, until } from "src/utils"
 import type { FileURL } from "src/utils/types"
-import { until } from "src/utils"
 
 
 export type MarkdownEditorEvents = {
@@ -120,77 +117,4 @@ function match(el: Element, selector: string) {
     return el.classList.contains(selector.slice(1))
   else
     return el.tagName === selector.toUpperCase()
-}
-
-class MarkdownLinkWitoutExtension extends Component {
-
-  constructor(
-    settings = useService('settings')
-  ) {
-    super()
-
-    const SETTING_KEY = 'mdLinkWithoutExtension'
-
-    if (settings.get(SETTING_KEY)) {
-      this.load()
-    }
-
-    settings.onChange(SETTING_KEY, (_, isEnabled) => {
-      isEnabled ? this.load() : this.unload()
-    })
-  }
-
-  onload() {
-    const tryOpenUrl = editor.tryOpenUrl_ ? 'tryOpenUrl_' : 'tryOpenUrl'
-
-    this.register(
-      decorate.parameters(editor, tryOpenUrl, ([url, param1]) => {
-        if (!(url.startsWith('#') || url.startsWith('http'))) {
-          let [path, hash = ''] = url.split('#')
-          if (!path.endsWith('.md')) {
-            path += '.md'
-          }
-          url = path + (hash && `#${hash}`)
-        }
-        return [url, param1]
-      }))
-  }
-}
-
-class OpenLinkInCurrentWin extends Component {
-
-  constructor(
-    settings = useService('settings')
-  ) {
-    super()
-
-    const SETTING_KEY = 'openLinkInCurrentWin'
-
-    if (settings.get(SETTING_KEY)) {
-      this.load()
-    }
-
-    settings.onChange(SETTING_KEY, (_, isEnabled) => {
-      isEnabled ? this.load() : this.unload()
-    })
-  }
-
-  onload() {
-    const tryOpenUrl = editor.tryOpenUrl_ ? 'tryOpenUrl_' : 'tryOpenUrl'
-
-    this.register(
-      decorate(editor, tryOpenUrl, fn => (url, param1) => {
-
-        // handle: file path
-        if (!(url.startsWith('#') || url.startsWith('http'))) {
-          useService('app').openFile(decodeURIComponent(url))
-          return
-        }
-
-        // handle: only anchor `#anchor`
-        // handle: http url
-        return fn(url, param1)
-      }))
-  }
-
 }
