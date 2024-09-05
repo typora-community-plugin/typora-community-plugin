@@ -63,10 +63,10 @@ export class WorkspaceRibbon extends Component {
 
     settings.setDefault(DEFAULT_RIBBON_SETTINGS)
 
-    this.register(
-      settings.onChange('showRibbon', (_, isEnabled) => {
-        isEnabled ? this.load() : this.unload()
-      }))
+    // NOT need to register here, because it will be lost reactive when `unload`
+    settings.onChange('showRibbon', (_, isEnabled) => {
+      isEnabled ? this.load() : this.unload()
+    })
   }
 
   get ribbonWidth() {
