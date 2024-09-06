@@ -31,7 +31,7 @@ export class FileExplorer extends InternalSidebarPanel {
       icon: html`<i class="fa fa-folder-o"></i>`,
     })
 
-    this.ribbon.activeButton(FileExplorer.id)
+    setTimeout(() => this.ribbon.activeButton(FileExplorer.id))
   }
 
   onshow() {
