@@ -1,8 +1,10 @@
 # Feature Changelog
 
-## Next version
+## v2.3.16
 
 - fix(core/ui/ribbon): can not show ribbon after hided it
+- fix(core/ui/sidebar): when sidebar is hidden, we can not show it by clicking the non-active ribbon button
+- refactor(core/ui/components/editable-table): new style of editing row
 
 ## v2.3.13
 

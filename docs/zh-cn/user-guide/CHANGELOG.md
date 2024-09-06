@@ -1,8 +1,10 @@
 # 特性更新日志
 
-## Next version
+## v2.3.16
 
 - fix(core/ui/ribbon): 修复关闭活动栏后不能再次显示的问题
+- fix(core/ui/sidebar): 侧栏折叠时，点击非激活的 ribbon 无法显示侧栏
+- refactor(core/ui/components/editable-table): 编辑中的行有更好的样式
 
 ## v2.3.13
 
