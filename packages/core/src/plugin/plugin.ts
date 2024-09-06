@@ -68,11 +68,17 @@ export abstract class Plugin<T extends Record<string, any> = {}>
       useService('markdown-editor').on(...args))
   }
 
+  /**
+   * @deprecated Use `this.register(app.features.markdownEditor.preProcessor.register(...))` instead.
+   */
   registerMarkdownPreProcessor(processor: TPreProcessor) {
     this.register(
       useService('markdown-editor').preProcessor.register(processor))
   }
 
+  /**
+   * @deprecated Use `this.register(app.features.markdownEditor.postProcessor.register(...))` instead.
+   */
   registerMarkdownPostProcessor(processor: TPostProcessor) {
     this.register(
       useService('markdown-editor').postProcessor.register(processor))

@@ -27,37 +27,14 @@ export class Sidebar extends Component {
 
   constructor(
     internalPanels: () => SidebarPanel[],
-    private settings = useService('settings'),
     private ribbon = useService('ribbon'),
   ) {
     super()
-
 
     setTimeout(() => {
       this.internalPanels = internalPanels()
       this.internalPanels.forEach(view => this.addPanel(view))
     }, 1)
-
-    settings.onChange('showRibbon', (_, isEnabled) => {
-      isEnabled ? this.load() : this.unload()
-    })
-  }
-
-  load() {
-    if (!this.settings.get('showRibbon')) {
-      return
-    }
-    super.load()
-  }
-
-  onload() {
-    this.panels.forEach((panel) => this.addPanel(panel))
-  }
-
-  onunload() {
-    if (!this.internalPanels.includes(this.activePanel)) {
-      this.switch(FileExplorer)
-    }
   }
 
   addPanel(panel: SidebarPanel): DisposeFunc {
