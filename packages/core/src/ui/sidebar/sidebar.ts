@@ -6,6 +6,7 @@ import type { DisposeFunc } from "src/utils/types"
 import { FileExplorer } from "./file-explorer"
 import { Component } from 'src/common/component'
 import type { SidebarPanel } from './sidebar-panel'
+import { ViewLegacy } from '../common/view-legacy'
 
 
 /**
@@ -18,9 +19,9 @@ import type { SidebarPanel } from './sidebar-panel'
  */
 export class Sidebar extends Component {
 
-  private container = new SidebarContainer()
+  container = new SidebarContainer()
 
-  private activeView: SidebarPanel
+  private activePanel: SidebarPanel
   private internalPanels: SidebarPanel[] = []
   private panels: SidebarPanel[] = []
 
@@ -33,7 +34,7 @@ export class Sidebar extends Component {
 
     setTimeout(() => {
       this.internalPanels = internalPanels()
-      this.internalPanels.forEach(view => this.addChild(view))
+      this.internalPanels.forEach(view => this.addPanel(view))
     }, 1)
 
     settings.onChange('showRibbon', (_, isEnabled) => {
@@ -49,40 +50,50 @@ export class Sidebar extends Component {
   }
 
   onload() {
-    this.panels.forEach((panel) => this.addChild(panel))
+    this.panels.forEach((panel) => this.addPanel(panel))
   }
 
   onunload() {
-    if (!this.internalPanels.includes(this.activeView)) {
+    if (!this.internalPanels.includes(this.activePanel)) {
       this.switch(FileExplorer)
     }
   }
 
-  addChild(panel: any): DisposeFunc {
-    if (!this.internalPanels.includes(panel) && panel.el) {
+  addPanel(panel: SidebarPanel): DisposeFunc {
+    // @deprecated
+    if (panel instanceof ViewLegacy) {
+      panel.load()
       this.container.addPanel(panel)
     }
 
-    // @deprecated
-    (<SidebarPanel>panel).load()
-
-    this.container.containerEl.append(panel.containerEl)
-
     this.panels.push(panel)
-    return () => this.removeChild(panel)
+    return () => this.removePanel(panel)
   }
 
-  removeChild(panel: any): void {
-    if (this.internalPanels.includes(panel)) {
-      return
-    }
-    if (this.panels.includes(panel)) {
-      this.panels = this.panels.filter((v) => v !== panel)
-      panel.el?.remove();
+  /**
+   * Use `addPanel` instead.
+   * @deprecated compatible with old api (<=2.2.22)
+   */
+  addChild(panel: any): DisposeFunc {
+    return this.addPanel(panel)
+  }
 
-      // @deprecated
-      (<SidebarPanel>panel).unload()
+  removePanel(panel: SidebarPanel): void {
+    this.panels = this.panels.filter((v) => v !== panel)
+
+    // @deprecated
+    if (panel instanceof ViewLegacy) {
+      panel.unload()
+      this.container.removePanel(panel)
     }
+  }
+
+  /**
+   * Use `removePanel` instead.
+   * @deprecated compatible with old api (<=2.2.22)
+   */
+  removeChild(panel: any): void {
+    this.removePanel(panel)
   }
 
   get isShown() {
@@ -90,16 +101,16 @@ export class Sidebar extends Component {
   }
 
   switch<T extends SidebarPanel>(viewClass: new (...args: any[]) => T) {
-    if (this.activeView instanceof viewClass) {
+    if (this.activePanel instanceof viewClass) {
       this.toggle()
       return
     }
 
     Object.values(this.internalPanels).forEach(v => v.hide())
-    this.activeView?.hide()
+    this.activePanel?.hide()
 
-    this.activeView = this.panels.find(c => c instanceof viewClass)!
-    this.activeView.show()
+    this.activePanel = this.panels.find(c => c instanceof viewClass)!
+    this.activePanel?.show()
   }
 
   toggle() {
@@ -108,12 +119,12 @@ export class Sidebar extends Component {
 
   show() {
     editor.library.showSidebar()
-    this.activeView?.show()
+    this.activePanel?.show()
   }
 
   hide() {
     editor.library.hideSidebar()
-    this.activeView?.hide()
+    this.activePanel?.hide()
   }
 }
 
@@ -130,6 +141,10 @@ class SidebarContainer extends View {
 
   addPanel(panel: SidebarPanel) {
     this.containerEl.append(panel.containerEl)
+  }
+
+  removePanel(panel: SidebarPanel) {
+    panel.containerEl.remove()
   }
 }
 

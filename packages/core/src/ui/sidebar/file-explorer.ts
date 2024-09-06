@@ -6,10 +6,10 @@ import path from 'src/path'
 import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
 import { html } from "src/utils"
 import { useService } from "src/common/service"
-import { SidebarPanel } from './sidebar-panel'
+import { InternalSidebarPanel } from './sidebar-panel'
 
 
-export class FileExplorer extends SidebarPanel {
+export class FileExplorer extends InternalSidebarPanel {
 
   static get id() {
     return 'core.file-explorer' as const
@@ -30,9 +30,7 @@ export class FileExplorer extends SidebarPanel {
       title: i18n.t.ribbon.files,
       icon: html`<i class="fa fa-folder-o"></i>`,
     })
-  }
 
-  onload() {
     this.ribbon.activeButton(FileExplorer.id)
   }
 

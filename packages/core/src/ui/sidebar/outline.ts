@@ -2,10 +2,10 @@ import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
 import { editor } from "typora"
 import { html } from "src/utils"
 import { useService } from 'src/common/service'
-import { SidebarPanel } from './sidebar-panel'
+import { InternalSidebarPanel } from './sidebar-panel'
 
 
-export class Outline extends SidebarPanel {
+export class Outline extends InternalSidebarPanel {
 
   constructor(
     i18n = useService('i18n'),

@@ -4,12 +4,12 @@ import { Component } from 'src/common/component'
 import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
 import { html, noop } from 'src/utils'
 import { useService } from 'src/common/service'
-import { SidebarPanel } from '../sidebar-panel'
+import { InternalSidebarPanel } from '../sidebar-panel'
 
 
 const SELECTOR_QUERY_INPUT = '#file-library-search-input'
 
-export class GlobalSearchView extends SidebarPanel {
+export class GlobalSearchView extends InternalSidebarPanel {
 
   static get id() {
     return 'core.search' as const

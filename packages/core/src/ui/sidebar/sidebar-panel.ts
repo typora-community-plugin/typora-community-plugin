@@ -12,12 +12,14 @@ export class SidebarPanel extends View {
   }
 
   show() {
+    this.sidebar.container.addPanel(this)
     this.onshow()
   }
 
   onshow() { }
 
   hide() {
+    this.sidebar.container.removePanel(this)
     this.onhide()
   }
 
@@ -36,15 +38,39 @@ export class SidebarPanel extends View {
    * @deprecated compatible with old api (<=2.2.22)
    */
   load() {
-    // @ts-ignore
-    this.onload?.()
+    this.onload()
   }
+
+  /**
+   * Use `onshow` instead.
+   * @deprecated compatible with old api (<=2.2.22)
+   */
+  onload() { }
 
   /**
    * @deprecated compatible with old api (<=2.2.22)
    */
   unload() {
-    // @ts-ignore
-    this.onunload?.()
+    this.onunload()
+  }
+
+  /**
+   * Use `onhide` instead.
+   * @deprecated compatible with old api (<=2.2.22)
+   */
+  onunload() { }
+}
+
+export class InternalSidebarPanel extends SidebarPanel {
+  constructor() {
+    super()
+  }
+
+  show() {
+    this.onshow()
+  }
+
+  hide() {
+    this.onhide()
   }
 }
