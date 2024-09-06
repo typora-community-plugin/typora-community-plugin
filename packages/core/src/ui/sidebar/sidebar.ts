@@ -107,10 +107,10 @@ export class Sidebar extends Component {
     }
 
     Object.values(this.internalPanels).forEach(v => v.hide())
-    this.activePanel?.hide()
+    this.hide()
 
     this.activePanel = this.panels.find(c => c instanceof viewClass)!
-    this.activePanel?.show()
+    this.show()
   }
 
   toggle() {
