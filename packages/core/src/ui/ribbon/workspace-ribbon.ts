@@ -280,10 +280,14 @@ class RibbonView extends View {
       })
     }
     if (button.onclick) {
-      itemEl.addEventListener('click', e => {
-        this.activeButton(button.id)
-        button.onclick(e)
-      })
+      itemEl.addEventListener('click',
+        button.group === 'top'
+          ? e => {
+            this.activeButton(button.id)
+            button.onclick(e)
+          }
+          : button.onclick
+      )
     }
 
     itemEl.append(button.icon)
