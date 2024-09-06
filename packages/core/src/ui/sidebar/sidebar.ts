@@ -28,6 +28,7 @@ export class Sidebar extends Component {
   constructor(
     internalPanels: () => SidebarPanel[],
     private settings = useService('settings'),
+    private ribbon = useService('ribbon'),
   ) {
     super()
 
@@ -66,6 +67,10 @@ export class Sidebar extends Component {
       this.container.addPanel(panel)
     }
 
+    if (panel.ribbonButton) {
+      this.ribbon.addButton(panel.ribbonButton)
+    }
+
     this.panels.push(panel)
     return () => this.removePanel(panel)
   }
@@ -79,6 +84,10 @@ export class Sidebar extends Component {
   }
 
   removePanel(panel: SidebarPanel): void {
+    if (panel.ribbonButton) {
+      this.ribbon.removeButton(panel.ribbonButton)
+    }
+
     this.panels = this.panels.filter((v) => v !== panel)
 
     // @deprecated

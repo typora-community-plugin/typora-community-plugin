@@ -4,6 +4,9 @@ import { RibbonItemButton } from "src/ui/ribbon/workspace-ribbon"
 
 
 export class SidebarPanel extends View {
+
+  ribbonButton: RibbonItemButton
+
   constructor(
     protected ribbon = useService('ribbon'),
     protected sidebar = useService('sidebar'),
@@ -26,11 +29,11 @@ export class SidebarPanel extends View {
   onhide() { }
 
   addRibbonButton(button: Omit<RibbonItemButton, 'onclick'>) {
-    this.ribbon.addButton({
+    this.ribbonButton = {
       ...button,
       // @ts-ignore
       onclick: () => this.sidebar.switch(this.constructor)
-    })
+    }
   }
 
 
