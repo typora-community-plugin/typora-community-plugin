@@ -60,6 +60,9 @@ export abstract class Plugin<T extends Record<string, any> = {}>
       this.app.commands.register(command))
   }
 
+  /**
+   * @deprecated Use `this.register(app.features.markdownEditor.on(...))` instead.
+   */
   registerMarkdownEvent(...args: Parameters<MarkdownEditor['on']>) {
     this.register(
       useService('markdown-editor').on(...args))
@@ -75,6 +78,9 @@ export abstract class Plugin<T extends Record<string, any> = {}>
       useService('markdown-editor').postProcessor.register(processor))
   }
 
+  /**
+   * @deprecated Use `this.register(app.features.markdownEditor.suggestion.register(...))` instead.
+   */
   registerMarkdownSugguest(suggest: EditorSuggest<any>) {
     this.register(
       useService('markdown-editor').suggestion.register(

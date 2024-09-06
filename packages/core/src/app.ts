@@ -20,6 +20,7 @@ import type { AppearanceSettings } from 'src/ui/settings/tabs/appearance-setting
 import type { PluginMarketplaceSettings } from 'src/ui/settings/tabs/plugin-marketplace-setting-tab'
 import type { CoreSettings } from 'src/ui/settings/tabs/about-tab'
 import type { Workspace } from 'src/ui/workspace'
+import type { MarkdownEditor } from './ui/editor/markdown-editor'
 import type { RibbonSettings } from 'src/ui/ribbon/workspace-ribbon'
 import { GlobalSearch } from './ui/sidebar/search/global-search'
 import { isMarkdownUrl } from 'src/utils'
@@ -86,7 +87,8 @@ export class App extends Events<AppEvents> {
   workspace: Workspace
 
   features: {
-    globalSearch: GlobalSearch
+    globalSearch: GlobalSearch,
+    markdownEditor: MarkdownEditor,
   }
 
   constructor() {
@@ -110,7 +112,8 @@ export class App extends Events<AppEvents> {
       this.plugins = useService('plugin-manager')
       this.workspace = useService('workspace')
       this.features = {
-        globalSearch: new GlobalSearch()
+        globalSearch: new GlobalSearch(),
+        markdownEditor: useService('markdown-editor'),
       }
       this._isReady = true
     })
