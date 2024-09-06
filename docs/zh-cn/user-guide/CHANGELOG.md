@@ -1,5 +1,11 @@
 # 特性更新日志
 
+## v2.3.19
+
+- fix(core/ui/ribbon): 点击设置按钮丢失激活状态
+- fix(core/ui/ribbon): 启动时隐藏 ribbon 会抛出错误
+- fix(core/ui/sidebar): 启动后没有激活默认按钮
+
 ## v2.3.16
 
 - fix(core/ui/ribbon): 修复关闭活动栏后不能再次显示的问题

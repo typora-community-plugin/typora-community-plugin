@@ -1,5 +1,11 @@
 # Feature Changelog
 
+## v2.3.19
+
+- fix(core/ui/ribbon): lost active status when clicked settings buton
+- fix(core/ui/ribbon): throw error when hide ribbon
+- fix(core/ui/sidebar): no active any ribbon after lauched Typora
+
 ## v2.3.16
 
 - fix(core/ui/ribbon): can not show ribbon after hided it
