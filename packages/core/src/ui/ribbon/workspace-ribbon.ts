@@ -50,7 +50,7 @@ export interface RibbonItemButton {
  */
 export class WorkspaceRibbon extends Component {
 
-  private ribbonView: RibbonView
+  private ribbonView?: RibbonView
   private buttons = [] as RibbonItemButton[]
 
   constructor(
@@ -162,22 +162,22 @@ export class WorkspaceRibbon extends Component {
 
     this.buttons.push(button)
 
-    this.ribbonView.renderButton(button)
+    this.ribbonView?.renderButton(button)
 
     return () => this.removeButton(button)
   }
 
   removeButton(button: RibbonItemButton) {
-    this.ribbonView.removeButton(button)
+    this.ribbonView?.removeButton(button)
     this.buttons = this.buttons.filter(btn => btn !== button)
   }
 
   activeButton(id: string) {
-    this.ribbonView.activeButton(id)
+    this.ribbonView?.activeButton(id)
   }
 
   clickButton(id: string) {
-    this.ribbonView.clickButton(id)
+    this.ribbonView?.clickButton(id)
   }
 
   private getState() {
