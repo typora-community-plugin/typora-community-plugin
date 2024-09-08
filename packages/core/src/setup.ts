@@ -19,6 +19,7 @@ import { DEFAULT_RIBBON_SETTINGS, WorkspaceRibbon } from "./ui/ribbon/workspace-
 import { DEFAULT_APPEARANCE_SETTINGS } from "./ui/settings/tabs/appearance-setting-tab"
 import { DEFAULT_FILE_LINK_SETTINGS } from "./ui/settings/tabs/file-link-setting-tab"
 import { DEFAULT_PLUGIN_MARKETPLACE_SETTINGS } from "./ui/settings/tabs/plugin-marketplace-setting-tab"
+import { PluginMarketplace } from "./plugin/plugin-marketplace"
 
 
 
@@ -65,6 +66,7 @@ registerService('settings', memorize(() => {
 }))
 
 registerService('plugin-manager', memorize(() => new PluginManager()))
+registerService('plugin-marketplace', memorize(() => new PluginMarketplace()))
 
 registerService('workspace', memorize(() => new Workspace()))
 registerService('markdown-editor', memorize(() => new MarkdownEditor()))

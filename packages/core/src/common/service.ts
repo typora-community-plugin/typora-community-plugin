@@ -8,6 +8,7 @@ import type { I18n } from "src/locales/i18n"
 import * as Locale from 'src/locales/lang.en.json'
 import type { GithubAPI } from "src/net/github"
 import type { PluginManager } from "src/plugin/plugin-manager"
+import type { PluginMarketplace } from "src/plugin/plugin-marketplace"
 import type { Settings } from "src/settings/settings"
 import type { MarkdownEditor } from "src/ui/editor/markdown-editor"
 import type { WorkspaceRibbon } from "src/ui/ribbon/workspace-ribbon"
@@ -26,6 +27,7 @@ type ServiceMap = {
   'i18n'(): I18n<typeof Locale>
   'logger'(): ILogger
   'plugin-manager'(): PluginManager
+  'plugin-marketplace'(): PluginMarketplace
   'settings'(): Settings<AppSettings>
   'vault'(): Vault
 

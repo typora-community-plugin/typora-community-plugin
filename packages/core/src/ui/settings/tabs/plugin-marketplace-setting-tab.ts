@@ -31,6 +31,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     private i18n = useService('i18n'),
     private github = useService('github'),
     private plugins = useService('plugin-manager'),
+    private marketplace = useService('plugin-marketplace'),
   ) {
     super()
 
@@ -77,7 +78,9 @@ export class PluginMarketplaceSettingTab extends SettingTab {
         button.onclick = () => this.loadPluginList()
       })
     })
+  }
 
+  onshow() {
     this.loadPluginList()
   }
 
@@ -87,7 +90,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     const version = +uniqueId()
 
     this.cleanPluginList()
-    this.plugins.marketplace.loadCommunityPlugins()
+    this.marketplace.loadCommunityPlugins()
       .then(() => {
         if (version <= this._pluginListVersion) return
         this._pluginListVersion = version
@@ -97,7 +100,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
 
   private renderPluginList(query: string = '') {
     query = query.toLowerCase()
-    this.plugins.marketplace.pluginList
+    this.marketplace.pluginList
       .filter(p => !query || (p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query)))
       .forEach(p => this.renderPlugin(p))
   }
@@ -133,7 +136,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
         button.title = t.installToGlobalDesc
         button.classList.add('primary')
         button.onclick = () =>
-          this.plugins.marketplace.installPlugin(info, 'global')
+          this.marketplace.installPlugin(info, 'global')
             .then(() => setting.controls.remove())
       })
 
@@ -144,7 +147,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
         button.title = t.installToVaultDesc
         button.classList.add('primary')
         button.onclick = () =>
-          this.plugins.marketplace.installPlugin(info, 'vault')
+          this.marketplace.installPlugin(info, 'vault')
             .then(() => setting.controls.remove())
       })
     })
