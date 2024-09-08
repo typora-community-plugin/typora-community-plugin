@@ -1,5 +1,9 @@
 # 特性更新日志
 
+## v2.3.20
+
+- fix(core/ui/settings/tabs/marketplace): 在 macOS `app.plugin.marketplace` 调用可能先于创建的问题
+
 ## v2.3.19
 
 - fix(core/ui/ribbon): 点击设置按钮丢失激活状态

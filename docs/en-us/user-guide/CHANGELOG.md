@@ -1,5 +1,9 @@
 # Feature Changelog
 
+## v2.3.20
+
+- fix(core/ui/settings/tabs/marketplace): throw error if `app.plugin.marketplace` loading slowly on macOS
+
 ## v2.3.19
 
 - fix(core/ui/ribbon): lost active status when clicked settings buton
