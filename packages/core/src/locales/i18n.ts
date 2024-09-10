@@ -77,5 +77,7 @@ export class I18n<T> {
         continue
       }
     }
+
+    throw new Error('No locale file found.')
   }
 }

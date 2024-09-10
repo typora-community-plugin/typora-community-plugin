@@ -1,3 +1,4 @@
+import { isDebug } from "./constants"
 import { useService } from "./service"
 import type { DisposeFunc } from "src/utils/types"
 
@@ -61,7 +62,7 @@ export class Events<E extends EventDefination> {
 
   protected emit<K extends keyof E>(event: K, ...args: Parameters<E[K]>) {
 
-    if (process.env.IS_DEV) {
+    if (isDebug()) {
       this.logger.debug(`${this.scope} @${event as string}\n`, ...args)
     }
 

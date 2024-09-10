@@ -28,6 +28,8 @@ export const platform = constant(
 )
 
 export const isDebug = constant(
-  // @ts-ignore
-  window[Symbol.for(`${process.env.CORE_NS}:env`)].debug
+  process.env.IS_PROD
+    // @ts-ignore
+    ? window[Symbol.for(`${process.env.CORE_NS}:env`)].debug
+    : process.env.IS_DEV
 )
