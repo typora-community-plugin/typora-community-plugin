@@ -1,11 +1,16 @@
 import type { DisposeFunc } from "src/utils/types"
 
 
-export class Component {
+export interface Loadable {
+  load(): void
+  unload(): void
+}
+
+export class Component implements Loadable {
 
   protected _loaded = false
   protected _disposables: DisposeFunc[] = []
-  protected _children: Component[] = []
+  protected _children: Loadable[] = []
 
   load() {
     if (this._loaded) {
@@ -34,7 +39,7 @@ export class Component {
 
   onunload() { }
 
-  addChild(component: Component) {
+  addChild(component: Loadable) {
     this._children.push(component)
     if (this._loaded) {
       component.load()
@@ -42,7 +47,7 @@ export class Component {
     return () => this.removeChild(component)
   }
 
-  removeChild(component: Component) {
+  removeChild(component: Loadable) {
     component.unload()
     this._children = this._children.filter(c => c !== component)
   }
