@@ -169,8 +169,10 @@ export class TabsView extends Component {
   }
 
   removeTab(path: string) {
-    this.container.closeTab(this.tabs.get(path)!)
-    this.tabs.get(path)?.remove()
+    if (!this.tabs.has(path)) return
+    const tab = this.tabs.get(path)!
+    this.container.closeTab(tab)
+    tab.remove()
     this.tabs.delete(path)
   }
 
