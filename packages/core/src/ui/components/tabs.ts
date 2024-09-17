@@ -75,6 +75,7 @@ export class TabContainer extends View {
 
   renameTab(tabEl: HTMLElement, tab: Tab) {
     tabEl.replaceWith(tab.containerEl)
+    this.activeTab(tab.containerEl)
   }
 
   activeTab(tabEl: HTMLElement) {
