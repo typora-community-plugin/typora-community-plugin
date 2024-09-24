@@ -1,5 +1,16 @@
 # Feature Changelog
 
+## Next Version
+
+- **Plugin Update**
+  - [collapsible-section][]
+    - feat: collapsible codeblock
+    - feat: collapsible callout
+  - [wikilink][]
+    - fix: not cache all file path
+    - fix: file cache emit too much event after switched folder
+    - fix: can not use suggestion
+
 ## v2.3.20
 
 - fix(core/ui/settings/tabs/marketplace): throw error if `app.plugin.marketplace` loading slowly on macOS
@@ -316,3 +327,5 @@
 [tag]: https://github.com/typora-community-plugin/typora-plugin-tag
 
 [wavedrom]: https://github.com/typora-community-plugin/typora-plugin-wavedrom
+
+[wikilink]: https://github.com/typora-community-plugin/typora-plugin-wikilink

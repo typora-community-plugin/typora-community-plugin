@@ -1,5 +1,16 @@
 # 特性更新日志
 
+## Next Version
+
+- **插件更新**
+  - [collapsible-section][]
+    - feat: 折叠/展开 引用块
+    - feat: 折叠/展开 标注块
+  - [wikilink][]
+    - fix: 修复不能缓存所有路径的问题
+    - fix: 修复切换目录后触发太多事件的问题
+    - fix: 修复有时不能使用输入建议的问题
+
 ## v2.3.20
 
 - fix(core/ui/settings/tabs/marketplace): 在 macOS `app.plugin.marketplace` 调用可能先于创建的问题
