@@ -6,6 +6,8 @@
   - [collapsible-section][]
     - feat: 折叠/展开 引用块
     - feat: 折叠/展开 标注块
+  - [image-viewer][]
+    - feat: 包裹在 HTML 中的图片，点击时可以查看大图
   - [wikilink][]
     - fix: 修复不能缓存所有路径的问题
     - fix: 修复切换目录后触发太多事件的问题

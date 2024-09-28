@@ -6,6 +6,8 @@
   - [collapsible-section][]
     - feat: collapsible codeblock
     - feat: collapsible callout
+  - [image-viewer][]
+    - feat: click the image wrapped in html to preview the image
   - [wikilink][]
     - fix: not cache all file path
     - fix: file cache emit too much event after switched folder
