@@ -227,6 +227,7 @@ interface Editor {
   nodeMap: NodeMap
   quickOpenPanel: QuickOpenPanel
   selection: Selection
+  sourceView: SourceView
   stylize: Stylize
   tableEdit: TableEdit
   undo: Undo
@@ -310,7 +311,9 @@ export declare class Node {
     constructor: typeof Node
   }
 
+  get(key: "before" | "after"): Node | undefined
   get(key: string): any
+
   set(key: string, value: any): void
 }
 
@@ -318,6 +321,7 @@ interface NodeAttribute {
   id: string
   type: "meta_block"
   text: string
+  ref?: string
   children: {
     _map: Map<string, Node>
     _set: []
@@ -458,6 +462,9 @@ interface NodeMap {
   foot_list: NodeCollection
   link_list: NodeCollection
   toc: any
+
+  getFirst(): Node | null
+  getLast(): Node | null
 }
 
 interface NodeCollection {
@@ -505,6 +512,8 @@ interface Selection {
   saveSelection($container: JQuery, rangy: Rangy): Bookmark
   restoreSelection($container: JQuery, bookmark?: Bookmark): void
 
+  selectAll(): void
+  selectLine(): void
   selectPhrase(): void
   selectWord(): void
 
@@ -536,6 +545,14 @@ interface Bookmark {
   start: number
   end: number
   containerNode: HTMLElement
+}
+
+interface SourceView {
+  inSourceMode: boolean
+  cm: CodeMirror.Editor
+  prep(): void
+  show(): void
+  hide(): void
 }
 
 interface Stylize {
