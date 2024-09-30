@@ -1,5 +1,6 @@
 import 'core-js/modules/es.array.at'
 import 'core-js/modules/es.array.flat-map'
+import 'core-js/modules/es.global-this'
 import 'src/setup'
 import { useService } from 'src/common/service'
 

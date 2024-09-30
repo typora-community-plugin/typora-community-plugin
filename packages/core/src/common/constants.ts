@@ -24,12 +24,12 @@ export const globalConfigDir = constant(
 )
 
 export const platform = constant(
-  (window?.process?.platform as 'win32' | 'linux') ?? 'darwin'
+  (globalThis?.process?.platform as 'win32' | 'linux') ?? 'darwin'
 )
 
 export const isDebug = constant(
   process.env.IS_PROD
     // @ts-ignore
-    ? window[Symbol.for(`${process.env.CORE_NS}:env`)].debug
+    ? globalThis[Symbol.for(`${process.env.CORE_NS}:env`)].debug
     : process.env.IS_DEV
 )
