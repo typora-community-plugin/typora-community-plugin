@@ -1,21 +1,35 @@
 
 const ESCAPE_CHAR = '\\'
 
-/**
- * @private
- */
-export class StringExtractor {
+export abstract class StringMask {
 
   protected _cache: string[] = []
+
+  constructor() { }
+
+  abstract mask(s: string): string
+  abstract unmask(s: string): string
+
+  processMasked(processor: (s: string) => string) {
+    this._cache = this._cache.map(s => processor(s))
+  }
+
+  reset() {
+    this._cache = []
+  }
+}
+
+export class RegexpBasedStringMask extends StringMask {
 
   /**
    * @param regexp First character include `.` for matching excape character `\`.
    * @param placeholder
    */
   constructor(private regexp: RegExp, private placeholder: string) {
+    super()
   }
 
-  extract(s: string) {
+  mask(s: string) {
     return s.replace(this.regexp, ($, ...args) => {
       const offset = args.at(-2)
       if (s[offset - 1] === ESCAPE_CHAR) return $
@@ -24,18 +38,10 @@ export class StringExtractor {
     })
   }
 
-  process(processor: (s: string) => string) {
-    this._cache = this._cache.map(s => processor(s))
-  }
-
-  rebuild(s: string) {
+  unmask(s: string) {
     this._cache.reverse()
     return s.replace(new RegExp(this.placeholder, 'g'), ($) => {
       return this._cache.pop()!
     })
-  }
-
-  reset() {
-    this._cache = []
   }
 }

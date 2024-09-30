@@ -1,7 +1,7 @@
 import decorate from '@plylrnsdy/decorate.js'
 import { editor, File } from 'typora'
 import type { DisposeFunc } from 'src/utils/types'
-import { StringExtractor } from './string-extractor'
+import { RegexpBasedStringMask } from './string-mask'
 
 
 type ProcessTime = 'preload' | 'presave'
@@ -29,9 +29,9 @@ export class MarkdownPreProcessor {
     presave: { code: [], mdtext: [], length: 0 },
   }
 
-  private _codeExtractor = new StringExtractor(RE_CODEBLOCK, '___CODE_PLACEHOLDER___')
+  private _codeMasker = new RegexpBasedStringMask(RE_CODEBLOCK, '___CODE_PLACEHOLDER___')
 
-  private _htmlExtractor = new StringExtractor(RE_HTML, '___HTML_PLACEHOLDER___')
+  private _htmlMasker = new RegexpBasedStringMask(RE_HTML, '___HTML_PLACEHOLDER___')
 
   constructor() {
     this._registerProcessors()
@@ -83,10 +83,10 @@ export class MarkdownPreProcessor {
 
     // pre-process
 
-    md = this._codeExtractor.extract(md)
+    md = this._codeMasker.mask(md)
 
     if (when === 'preload') {
-      md = this._htmlExtractor.extract(md)
+      md = this._htmlMasker.mask(md)
     }
 
     // process
@@ -94,19 +94,19 @@ export class MarkdownPreProcessor {
     md = this._processors[when]['mdtext'].reduce((res, o) => o.process(res), md)
 
     this._processors[when]['code'].forEach((p) =>
-      this._codeExtractor.process(p.process)
+      this._codeMasker.processMasked(p.process)
     )
 
     // post-process
 
     if (when === 'preload') {
-      md = this._htmlExtractor.rebuild(md)
+      md = this._htmlMasker.unmask(md)
     }
 
-    md = this._codeExtractor.rebuild(md)
+    md = this._codeMasker.unmask(md)
 
-    this._codeExtractor.reset()
-    this._htmlExtractor.reset()
+    this._codeMasker.reset()
+    this._htmlMasker.reset()
 
     return md
   }
