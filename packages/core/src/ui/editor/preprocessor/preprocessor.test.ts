@@ -1,5 +1,5 @@
-import { RE_CODEBLOCK, RE_HTML } from "./preprocessor"
-import { RegexpBasedStringMask } from "./string-mask"
+import { RE_CODEBLOCK } from "./preprocessor"
+import { HtmlMask, RegexpBasedStringMask } from "./string-mask"
 
 
 describe('extract codeblock', () => {
@@ -75,7 +75,7 @@ describe('extract codeblock', () => {
 })
 
 describe('mask html', () => {
-  const masker = new RegexpBasedStringMask(RE_HTML, 'HTML')
+  const masker = new HtmlMask('HTML')
 
   beforeEach(() => {
     masker.reset()
@@ -115,6 +115,34 @@ describe('mask html', () => {
     test('tag with 2 attributes', () => {
       const s = '<img src="https://example.com/" style="border: 1px solid black;">'
       expect(masker.mask(s)).toEqual('HTML')
+    })
+  })
+
+  describe('wrapped', () => {
+
+    test('empty tag', () => {
+      const s = '<i></i>'
+      expect(masker.mask(s)).toEqual('HTML')
+    })
+
+    test('div { span }', () => {
+      const s = '<div><span>text</span></div>'
+      expect(masker.mask(s)).toEqual('HTML')
+    })
+
+    test('div { span, text }', () => {
+      const s = '<div><span>text</span>text</div>'
+      expect(masker.mask(s)).toEqual('HTML')
+    })
+
+    test('text, div { span }, text', () => {
+      const s = 'text<div><span>text</span></div>text'
+      expect(masker.mask(s)).toEqual('textHTMLtext')
+    })
+
+    test('text, div { span }, text, div { span }', () => {
+      const s = 'text<div><span>text</span></div>text<div><span>text</span></div>'
+      expect(masker.mask(s)).toEqual('textHTMLtextHTML')
     })
   })
 

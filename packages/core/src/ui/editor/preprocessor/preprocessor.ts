@@ -1,7 +1,8 @@
 import decorate from '@plylrnsdy/decorate.js'
 import { editor, File } from 'typora'
 import type { DisposeFunc } from 'src/utils/types'
-import { RegexpBasedStringMask } from './string-mask'
+import { HtmlMask, RegexpBasedStringMask } from './string-mask'
+import { useService } from 'src/common/service'
 
 
 type ProcessTime = 'preload' | 'presave'
@@ -20,8 +21,6 @@ type Processors = Record<ProcessTime, Record<MarkdownType, TPreProcessor[]> & { 
 // Part `(`+).+?\2`                      handle single line codeblock
 export const RE_CODEBLOCK = /(?:^|\n)(\s*`{3,})(?:.|\n)+?\1|(`+).+?\2/g
 
-export const RE_HTML = /<\/?[A-Za-z-]+[^>]*>/g
-
 export class MarkdownPreProcessor {
 
   private _processors: Processors = {
@@ -29,11 +28,13 @@ export class MarkdownPreProcessor {
     presave: { code: [], mdtext: [], length: 0 },
   }
 
-  private _codeMasker = new RegexpBasedStringMask(RE_CODEBLOCK, '___CODE_PLACEHOLDER___')
+  codeMasker = new RegexpBasedStringMask(RE_CODEBLOCK, '___CODE_PLACEHOLDER___')
 
-  private _htmlMasker = new RegexpBasedStringMask(RE_HTML, '___HTML_PLACEHOLDER___')
+  htmlMasker = new HtmlMask('___HTML_PLACEHOLDER___')
 
-  constructor() {
+  constructor(
+    private logger = useService('logger', ['MarkdownPreProcessor']),
+  ) {
     this._registerProcessors()
   }
 
@@ -80,34 +81,41 @@ export class MarkdownPreProcessor {
   }
 
   protected _process(when: ProcessTime, md: string) {
+    this.codeMasker.reset()
+    this.htmlMasker.reset()
 
-    // pre-process
+    const original = md
 
-    md = this._codeMasker.mask(md)
+    try {
+      // pre-process
 
-    if (when === 'preload') {
-      md = this._htmlMasker.mask(md)
+      md = this.codeMasker.mask(md)
+
+      if (when === 'preload') {
+        md = this.htmlMasker.mask(md)
+      }
+
+      // process
+
+      md = this._processors[when]['mdtext'].reduce((res, o) => o.process(res), md)
+
+      this._processors[when]['code'].forEach((p) =>
+        this.codeMasker.processMasked(p.process)
+      )
+
+      // post-process
+
+      if (when === 'preload') {
+        md = this.htmlMasker.unmask(md)
+      }
+
+      md = this.codeMasker.unmask(md)
+
+      return md
     }
-
-    // process
-
-    md = this._processors[when]['mdtext'].reduce((res, o) => o.process(res), md)
-
-    this._processors[when]['code'].forEach((p) =>
-      this._codeMasker.processMasked(p.process)
-    )
-
-    // post-process
-
-    if (when === 'preload') {
-      md = this._htmlMasker.unmask(md)
+    catch (error) {
+      this.logger.error(error)
+      return original
     }
-
-    md = this._codeMasker.unmask(md)
-
-    this._codeMasker.reset()
-    this._htmlMasker.reset()
-
-    return md
   }
 }
