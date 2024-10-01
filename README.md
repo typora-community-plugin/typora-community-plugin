@@ -51,16 +51,16 @@ You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from
 | -------------------------------- | --------------------------------------------------------- |
 | [abcjs][p12]                     | Use ABC music notation in codeblock.                      |
 | [callout][p1]                    | Support Obsidian-like Callout `> [!type]`.                |
+| [code-folding][p14]              | Make your codes foldable.                                 |
 | [codeblock-copy-button][p2]      | Add a copy button to each codeblock's top-right corner.   |
 | [codeblock-highlight-mapper][p3] | Map language A to language B for highlighting it.         |
-| [collapsible-section][p4]        | Fold/unfold markdown section. Supports headings, list, codeblock, table. |
-| [code-folding][p14]              | Make your codes foldable.                                 |
+| [collapsible-section][p4]        | Fold/unfold markdown section. Supports headings, list, codeblock, table, quoteblock, callout. |
 | [darkmode][p13]                  | General dark mode for any theme.                          |
 | [file-icon][p5]                  | Show different icon for different file type in file tree. |
 | [footnotes][p18]                 | Re-index the numerical footnotes.                         |
 | [front-matter][p6]               | Auto edit front matter.                                   |
 | [image-location][p15]            | Resolve image's location relative to vault's root.        |
-| [image-viewer][p16]              | View all the images in the current Markdown.              |
+| [image-viewer][p16]              | View all the images in current Markdown.                  |
 | [markmap][p11]                   | Support Markmap in codeblock.                             |
 | [note-refactor][p7]              | Extract selection to new file.                            |
 | [note-snippets][p8]              | Use slash command to autocomplete note snippets.          |

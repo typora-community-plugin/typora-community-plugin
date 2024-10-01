@@ -51,10 +51,10 @@
 | -------------------------------- | ------------------------------------------ |
 | [abcjs][p12]                     | 支持在多行代码块中使用 ABC 记谱法。              |
 | [callout][p1]                    | 支持标注块语法 `> [!type]`                    |
+| [code-folding][p14]              | 令多行代码块中的代码可折叠。                     |
 | [codeblock-copy-button][p2]      | 在多行代码块右上角添加一个复制按钮。              |
 | [codeblock-highlight-mapper][p3] | 将语言 A 映射为语言 B，使用语言 B 的语法高亮代码。 |
-| [collapsible-section][p4]        | 折叠/展开 Markdown 章节、列表、代码块、表格      |
-| [code-folding][p14]              | 令多行代码块中的代码可折叠。                     |
+| [collapsible-section][p4]        | 折叠/展开 Markdown 章节、列表、代码块、表格、引用块、标注块 |
 | [darkmode][p13]                  | 适用于任意亮色主题的暗黑模式。                   |
 | [file-icon][p5]                  | 为不同类型文件显示不同图标                      |
 | [footnotes][p18]                 | 重新编号数字脚注                              |
