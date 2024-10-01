@@ -81,27 +81,31 @@ describe('mask html', () => {
     masker.reset()
   })
 
-  test('mask in begin', () => {
-    const s = '<br>'
-    expect(masker.mask(s)).toEqual('HTML')
+  describe('self-closing tag', () => {
+
+    test('mask in begin', () => {
+      const s = '<br>'
+      expect(masker.mask(s)).toEqual('HTML')
+    })
+
+    test('mask single time', () => {
+      const s = 'text<br>'
+      expect(masker.mask(s)).toEqual('textHTML')
+    })
+
+    test('mask multi times', () => {
+      const s = '1<br>2<br>'
+      expect(masker.mask(s)).toEqual('1HTML2HTML')
+    })
+
+    test('mask multi times in a row', () => {
+      const s = 'text<br><br>'
+      expect(masker.mask(s)).toEqual('textHTMLHTML')
+    })
   })
 
-  test('mask single time', () => {
-    const s = 'text<br>'
-    expect(masker.mask(s)).toEqual('textHTML')
-  })
+  describe('tag with attribute', () => {
 
-  test('mask multi times', () => {
-    const s = '1<br>2<br>'
-    expect(masker.mask(s)).toEqual('1HTML2HTML')
-  })
-
-  test('mask multi times in a row', () => {
-    const s = 'text<br><br>'
-    expect(masker.mask(s)).toEqual('textHTMLHTML')
-  })
-
-  describe('mask tag with attribute', () => {
     test('tag with one attribute', () => {
       const s = '<img src>'
       expect(masker.mask(s)).toEqual('HTML')
@@ -146,7 +150,7 @@ describe('mask html', () => {
     })
   })
 
-  describe('escape', () => {
+  describe('not mask escaped tag', () => {
 
     test('escape in begin', () => {
       const s = '\\<br>'
@@ -164,7 +168,7 @@ describe('mask html', () => {
     })
   })
 
-  describe('arrow', () => {
+  describe('not mask arrow', () => {
 
     test('<-', () => {
       const s = '<-'
@@ -173,6 +177,14 @@ describe('mask html', () => {
 
     test('<->', () => {
       const s = '<->'
+      expect(masker.mask(s)).toEqual(s)
+    })
+  })
+
+  describe('not mask non-tag', () => {
+
+    test('<a', () => {
+      const s = '<a\nhref>'
       expect(masker.mask(s)).toEqual(s)
     })
   })
