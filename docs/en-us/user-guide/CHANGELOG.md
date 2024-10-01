@@ -1,5 +1,10 @@
 # Feature Changelog
 
+## Next Version
+
+- **New Plugin**
+  - [footnotes][]: Re-index the numerical footnotes.
+
 ## v2.3.22
 
 - fix(core/ui/tabs): throws error when event 'file:delete' emited
@@ -320,6 +325,8 @@
 [code-folding]: https://github.com/typora-community-plugin/typora-plugin-code-folding
 
 [drakmode]: https://github.com/typora-community-plugin/typora-plugin-darkmode
+
+[footnotes]: https://github.com/typora-community-plugin/typora-plugin-footnotes
 
 [front-matter]: https://github.com/typora-community-plugin/typora-plugin-front-matter
 

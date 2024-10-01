@@ -1,5 +1,10 @@
 # 特性更新日志
 
+## Next Version
+
+- **新增插件**
+  - [footnotes][]: 重新编号数字脚注
+
 ## v2.3.22
 
 - fix(core/ui/tabs): 事件 'file:delete' 被触发时报错
@@ -320,6 +325,8 @@
 [code-folding]: https://github.com/typora-community-plugin/typora-plugin-code-folding
 
 [drakmode]: https://github.com/typora-community-plugin/typora-plugin-darkmode
+
+[footnotes]: https://github.com/typora-community-plugin/typora-plugin-footnotes
 
 [front-matter]: https://github.com/typora-community-plugin/typora-plugin-front-matter
 

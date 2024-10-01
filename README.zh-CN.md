@@ -57,6 +57,7 @@
 | [code-folding][p14]              | 令多行代码块中的代码可折叠。                     |
 | [darkmode][p13]                  | 适用于任意亮色主题的暗黑模式。                   |
 | [file-icon][p5]                  | 为不同类型文件显示不同图标                      |
+| [footnotes][p18]                 | 重新编号数字脚注                              |
 | [front-matter][p6]               | 自动编辑 Front Matter，包括创建时间、编辑时间等   |
 | [image-location][p15]            | 相对于当前笔记目录的根目录解析图片路径             |
 | [image-viewer][p16]              | 查看当前文档所有图片                           |
@@ -120,3 +121,4 @@
 [p15]: https://github.com/typora-community-plugin/typora-plugin-image-location
 [p16]: https://github.com/typora-community-plugin/typora-plugin-image-viewer
 [p17]: https://github.com/typora-community-plugin/typora-plugin-wavedrom
+[p18]: https://github.com/typora-community-plugin/typora-plugin-footnotes

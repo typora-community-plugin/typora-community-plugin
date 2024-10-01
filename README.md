@@ -57,6 +57,7 @@ You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from
 | [code-folding][p14]              | Make your codes foldable.                                 |
 | [darkmode][p13]                  | General dark mode for any theme.                          |
 | [file-icon][p5]                  | Show different icon for different file type in file tree. |
+| [footnotes][p18]                 | Re-index the numerical footnotes.                         |
 | [front-matter][p6]               | Auto edit front matter.                                   |
 | [image-location][p15]            | Resolve image's location relative to vault's root.        |
 | [image-viewer][p16]              | View all the images in the current Markdown.              |
@@ -115,3 +116,4 @@ If you have any problem or suggestion please open an issue [here](https://github
 [p15]: https://github.com/typora-community-plugin/typora-plugin-image-location
 [p16]: https://github.com/typora-community-plugin/typora-plugin-image-viewer
 [p17]: https://github.com/typora-community-plugin/typora-plugin-wavedrom
+[p18]: https://github.com/typora-community-plugin/typora-plugin-footnotes
