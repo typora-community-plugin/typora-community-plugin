@@ -1,6 +1,9 @@
 # 特性更新日志
 
-## Next Version
+## v2.3.22
+
+- fix(core/ui/tabs): 事件 'file:delete' 被触发时报错
+- fix(core/ui/tabs): 重命名文件后不能重命名标签页
 
 - **插件更新**
   - [collapsible-section][]

@@ -1,6 +1,9 @@
 # Feature Changelog
 
-## Next Version
+## v2.3.22
+
+- fix(core/ui/tabs): throws error when event 'file:delete' emited
+- fix(core/ui/tabs): can not rename tab
 
 - **Plugin Update**
   - [collapsible-section][]
