@@ -56,7 +56,7 @@ export class HtmlMask extends StringMask {
   private findHtmlRanges(md: string) {
     const ranges = []
     const stack = [] as { tagName: string, start: number, end: number }[]
-    const regex = /\\?<\/?([a-zA-Z-]+)[^>]*?>/g
+    const regex = /\\?<\/?([a-zA-Z][a-zA-Z-]*)[^>]*?>/g
     let match
 
     while ((match = regex.exec(md)) !== null) {

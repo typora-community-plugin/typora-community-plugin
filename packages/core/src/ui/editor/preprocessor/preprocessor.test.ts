@@ -163,4 +163,17 @@ describe('mask html', () => {
       expect(masker.mask(s)).toEqual('1\\<br>2HTML')
     })
   })
+
+  describe('arrow', () => {
+
+    test('<-', () => {
+      const s = '<-'
+      expect(masker.mask(s)).toEqual(s)
+    })
+
+    test('<->', () => {
+      const s = '<->'
+      expect(masker.mask(s)).toEqual(s)
+    })
+  })
 })
