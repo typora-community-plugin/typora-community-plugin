@@ -1,6 +1,9 @@
 # 特性更新日志
 
-## Next Version
+## v2.3.24
+
+- fix(core/ui/editor/html-mask): 不能解析箭头 `<-`
+- fix(core/ui/editor/html-mask): 不能解析非 html 标签，如 `<a\n`
 
 - **新增插件**
   - [footnotes][]: 重新编号数字脚注

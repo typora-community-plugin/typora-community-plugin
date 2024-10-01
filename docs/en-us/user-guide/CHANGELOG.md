@@ -1,6 +1,9 @@
 # Feature Changelog
 
-## Next Version
+## v2.3.24
+
+- fix(core/ui/editor/html-mask): can not parse arrow `<-`
+- fix(core/ui/editor/html-mask): can not parse not-tag text like `<a\n`
 
 - **New Plugin**
   - [footnotes][]: Re-index the numerical footnotes.
