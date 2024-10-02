@@ -11,8 +11,6 @@ export abstract class EditorSuggest<T> {
    */
   abstract triggerText: string
 
-  abstract suggestions: T[]
-
   private _placeholder: string[] = []
 
   get isUsing() {
@@ -22,25 +20,30 @@ export abstract class EditorSuggest<T> {
   private _handlers = {
     search: this.getSuggestions.bind(this),
     render: this._renderSuggestion.bind(this),
-    beforeApply: this.beforeApply.bind(this),
   } as const
+
+  canTrigger(textBefore: string, textAfter: string, range: TRange) {
+    return !!textBefore
+  }
 
   show(range: TRange, query: string) {
     editor.autoComplete.show(this._placeholder, range, query, this._handlers)
   }
 
-  abstract findQuery(text: string): { isMatched: boolean, query?: string }
+  abstract findQuery(textBefore: string, textAfter: string, range: TRange): { isMatched: boolean, query?: string }
 
   abstract getSuggestions(query: string): NonNullable<T>[]
+
+  abstract getSuggestionId(suggest: NonNullable<T>): string
 
   /**
    * @returns HTML string
    */
   _renderSuggestion(suggest: NonNullable<T>, isActive: boolean): string {
     const className = `typ-suggestion ${isActive ? "active" : ""}`
+    const id = this.getSuggestionId(suggest)
     const text = this.renderSuggestion(suggest)
-      .replace(/[']/g, "&quot;")
-    return `<li class="${className}" data-content="${text}">${text}</li>`
+    return `<li class="${className}" data-content="${id}">${text}</li>`
   }
 
   /**
@@ -50,8 +53,23 @@ export abstract class EditorSuggest<T> {
     return suggest.toString()
   }
 
+  abstract getSuggestionById(id: string): NonNullable<T>
+
+  _beforeApply(matched: any) {
+    if (typeof matched === 'string')
+      // select item by click
+      return this.beforeApply(this.getSuggestionById(matched))
+    else
+      // select item by enter
+      return this.beforeApply(matched)
+  }
+
   /**
    * @returns Markdown string
    */
   abstract beforeApply(suggest: NonNullable<T>): string
+
+  lengthOfTextBeforeToBeReplaced(query: string) {
+    return query.length + this.triggerText.length
+  }
 }

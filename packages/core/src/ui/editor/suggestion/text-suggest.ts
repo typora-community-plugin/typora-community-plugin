@@ -3,6 +3,18 @@ import { EditorSuggest } from "./suggest"
 
 export abstract class TextSuggest extends EditorSuggest<string> {
 
+  abstract suggestions: string[]
+
+  getSuggestionId(suggest: string): string {
+    return suggest
+      .replace(/"/g, "&#34;")
+      .replace(/'/g, "&#39;")
+  }
+
+  getSuggestionById(id: string) {
+    return id
+  }
+
   getSuggestions(query: string) {
     if (!query) return this.suggestions
 

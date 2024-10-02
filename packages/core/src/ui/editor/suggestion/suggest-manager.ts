@@ -29,7 +29,7 @@ export class EditorSuggestManager {
         range.setStart(textNode, anchor.start)
         range.setEnd(textNode, anchor.end)
         editor.selection.setRange(range, true)
-        editor.UserOp.pasteHandler(editor, this._currentSuggest!.beforeApply(text), true)
+        editor.UserOp.pasteHandler(editor, this._currentSuggest!._beforeApply(text), true)
         editor.autoComplete.hide()
         return
       }
@@ -51,15 +51,17 @@ export class EditorSuggestManager {
       return
     }
 
-    const [textBefore, _, range] = editor.selection.getTextAround()
-    if (!textBefore) return
+    const [textBefore, textAfter, range] = editor.selection.getTextAround()
+    if (!range) return
 
     for (const suggest of this._suggests) {
+      if (!suggest.canTrigger(textBefore, textAfter, range)) continue
+
       this._currentSuggest = suggest
-      const { isMatched, query = '' } = suggest.findQuery(textBefore)
+      const { isMatched, query = '' } = suggest.findQuery(textBefore, textAfter, range)
       if (!isMatched) continue
 
-      range.start -= query!.length + suggest.triggerText.length
+      range.start -= suggest.lengthOfTextBeforeToBeReplaced(query)
       suggest.show(range, query)
       break
     }
