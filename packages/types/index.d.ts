@@ -167,7 +167,7 @@ interface File {
 
   readContentFrom(): [unknown, string]
 
-  reloadContent(): void
+  reloadContent(markdown: string, t?: boolean, n?: boolean, i?: boolean, r?: boolean, o?: boolean): void
 
   saveUseNode(param0?: boolean, param1?: boolean): Promise<any>
 
@@ -175,6 +175,8 @@ interface File {
   setMountFolder(path: string): void
 
   SupportedFiles: string[]
+
+  useCRLF: boolean
 
   validateContentForSave(): boolean
 }
