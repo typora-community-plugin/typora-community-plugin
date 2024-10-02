@@ -1,5 +1,17 @@
 # 特性更新日志
 
+## v2.3.28
+
+- feat(core/ui/components): 可关闭的提示信息
+- feat(core/ui/editor/suggest): 支持自定义条目的类型（原本支持文本，现在也支持对象）
+- feat(core/ui/editor/suggest): 支持在子语法内触发建议（原本只支持纯文本，内联语法被 Typora 格式化后无法识别）
+- refactor(core/ui/editor): 暴露获取/设置 md 的 API
+
+- **Plugin Update**
+  - [footnotes][]: 
+    - feat: 支持脚注标记（`[^` 触发）的自动完成
+    - fix: 修复可能标号错误的问题
+
 ## v2.3.24
 
 - fix(core/ui/editor/html-mask): 不能解析箭头 `<-`

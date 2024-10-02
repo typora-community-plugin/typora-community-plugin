@@ -1,5 +1,17 @@
 # Feature Changelog
 
+## v2.3.28
+
+- feat(core/ui/components): closeable notice
+- feat(core/ui/editor/suggest): support custom suggest type
+- feat(core/ui/editor/suggest): support triggering suggestions in the inline syntax
+- refactor(core/ui/editor): expose api to get/set md
+
+- **Plugin Update**
+  - [footnotes][]: 
+    - feat: footnote marker suggestion
+    - fix: wrong order of re-indexing footnotes
+
 ## v2.3.24
 
 - fix(core/ui/editor/html-mask): can not parse arrow `<-`
