@@ -1,4 +1,4 @@
-import { editor } from "typora"
+import { editor, File } from "typora"
 import { Events } from "src/common/events"
 import { MarkdownPostProcessor } from "./postprocessor/postprocessor-manager"
 import { MarkdownPreProcessor } from "./preprocessor/preprocessor"
@@ -64,6 +64,14 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
     if (url.hash) {
       setTimeout(() => editor.tryOpenUrl(url.hash), 500)
     }
+  }
+
+  getMarkdown(): string {
+    return editor.getMarkdown()
+  }
+
+  setMarkdown(markdown: string) {
+    File.reloadContent(markdown, false, true, false, true)
   }
 }
 
