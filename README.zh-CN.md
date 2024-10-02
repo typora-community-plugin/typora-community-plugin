@@ -57,16 +57,16 @@
 | [collapsible-section][p4]        | 折叠/展开 Markdown 章节、列表、代码块、表格、引用块、标注块 |
 | [darkmode][p13]                  | 适用于任意亮色主题的暗黑模式。                   |
 | [file-icon][p5]                  | 为不同类型文件显示不同图标                      |
-| [footnotes][p18]                 | 重新编号数字脚注                              |
+| [footnotes][p18]                 | 脚注标记自动完成 & 重新编号数字脚注               |
 | [front-matter][p6]               | 自动编辑 Front Matter，包括创建时间、编辑时间等   |
 | [image-location][p15]            | 相对于当前笔记目录的根目录解析图片路径             |
 | [image-viewer][p16]              | 查看当前文档所有图片                           |
 | [markmap][p11]                   | 支持在多行代码块中使用 Markmap                  |
 | [note-refactor][p7]              | 提取选中文本到新文件                           |
 | [note-snippets][p8]              | 使用斜线指令输入笔记片段                        |
-| [tag][p9]                        | 高亮 `#tag` 语法，提供标签面板管理和搜索标签      |
+| [tag][p9]                        | 高亮 `#tag` 语法，自动完成，提供标签面板管理和搜索标签 |
 | [wavedrom][p17]                  | 支持在多行代码块中使用 WaveDrom                 |
-| [wikilink][p10]                  | 支持通过 `[[text]]` 链接跳转                  |
+| [wikilink][p10]                  | 支持通过 `[[text]]` 链接跳转，自动完成           |
 
 
 ## 用户文档

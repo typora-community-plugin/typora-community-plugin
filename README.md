@@ -57,7 +57,7 @@ You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from
 | [collapsible-section][p4]        | Fold/unfold markdown section. Supports headings, list, codeblock, table, quoteblock, callout. |
 | [darkmode][p13]                  | General dark mode for any theme.                          |
 | [file-icon][p5]                  | Show different icon for different file type in file tree. |
-| [footnotes][p18]                 | Re-index the numerical footnotes.                         |
+| [footnotes][p18]                 | Footnote marker suggestion & Re-index the numerical footnotes. |
 | [front-matter][p6]               | Auto edit front matter.                                   |
 | [image-location][p15]            | Resolve image's location relative to vault's root.        |
 | [image-viewer][p16]              | View all the images in current Markdown.                  |
