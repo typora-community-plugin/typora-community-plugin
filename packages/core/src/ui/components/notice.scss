@@ -22,4 +22,11 @@
   font-size: .9rem;
   background: var(--bg-color);
   @include shadow(0 .125rem .5rem rgb(var(--typ-shadow-color)));
+
+  .typ-notice__close {
+    position: absolute;
+    top: .5rem;
+    right: .5rem;
+    width: 1.4rem;
+  }
 }

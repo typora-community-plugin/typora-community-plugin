@@ -38,14 +38,39 @@ export class Notice extends View {
     super()
     this.containerEl = html`<div class="typ-notice">${message}</div>`
 
-    noticeContainer.containerEl.append(this.containerEl)
-    noticeContainer.open()
+    this.show()
 
     delay && setTimeout(() => this.close(), delay)
   }
 
+  /**
+   * @deprecated Use `setMessage` instead.
+   */
   set message(msg: string) {
     this.containerEl.innerText = msg
+  }
+
+  setMessage(msg: string) {
+    this.message = msg
+    return this
+  }
+
+  setCloseable(closeable: boolean) {
+    if (closeable)
+      $(this.containerEl).append(
+        $(`<div class="typ-notice__close"><i class="typ-icon typ-close"></i></div>`)
+          .on('click', () => this.close())
+      )
+    else
+      $(this.containerEl)
+        .find('.typ-notice__close')
+        .remove()
+    return this
+  }
+
+  show() {
+    noticeContainer.containerEl.append(this.containerEl)
+    noticeContainer.open()
   }
 
   close() {
