@@ -69,7 +69,10 @@ export class HtmlMask extends StringMask {
       const end = start + tag.length - 1
 
       if (tag[1] !== '/') {
-        if (SELF_CLOSING_TAGS.includes(tagName)) {
+        if (tagName.startsWith('http')) {
+          continue
+        }
+        else if (SELF_CLOSING_TAGS.includes(tagName)) {
           if (stack.length === 0)
             ranges.push({ start, end })
         }
