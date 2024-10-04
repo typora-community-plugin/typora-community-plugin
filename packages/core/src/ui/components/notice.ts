@@ -31,6 +31,8 @@ export const noticeContainer = new NoticeContainer()
 
 export class Notice extends View {
 
+  private closeable = false
+
   /**
    * @param delay Hide notice after `delay` ms. `delay = 0` will not be hidden.
    */
@@ -48,6 +50,8 @@ export class Notice extends View {
    */
   set message(msg: string) {
     this.containerEl.innerText = msg
+    if (this.closeable) this.setCloseable(true)
+
   }
 
   setMessage(msg: string) {
@@ -56,6 +60,7 @@ export class Notice extends View {
   }
 
   setCloseable(closeable: boolean) {
+    this.closeable = closeable
     if (closeable)
       $(this.containerEl).append(
         $(`<div class="typ-notice__close"><i class="typ-icon typ-close"></i></div>`)
