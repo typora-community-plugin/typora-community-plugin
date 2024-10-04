@@ -1,5 +1,10 @@
 # Feature Changelog
 
+## v2.3.30
+
+- fix(core/ui/component/notice): can not setCloseable before setMessage
+- fix(core/ui/editor/string-mask): can not handle `<direct-link>`
+
 ## v2.3.28
 
 - feat(core/ui/components): closeable notice

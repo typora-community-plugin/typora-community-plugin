@@ -1,5 +1,10 @@
 # 特性更新日志
 
+## v2.3.30
+
+- fix(core/ui/component/notice): 修复不能在 setMessage 之前 setCloseable 的问题
+- fix(core/ui/editor/string-mask): 修复不能处理 `<direct-link>` 语法的问题
+
 ## v2.3.28
 
 - feat(core/ui/components): 可关闭的提示信息
