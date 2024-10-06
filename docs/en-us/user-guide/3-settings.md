@@ -11,7 +11,7 @@ Or you can do this by command panel:
 
 - press <kdb>F1</kdb> open the command panel
 - type `Use vault settings` find the command
-- click the commend to copy the global settings to `.typora` in vault ant use it
+- click the commend to copy the global settings to `.typora` in vault and use it
 
 
 ## Use global settings

@@ -9,7 +9,7 @@
 | `App`            | `app`                        | 加载时                                                       |
 | `Vault`          | `app.vault`                  | 笔记文件夹打开时、笔记文件夹切换时、文件夹重命名、文件删除、文件重命名 |
 | `Workspace`      | `app.workspace`              | 文件打开前、文件打开后、文件保存前                           |
-| `MarkdownEditor` | `app.workspace.activeEditor` | 加载完成、编辑、滚动                                         |
+| `MarkdownEditor` | `app.feature.markdownEditor` | 加载完成、编辑、滚动                                         |
 
 可以通过 Events 相关的接口绑定（使用 `on()` 方法）和解绑（使用 `off()` 方法）。
 

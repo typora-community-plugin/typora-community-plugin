@@ -66,7 +66,7 @@ You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from
 | [note-snippets][p8]              | Use slash command to autocomplete note snippets.          |
 | [tag][p9]                        | Support tag like `#tag`.                                  |
 | [wavedrom][p17]                  | Support WaveDrom in codeblock.                            |
-| [wikilink][p10]                  | Suport wikilink like `[[text]]`.                          |
+| [wikilink][p10]                  | Support wikilink like `[[text]]`.                          |
 
 
 
