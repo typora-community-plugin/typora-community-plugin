@@ -1,26 +1,14 @@
 import './command-modal.scss'
-import { Modal } from "../components/modal"
-import type { Command } from 'src/command/command-manager'
-import { html } from 'src/utils'
 import { useService } from 'src/common/service'
 import { Component } from 'src/common/component'
+import { openQuickPick } from '../components/quick-open'
 
 
 export class CommandModal extends Component {
 
-  private modal: Modal
-
-  private input: HTMLInputElement
-  private results: HTMLElement
-
-  private commands: Command[]
-  private filteredCommands: Command[]
-  private selected = -1
-
   constructor(
     private i18n = useService('i18n'),
     private commandsMgr = useService('command-manager'),
-    private markdownEditor = useService('markdown-editor'),
   ) {
     super()
   }
@@ -36,100 +24,15 @@ export class CommandModal extends Component {
         hotkey: 'F1',
         showInCommandPanel: false,
         callback: () => {
-          this.updateCommands(
-            Object.values(this.commandsMgr.commandMap)
-          )
-          this.open()
+          const commands = Object.values(this.commandsMgr.commandMap)
+            .filter(c => c.showInCommandPanel)
+            .map(c => ({
+              id: c.id,
+              label: c.title,
+            }))
+          openQuickPick(commands, { placeholder: t.placeholder })
+            .then(cmd => cmd && this.commandsMgr.run(cmd.id))
         }
       }))
-
-    this.modal = new Modal({ className: 'typ-command-modal' })
-      .setBody(body => {
-        $(body)
-          .on('keyup', this.onKeyup as any)
-          .append(
-            $('<div class="typ-command-modal__form"></div>')
-              .append(this.input =
-                html`<input type="text" placeholder="${t.placeholder}" />` as any)
-          )
-          .append(this.results =
-            $('<div class="typ-command-modal__results stopselect"></div>')
-              .on('click', this.onItemClick as any)
-              .get(0)
-          )
-      })
-
-    super.onload()
-  }
-
-  private onKeyup = (event: KeyboardEvent) => {
-    let { key } = event;
-    if (key.startsWith("Arrow")) {
-      if (key === "ArrowDown") {
-        if (this.selected < this.filteredCommands.length - 1) {
-          this.selected++
-        } else {
-          this.selected = 0
-        }
-      } else if (key === "ArrowUp") {
-        if (this.selected > 0) {
-          this.selected--
-        } else {
-          this.selected = this.filteredCommands.length - 1
-        }
-      }
-      this.renderCommands()
-      return
-    }
-    if (key === "Enter") {
-      this.onSelect(this.filteredCommands[this.selected].id)
-      return
-    }
-    this.selected = -1
-    this.filteredCommands = this.commands.filter((c) =>
-      c.title.toLowerCase().includes(this.input.value.toLowerCase())
-    )
-    this.renderCommands()
-  }
-
-  private onItemClick = (event: MouseEvent) => {
-    const el = event.target as HTMLElement
-    const item = el.closest(".typ-command-modal__item") as HTMLElement
-    if (!item) return
-
-    this.onSelect(item.dataset.id!)
-  }
-
-  private onSelect = (id: string) => {
-    this.close()
-    this.commandsMgr.run(id)
-  }
-
-  open() {
-    this.modal.open()
-    this.markdownEditor.selection.save()
-    this.input.focus()
-  }
-
-  close() {
-    this.modal.close()
-    this.input.value = ""
-    this.selected = -1
-    this.markdownEditor.selection.restore()
-  }
-
-  private updateCommands(commands: Command[]) {
-    this.commands = this.filteredCommands = commands.filter(
-      c => c.showInCommandPanel
-    )
-    this.renderCommands()
-  }
-
-  private renderCommands() {
-    this.results.innerHTML = ''
-    this.results.append(...this.filteredCommands.map((cmd, i) => {
-      const active = (i === this.selected) ? 'active' : ''
-      return html`<div class="typ-command-modal__item ${active}" data-id=${cmd.id}>${cmd.title}</div>`
-    }))
   }
 }

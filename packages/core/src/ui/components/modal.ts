@@ -14,6 +14,8 @@ export class Modal extends View implements Closeable {
   body: HTMLElement
   footer?: HTMLElement
 
+  private closeListeners: Array<() => void> = []
+
   constructor(props: ModalProps) {
     super()
 
@@ -68,11 +70,17 @@ export class Modal extends View implements Closeable {
     return this
   }
 
+  onClose(callback: () => void) {
+    this.closeListeners.push(callback)
+    return this
+  }
+
   open() {
     this.containerEl.style.display = ""
   }
 
   close() {
+    this.closeListeners.forEach(callback => callback())
     this.containerEl.style.display = "none"
   }
 }

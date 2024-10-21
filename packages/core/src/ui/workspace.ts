@@ -60,6 +60,8 @@ export class Workspace extends Events<WorkspaceEvents> {
     ]))
     this._children.push(new TabsView())
     this._children.push(new CommandModal())
+    this._children.push(useService('input-box'))
+    this._children.push(useService('quick-pick'))
     this._children.push(new QuickOpenPanel())
 
     this.activeEditor = useService('markdown-editor')

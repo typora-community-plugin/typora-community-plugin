@@ -8,24 +8,24 @@
   width: 30rem;
 }
 
-%typ-command-modal__child {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-
-  &>* {
-    flex: 1;
-  }
+.typ-command-modal__title {
+  margin: 0 .3rem;
+  font-weight: 600;
+  text-align: center;
+  font-size: .85rem;
+  color: gray;
 }
 
 .typ-command-modal__form {
-  @extend %typ-command-modal__child;
+  display: flex;
+  flex-direction: row;
 
   &>* {
     margin: .3rem;
   }
 
   & input {
+    flex: 1;
     border: 1px solid #ddd;
     outline: none;
     box-shadow: inset 1px 1px 1px 0px #eee;
@@ -37,8 +37,11 @@
   }
 }
 
+.typ-command-modal__prompt,
 .typ-command-modal__results {
-  @extend %typ-command-modal__child;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 
   padding-bottom: .3rem;
   max-height: 30rem;
@@ -47,11 +50,18 @@
   font-size: 13px;
   color: #666;
   text-wrap: nowrap;
+
+  &>* {
+    flex: 1;
+  }
+}
+
+.typ-command-modal__prompt,
+.typ-command-modal__item {
+  padding: .2rem .6rem;
 }
 
 .typ-command-modal__item {
-  padding: .2rem .6rem;
-
   &:hover,
   &.active {
     background: rgba(0, 0, 0, .03);

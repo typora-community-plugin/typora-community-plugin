@@ -20,6 +20,7 @@ import { DEFAULT_APPEARANCE_SETTINGS } from "./ui/settings/tabs/appearance-setti
 import { DEFAULT_FILE_LINK_SETTINGS } from "./ui/settings/tabs/file-link-setting-tab"
 import { DEFAULT_PLUGIN_MARKETPLACE_SETTINGS } from "./ui/settings/tabs/plugin-marketplace-setting-tab"
 import { PluginMarketplace } from "./plugin/plugin-marketplace"
+import { InputBox, QuickPick } from "./ui/components/quick-open"
 
 
 
@@ -45,6 +46,9 @@ registerService('i18n', memorize(() => {
 
   return i18n
 }))
+
+registerService('input-box', memorize(() => new InputBox()))
+registerService('quick-pick', memorize(() => new QuickPick()))
 
 registerService('vault', memorize(() => new Vault()))
 registerService('config-repository', memorize(() => new ConfigRepository()))

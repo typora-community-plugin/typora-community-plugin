@@ -1,5 +1,10 @@
 # Feature Changelog
 
+## next version
+
+- feat(core/ui/quick-open): support input-box & quick-pick like vscode
+- fix(core/ui/ribbon): can not open app settings on macOS ([#36](https://github.com/typora-community-plugin/typora-community-plugin/issues/36))
+
 ## v2.3.30
 
 - fix(core/ui/component/notice): can not setCloseable before setMessage

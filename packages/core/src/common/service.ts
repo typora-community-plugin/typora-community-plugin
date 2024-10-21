@@ -5,6 +5,7 @@ import type { ConfigRepository } from "src/io/config-repository"
 import type { ILogger } from "src/io/logger"
 import type { Vault } from "src/io/vault"
 import type { I18n } from "src/locales/i18n"
+import type { InputBox, QuickPick } from "src/ui/components/quick-open"
 import * as Locale from 'src/locales/lang.en.json'
 import type { GithubAPI } from "src/net/github"
 import type { PluginManager } from "src/plugin/plugin-manager"
@@ -35,6 +36,8 @@ type ServiceMap = {
   'markdown-editor'(): MarkdownEditor
   'ribbon'(): WorkspaceRibbon
   'sidebar'(): Sidebar
+  'input-box'(): InputBox
+  'quick-pick'(): QuickPick
 }
 
 const services: Partial<ServiceMap> = {}

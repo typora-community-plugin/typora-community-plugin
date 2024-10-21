@@ -142,6 +142,9 @@ interface File {
   isNode: boolean
   isSafari: boolean
 
+  /**
+   * Can only be accessed in Windows & Linux
+   */
   megaMenu: MegaMenu
 
   /**
@@ -156,7 +159,7 @@ interface File {
   loadFile(filePath: string, isSwitchDoc: boolean, file: [string, string, { currentFilePath: string, currentFolderPath: string, isLocked: boolean, oversize: boolean }]): void
 
   /**
-   * run in Windows & Linux
+   * Only run in Windows & Linux
    * @since Typora v0.9.x
    */
   onFileOpened(): void

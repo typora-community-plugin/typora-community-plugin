@@ -16,6 +16,7 @@ export { ViewLegacy as View } from './ui/common/view-legacy'
 
 export { Modal } from './ui/components/modal'
 export { Notice } from './ui/components/notice'
+export { openInputBox, openQuickPick } from './ui/components/quick-open'
 
 export { SettingTab } from './ui/settings/setting-tab'
 export { SettingItem } from './ui/settings/setting-item'
