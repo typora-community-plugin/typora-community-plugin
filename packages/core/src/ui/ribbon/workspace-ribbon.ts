@@ -1,6 +1,6 @@
 import './workspace-ribbon.scss'
 import decorate from '@plylrnsdy/decorate.js'
-import { editor, File } from 'typora'
+import { bridge, editor, File } from 'typora'
 import { useService } from 'src/common/service'
 import { draggable } from 'src/ui/components/draggable'
 import { Menu } from 'src/ui/components/menu'
@@ -8,6 +8,7 @@ import { html } from 'src/utils'
 import { View } from 'src/ui/common/view'
 import type { DisposeFunc } from 'src/utils/types'
 import { Component } from 'src/common/component'
+import { platform } from 'src/common/constants'
 
 
 export type RibbonSettings = {
@@ -126,7 +127,11 @@ export class WorkspaceRibbon extends Component {
               item
                 .setKey('app-settings')
                 .setTitle(t.ribbon.settingOfApp)
-                .onClick(() => File.megaMenu.showPreferencePanel())
+                .onClick(() => {
+                  platform() === 'darwin'
+                    ? bridge.callHandler("setting.showAndHighlight", "image-setting-group")
+                    : File.megaMenu.showPreferencePanel()
+                })
             })
             .addItem(item => {
               item
