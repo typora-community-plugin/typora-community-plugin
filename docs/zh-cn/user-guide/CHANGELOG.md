@@ -1,6 +1,6 @@
 # 特性更新日志
 
-## next version
+## v2.3.32
 
 - feat(core/ui/quick-open): 支持类 vscode 的 input-box & quick-pick
 - fix(core/ui/ribbon): 修复在 macOS 下不能打开 APP 设置地问题 ([#36](https://github.com/typora-community-plugin/typora-community-plugin/issues/36))

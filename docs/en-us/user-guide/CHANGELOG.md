@@ -1,6 +1,6 @@
 # Feature Changelog
 
-## next version
+## v2.3.32
 
 - feat(core/ui/quick-open): support input-box & quick-pick like vscode
 - fix(core/ui/ribbon): can not open app settings on macOS ([#36](https://github.com/typora-community-plugin/typora-community-plugin/issues/36))
