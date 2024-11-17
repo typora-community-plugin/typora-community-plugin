@@ -1,5 +1,20 @@
 # 特性更新日志
 
+## Next Release
+
+- **新增插件**
+  - [templater][]: 从模板创建笔记
+    - feat: 从模板创建笔记
+    - fix: 无法处理 Front Matter 的问题
+    - fix: 从模板粘贴内容到当前笔记时，无法合并 Front Matter 的问题
+
+- **插件更新**
+  - [code-folding][]:
+    - fix: 修复在 Linux 下不能折叠代码的问题
+    - fix: 修复不能折叠 ruby & sql 的问题
+  - [collapsible-section][]
+    - feat: 使用命令窗口折叠/展开 h1~h6 标题 & 单纯引用块
+
 ## v2.3.32
 
 - feat(core/ui/quick-open): 支持类 vscode 的 input-box & quick-pick
@@ -17,7 +32,7 @@
 - feat(core/ui/editor/suggest): 支持在子语法内触发建议（原本只支持纯文本，内联语法被 Typora 格式化后无法识别）
 - refactor(core/ui/editor): 暴露获取/设置 md 的 API
 
-- **Plugin Update**
+- **插件更新**
   - [footnotes][]: 
     - feat: 支持脚注标记（`[^` 触发）的自动完成
     - fix: 修复可能标号错误的问题
@@ -363,4 +378,8 @@
 
 [tag]: https://github.com/typora-community-plugin/typora-plugin-tag
 
+[templater]: https://github.com/typora-community-plugin/typora-plugin-templater
+
 [wavedrom]: https://github.com/typora-community-plugin/typora-plugin-wavedrom
+
+[wikilink]: https://github.com/typora-community-plugin/typora-plugin-wikilink

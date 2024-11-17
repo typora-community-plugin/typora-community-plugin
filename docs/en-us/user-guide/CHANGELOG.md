@@ -1,5 +1,20 @@
 # Feature Changelog
 
+## Next Release
+
+- **New Plugin**
+  - [templater][]: 
+    - feat: create notes from templates
+    - fix: can not handle Front Matter
+    - fix: can not merge Front Matter when pasting content from template
+
+- **Plugin Update**
+  - [code-folding][]:
+    - fix: can not fold code on linux
+    - fix: can not fold ruby & sql
+  - [collapsible-section][]
+    - feat: fold/unfold h1~h6 & plain quoteblock by command
+
 ## v2.3.32
 
 - feat(core/ui/quick-open): support input-box & quick-pick like vscode
@@ -362,6 +377,8 @@
 [note-snippets]: https://github.com/typora-community-plugin/typora-plugin-note-snippets
 
 [tag]: https://github.com/typora-community-plugin/typora-plugin-tag
+
+[templater]: https://github.com/typora-community-plugin/typora-plugin-templater
 
 [wavedrom]: https://github.com/typora-community-plugin/typora-plugin-wavedrom
 

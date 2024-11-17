@@ -65,6 +65,7 @@ You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from
 | [note-refactor][p7]              | Extract selection to new file.                            |
 | [note-snippets][p8]              | Use slash command to autocomplete note snippets.          |
 | [tag][p9]                        | Support tag like `#tag`.                                  |
+| [templater][p19]                 | Create notes from templates.                              |
 | [wavedrom][p17]                  | Support WaveDrom in codeblock.                            |
 | [wikilink][p10]                  | Support wikilink like `[[text]]`.                          |
 
@@ -117,3 +118,4 @@ If you have any problem or suggestion please open an issue [here](https://github
 [p16]: https://github.com/typora-community-plugin/typora-plugin-image-viewer
 [p17]: https://github.com/typora-community-plugin/typora-plugin-wavedrom
 [p18]: https://github.com/typora-community-plugin/typora-plugin-footnotes
+[p19]: https://github.com/typora-community-plugin/typora-plugin-templater
