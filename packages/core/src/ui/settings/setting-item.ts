@@ -99,6 +99,12 @@ export class SettingItem extends View {
     this.addInput('text', build)
   }
 
+  addTextArea(build: (input: HTMLTextAreaElement) => void) {
+    const text = html`<textarea></textarea>` as HTMLTextAreaElement
+    build(text)
+    this.info.append(text)
+  }
+
   /**
    * @beta
    */

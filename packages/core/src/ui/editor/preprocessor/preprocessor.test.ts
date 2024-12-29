@@ -71,6 +71,11 @@ describe('extract codeblock', () => {
       const s = 'text\n```\na\n```\n```\nb\n```'
       expect(masker.mask(s)).toEqual('textCBCB')
     })
+
+    test('mask codeblock in quoteblock', () => {
+      const s = '> ```\n> a\n> ```'
+      expect(masker.mask(s)).toEqual('> CB')
+    })
   })
 })
 

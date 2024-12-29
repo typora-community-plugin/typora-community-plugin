@@ -8,6 +8,7 @@ import { useService } from './common/service'
 import { useEventBus } from './common/eventbus'
 import { SettingsModal } from './ui/settings/settings-modal'
 import { EditaleTableTestTab } from './ui/components/editable-table-test'
+import { SettingItemTestTab } from './ui/settings/setting-item-test'
 
 
 export function devtools(
@@ -55,7 +56,8 @@ export function devtools(
   }
 
   function registerTestTab(app = useService('app')) {
-    app.workspace.getViewByType(SettingsModal)!
-      .addTab(new EditaleTableTestTab())
+    const modal = app.workspace.getViewByType(SettingsModal)!
+    modal.addTab(new SettingItemTestTab())
+    modal.addTab(new EditaleTableTestTab())
   }
 }

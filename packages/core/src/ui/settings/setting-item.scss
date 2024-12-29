@@ -21,6 +21,10 @@
       color: var(--text-color);
       opacity: .6;
     }
+
+    textarea {
+      width: 100%;
+    }
   }
 
   @at-root .typ-setting-controls {
