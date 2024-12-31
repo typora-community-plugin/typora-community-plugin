@@ -63,7 +63,7 @@ export class PluginMarketplace {
               manifest.dir = root
               this.plugins.manifests[manifest.id] = manifest
 
-              return fs.mkdir(dir)
+              return fs.mkdir(root)
                 .then(() => fs.trash(root))
                 .then(() => fs.move(tmp, root))
             }

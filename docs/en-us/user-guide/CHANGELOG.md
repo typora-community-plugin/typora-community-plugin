@@ -1,5 +1,10 @@
 # Feature Changelog
 
+## Next release
+
+- **Plugin Update**
+  - [markmap][]: custom options
+
 ## v2.3.33
 
 - **New Plugin**

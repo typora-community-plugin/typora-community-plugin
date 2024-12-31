@@ -70,6 +70,9 @@ export class MacFS implements FileAdapter {
     return Shell.run(`rm -r '${filepath}'`) as Promise<void>
   }
 
+  /**
+   * If the file is not exists, it will show a dialog.
+   */
   trash(filepath: string): Promise<void> {
     return new Promise(resolve => {
       bridge.callHandler("library.trashItem", filepath, resolve)
