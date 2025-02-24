@@ -2,6 +2,8 @@
 
 ## Next release
 
+- feat(installer): support user installed Typora
+
 - **Plugin Update**
   - [markmap][]: custom options
 

@@ -2,6 +2,8 @@
 
 ## Next release
 
+- feat(installer): 支持单用户安装的 Typora
+
 - **插件更新**
   - [markmap][]: 自定义配置
 

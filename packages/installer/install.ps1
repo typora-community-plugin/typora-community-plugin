@@ -11,8 +11,10 @@ Param(
 If ($root -eq "") {
   $root = If (Test-Path "C:\Program Files\Typora") {
     "C:\Program Files\Typora"
-  } Else {
+  } ElseIf (Test-Path "C:\Program Files (x86)\Typora") {
     "C:\Program Files (x86)\Typora"
+  } Else {
+    "$env:UserProfile\AppData\Local\Programs\Typora"
   }
 }
 
