@@ -15,6 +15,7 @@ import type { MarkdownEditor } from "src/ui/editor/markdown-editor"
 import type { WorkspaceRibbon } from "src/ui/ribbon/workspace-ribbon"
 import type { Sidebar } from "src/ui/sidebar/sidebar"
 import type { Workspace } from "src/ui/workspace"
+import type { Notice } from "src/ui/components/notice"
 import { isDebug } from "./constants"
 
 
@@ -38,6 +39,7 @@ type ServiceMap = {
   'sidebar'(): Sidebar
   'input-box'(): InputBox
   'quick-pick'(): QuickPick
+  'notice'(): Notice
 }
 
 const services: Partial<ServiceMap> = {}

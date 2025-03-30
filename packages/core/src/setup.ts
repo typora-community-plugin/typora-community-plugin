@@ -21,6 +21,7 @@ import { DEFAULT_FILE_LINK_SETTINGS } from "./ui/settings/tabs/file-link-setting
 import { DEFAULT_PLUGIN_MARKETPLACE_SETTINGS } from "./ui/settings/tabs/plugin-marketplace-setting-tab"
 import { PluginMarketplace } from "./plugin/plugin-marketplace"
 import { InputBox, QuickPick } from "./ui/components/quick-open"
+import { Notice } from "./ui/components/notice"
 
 
 
@@ -76,3 +77,4 @@ registerService('workspace', memorize(() => new Workspace()))
 registerService('markdown-editor', memorize(() => new MarkdownEditor()))
 registerService('ribbon', memorize(() => new WorkspaceRibbon()))
 registerService('sidebar', memorize(() => useService('workspace').sidebar))
+registerService('notice', ([message, delay]) => new Notice(message, delay))

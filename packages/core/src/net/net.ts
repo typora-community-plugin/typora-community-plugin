@@ -4,6 +4,7 @@ import path from 'src/path'
 import { Shell } from 'src/io/shell'
 import { uniqueId } from "src/utils"
 import { unzip } from 'src/common/zlib'
+import { useService } from 'src/common/service'
 
 
 /**
@@ -19,6 +20,7 @@ export function downloadThenUnzipToTemp(url: string) {
 
   return fs.mkdir(tmpDir)
     .then(() => download(url, tmpZippath))
+    .then(() => checkFileExistence(tmpZippath))
     .then(() => unzip(tmpZippath, tmp))
     .then(() => fs.remove(tmpZippath))
     .then(() => tmp)
@@ -33,4 +35,12 @@ function download(url: string, dest: string) {
   else {
     return Shell.run(`curl -fLsS '${url}' -o '${dest}'`)
   }
+}
+
+function checkFileExistence(path: string) {
+  return fs.access(path)
+    .catch(() => {
+      const i18n = useService('i18n')
+      useService('notice', [i18n.t.net.fileDownloadFailed])
+    })
 }

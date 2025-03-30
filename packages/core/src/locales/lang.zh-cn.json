@@ -7,6 +7,9 @@
     "commandUseGlobalConfig": "使用全局设置 (从本地删除 `.typora`)",
     "commandUseVaultConfig": "使用本地设置 (添加 `.typora` 到本地)"
   },
+  "net": {
+    "fileDownloadFailed": "下载失败。请稍后重试。或者尝试更换“Github 代理”。"
+  },
   "githubAPI": {
     "proxyNotFound": "Github 代理失效，已自动恢复为默认设置。"
   },

@@ -7,6 +7,9 @@
     "commandUseGlobalConfig": "Use global settings (remove `.typora` from vault)",
     "commandUseVaultConfig": "Use vault settings (add `.typora` to vault)"
   },
+  "net": {
+    "fileDownloadFailed": "Download failed. You can retry later."
+  },
   "githubAPI": {
     "proxyNotFound": "Github proxy is removed and has been automatically reverted to the default settings."
   },
