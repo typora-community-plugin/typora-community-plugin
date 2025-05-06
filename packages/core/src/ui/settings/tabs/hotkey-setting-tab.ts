@@ -5,7 +5,6 @@ import { useEventBus } from "src/common/eventbus"
 import { html } from "src/utils"
 import { eventToHotkey, readableHotkey } from "src/hotkey-manager"
 import type { SettingItem } from "../setting-item"
-import { Component } from "src/common/component"
 
 
 export class HotkeySettingTab extends SettingTab {

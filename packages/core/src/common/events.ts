@@ -73,4 +73,8 @@ export class Events<E extends EventDefination> {
       this.logger.error(`${this.scope} @${event as string}\n`, error)
     }
   }
+
+  getEventNames() {
+    return Object.keys(this._listeners)
+  }
 }
