@@ -1,11 +1,20 @@
 # Feature Changelog
 
-## Next release
+## v2.3.36
 
 - feat(installer): support user installed Typora
+- feat(common/events): add `getEventNames()` for plugin-trigger
+
+- **New Plugin**
+  - [trigger][]: Set a trigger for the command to execute automatically.
 
 - **Plugin Update**
   - [markmap][]: custom options
+  - [front-matter][]: Focused Time
+
+## v2.3.34
+
+- fix: can not install plugin from marketplace on macOS
 
 ## v2.3.33
 
@@ -386,6 +395,8 @@
 [tag]: https://github.com/typora-community-plugin/typora-plugin-tag
 
 [templater]: https://github.com/typora-community-plugin/typora-plugin-templater
+
+[trigger]: https://github.com/typora-community-plugin/typora-plugin-trigger
 
 [wavedrom]: https://github.com/typora-community-plugin/typora-plugin-wavedrom
 

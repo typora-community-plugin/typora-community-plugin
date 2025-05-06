@@ -66,6 +66,7 @@
 | [note-snippets][p8]              | 使用斜线指令输入笔记片段                        |
 | [tag][p9]                        | 高亮 `#tag` 语法，自动完成，提供标签面板管理和搜索标签 |
 | [templater][p19]                 | 从模板创建笔记                                 |
+| [trigger][p20]                   | 为命令设置一个触发器，以自动执行。               |
 | [wavedrom][p17]                  | 支持在多行代码块中使用 WaveDrom                 |
 | [wikilink][p10]                  | 支持通过 `[[text]]` 链接跳转，自动完成           |
 
@@ -124,3 +125,4 @@
 [p17]: https://github.com/typora-community-plugin/typora-plugin-wavedrom
 [p18]: https://github.com/typora-community-plugin/typora-plugin-footnotes
 [p19]: https://github.com/typora-community-plugin/typora-plugin-templater
+[p20]: https://github.com/typora-community-plugin/typora-plugin-trigger

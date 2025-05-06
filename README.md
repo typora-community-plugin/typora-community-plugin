@@ -66,8 +66,9 @@ You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from
 | [note-snippets][p8]              | Use slash command to autocomplete note snippets.          |
 | [tag][p9]                        | Support tag like `#tag`.                                  |
 | [templater][p19]                 | Create notes from templates.                              |
+| [trigger][p20]                   | Set a trigger for the command to execute automatically.   |
 | [wavedrom][p17]                  | Support WaveDrom in codeblock.                            |
-| [wikilink][p10]                  | Support wikilink like `[[text]]`.                          |
+| [wikilink][p10]                  | Support wikilink like `[[text]]`.                         |
 
 
 
@@ -119,3 +120,4 @@ If you have any problem or suggestion please open an issue [here](https://github
 [p17]: https://github.com/typora-community-plugin/typora-plugin-wavedrom
 [p18]: https://github.com/typora-community-plugin/typora-plugin-footnotes
 [p19]: https://github.com/typora-community-plugin/typora-plugin-templater
+[p20]: https://github.com/typora-community-plugin/typora-plugin-trigger

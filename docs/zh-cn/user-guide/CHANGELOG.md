@@ -1,11 +1,20 @@
 # 特性更新日志
 
-## Next release
+## v2.3.36
 
 - feat(installer): 支持单用户安装的 Typora
+- feat(common/events): 为插件 Trigger 提供 `getEventNames()`
+
+- **新增插件**
+  - [trigger][]: 为命令设置一个触发器，以自动执行。
 
 - **插件更新**
   - [markmap][]: 自定义配置
+  - [front-matter][]: 笔记聚焦时间统计
+
+## v2.3.34
+
+- fix: 在 macOS 不能从插件市场安装插件
 
 ## v2.3.33
 
@@ -386,6 +395,8 @@
 [tag]: https://github.com/typora-community-plugin/typora-plugin-tag
 
 [templater]: https://github.com/typora-community-plugin/typora-plugin-templater
+
+[trigger]: https://github.com/typora-community-plugin/typora-plugin-trigger
 
 [wavedrom]: https://github.com/typora-community-plugin/typora-plugin-wavedrom
 
