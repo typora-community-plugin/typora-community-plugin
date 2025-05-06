@@ -17,6 +17,7 @@
 1. 从 [Release][release] 下载 `typora-community-plugin.zip`。
 2. 解压文件。
 3. 复制文件到 `%UserProfile%/.typora/community-plugins`。
+   > `%UserProfile%` 即用户目录 `C:\Users\{用户名}\`
 4. 创建文件夹的符号链接。以管理员身份运行 `cmd` ，然后运行命令 `mklink /d %UserProfile%\\AppData\\Roaming\\Typora\\plugins %UserProfile%\\.typora\\community-plugins`。
 5. 备份文件 `{Typora 安装目录}/resources/window.html`。（如果修改不成功，需要还原文件后再次尝试修改）
 6. 修改文件 `{Typora 安装目录}/resources/window.html`。使用 UTF-8 编码（否则会[白屏][ws]）打开文件 `window.html`，替换文件末尾的文本 `</body></html>` 为 `<script src="typora://app/userData/plugins/loader.js" type="module"></script></body></html>`。
