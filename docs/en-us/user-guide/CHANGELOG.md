@@ -1,6 +1,6 @@
 # Feature Changelog
 
-## Next Release
+## v2.3.39
 
 - feat(core/ui/components/menu): support internal contextmenu
 - feat(core/ui/worlspace): support custom `file-menu`

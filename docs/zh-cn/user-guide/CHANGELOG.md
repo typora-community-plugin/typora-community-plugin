@@ -1,6 +1,6 @@
 # 特性更新日志
 
-## Next Release
+## v2.3.39
 
 - feat(core/ui/components/menu): 支持自定义内部上下文菜单
 - feat(core/ui/worlspace): 支持自定义文件管理器上下文菜单 `file-menu`
