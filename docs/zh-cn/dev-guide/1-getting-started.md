@@ -48,6 +48,8 @@ git clone https://github.com/{user-name}/{plugin-name}
 
 ### 编译插件
 
+将 Typora 安装目录加入环境变量 PATH 中。
+
 在终端运行命令 `pnpm run build:dev`，将会进入开发环境，编译插件，并使用 Typora 打开。
 
 > 现在可以看到 Typora 运行后，自动弹出对话框并显示 `hello, typora`

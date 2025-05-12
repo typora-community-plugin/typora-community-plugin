@@ -390,6 +390,8 @@
 
 [image-viewer]: https://github.com/typora-community-plugin/typora-plugin-image-viewer
 
+[markmap]: https://github.com/typora-community-plugin/typora-plugin-markmap
+
 [note-snippets]: https://github.com/typora-community-plugin/typora-plugin-note-snippets
 
 [tag]: https://github.com/typora-community-plugin/typora-plugin-tag
