@@ -22,6 +22,7 @@ import { DEFAULT_PLUGIN_MARKETPLACE_SETTINGS } from "./ui/settings/tabs/plugin-m
 import { PluginMarketplace } from "./plugin/plugin-marketplace"
 import { InputBox, QuickPick } from "./ui/components/quick-open"
 import { Notice } from "./ui/components/notice"
+import { FileExplorer } from "./ui/sidebar/file-explorer"
 
 
 
@@ -76,5 +77,6 @@ registerService('plugin-marketplace', memorize(() => new PluginMarketplace()))
 registerService('workspace', memorize(() => new Workspace()))
 registerService('markdown-editor', memorize(() => new MarkdownEditor()))
 registerService('ribbon', memorize(() => new WorkspaceRibbon()))
+registerService('file-explorer', memorize(() => new FileExplorer()))
 registerService('sidebar', memorize(() => useService('workspace').sidebar))
 registerService('notice', ([message, delay]) => new Notice(message, delay))

@@ -7,6 +7,12 @@ import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
 import { html } from "src/utils"
 import { useService } from "src/common/service"
 import { InternalSidebarPanel } from './sidebar-panel'
+import { InternalContextMenu } from '../components/menu'
+
+
+export type FileExplorerEvents = {
+  'contextmenu'(params: { menu: InternalContextMenu, path: string }): void
+}
 
 
 export class FileExplorer extends InternalSidebarPanel {
@@ -15,10 +21,12 @@ export class FileExplorer extends InternalSidebarPanel {
     return 'core.file-explorer' as const
   }
 
+  private _contextmenu = new InternalContextMenu('#file-menu')
   private _showNotSupportedFile = new ShowNotSupportedFile()
 
   constructor(
-    i18n = useService('i18n'),
+    private i18n = useService('i18n'),
+    private vault = useService('vault'),
   ) {
     super()
 
@@ -41,6 +49,18 @@ export class FileExplorer extends InternalSidebarPanel {
 
   onhide() {
     $('#typora-sidebar').removeClass('active-tab-files')
+  }
+
+  _onContextMenu(callback: FileExplorerEvents['contextmenu']) {
+    $(this.containerEl).on('mousedown', event => {
+      if (event.button === 2) {
+        const path = event.target.closest('.file-library-node')?.getAttribute('data-path')
+          ?? this.vault.path
+
+        this._contextmenu.removeExtendedMenuItem()
+        callback({ menu: this._contextmenu, path })
+      }
+    })
   }
 }
 

@@ -13,6 +13,7 @@ import type { PluginMarketplace } from "src/plugin/plugin-marketplace"
 import type { Settings } from "src/settings/settings"
 import type { MarkdownEditor } from "src/ui/editor/markdown-editor"
 import type { WorkspaceRibbon } from "src/ui/ribbon/workspace-ribbon"
+import type { FileExplorer } from "src/ui/sidebar/file-explorer"
 import type { Sidebar } from "src/ui/sidebar/sidebar"
 import type { Workspace } from "src/ui/workspace"
 import type { Notice } from "src/ui/components/notice"
@@ -36,6 +37,7 @@ type ServiceMap = {
   'workspace'(): Workspace
   'markdown-editor'(): MarkdownEditor
   'ribbon'(): WorkspaceRibbon
+  'file-explorer'(): FileExplorer
   'sidebar'(): Sidebar
   'input-box'(): InputBox
   'quick-pick'(): QuickPick

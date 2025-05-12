@@ -7,7 +7,7 @@ import type { MarkdownEditor } from './editor/markdown-editor'
 import type { WorkspaceRibbon } from './ribbon/workspace-ribbon'
 import { Sidebar } from './sidebar/sidebar'
 import { GlobalSearchView } from './sidebar/search/global-search-view'
-import { FileExplorer } from './sidebar/file-explorer'
+import type { FileExplorerEvents } from './sidebar/file-explorer'
 import { Outline } from './sidebar/outline'
 import { TabsView } from './tabs/tabs-view'
 import { SettingsModal } from './settings/settings-modal'
@@ -16,12 +16,15 @@ import { QuickOpenPanel } from './quick-open-panel'
 import type { Component } from 'src/common/component'
 import { useEventBus } from 'src/common/eventbus'
 import { useService } from 'src/common/service'
+import type { InternalContextMenu } from './components/menu'
 
 
 export type WorkspaceEvents = {
   'file:will-open'(path: string): void
   'file:open'(path: string): void
   'file:will-save'(path: string): void
+
+  'file-menu': FileExplorerEvents['contextmenu']
 }
 
 
@@ -55,7 +58,7 @@ export class Workspace extends Events<WorkspaceEvents> {
     this._children.push(this.ribbon = useService('ribbon'))
     this._children.push(this.sidebar = new Sidebar(() => [
       new GlobalSearchView(),
-      new FileExplorer(),
+      useService('file-explorer'),
       new Outline(),
     ]))
     this._children.push(new TabsView())
@@ -130,5 +133,10 @@ export class Workspace extends Events<WorkspaceEvents> {
           this.emit('file:will-save', this.activeFile)
         })
       })()
+
+    setTimeout(() =>
+      useService('file-explorer')._onContextMenu(params => {
+        this.emit('file-menu', params)
+      }))
   }
 }
