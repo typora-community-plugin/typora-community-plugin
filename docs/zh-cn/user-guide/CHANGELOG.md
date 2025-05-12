@@ -1,5 +1,11 @@
 # 特性更新日志
 
+## Next Release
+
+- feat(core/ui/components/menu): 支持自定义内部上下文菜单
+- feat(core/ui/worlspace): 支持自定义文件管理器上下文菜单 `file-menu`
+- feat(core/ui/components/menu): 支持级联上下文菜单
+
 ## v2.3.36
 
 - feat(installer): 支持单用户安装的 Typora

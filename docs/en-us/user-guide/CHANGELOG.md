@@ -1,5 +1,11 @@
 # Feature Changelog
 
+## Next Release
+
+- feat(core/ui/components/menu): support internal contextmenu
+- feat(core/ui/worlspace): support custom `file-menu`
+- feat(core/ui/components/menu): support submenu
+
 ## v2.3.36
 
 - feat(installer): support user installed Typora
