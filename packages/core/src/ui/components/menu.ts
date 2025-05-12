@@ -94,9 +94,9 @@ export class Menu extends View implements Closeable {
   }
 }
 
-export class MenuItem {
+class MenuItem {
 
-  private containerEl: HTMLElement
+  protected containerEl: HTMLElement
   private anchorEl: HTMLElement
   private iconEl: HTMLElement
 
@@ -105,7 +105,7 @@ export class MenuItem {
   /**
    * Private constructor. Use {@link Menu.addItem} instead.
    */
-  private constructor() {
+  protected constructor() {
     this.containerEl = html`<li data-action="" data-key="" for-file="" for-search="" class="typ-menuitem"></li>`
     this.anchorEl = html`<a role="menuitem" data-localize="" data-lg="" class="state-off"></a>`
 
@@ -146,16 +146,32 @@ export class MenuItem {
 }
 
 export class InternalContextMenu extends Menu {
+
+  private _listeners: Record<string, Function[]> = {}
+
   constructor(selector: string) {
     super()
 
     this.containerEl.remove()
     this.containerEl = $(selector)[0]
+
+    $(this.containerEl).on('mousedown', '[data-action]', event => {
+      const key = event.target.closest('[data-action]').getAttribute('data-key')
+      const listeners = this._listeners[key]
+      if (listeners.length) listeners.forEach(callback => callback(event))
+    })
   }
 
   removeExtendedMenuItem() {
     $(this.containerEl).find('.typ-menuitem').remove()
     return this
+  }
+
+  protected _createItem(build: (item: MenuItem) => any) {
+    // @ts-ignore
+    const item = new InternalMenuItem(this)
+    build(item)
+    return item
   }
 
   /**
@@ -173,6 +189,23 @@ export class InternalContextMenu extends Menu {
   insertSeparatorAfter(selector: string) {
     this.containerEl.querySelector(selector)
       .insertAdjacentElement('afterend', this._createSeparator())
+    return this
+  }
+
+  _registerEvent(key: string, callback: Function) {
+    const l = (this._listeners[key] ??= [])
+    l.push(callback)
+  }
+}
+
+class InternalMenuItem extends MenuItem {
+
+  protected constructor(private menu: InternalContextMenu) {
+    super()
+  }
+
+  onClick(callback: (evt: MouseEvent | KeyboardEvent) => any): this {
+    this.menu._registerEvent(this.containerEl.dataset.key, callback)
     return this
   }
 }
