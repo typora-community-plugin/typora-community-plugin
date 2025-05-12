@@ -30,11 +30,24 @@ export class Menu extends View implements Closeable {
     return this
   }
 
-  addItem(build: (item: MenuItem) => any): this {
+  protected _createItem(build: (item: MenuItem) => any) {
     // @ts-ignore
     const item = new MenuItem()
     build(item)
-    this.containerEl.append(item.containerEl)
+    return item
+  }
+
+  addItem(build: (item: MenuItem) => any): this {
+    this.containerEl.append(this._createItem(build).containerEl)
+    return this
+  }
+
+  protected _createSeparator() {
+    return $('<li class="divider typ-menuitem" for-file="" for-folder=""></li>')[0]
+  }
+
+  addSeparator() {
+    this.containerEl.append(this._createSeparator())
     return this
   }
 
@@ -93,14 +106,14 @@ export class MenuItem {
    * Private constructor. Use {@link Menu.addItem} instead.
    */
   private constructor() {
-    this.containerEl = html`<li></li>`
-    this.anchorEl = html`<a></a>`
+    this.containerEl = html`<li data-action="" data-key="" for-file="" for-search="" class="typ-menuitem"></li>`
+    this.anchorEl = html`<a role="menuitem" data-localize="" data-lg="" class="state-off"></a>`
 
     this.containerEl.append(this.anchorEl)
   }
 
   setKey(key: string): this {
-    this.anchorEl.dataset.key = key
+    this.containerEl.dataset.key = key
     return this
   }
 
@@ -122,12 +135,44 @@ export class MenuItem {
   }
 
   private _setContent() {
-    this.anchorEl.innerText = ' ' + this.title
+    this.anchorEl.innerText = this.title
     this.iconEl && this.anchorEl.prepend(this.iconEl)
   }
 
   onClick(callback: (evt: MouseEvent | KeyboardEvent) => any): this {
     this.containerEl.addEventListener('click', callback)
+    return this
+  }
+}
+
+export class InternalContextMenu extends Menu {
+  constructor(selector: string) {
+    super()
+
+    this.containerEl.remove()
+    this.containerEl = $(selector)[0]
+  }
+
+  removeExtendedMenuItem() {
+    $(this.containerEl).find('.typ-menuitem').remove()
+    return this
+  }
+
+  /**
+   * @example
+   * app.workspace.on('file-menu', ({ menu }) => {
+   *   menu.insertItemAfter('[data-action="open"]', item => {...})
+   * })
+   */
+  insertItemAfter(selector: string, build: (item: MenuItem) => any) {
+    this.containerEl.querySelector(selector)
+      .insertAdjacentElement('afterend', this._createItem(build).containerEl)
+    return this
+  }
+
+  insertSeparatorAfter(selector: string) {
+    this.containerEl.querySelector(selector)
+      .insertAdjacentElement('afterend', this._createSeparator())
     return this
   }
 }
