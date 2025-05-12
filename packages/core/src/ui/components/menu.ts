@@ -1,5 +1,5 @@
 import './menu.scss'
-import { html } from "src/utils"
+import { getChildIndex, html } from "src/utils"
 import { Closeable, View } from '../common/view'
 import { Component } from 'src/common/component'
 
@@ -11,15 +11,36 @@ interface MenuPositionDef {
 
 export class Menu extends View implements Closeable {
 
+  private submenus: Record<string, Menu> = {}
+
   private component = new Component()
+  private _mouseoverListeners: Record<string, Function> = {}
+  private _mouseoutListeners: Record<string, Function> = {}
 
   constructor() {
     super()
-    this.containerEl = $('<ul class="dropdown-menu context-menu" role="menu">')
+    this.containerEl = $(`<ul class="dropdown-menu context-menu" role="menu">`)
       .on('click', () => this.close())
       .get(0)
 
     document.body.append(this.containerEl)
+
+    this._registerEvent()
+  }
+
+  protected _registerEvent() {
+    $(this.containerEl)
+      .on('mouseover', event => {
+        const key = event.target.closest('[data-action]')?.getAttribute('data-key')
+        Object.values(this.submenus).forEach(m => m.close())
+
+        // handle: separator
+        if (!key) return
+
+        // handle: menuitem
+        const listener = this._mouseoverListeners[key]
+        if (listener) listener(event)
+      })
   }
 
   /**
@@ -32,7 +53,7 @@ export class Menu extends View implements Closeable {
 
   protected _createItem(build: (item: MenuItem) => any) {
     // @ts-ignore
-    const item = new MenuItem()
+    const item = new MenuItem(this)
     build(item)
     return item
   }
@@ -49,6 +70,13 @@ export class Menu extends View implements Closeable {
   addSeparator() {
     this.containerEl.append(this._createSeparator())
     return this
+  }
+
+  /**
+   * @private
+   */
+  _onMouseOver(key: string, callback: (evt: MouseEvent) => any) {
+    this._mouseoverListeners[key] = callback
   }
 
   showAtMouseEvent(event: MouseEvent): this {
@@ -105,7 +133,7 @@ class MenuItem {
   /**
    * Private constructor. Use {@link Menu.addItem} instead.
    */
-  protected constructor() {
+  protected constructor(protected menu: Menu) {
     this.containerEl = html`<li data-action="" data-key="" for-file="" for-search="" class="typ-menuitem"></li>`
     this.anchorEl = html`<a role="menuitem" data-localize="" data-lg="" class="state-off"></a>`
 
@@ -143,11 +171,34 @@ class MenuItem {
     this.containerEl.addEventListener('click', callback)
     return this
   }
+
+  setSubmenu(build: (submenu: Menu) => void) {
+    this.containerEl.classList.add('has-extra-menu')
+    this.anchorEl.append($('<i class="fa fa-caret-right"></i>')[0])
+
+    const itemKey = this.containerEl.dataset.key
+    const submenuKey = itemKey + ':submenu'
+    // @ts-ignore
+    const submenu = (this.menu.submenus[submenuKey] ??= new Menu())
+    submenu.empty()
+    build(submenu)
+
+    this.menu._onMouseOver(itemKey, event => {
+      const menuEl = this.menu.containerEl
+      const i = getChildIndex(this.containerEl)
+      const pos = {
+        x: +menuEl.style.left.slice(0, -2) + menuEl.offsetWidth + 6,
+        y: +menuEl.style.top.slice(0, -2) + this.containerEl.offsetHeight * i,
+      }
+      submenu.showAtPosition(pos)
+    })
+    return this
+  }
 }
 
 export class InternalContextMenu extends Menu {
 
-  private _listeners: Record<string, Function[]> = {}
+  private _mousedownListeners: Record<string, Function> = {}
 
   constructor(selector: string) {
     super()
@@ -155,10 +206,12 @@ export class InternalContextMenu extends Menu {
     this.containerEl.remove()
     this.containerEl = $(selector)[0]
 
+    this._registerEvent()
+
     $(this.containerEl).on('mousedown', '[data-action]', event => {
       const key = event.target.closest('[data-action]').getAttribute('data-key')
-      const listeners = this._listeners[key]
-      if (listeners.length) listeners.forEach(callback => callback(event))
+      const listener = this._mousedownListeners[key]
+      if (listener) listener(event)
     })
   }
 
@@ -192,20 +245,20 @@ export class InternalContextMenu extends Menu {
     return this
   }
 
-  _registerEvent(key: string, callback: Function) {
-    const l = (this._listeners[key] ??= [])
-    l.push(callback)
+  _onMouseDown(key: string, callback: Function) {
+    this._mousedownListeners[key] = callback
   }
 }
 
 class InternalMenuItem extends MenuItem {
 
-  protected constructor(private menu: InternalContextMenu) {
-    super()
+  protected constructor(menu: InternalContextMenu) {
+    super(menu)
   }
 
   onClick(callback: (evt: MouseEvent | KeyboardEvent) => any): this {
-    this.menu._registerEvent(this.containerEl.dataset.key, callback)
+    const menu = this.menu as InternalContextMenu
+    menu._onMouseDown(this.containerEl.dataset.key, callback)
     return this
   }
 }
