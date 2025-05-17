@@ -134,7 +134,7 @@ class MenuItem {
    * Private constructor. Use {@link Menu.addItem} instead.
    */
   protected constructor(protected menu: Menu) {
-    this.containerEl = html`<li data-action="" data-key="" for-file="" for-search="" class="typ-menuitem"></li>`
+    this.containerEl = html`<li data-action="" data-key="" class="typ-menuitem"></li>`
     this.anchorEl = html`<a role="menuitem" data-localize="" data-lg="" class="state-off"></a>`
 
     this.containerEl.append(this.anchorEl)
@@ -234,8 +234,11 @@ export class InternalContextMenu extends Menu {
    * })
    */
   insertItemAfter(selector: string, build: (item: MenuItem) => any) {
-    this.containerEl.querySelector(selector)
-      .insertAdjacentElement('afterend', this._createItem(build).containerEl)
+    const prevItem = this.containerEl.querySelector(selector)
+    if (!prevItem) {
+      throw Error(`No element matched selector '${selector}'.`)
+    }
+    prevItem.insertAdjacentElement('afterend', this._createItem(build).containerEl)
     return this
   }
 
