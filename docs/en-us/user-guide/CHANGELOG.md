@@ -1,5 +1,10 @@
 # Feature Changelog
 
+## v2.3.41
+
+- fix(core/ui/components/menu): menu item can not be shown when clicking on whitespace in file explorer
+- fix(core/ui/components/menu): submenu position is not correctly if a divider is in front of it
+
 ## v2.3.39
 
 - feat(core/ui/components/menu): support internal contextmenu

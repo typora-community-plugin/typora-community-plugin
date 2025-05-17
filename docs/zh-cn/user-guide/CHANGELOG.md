@@ -1,5 +1,10 @@
 # 特性更新日志
 
+## v2.3.41
+
+- fix(core/ui/components/menu): 修复点击文件侧栏空白处，右键菜单项不能展示的问题
+- fix(core/ui/components/menu): 修复父菜单项前面有分割线或隐藏菜单项时，子菜单定位不准的问题
+
 ## v2.3.39
 
 - feat(core/ui/components/menu): 支持自定义内部上下文菜单
