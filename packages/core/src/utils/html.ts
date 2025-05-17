@@ -7,7 +7,13 @@ export function html(strings: TemplateStringsArray, ...values: any[]) {
   return $(htmlStr).get(0)!
 }
 
-export function getChildIndex(element: HTMLElement) {
-  const parent = element.parentNode;
-  return Array.from(parent.children).indexOf(element);
+export function getElementPagePosition(element: HTMLElement) {
+  let left = 0
+  let top = 0
+  while (element) {
+    left += element.offsetLeft
+    top += element.offsetTop
+    element = element.offsetParent as HTMLElement
+  }
+  return { left, top }
 }

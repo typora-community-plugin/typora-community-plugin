@@ -1,5 +1,5 @@
 import './menu.scss'
-import { getChildIndex, html } from "src/utils"
+import { getElementPagePosition, html } from "src/utils"
 import { Closeable, View } from '../common/view'
 import { Component } from 'src/common/component'
 
@@ -184,13 +184,13 @@ class MenuItem {
     build(submenu)
 
     this.menu._onMouseOver(itemKey, event => {
-      const menuEl = this.menu.containerEl
-      const i = getChildIndex(this.containerEl)
-      const pos = {
-        x: +menuEl.style.left.slice(0, -2) + menuEl.offsetWidth + 6,
-        y: +menuEl.style.top.slice(0, -2) + this.containerEl.offsetHeight * i,
+      const itemEl = this.menu.containerEl
+      const itemPos = getElementPagePosition(this.containerEl)
+      const submenuPos = {
+        x: itemPos.left + itemEl.offsetWidth + 6,
+        y: itemPos.top,
       }
-      submenu.showAtPosition(pos)
+      submenu.showAtPosition(submenuPos)
     })
     return this
   }
