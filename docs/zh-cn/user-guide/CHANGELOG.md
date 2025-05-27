@@ -1,5 +1,9 @@
 # 特性更新日志
 
+## Next
+
+- chore(core/net): 显示更明确的网络请求的错误信息。
+
 ## v2.3.41
 
 - fix(core/ui/components/menu): 修复点击文件侧栏空白处，右键菜单项不能展示的问题

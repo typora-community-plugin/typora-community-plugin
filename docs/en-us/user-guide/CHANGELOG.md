@@ -1,5 +1,9 @@
 # Feature Changelog
 
+## Next
+
+- chore(core/net): Display more explicit error messages for network requests.
+
 ## v2.3.41
 
 - fix(core/ui/components/menu): menu item can not be shown when clicking on whitespace in file explorer

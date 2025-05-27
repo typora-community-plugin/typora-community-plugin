@@ -630,7 +630,7 @@ export declare function isInputComponent(el: Element | null): boolean
 
 export declare var JSBridge: {
   invoke(command: "app.cancelQuit"): Promise<any>
-  invoke(command: 'app.download', url: string, dir: string, filename: string): Promise<any>
+  invoke(command: 'app.download', url: string, dir: string, filename: string): Promise<{ path: string, state: 'completed' | 'timeout' | 'error', type: any }>
   invoke(command: "app.onCloseWin", folder: string): Promise<any>
   invoke(command: "app.openFile", path: string, opts: { forceCreateWindow: boolean, mountFolder: string }): Promise<any>
   invoke(command: "app.openFileOrFolder", path: string, opts: { forceCreateWindow: boolean, mountFolder: string }): Promise<any>
