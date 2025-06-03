@@ -26,6 +26,7 @@ import { GlobalSearch } from './ui/sidebar/search/global-search'
 import { isMarkdownUrl } from 'src/utils'
 import type { FileURL } from 'src/utils/types'
 import { ConfigRepository } from './io/config-repository'
+import { ExportManager } from './export-manager'
 
 
 export type AppEvents = {
@@ -87,6 +88,7 @@ export class App extends Events<AppEvents> {
   workspace: Workspace
 
   features: {
+    exporter: ExportManager,
     globalSearch: GlobalSearch,
     markdownEditor: MarkdownEditor,
   }
@@ -112,6 +114,7 @@ export class App extends Events<AppEvents> {
       this.plugins = useService('plugin-manager')
       this.workspace = useService('workspace')
       this.features = {
+        exporter: useService('exporter'),
         globalSearch: new GlobalSearch(),
         markdownEditor: useService('markdown-editor'),
       }

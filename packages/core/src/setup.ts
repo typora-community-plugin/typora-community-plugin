@@ -23,6 +23,7 @@ import { PluginMarketplace } from "./plugin/plugin-marketplace"
 import { InputBox, QuickPick } from "./ui/components/quick-open"
 import { Notice } from "./ui/components/notice"
 import { FileExplorer } from "./ui/sidebar/file-explorer"
+import { ExportManager } from "./export-manager"
 
 
 
@@ -35,6 +36,8 @@ registerService('env', () =>
 )
 
 registerService('command-manager', memorize(() => new CommandManager()))
+
+registerService('exporter', memorize(() => new ExportManager()))
 
 registerService('hotkey-manager', memorize(() => new HotkeyManager()))
 

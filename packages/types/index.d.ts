@@ -225,6 +225,7 @@ interface Editor {
   brush: Brush
   docMenu: DocMenu
   EditHelper: EditHelper
+  export: Export
   fences: Fences
   imgEdit: ImageEdit
   library: Library
@@ -343,6 +344,10 @@ interface EditHelper {
    * @param msg Message. Can be a string with HTML.
    */
   showNotification(msg: string): void
+}
+
+interface Export {
+  exportToHTML(options: any): string
 }
 
 interface Fences {

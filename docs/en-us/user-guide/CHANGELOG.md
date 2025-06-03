@@ -1,8 +1,13 @@
 # Feature Changelog
 
-## Next
+## v2.4.1
 
+- feat(core/export-manager): Support using **Export API** to modify the exported HTML.
 - chore(core/net): Display more explicit error messages for network requests.
+
+- **Plugin Update**
+  - [templater][]: Template directory supports absolute paths
+  - [wavedrom][]: Render graphics to the exported HTML
 
 ## v2.3.41
 

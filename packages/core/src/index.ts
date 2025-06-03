@@ -29,6 +29,8 @@ export { CodeblockPostProcessor } from './ui/editor/postprocessor/codeblock-post
 export { EditorSuggest } from './ui/editor/suggestion/suggest'
 export { TextSuggest } from './ui/editor/suggestion/text-suggest'
 
+export { ExportProcessor, HtmlExportProcessor, CodeblockExportProcessor } from './export-manager'
+
 /** @deprecated */
 export { WorkspaceRibbon } from './ui/ribbon/workspace-ribbon'
 

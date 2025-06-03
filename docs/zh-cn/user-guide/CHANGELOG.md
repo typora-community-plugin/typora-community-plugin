@@ -1,8 +1,13 @@
 # 特性更新日志
 
-## Next
+## v2.4.1
 
+- feat(core/export-manager): 支持使用 **Export API** 修改导出的 HTML。
 - chore(core/net): 显示更明确的网络请求的错误信息。
+
+- **插件更新**
+  - [templater][]: 模板目录支持绝对路径
+  - [wavedrom][]: 渲染图形到导出的 HTML
 
 ## v2.3.41
 

@@ -1,7 +1,8 @@
 import type { App, AppSettings, EnvironmentVairables } from "src/app"
 import type { CommandManager } from "src/command/command-manager"
-import type { HotkeyManager } from "src/hotkey-manager"
 import type { ConfigRepository } from "src/io/config-repository"
+import type { ExportManager } from "src/export-manager"
+import type { HotkeyManager } from "src/hotkey-manager"
 import type { ILogger } from "src/io/logger"
 import type { Vault } from "src/io/vault"
 import type { I18n } from "src/locales/i18n"
@@ -25,6 +26,7 @@ type ServiceMap = {
   'command-manager'(): CommandManager
   'config-repository'(): ConfigRepository
   'env'(): EnvironmentVairables
+  'exporter'(): ExportManager
   'github'(): GithubAPI
   'hotkey-manager'(): HotkeyManager
   'i18n'(): I18n<typeof Locale>

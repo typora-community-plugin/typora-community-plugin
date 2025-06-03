@@ -27,6 +27,8 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
 
   button?: CodeBlockButtonOptions
 
+  exportPreview = false
+
   preview(code: string, el: HTMLElement): HTMLElement | Promise<HTMLElement> {
     throw new Error('Method not implemented.')
   }
@@ -91,7 +93,7 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
     codeblock.append(previewer)
   }
 
-  static from(options: Partial<Pick<CodeblockPostProcessor, 'lang' | 'button' | 'preview' | 'process'>>) {
+  static from(options: Partial<Pick<CodeblockPostProcessor, 'lang' | 'button' | 'preview' | 'exportPreview' | 'process'>>) {
     const processor = new CodeblockPostProcessor()
     Object.assign(processor, options)
     return processor
