@@ -89,6 +89,12 @@ You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from
 
 
 
+## Development Documentation
+
+See [Development Documentation](./docs/en-us/dev-guide/0-dev-docs.md) or [Getting Started](./docs/en-us/dev-guide/1-getting-started.md)
+
+
+
 ## Contributing
 
 Welcome to create pull requests.
