@@ -33,6 +33,14 @@ export class TabsView extends Component {
     })
   }
 
+  get height() {
+    const root = document.documentElement
+    return +getComputedStyle(root)
+      .getPropertyValue('--typ-tabs-height')
+      .trim()
+      .slice(0, -2)
+  }
+
   load() {
     if (!this.settings.get('showFileTabs')) {
       return

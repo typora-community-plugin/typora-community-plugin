@@ -1,3 +1,4 @@
+import './markdown-editor.scss'
 import { editor, File } from "typora"
 import { Events } from "src/common/events"
 import { MarkdownPostProcessor } from "./postprocessor/postprocessor-manager"
@@ -72,6 +73,32 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
 
   setMarkdown(markdown: string) {
     File.reloadContent(markdown, false, true, false, true)
+  }
+
+  getContainerWidth() {
+    return editor.writingArea.parentElement.offsetWidth
+  }
+
+  getContainerHeight() {
+    return editor.writingArea.parentElement.offsetHeight
+  }
+
+  setWidth(width: number) {
+    document.body.style.setProperty('--typ-editor-width', width + 'px')
+  }
+
+  setHeight(height: number) {
+    document.body.style.setProperty('--typ-editor-height', height + 'px')
+  }
+
+  setSize(width: number, height: number) {
+    this.setWidth(width)
+    this.setHeight(height)
+  }
+
+  resetSize() {
+    document.body.style.removeProperty('--typ-editor-width')
+    document.body.style.removeProperty('--typ-editor-height')
   }
 }
 

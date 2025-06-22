@@ -13,6 +13,7 @@ import { PluginManager } from "./plugin/plugin-manager"
 import { memorize } from "./utils/function/memorize"
 import * as Locale from './locales/lang.en.json'
 import { Settings } from "./settings/settings"
+import { ViewManager } from "./ui/view-manager"
 import { Workspace } from "./ui/workspace"
 import { MarkdownEditor } from "./ui/editor/markdown-editor"
 import { DEFAULT_RIBBON_SETTINGS, WorkspaceRibbon } from "./ui/ribbon/workspace-ribbon"
@@ -23,6 +24,7 @@ import { PluginMarketplace } from "./plugin/plugin-marketplace"
 import { InputBox, QuickPick } from "./ui/components/quick-open"
 import { Notice } from "./ui/components/notice"
 import { FileExplorer } from "./ui/sidebar/file-explorer"
+import { TabsView } from "./ui/tabs/tabs-view"
 import { ExportManager } from "./export-manager"
 
 
@@ -77,7 +79,9 @@ registerService('settings', memorize(() => {
 registerService('plugin-manager', memorize(() => new PluginManager()))
 registerService('plugin-marketplace', memorize(() => new PluginMarketplace()))
 
+registerService('view-manager', memorize(() => new ViewManager()))
 registerService('workspace', memorize(() => new Workspace()))
+registerService('file-tabs', memorize(() => new TabsView()))
 registerService('markdown-editor', memorize(() => new MarkdownEditor()))
 registerService('ribbon', memorize(() => new WorkspaceRibbon()))
 registerService('file-explorer', memorize(() => new FileExplorer()))

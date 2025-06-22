@@ -12,10 +12,12 @@ import type { GithubAPI } from "src/net/github"
 import type { PluginManager } from "src/plugin/plugin-manager"
 import type { PluginMarketplace } from "src/plugin/plugin-marketplace"
 import type { Settings } from "src/settings/settings"
+import type { TabsView } from "src/ui/tabs/tabs-view"
 import type { MarkdownEditor } from "src/ui/editor/markdown-editor"
 import type { WorkspaceRibbon } from "src/ui/ribbon/workspace-ribbon"
 import type { FileExplorer } from "src/ui/sidebar/file-explorer"
 import type { Sidebar } from "src/ui/sidebar/sidebar"
+import type { ViewManager } from "src/ui/view-manager"
 import type { Workspace } from "src/ui/workspace"
 import type { Notice } from "src/ui/components/notice"
 import { isDebug } from "./constants"
@@ -36,7 +38,9 @@ type ServiceMap = {
   'settings'(): Settings<AppSettings>
   'vault'(): Vault
 
+  'view-manager'(): ViewManager
   'workspace'(): Workspace
+  'file-tabs'(): TabsView
   'markdown-editor'(): MarkdownEditor
   'ribbon'(): WorkspaceRibbon
   'file-explorer'(): FileExplorer
