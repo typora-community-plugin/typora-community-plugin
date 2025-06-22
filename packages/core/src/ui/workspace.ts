@@ -16,7 +16,11 @@ import { QuickOpenPanel } from './quick-open-panel'
 import type { Component } from 'src/common/component'
 import { useEventBus } from 'src/common/eventbus'
 import { useService } from 'src/common/service'
-import type { InternalContextMenu } from './components/menu'
+import { WorkspaceRoot } from './layout/workspace-root'
+import type { WorkspaceNode } from './layout/workspace-node'
+import type { WorkspaceParent } from './layout/workspace-parent'
+import { WorkspaceLeaf } from './layout/workspace-leaf'
+import { ViewState } from './view-manager'
 
 
 export type WorkspaceEvents = {
@@ -34,6 +38,8 @@ export class Workspace extends Events<WorkspaceEvents> {
 
   ribbon: WorkspaceRibbon
   sidebar: Sidebar
+  rootSplit: WorkspaceRoot = new WorkspaceRoot(this)
+  activeLeaf: WorkspaceLeaf
 
   activeEditor: MarkdownEditor
 
@@ -72,6 +78,15 @@ export class Workspace extends Events<WorkspaceEvents> {
     setTimeout(() => this._children.forEach(child => child.load()))
   }
 
+  createLeaf(state?: ViewState) {
+    const leaf = new WorkspaceLeaf()
+    if (state) leaf.setState(state)
+    return leaf
+  }
+
+  /**
+   * @deprecated
+   */
   getViewByType<T extends new (...args: any) => any>(cls: T) {
     let res = undefined
     this.iterateViews(this as any, (v) => {
@@ -87,6 +102,7 @@ export class Workspace extends Events<WorkspaceEvents> {
    * Iterate all views in view tree.
    *
    * @param callback return `true` to stop iteration
+   * @deprecated
    */
   iterateViews(view: Component, callback: (view: Component) => boolean | void) {
     const children = (<any>view)._children as Component[]
@@ -96,6 +112,24 @@ export class Workspace extends Events<WorkspaceEvents> {
       if (!(<any>childView)._children.length) continue
       this.iterateViews(childView, callback)
     }
+  }
+
+  eachViews(view: WorkspaceParent, callback: (view: WorkspaceNode) => boolean | void) {
+    const children = (<any>view).children as WorkspaceNode[]
+    for (let i = 0; i < children.length; i++) {
+      const childView = children[i]
+      if (callback(childView)) break
+      if (!(<any>childView).children.length) continue
+      this.eachViews(childView as WorkspaceParent, callback)
+    }
+  }
+
+  findViews(view: WorkspaceParent, callback: (view: WorkspaceNode) => boolean) {
+    const res: WorkspaceNode[] = []
+    this.eachViews(view, v => {
+      if (callback(v)) res.push(v)
+    })
+    return res
   }
 
   private _emitMissingEvents() {

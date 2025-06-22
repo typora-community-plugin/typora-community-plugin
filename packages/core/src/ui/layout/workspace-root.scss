@@ -1,0 +1,27 @@
+:root {
+  --typ-footer-height: 30px;
+}
+
+.typ-workspace-root {
+  position: absolute;
+  top: 3.75rem;
+  left: calc(var(--typ-ribbon-width) + var(--sidebar-width));
+  width: calc(100% - var(--typ-ribbon-width) - var(--sidebar-width));
+  height: calc(100% - var(--typ-footer-height));
+  background: radial-gradient(black, transparent);
+}
+
+.typ-editor-view {
+  background: radial-gradient(cyan, transparent);
+}
+
+.typ-empty-view {
+  width: 100%;
+  background: radial-gradient(orange, transparent);
+
+  div {
+    margin: auto;
+    width: 100%;
+    text-align: center;
+  }
+}

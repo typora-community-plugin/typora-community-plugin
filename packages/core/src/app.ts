@@ -19,6 +19,7 @@ import type { FileLinkSettings } from 'src/ui/settings/tabs/file-link-setting-ta
 import type { AppearanceSettings } from 'src/ui/settings/tabs/appearance-setting-tab'
 import type { PluginMarketplaceSettings } from 'src/ui/settings/tabs/plugin-marketplace-setting-tab'
 import type { CoreSettings } from 'src/ui/settings/tabs/about-tab'
+import type { ViewManager } from './ui/view-manager'
 import type { Workspace } from 'src/ui/workspace'
 import type { MarkdownEditor } from './ui/editor/markdown-editor'
 import type { RibbonSettings } from 'src/ui/ribbon/workspace-ribbon'
@@ -85,6 +86,7 @@ export class App extends Events<AppEvents> {
   hotkeyManager: HotkeyManager = useService('hotkey-manager')
   commands: CommandManager
   plugins: PluginManager
+  viewManager: ViewManager
   workspace: Workspace
 
   features: {
@@ -112,6 +114,7 @@ export class App extends Events<AppEvents> {
       this.github = useService('github')
       this.commands = useService('command-manager')
       this.plugins = useService('plugin-manager')
+      this.viewManager = useService('view-manager')
       this.workspace = useService('workspace')
       this.features = {
         exporter: useService('exporter'),

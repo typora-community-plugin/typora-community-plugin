@@ -1,0 +1,12 @@
+.typ-workspace-split {
+
+  &,
+  &>div {
+    display: flex;
+    flex: 1;
+  }
+
+  .typ-workspace-leaf {
+    flex: 1;
+  }
+}
