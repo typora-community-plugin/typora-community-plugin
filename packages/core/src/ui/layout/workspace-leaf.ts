@@ -6,7 +6,11 @@ import type { ViewState } from "../view-manager"
 
 export class WorkspaceLeaf extends WorkspaceNode {
 
-  protected view: View
+  type = 'leaf'
+
+  state: ViewState['state']
+  viewType: string
+  view: View
 
   constructor(view?: View, private viewManager = useService('view-manager')) {
     super()
@@ -20,8 +24,17 @@ export class WorkspaceLeaf extends WorkspaceNode {
 
   setState(state: ViewState) {
     const factory = this.viewManager.getViewCreatorByType(state.type)
+    this.state = state.state ?? {}
+    this.viewType = state.type
     this.view = factory(state)
     this.containerEl.append(this.view.containerEl)
     return this
+  }
+
+  toJSON() {
+      return {
+        type: 'leaf',
+        state: this.state,
+      }
   }
 }

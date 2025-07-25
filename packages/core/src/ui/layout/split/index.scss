@@ -1,12 +1,16 @@
 .typ-workspace-split {
 
   &,
-  &>div {
+  &>.typ-workspace-node {
     display: flex;
     flex: 1;
   }
 
-  .typ-workspace-leaf {
-    flex: 1;
+  &.mod-vertical {
+    flex-direction: row;
+  }
+
+  &.mod-horizontal {
+    flex-direction: column;
   }
 }

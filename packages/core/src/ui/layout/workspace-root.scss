@@ -2,7 +2,7 @@
   --typ-footer-height: 30px;
 }
 
-.typ-workspace-root {
+div.typ-workspace-root {
   position: absolute;
   top: 3.75rem;
   left: calc(var(--typ-ribbon-width) + var(--sidebar-width));

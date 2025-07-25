@@ -1,20 +1,17 @@
 import './workspace-root.scss'
-import { useService } from "src/common/service"
 import { WorkspaceSplit } from "./split"
 import { WorkspaceLeaf } from "./workspace-leaf"
 import type { Workspace } from "../workspace"
 import { editor } from 'typora'
 import { View } from '../common/view'
+import { uniqueId } from 'src/utils'
 
 
 export class WorkspaceRoot extends WorkspaceSplit {
 
   editorView = new EditorView()
 
-  constructor(
-    workspace: Workspace,
-    viewManager = useService('view-manager'),
-  ) {
+  constructor(workspace: Workspace) {
     super('vertical')
 
     this.direction = 'vertical'
@@ -22,17 +19,11 @@ export class WorkspaceRoot extends WorkspaceSplit {
     $(document.body)
       .append($(this.containerEl)
         .addClass('typ-workspace-root')
-        .on('focus', e => {
-          workspace.activeLeaf = workspace.findViews(workspace.rootSplit, (v: WorkspaceLeaf) =>
-            (<any>v).view.containerEl === e.target
+        .on('click', e => {
+          workspace.activeLeaf = workspace.findViews(workspace.rootSplit, (leaf: WorkspaceLeaf) =>
+            leaf.view.containerEl === e.target
           ).pop() as WorkspaceLeaf
         }))
-
-    viewManager.registerViewWithExtensions(['md', 'markdown'], 'markdown', () => new EditorView())
-    viewManager.registerView('core.empty', () => new EmptyView())
-
-    this.insertChild(0, workspace.createLeaf({ type: 'markdown' }))
-    this.insertChild(1, workspace.createLeaf({ type: 'core.empty' }))
   }
 }
 
@@ -60,6 +51,6 @@ export class EditorView extends View {
 
 export class EmptyView extends View {
 
-  containerEl = $('<div class="typ-empty-view"><div>Empty</div></div>')[0]
+  containerEl = $(`<div class="typ-empty-view"><div>Empty ${uniqueId('View ')}</div></div>`)[0]
 
 }

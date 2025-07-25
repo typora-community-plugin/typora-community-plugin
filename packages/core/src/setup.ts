@@ -26,6 +26,9 @@ import { Notice } from "./ui/components/notice"
 import { FileExplorer } from "./ui/sidebar/file-explorer"
 import { TabsView } from "./ui/tabs/tabs-view"
 import { ExportManager } from "./export-manager"
+import { WorkspaceSplit } from "./ui/layout/split"
+import { WorkspaceTabs } from "./ui/layout/tabs"
+import { WorkspaceLeaf } from "./ui/layout/workspace-leaf"
 
 
 
@@ -87,3 +90,7 @@ registerService('ribbon', memorize(() => new WorkspaceRibbon()))
 registerService('file-explorer', memorize(() => new FileExplorer()))
 registerService('sidebar', memorize(() => useService('workspace').sidebar))
 registerService('notice', ([message, delay]) => new Notice(message, delay))
+
+registerService('@@split', ([direction]) => new WorkspaceSplit(direction))
+registerService('@@tabs', () => new WorkspaceTabs())
+registerService('@@leaf', () => new WorkspaceLeaf())

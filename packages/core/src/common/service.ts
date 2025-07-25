@@ -19,6 +19,9 @@ import type { FileExplorer } from "src/ui/sidebar/file-explorer"
 import type { Sidebar } from "src/ui/sidebar/sidebar"
 import type { ViewManager } from "src/ui/view-manager"
 import type { Workspace } from "src/ui/workspace"
+import type { WorkspaceLeaf } from "src/ui/layout/workspace-leaf"
+import type { Direction, WorkspaceSplit } from "src/ui/layout/split"
+import type { WorkspaceTabs } from "src/ui/layout/tabs"
 import type { Notice } from "src/ui/components/notice"
 import { isDebug } from "./constants"
 
@@ -32,7 +35,7 @@ type ServiceMap = {
   'github'(): GithubAPI
   'hotkey-manager'(): HotkeyManager
   'i18n'(): I18n<typeof Locale>
-  'logger'(): ILogger
+  'logger'(scope?: string): ILogger
   'plugin-manager'(): PluginManager
   'plugin-marketplace'(): PluginMarketplace
   'settings'(): Settings<AppSettings>
@@ -47,7 +50,11 @@ type ServiceMap = {
   'sidebar'(): Sidebar
   'input-box'(): InputBox
   'quick-pick'(): QuickPick
-  'notice'(): Notice
+  'notice'(message: string, delay?: number): Notice
+
+  '@@split'(direction: Direction): WorkspaceSplit
+  '@@tabs'(): WorkspaceTabs
+  '@@leaf'(): WorkspaceLeaf
 }
 
 const services: Partial<ServiceMap> = {}
@@ -57,11 +64,11 @@ const fixedSerivcesLoadingOrder: (keyof ServiceMap)[] = [
 ]
 
 export function registerService<K extends keyof ServiceMap>
-  (id: K, factory: (args: any[]) => ReturnType<ServiceMap[K]>) {
+  (id: K, factory: (args: Parameters<ServiceMap[K]>) => ReturnType<ServiceMap[K]>) {
   services[id] = factory as any
 }
 
-export function useService<K extends keyof ServiceMap>(id: K, args?: any[]) {
+export function useService<K extends keyof ServiceMap>(id: K, args?: Parameters<ServiceMap[K]>) {
   if (process.env.IS_DEV) {
 
     if (!services[id]) {

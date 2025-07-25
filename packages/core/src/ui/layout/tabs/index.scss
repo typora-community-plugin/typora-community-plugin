@@ -1,0 +1,17 @@
+.typ-workspace-tabs {
+  flex-direction: column;
+
+  &>.typ-workspace-tab-content {
+    display: flex;
+    flex: 1;
+
+    &>.typ-workspace-leaf {
+      display: none;
+
+      &.mod-active {
+        display: flex;
+        flex: 1;
+      }
+    }
+  }
+}

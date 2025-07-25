@@ -202,7 +202,7 @@ class FileTabContainer extends TabContainer {
   }
 }
 
-class FileTab extends Tab {
+export class FileTab extends Tab {
   constructor(filePath: string, vault = useService('vault')) {
     const longPath = path.relative(vault.path, filePath)
       .replace(/(\.textbundle)[\\/]text\.(?:md|markdown)$/, '$1')

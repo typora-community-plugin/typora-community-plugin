@@ -1,0 +1,33 @@
+.typ-workspace-node {
+  position: relative;
+}
+
+hr.typ-workspace-leaf-resize-handle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 0 0;
+  z-index: 1;
+  background: transparent;
+  transition: background .1s;
+
+  &:hover {
+    background: #dccfff44;
+  }
+
+  .typ-workspace-node:first-of-type>& {
+    display: none;
+  }
+
+  .mod-vertical>.typ-workspace-node>& {
+    width: 7px;
+    height: 100%;
+    cursor: col-resize;
+  }
+
+  .mod-horizontal>.typ-workspace-node>& {
+    width: 100%;
+    height: 7px;
+    cursor: row-resize;
+  }
+}

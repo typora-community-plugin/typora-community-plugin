@@ -14,20 +14,36 @@ export abstract class WorkspaceParent extends WorkspaceNode {
     this.insertChild(this.children.length, child)
   }
 
-  insertChild(index: number, child: WorkspaceNode) {
-    child.setParent(this)
-    this.children.splice(index, 0, child)
+  insertBefore(child: WorkspaceNode) {
+    const index = this.children.findIndex(c => c === child)
+    this.insertChild(index, child)
   }
 
-  replaceChild(index: number, child: WorkspaceNode) {
+  insertChild(index: number, child: WorkspaceNode) {
+    this.children.splice(index, 0, child)
     child.setParent(this)
-    const [oldChild] = this.children.splice(index, 1, child)
-    oldChild.setParent(null)
+    this.insertChildEl(index, child)
+  }
+
+  protected abstract insertChildEl(index: number, child: WorkspaceNode): void
+
+  replaceChild(oldChild: WorkspaceNode, newChild: WorkspaceNode) {
+    const index = this.children.findIndex(c => c === oldChild)
+    this.removeChild(oldChild)
+    this.insertChild(index, newChild)
   }
 
   removeChild(child: WorkspaceNode) {
     const index = this.children.findIndex(c => c === child)
     this.children.splice(index, 1)
     child.setParent(null)
+    child.containerEl.remove()
+  }
+
+  toJSON() {
+    return {
+      type: this.type,
+      children: this.children.map(c => c.toJSON()),
+    }
   }
 }

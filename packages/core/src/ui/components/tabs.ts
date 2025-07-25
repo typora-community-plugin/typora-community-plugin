@@ -6,8 +6,8 @@ import { draggable } from "./draggable"
 
 interface TabContainerProps {
   className?: string
-  onToggle: (tabId: string) => void
-  onClose: (tabId: string) => void
+  onToggle: (tabId: string, tabEl: HTMLElement) => void
+  onClose: (tabId: string, tabEl: HTMLElement) => void
 }
 
 export class TabContainer extends View {
@@ -28,11 +28,11 @@ export class TabContainer extends View {
 
           const tabId = $tab.data('id')
           if ($clickedEl.hasClass('typ-close')) {
-            this.props.onClose(tabId)
+            this.props.onClose(tabId, $tab[0])
           }
           else {
             if ($tab.hasClass('active')) return
-            this.props.onToggle(tabId)
+            this.props.onToggle(tabId, $tab[0])
           }
         })
         // handle: middle click
@@ -44,7 +44,7 @@ export class TabContainer extends View {
           if (!$tab.length) return
 
           const tabId = $tab.data('id')
-          this.props.onClose(tabId)
+          this.props.onClose(tabId, $tab[0])
         })
         // handle: scroll
         .on('wheel', (event) => {
@@ -88,7 +88,7 @@ export class TabContainer extends View {
     if (tabEl.classList.contains('active')) {
       const siblingTab = this.getSiblingTab(tabEl)
       this.activeTab(siblingTab)
-      this.props.onToggle(siblingTab.dataset.id!)
+      this.props.onToggle(siblingTab.dataset.id!, siblingTab)
     }
     tabEl.remove()
   }
@@ -96,14 +96,14 @@ export class TabContainer extends View {
   closeOtherTabs(tabEl: HTMLElement) {
     (Array.from(this.container.children) as HTMLElement[])
       .filter(el => el !== tabEl)
-      .forEach(el => this.props.onClose(el.dataset.id))
+      .forEach(el => this.props.onClose(el.dataset.id, tabEl))
   }
 
   closeRightTabs(tabEl: HTMLElement) {
     const tabEls = Array.from(this.container.children) as HTMLElement[]
     const currentIdx = tabEls.findIndex(el => el.dataset.id === tabEl.dataset.id!)
     const rightTabEls = tabEls.slice(currentIdx).slice(1)
-    rightTabEls.forEach(el => this.props.onClose(el.dataset.id))
+    rightTabEls.forEach(el => this.props.onClose(el.dataset.id, el))
   }
 
   getSiblingTab(tabEl: HTMLElement) {

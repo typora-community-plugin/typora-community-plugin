@@ -16,11 +16,12 @@ import { QuickOpenPanel } from './quick-open-panel'
 import type { Component } from 'src/common/component'
 import { useEventBus } from 'src/common/eventbus'
 import { useService } from 'src/common/service'
-import { WorkspaceRoot } from './layout/workspace-root'
+import { EditorView, EmptyView, WorkspaceRoot } from './layout/workspace-root'
 import type { WorkspaceNode } from './layout/workspace-node'
 import type { WorkspaceParent } from './layout/workspace-parent'
 import { WorkspaceLeaf } from './layout/workspace-leaf'
 import { ViewState } from './view-manager'
+import type { WorkspaceSplit } from './layout/split'
 
 
 export type WorkspaceEvents = {
@@ -51,7 +52,9 @@ export class Workspace extends Events<WorkspaceEvents> {
   }
 
   constructor(
-    app = useEventBus('app')
+    app = useEventBus('app'),
+    commands = useService('command-manager'),
+    viewManager = useService('view-manager'),
   ) {
     super('workspace')
 
@@ -76,6 +79,65 @@ export class Workspace extends Events<WorkspaceEvents> {
     this.activeEditor = useService('markdown-editor')
 
     setTimeout(() => this._children.forEach(child => child.load()))
+
+    setTimeout(() => {
+      commands.register({
+        id: 'core.workspace.split-right',
+        title: 'Split Right',
+        scope: 'global',
+        callback: () => {
+          const left = this.activeLeaf
+          const parentSplit = left.closest('split') as WorkspaceSplit
+          if (parentSplit.direction === 'vertical')
+            parentSplit.appendChild(this.createLeaf({ type: 'core.empty' }))
+          else {
+            const verticalSplit = useService('@@split', ['vertical'])
+            parentSplit.replaceChild(left, verticalSplit)
+            verticalSplit.appendChild(left)
+            verticalSplit.appendChild(this.createLeaf({ type: 'core.empty' }))
+          }
+        },
+      })
+      commands.register({
+        id: 'core.workspace.split-down',
+        title: 'Split Down',
+        scope: 'global',
+        callback: () => {
+          const up = this.activeLeaf
+          const parentSplit = up.closest('split') as WorkspaceSplit
+          if (parentSplit.direction === 'horizontal')
+            parentSplit.appendChild(this.createLeaf({ type: 'core.empty' }))
+          else {
+            const horizontalSplit = useService('@@split', ['horizontal'])
+            parentSplit.replaceChild(up, horizontalSplit)
+            horizontalSplit.appendChild(up)
+            horizontalSplit.appendChild(this.createLeaf({ type: 'core.empty' }))
+          }
+        },
+      })
+
+      viewManager.registerViewWithExtensions(['md', 'markdown'], 'markdown', () => new EditorView())
+      viewManager.registerView('core.empty', () => new EmptyView())
+
+      const tabs = useService('@@tabs')
+      tabs.appendChild(this.createLeaf({
+        type: 'core.empty',
+        state: {
+          path: '/path/not/exist',
+          title: 'empty',
+        }
+       }))
+      tabs.appendChild(this.createLeaf({
+        type: 'core.empty',
+        state: {
+          path: '/path/not/exist2',
+          title: 'empty2',
+        }
+       }))
+      this.rootSplit.appendChild(this.createLeaf({ type: 'markdown' }))
+      this.rootSplit.appendChild(this.createLeaf({ type: 'core.empty' }))
+      this.rootSplit.appendChild(tabs)
+    })
   }
 
   createLeaf(state?: ViewState) {
@@ -115,12 +177,14 @@ export class Workspace extends Events<WorkspaceEvents> {
   }
 
   eachViews(view: WorkspaceParent, callback: (view: WorkspaceNode) => boolean | void) {
-    const children = (<any>view).children as WorkspaceNode[]
-    for (let i = 0; i < children.length; i++) {
-      const childView = children[i]
-      if (callback(childView)) break
-      if (!(<any>childView).children.length) continue
-      this.eachViews(childView as WorkspaceParent, callback)
+    const nodes = (<any>view).children as WorkspaceNode[]
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i]
+      if (node.type !== 'leaf') {
+        this.eachViews(node as WorkspaceParent, callback)
+        continue
+      }
+      if (callback(node)) break
     }
   }
 
