@@ -1,6 +1,10 @@
 .typ-workspace-tabs {
   flex-direction: column;
 
+  .typ-tab:only-child .typ-close {
+    display: unset;
+  }
+
   &>.typ-workspace-tab-content {
     display: flex;
     flex: 1;

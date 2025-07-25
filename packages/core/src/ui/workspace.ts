@@ -16,12 +16,14 @@ import { QuickOpenPanel } from './quick-open-panel'
 import type { Component } from 'src/common/component'
 import { useEventBus } from 'src/common/eventbus'
 import { useService } from 'src/common/service'
-import { EditorView, EmptyView, WorkspaceRoot } from './layout/workspace-root'
+import { WorkspaceRoot } from './layout/workspace-root'
 import type { WorkspaceNode } from './layout/workspace-node'
 import type { WorkspaceParent } from './layout/workspace-parent'
 import { WorkspaceLeaf } from './layout/workspace-leaf'
-import { ViewState } from './view-manager'
-import type { WorkspaceSplit } from './layout/split'
+import type { ViewState } from './view-manager'
+import { EmptyView } from './views/empty-view'
+import { EditorView } from './views/editor-view'
+import { createTabs, splitDown, splitRight } from './layout/workspace-utils'
 
 
 export type WorkspaceEvents = {
@@ -85,58 +87,20 @@ export class Workspace extends Events<WorkspaceEvents> {
         id: 'core.workspace.split-right',
         title: 'Split Right',
         scope: 'global',
-        callback: () => {
-          const left = this.activeLeaf
-          const parentSplit = left.closest('split') as WorkspaceSplit
-          if (parentSplit.direction === 'vertical')
-            parentSplit.appendChild(this.createLeaf({ type: 'core.empty' }))
-          else {
-            const verticalSplit = useService('@@split', ['vertical'])
-            parentSplit.replaceChild(left, verticalSplit)
-            verticalSplit.appendChild(left)
-            verticalSplit.appendChild(this.createLeaf({ type: 'core.empty' }))
-          }
-        },
+        callback: splitRight,
       })
       commands.register({
         id: 'core.workspace.split-down',
         title: 'Split Down',
         scope: 'global',
-        callback: () => {
-          const up = this.activeLeaf
-          const parentSplit = up.closest('split') as WorkspaceSplit
-          if (parentSplit.direction === 'horizontal')
-            parentSplit.appendChild(this.createLeaf({ type: 'core.empty' }))
-          else {
-            const horizontalSplit = useService('@@split', ['horizontal'])
-            parentSplit.replaceChild(up, horizontalSplit)
-            horizontalSplit.appendChild(up)
-            horizontalSplit.appendChild(this.createLeaf({ type: 'core.empty' }))
-          }
-        },
+        callback: splitDown,
       })
 
-      viewManager.registerViewWithExtensions(['md', 'markdown'], 'markdown', () => new EditorView())
+      viewManager.registerViewWithExtensions(['md', 'markdown'], 'core.markdown', () => new EditorView())
       viewManager.registerView('core.empty', () => new EmptyView())
 
-      const tabs = useService('@@tabs')
-      tabs.appendChild(this.createLeaf({
-        type: 'core.empty',
-        state: {
-          path: '/path/not/exist',
-          title: 'empty',
-        }
-       }))
-      tabs.appendChild(this.createLeaf({
-        type: 'core.empty',
-        state: {
-          path: '/path/not/exist2',
-          title: 'empty2',
-        }
-       }))
-      this.rootSplit.appendChild(this.createLeaf({ type: 'markdown' }))
-      this.rootSplit.appendChild(this.createLeaf({ type: 'core.empty' }))
-      this.rootSplit.appendChild(tabs)
+      this.rootSplit.appendChild(createTabs(this.activeFile))
+      this.rootSplit.appendChild(createTabs())
     })
   }
 
