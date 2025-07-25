@@ -87,8 +87,10 @@ export class TabContainer extends View {
   closeTab(tabEl: HTMLElement) {
     if (tabEl.classList.contains('active')) {
       const siblingTab = this.getSiblingTab(tabEl)
-      this.activeTab(siblingTab)
-      this.props.onToggle(siblingTab.dataset.id!, siblingTab)
+      if (siblingTab) {
+        this.activeTab(siblingTab)
+        this.props.onToggle(siblingTab.dataset.id!, siblingTab)
+      }
     }
     tabEl.remove()
   }
@@ -108,7 +110,7 @@ export class TabContainer extends View {
 
   getSiblingTab(tabEl: HTMLElement) {
     return (tabEl.previousElementSibling
-      ?? tabEl.nextElementSibling) as HTMLElement
+      ?? tabEl.nextElementSibling) as HTMLElement | null
   }
 }
 

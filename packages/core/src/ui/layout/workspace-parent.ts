@@ -4,7 +4,7 @@ import { WorkspaceNode } from "./workspace-node"
 
 export abstract class WorkspaceParent extends WorkspaceNode {
 
-  protected children: WorkspaceNode[] = []
+  children: WorkspaceNode[] = []
 
   isLeaf(): this is WorkspaceLeaf {
     return false

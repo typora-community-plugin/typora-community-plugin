@@ -1,5 +1,6 @@
 import './workspace-node.scss'
 import { Events } from "src/common/events"
+import { useService } from 'src/common/service'
 import type { WorkspaceParent } from "./workspace-parent"
 import type { WorkspaceLeaf } from "./workspace-leaf"
 import type { WorkspaceSplit } from './split'
@@ -29,6 +30,10 @@ export abstract class WorkspaceNode extends Events<any> {
 
   setParent(parent: WorkspaceParent) {
     this.parent = parent
+  }
+
+  getRoot() {
+    return useService('workspace').rootSplit
   }
 
   detach() {

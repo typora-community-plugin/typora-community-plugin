@@ -2,6 +2,7 @@ import './index.scss'
 import { Tab, TabContainer } from 'src/ui/components/tabs'
 import { WorkspaceParent } from "../workspace-parent"
 import type { WorkspaceLeaf } from '../workspace-leaf'
+import { createEmptyLeaf } from '../workspace-utils'
 
 
 export class WorkspaceTabs extends WorkspaceParent {
@@ -53,7 +54,15 @@ export class WorkspaceTabs extends WorkspaceParent {
     this.tabHeader.closeTab(tabEl)
 
     const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)
-    leaf.setParent(null)
-    leaf.containerEl.remove()
+    this.removeChild(leaf)
+
+    if (!this.children.length) {
+      if (this.getRoot() === this.parent && this.parent.children.length > 1) {
+        this.parent.removeChild(this)
+      }
+      else {
+        this.appendChild(createEmptyLeaf())
+      }
+    }
   }
 }
