@@ -1,4 +1,3 @@
-import './markdown-editor.scss'
 import { editor, File } from "typora"
 import { Events } from "src/common/events"
 import { MarkdownPostProcessor } from "./postprocessor/postprocessor-manager"

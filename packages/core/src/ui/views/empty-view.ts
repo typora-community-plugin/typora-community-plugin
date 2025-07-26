@@ -1,3 +1,4 @@
+import './empty-view.scss'
 import { uniqueId } from "src/utils"
 import { View } from "../common/view"
 

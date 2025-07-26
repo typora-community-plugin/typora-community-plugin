@@ -15,7 +15,7 @@ export class WorkspaceTabs extends WorkspaceParent {
     onClose: (tabId, tabEl) => this.removeTab(tabId, tabEl),
   })
 
-  private tabContentEl: HTMLElement
+  tabContentEl: HTMLElement
 
   constructor() {
     super()

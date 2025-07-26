@@ -1,22 +1,27 @@
 import path from "src/path"
 import { useService } from "src/common/service"
 import type { Direction, WorkspaceSplit } from "./split"
+import type { WorkspaceTabs } from "./tabs"
 import { uniqueId } from "src/utils"
 
 
 export function createTabs(path?: string) {
+  const workspace = useService('workspace')
   const tabs = useService('@@tabs')
-  tabs.appendChild(path
-    ? createEditorLeaf(path)
-    : createEmptyLeaf())
+  tabs.appendChild(workspace.activeLeaf =
+    path
+      ? createEditorLeaf(tabs, path)
+      : createEmptyLeaf()
+  )
   return tabs
 }
 
-export function createEditorLeaf(filePath: string) {
+export function createEditorLeaf(tabs: WorkspaceTabs, filePath: string) {
   return useService('workspace').createLeaf({
     type: 'core.markdown', state: {
       path: filePath,
       title: path.basename(filePath),
+      tabs,
     }
   })
 }

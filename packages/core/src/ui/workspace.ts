@@ -20,10 +20,11 @@ import { WorkspaceRoot } from './layout/workspace-root'
 import type { WorkspaceNode } from './layout/workspace-node'
 import type { WorkspaceParent } from './layout/workspace-parent'
 import { WorkspaceLeaf } from './layout/workspace-leaf'
+import { createTabs, splitDown, splitRight } from './layout/workspace-utils'
 import type { ViewState } from './view-manager'
 import { EmptyView } from './views/empty-view'
 import { EditorView } from './views/editor-view'
-import { createTabs, splitDown, splitRight } from './layout/workspace-utils'
+import { MarkdownPreview } from './views/markdown-preview'
 
 
 export type WorkspaceEvents = {
@@ -42,7 +43,19 @@ export class Workspace extends Events<WorkspaceEvents> {
   ribbon: WorkspaceRibbon
   sidebar: Sidebar
   rootSplit: WorkspaceRoot = new WorkspaceRoot(this)
-  activeLeaf: WorkspaceLeaf
+
+  private _activeLeaf: WorkspaceLeaf
+  //
+  get activeLeaf(): WorkspaceLeaf {
+    if (!this._activeLeaf?.parent) {
+      this.activeLeaf = (this.rootSplit.children[0] as WorkspaceParent).children[0] as WorkspaceLeaf
+    }
+    return this._activeLeaf
+  }
+  //
+  set activeLeaf(leaf: WorkspaceLeaf) {
+    this._activeLeaf = leaf
+  }
 
   activeEditor: MarkdownEditor
 
@@ -95,12 +108,25 @@ export class Workspace extends Events<WorkspaceEvents> {
         scope: 'global',
         callback: splitDown,
       })
+      this.on('file-menu', ({ menu, path }) => {
+        menu.insertItemAfter('[data-action="open"]', item => {
+          item
+            .setKey('typ-split-right')
+            .setTitle('在右侧打开')
+            .onClick(event => splitRight(path))
+        })
+      })
 
-      viewManager.registerViewWithExtensions(['md', 'markdown'], 'core.markdown', () => new EditorView())
+      viewManager.registerViewWithExtensions(['md', 'markdown'], 'core.markdown', (s) =>
+        EditorView.instanceCount === 0
+          ? new EditorView(s.state.tabs)
+          : viewManager.getViewCreatorByType('core.md-preview')(s)
+      )
+      viewManager.registerView('core.md-preview', (s) => new MarkdownPreview(s.state.path))
       viewManager.registerView('core.empty', () => new EmptyView())
 
       this.rootSplit.appendChild(createTabs(this.activeFile))
-      this.rootSplit.appendChild(createTabs())
+      // this.rootSplit.appendChild(createTabs())
     })
   }
 

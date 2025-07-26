@@ -15,9 +15,9 @@ export class WorkspaceRoot extends WorkspaceSplit {
       .append($(this.containerEl)
         .addClass('typ-workspace-root')
         .on('click', e => {
-          workspace.activeLeaf = workspace.findViews(workspace.rootSplit, (leaf: WorkspaceLeaf) =>
-            leaf.view.containerEl === e.target
-          ).pop() as WorkspaceLeaf
+          workspace.activeLeaf = workspace.findViews(workspace.rootSplit, (leaf) =>
+            (leaf as any as WorkspaceLeaf).view.containerEl === e.target
+          ).pop() as any
         }))
   }
 }
