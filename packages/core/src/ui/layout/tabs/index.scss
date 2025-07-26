@@ -1,13 +1,14 @@
 .typ-workspace-tabs {
   flex-direction: column;
 
-  .typ-tab:only-child .typ-close {
+  .typ-workspace-tab-header .typ-tab:only-child .typ-close {
     display: unset;
   }
 
   &>.typ-workspace-tab-content {
     display: flex;
     flex: 1;
+    overflow: hidden;
 
     &>.typ-workspace-leaf {
       display: none;
@@ -15,6 +16,8 @@
       &.mod-active {
         display: flex;
         flex: 1;
+        align-items: flex-start;
+        overflow-y: auto;
       }
     }
   }

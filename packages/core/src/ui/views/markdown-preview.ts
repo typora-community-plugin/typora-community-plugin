@@ -1,4 +1,4 @@
-import './empty-view.scss'
+import './markdown-preview.scss'
 import { View } from "../common/view"
 import { fs } from 'src/index'
 import { editor } from 'typora'
@@ -12,8 +12,8 @@ export class MarkdownPreview extends View {
     super()
 
     const md = fs.readTextSync(path)
-    const  [html] = editor.nodeMap.allNodes.first().__proto__.constructor.parseFrom(md)
-    this.containerEl.innerHTML = html
+    const [html] = editor.nodeMap.allNodes.first().__proto__.constructor.parseFrom(md)
+    this.containerEl.innerHTML = html.replace(/ contenteditable='true'/g, '')
   }
 
 }
