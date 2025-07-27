@@ -112,7 +112,7 @@ export class Workspace extends Events<WorkspaceEvents> {
         menu.insertItemAfter('[data-action="open"]', item => {
           item
             .setKey('typ-split-right')
-            .setTitle('在右侧打开')
+            .setTitle('在右侧打开预览')
             .onClick(event => splitRight(path))
         })
       })
@@ -126,7 +126,6 @@ export class Workspace extends Events<WorkspaceEvents> {
       viewManager.registerView('core.empty', () => new EmptyView())
 
       this.rootSplit.appendChild(createTabs(this.activeFile))
-      // this.rootSplit.appendChild(createTabs())
     })
   }
 

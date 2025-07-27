@@ -57,7 +57,7 @@ export class WorkspaceTabs extends WorkspaceParent {
     this.removeChild(leaf)
 
     if (!this.children.length) {
-      if (this.getRoot() === this.parent && this.parent.children.length > 1) {
+      if (this.getRoot() !== this.parent || this.parent.children.length > 1) {
         this.parent.removeChild(this)
       }
       else {
