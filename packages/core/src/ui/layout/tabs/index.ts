@@ -34,7 +34,7 @@ export class WorkspaceTabs extends WorkspaceParent {
     super.insertChild(index, child)
   }
 
-  insertChildEl(index: number, child: WorkspaceLeaf) {
+  _insertChildEl(index: number, child: WorkspaceLeaf) {
     this.tabContentEl.querySelector('.mod-active')?.classList.remove('mod-active')
     child.containerEl.classList.add('mod-active')
     this.tabContentEl.insertBefore(child.containerEl, this.tabContentEl.children[index])

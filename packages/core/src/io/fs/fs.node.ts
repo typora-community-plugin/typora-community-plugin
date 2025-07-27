@@ -1,5 +1,6 @@
 import { JSBridge, reqnode } from "typora"
 import type { FileStats, FileAdapter } from "./filesystem"
+import { noop } from "src/utils"
 
 
 const fs = reqnode?.('fs') as typeof import('fs')
@@ -23,7 +24,7 @@ export class NodeFS implements FileAdapter {
 
   mkdir(dirpath: string): Promise<void> {
     return fsp.mkdir(dirpath, { recursive: true })
-      .then(() => void 0)
+      .then(noop)
   }
 
   copy(src: string, dest: string): Promise<void> {

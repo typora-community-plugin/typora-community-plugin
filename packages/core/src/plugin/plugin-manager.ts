@@ -76,7 +76,7 @@ export class PluginManager {
       .then((dirnames) =>
         dirnames.map(dir => path.join(pluginsPath, dir))
       )
-      .catch(() => [])
+      .catch(() => [] as any[])
   }
 
   loadManifest(postion: PluginPostion, pluginPath: string) {

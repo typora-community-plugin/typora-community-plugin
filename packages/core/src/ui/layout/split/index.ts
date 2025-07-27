@@ -23,8 +23,16 @@ export class WorkspaceSplit extends WorkspaceParent {
       .addClass(`mod-${direction}`)
   }
 
-  insertChildEl(index: number, child: WorkspaceNode) {
+  protected _insertChildEl(index: number, child: WorkspaceNode) {
     this.containerEl.insertBefore(child.containerEl, this.containerEl.children[index + 1])
+  }
+
+  protected _removeChild(child: WorkspaceNode) {
+    super._removeChild(child)
+
+    if (this.children.length === 1) {
+      this.parent?.replaceChild(this, this.children[0])
+    }
   }
 
   onChildResizeStart(child: WorkspaceNode, e: MouseEvent) {
