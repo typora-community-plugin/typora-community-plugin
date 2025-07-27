@@ -23,6 +23,7 @@ export abstract class WorkspaceParent extends WorkspaceNode {
     this.children.splice(index, 0, child)
     child.setParent(this)
     this.insertChildEl(index, child)
+    this.getRoot().emit('layout-changed')
   }
 
   protected abstract insertChildEl(index: number, child: WorkspaceNode): void
@@ -38,6 +39,7 @@ export abstract class WorkspaceParent extends WorkspaceNode {
     this.children.splice(index, 1)
     child.setParent(null)
     child.containerEl.remove()
+    this.getRoot().emit('layout-changed')
   }
 
   toJSON() {

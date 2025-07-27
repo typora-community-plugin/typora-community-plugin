@@ -1,5 +1,6 @@
 import './editor-view.scss'
 import { editor } from "typora"
+import { useService } from 'src/common/service'
 import { View } from "../common/view"
 import type { WorkspaceTabs } from '../layout/tabs'
 
@@ -24,13 +25,18 @@ export class EditorView extends View {
 
     editor.writingArea.parentElement.classList.add('typ-workspace-binding');
     setTimeout(() => {
-      (this.containerEl.children[0] as HTMLObjectElement).contentWindow.onresize = EditorView.syncSize
       EditorView.syncSize()
+      this.registerObserver()
+      useService('workspace').rootSplit.on('layout-changed', () => this.registerObserver())
     })
   }
 
+  private registerObserver() {
+    (this.containerEl.children[0] as HTMLObjectElement).contentWindow.onresize = EditorView.syncSize
+  }
+
   private static syncSize() {
-    if(!EditorView.parent)return
+    if (!EditorView.parent) return
     const targetEl = EditorView.parent.tabContentEl
 
     const { style } = document.body
