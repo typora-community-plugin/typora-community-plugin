@@ -1,4 +1,4 @@
-import './editor-view.scss'
+import './markdown-editor-view.scss'
 import { editor } from "typora"
 import { useService } from 'src/common/service'
 import { View } from "../common/view"
@@ -8,7 +8,7 @@ import type { WorkspaceLeaf } from '../layout/workspace-leaf'
 
 // 状态模式、状态机、状态转移算法
 // 同步占位 view 的位置、大小到 content
-export class EditorView extends View {
+export class MarkdownEditorView extends View {
 
   static instanceCount = 0
   static parent: WorkspaceTabs
@@ -22,17 +22,17 @@ export class EditorView extends View {
 
   constructor(tabs: WorkspaceTabs) {
     super()
-    EditorView.instanceCount++
-    EditorView.parent = tabs
+    MarkdownEditorView.instanceCount++
+    MarkdownEditorView.parent = tabs
 
     const contentEl = editor.writingArea.parentElement
     contentEl.classList.add('typ-workspace-binding')
     contentEl.addEventListener('mousedown', () => {
-      useService('workspace').activeLeaf = EditorView.parent.children
+      useService('workspace').activeLeaf = MarkdownEditorView.parent.children
         .find((l: WorkspaceLeaf) => l.view === this) as WorkspaceLeaf
     })
     setTimeout(() => {
-      EditorView.syncSize()
+      MarkdownEditorView.syncSize()
       this.registerObserver()
       useService('workspace').rootSplit.on('layout-changed', () => this.registerObserver())
     })
@@ -40,12 +40,12 @@ export class EditorView extends View {
 
   private registerObserver() {
     const objectEl = this.containerEl.children[0] as HTMLObjectElement
-    if (objectEl.contentWindow) objectEl.contentWindow.onresize = EditorView.syncSize
+    if (objectEl.contentWindow) objectEl.contentWindow.onresize = MarkdownEditorView.syncSize
   }
 
   private static syncSize() {
-    if (!EditorView.parent) return
-    const targetEl = EditorView.parent.tabContentEl
+    if (!MarkdownEditorView.parent) return
+    const targetEl = MarkdownEditorView.parent.tabContentEl
 
     const { style } = document.body
     const rect = targetEl.getBoundingClientRect()

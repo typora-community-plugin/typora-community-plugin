@@ -23,7 +23,7 @@ import { WorkspaceLeaf } from './layout/workspace-leaf'
 import { createTabs, splitDown, splitRight } from './layout/workspace-utils'
 import type { ViewState } from './view-manager'
 import { EmptyView } from './views/empty-view'
-import { EditorView } from './views/editor-view'
+import { MarkdownEditorView } from './views/markdown-editor-view'
 import { MarkdownPreview } from './views/markdown-preview'
 
 
@@ -118,8 +118,8 @@ export class Workspace extends Events<WorkspaceEvents> {
       })
 
       viewManager.registerViewWithExtensions(['md', 'markdown'], 'core.markdown', (s) =>
-        EditorView.instanceCount === 0
-          ? new EditorView(s.state.tabs)
+        MarkdownEditorView.instanceCount === 0
+          ? new MarkdownEditorView(s.state.tabs)
           : viewManager.getViewCreatorByType('core.md-preview')(s)
       )
       viewManager.registerView('core.md-preview', (s) => new MarkdownPreview(s.state.path))
