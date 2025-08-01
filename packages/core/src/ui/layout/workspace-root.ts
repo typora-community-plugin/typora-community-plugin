@@ -24,9 +24,9 @@ export class WorkspaceRoot extends WorkspaceSplit {
       .append($(this.containerEl)
         .addClass('typ-workspace-root')
         .on('click', e => {
-          workspace.activeLeaf = this.findLeaves(workspace.rootSplit, (leaf) =>
-            leaf.view.containerEl === e.target
-          ).pop() as any
+          const el = e.target.closest('.typ-workspace-leaf')
+          if (!el) return
+          workspace.activeLeaf = this.findLeaves(this, leaf => leaf.containerEl === el).pop()
         }))
 
     workspace.on('file:open', (file) => {
