@@ -42,18 +42,28 @@ export class WorkspaceTabs extends WorkspaceParent {
 
   // --------- Tab Operators ---------
 
-  toggleTab(path: string, tabEl: HTMLElement): void {
+  toggleTab(path: string, tabEl?: HTMLElement): void {
+    if (!tabEl) {
+      tabEl = $(`.typ-tab[data-id="${path.replace(/\\/g, '\\\\')}"]`)[0]
+    }
+
     this.tabHeader.activeTab(tabEl)
     this.tabContentEl.querySelector('.mod-active')?.classList.remove('mod-active')
 
     const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)
     leaf.containerEl.classList.add('mod-active')
+    leaf.view.open()
   }
 
-  removeTab(path: string, tabEl: HTMLElement): void {
+  removeTab(path: string, tabEl?: HTMLElement): void {
+    if (!tabEl) {
+      tabEl = $(`.typ-tab[data-id="${path.replace(/\\/g, '\\\\')}"]`)[0]
+    }
+
     this.tabHeader.closeTab(tabEl)
 
     const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)
+    leaf.view.close()
     this.removeChild(leaf)
 
     if (!this.children.length) {

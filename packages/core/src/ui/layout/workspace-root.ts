@@ -1,7 +1,10 @@
 import './workspace-root.scss'
-import { WorkspaceSplit } from "./split"
-import { WorkspaceLeaf } from "./workspace-leaf"
 import type { Workspace } from "../workspace"
+import type { WorkspaceParent } from './workspace-parent'
+import { WorkspaceLeaf } from "./workspace-leaf"
+import { WorkspaceSplit } from "./split"
+import type { WorkspaceTabs } from './tabs'
+import { createEditorLeaf } from './workspace-utils'
 
 
 export type WorkspaceEvents = {
@@ -17,15 +20,42 @@ export class WorkspaceRoot extends WorkspaceSplit {
   constructor(workspace: Workspace) {
     super('vertical')
 
-    this.direction = 'vertical'
-
     $(document.body)
       .append($(this.containerEl)
         .addClass('typ-workspace-root')
         .on('click', e => {
-          workspace.activeLeaf = workspace.findViews(workspace.rootSplit, (leaf) =>
-            (leaf as any as WorkspaceLeaf).view.containerEl === e.target
+          workspace.activeLeaf = this.findLeaves(workspace.rootSplit, (leaf) =>
+            leaf.view.containerEl === e.target
           ).pop() as any
         }))
+
+    workspace.on('file:open', (file) => {
+      const activeTabs = workspace.activeLeaf.parent as WorkspaceTabs
+      if (this.findLeaves(activeTabs, leaf => leaf.state.path === file).length) {
+        activeTabs.toggleTab(file)
+        return
+      }
+      activeTabs.appendChild(createEditorLeaf(file))
+    })
+  }
+
+  eachLeaves(parent: WorkspaceParent, iteratee: (leaf: WorkspaceLeaf) => boolean | void) {
+    const nodes = parent.children
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i]
+      if (node.type !== 'leaf') {
+        this.eachLeaves(node as WorkspaceParent, iteratee)
+        continue
+      }
+      if (iteratee(node as WorkspaceLeaf)) break
+    }
+  }
+
+  findLeaves(parent: WorkspaceParent, iteratee: (leaf: WorkspaceLeaf) => boolean) {
+    const res: WorkspaceLeaf[] = []
+    this.eachLeaves(parent, v => {
+      if (iteratee(v)) res.push(v)
+    })
+    return res
   }
 }

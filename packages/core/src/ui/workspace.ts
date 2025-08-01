@@ -17,7 +17,6 @@ import type { Component } from 'src/common/component'
 import { useEventBus } from 'src/common/eventbus'
 import { useService } from 'src/common/service'
 import { WorkspaceRoot } from './layout/workspace-root'
-import type { WorkspaceNode } from './layout/workspace-node'
 import type { WorkspaceParent } from './layout/workspace-parent'
 import { WorkspaceLeaf } from './layout/workspace-leaf'
 import { createTabs, splitDown, splitRight } from './layout/workspace-utils'
@@ -134,9 +133,6 @@ export class Workspace extends Events<WorkspaceEvents> {
     return leaf
   }
 
-  /**
-   * @deprecated
-   */
   getViewByType<T extends new (...args: any) => any>(cls: T) {
     let res = undefined
     this.iterateViews(this as any, (v) => {
@@ -152,7 +148,6 @@ export class Workspace extends Events<WorkspaceEvents> {
    * Iterate all views in view tree.
    *
    * @param callback return `true` to stop iteration
-   * @deprecated
    */
   iterateViews(view: Component, callback: (view: Component) => boolean | void) {
     const children = (<any>view)._children as Component[]
@@ -162,26 +157,6 @@ export class Workspace extends Events<WorkspaceEvents> {
       if (!(<any>childView)._children.length) continue
       this.iterateViews(childView, callback)
     }
-  }
-
-  eachViews(view: WorkspaceParent, callback: (view: WorkspaceNode) => boolean | void) {
-    const nodes = (<any>view).children as WorkspaceNode[]
-    for (let i = 0; i < nodes.length; i++) {
-      const node = nodes[i]
-      if (node.type !== 'leaf') {
-        this.eachViews(node as WorkspaceParent, callback)
-        continue
-      }
-      if (callback(node)) break
-    }
-  }
-
-  findViews(view: WorkspaceParent, callback: (view: WorkspaceNode) => boolean) {
-    const res: WorkspaceNode[] = []
-    this.eachViews(view, v => {
-      if (callback(v)) res.push(v)
-    })
-    return res
   }
 
   private _emitMissingEvents() {

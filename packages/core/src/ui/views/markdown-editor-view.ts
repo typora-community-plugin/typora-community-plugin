@@ -38,6 +38,10 @@ export class MarkdownEditorView extends WorkspaceView {
     }
   }
 
+  onOpen() {
+    this.autoSetMode()
+  }
+
   private setMode(mode: EditorMode) {
     if (mode === EditorMode.Typora) {
       this.switchToTyporaMode()
