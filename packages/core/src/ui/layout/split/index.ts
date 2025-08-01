@@ -28,6 +28,14 @@ export class WorkspaceSplit extends WorkspaceParent {
   }
 
   protected _removeChild(child: WorkspaceNode) {
+    const splits = this.children
+    const rightIdx = this.children.findIndex(c => c === child)
+    const leftIdx = rightIdx === 0 ? 0 : rightIdx - 1
+    const leftDom = splits[leftIdx].containerEl
+    const rightDom = splits[rightIdx].containerEl
+    leftDom.style.cssText = ''
+    rightDom.style.cssText = ''
+
     super._removeChild(child)
 
     if (this.children.length === 1) {
