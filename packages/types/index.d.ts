@@ -1,5 +1,5 @@
-/// <reference types="codemirror" />
 /// <reference types="jquery" />
+import type * as OriginalCodeMirror from "codemirror"
 
 export declare var _options: {
   /** access in Windows & Linux */
@@ -104,6 +104,9 @@ interface TClientCommand {
   pinWindow(): void
   unpinWindow(): void
 }
+
+
+export declare function CodeMirror(containerElement: HTMLElement, options: any, parentEditor: any, cid: string): OriginalCodeMirror.Editor
 
 
 export declare var debugMode: boolean
@@ -354,13 +357,13 @@ interface Fences {
   /**
    * Mapping cid to CodeMirror instance
    */
-  queue: Record<string, CodeMirror.Editor>
+  queue: Record<string, OriginalCodeMirror.Editor>
 
   /**
    * Create a new CodeMirror instance on the `<pre>` element and add it to queue.
    */
-  addCodeBlock(cid: string): CodeMirror.Editor
-  getCm(cid: string): CodeMirror.Editor | null
+  addCodeBlock(cid: string): OriginalCodeMirror.Editor
+  getCm(cid: string): OriginalCodeMirror.Editor | null
   getValue(cid: string): string
 }
 
@@ -559,7 +562,7 @@ interface Bookmark {
 
 interface SourceView {
   inSourceMode: boolean
-  cm: CodeMirror.Editor
+  cm: OriginalCodeMirror.Editor
   prep(): void
   show(): void
   hide(): void

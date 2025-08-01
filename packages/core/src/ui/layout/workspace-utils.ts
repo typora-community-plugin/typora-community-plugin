@@ -10,18 +10,17 @@ export function createTabs(path?: string) {
   const tabs = useService('@@tabs')
   tabs.appendChild(workspace.activeLeaf =
     path
-      ? createEditorLeaf(tabs, path)
+      ? createEditorLeaf(path)
       : createEmptyLeaf()
   )
   return tabs
 }
 
-export function createEditorLeaf(tabs: WorkspaceTabs, filePath: string) {
+export function createEditorLeaf(filePath: string) {
   return useService('workspace').createLeaf({
     type: 'core.markdown', state: {
       path: filePath,
       title: path.basename(filePath),
-      tabs,
     }
   })
 }

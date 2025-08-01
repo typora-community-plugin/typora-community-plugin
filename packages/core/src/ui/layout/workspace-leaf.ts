@@ -1,7 +1,7 @@
 import { useService } from "src/common/service"
-import type { View } from "../common/view"
 import { WorkspaceNode } from "./workspace-node"
 import type { ViewState } from "../view-manager"
+import { WorkspaceView } from "./workspace-view"
 
 
 export class WorkspaceLeaf extends WorkspaceNode {
@@ -10,9 +10,9 @@ export class WorkspaceLeaf extends WorkspaceNode {
 
   state: ViewState['state']
   viewType: string
-  view: View
+  view: WorkspaceView
 
-  constructor(view?: View, private viewManager = useService('view-manager')) {
+  constructor(view?: WorkspaceView, private viewManager = useService('view-manager')) {
     super()
     this.containerEl.classList.add('typ-workspace-leaf')
     this.view = view
@@ -26,15 +26,16 @@ export class WorkspaceLeaf extends WorkspaceNode {
     const factory = this.viewManager.getViewCreatorByType(state.type)
     this.state = state.state ?? {}
     this.viewType = state.type
-    this.view = factory(state)
+    this.view = factory(this, state)
+    this.view.open()
     this.containerEl.append(this.view.containerEl)
     return this
   }
 
   toJSON() {
-      return {
-        type: 'leaf',
-        state: this.state,
-      }
+    return {
+      type: 'leaf',
+      state: this.state,
+    }
   }
 }

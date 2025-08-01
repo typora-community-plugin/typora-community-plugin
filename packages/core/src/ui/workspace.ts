@@ -28,6 +28,8 @@ import { MarkdownPreview } from './views/markdown-preview'
 
 
 export type WorkspaceEvents = {
+  'active-leaf:change'(leaf: WorkspaceLeaf): void
+
   'file:will-open'(path: string): void
   'file:open'(path: string): void
   'file:will-save'(path: string): void
@@ -55,6 +57,7 @@ export class Workspace extends Events<WorkspaceEvents> {
   //
   set activeLeaf(leaf: WorkspaceLeaf) {
     this._activeLeaf = leaf
+    this.emit('active-leaf:change', leaf)
   }
 
   activeEditor: MarkdownEditor
@@ -117,13 +120,9 @@ export class Workspace extends Events<WorkspaceEvents> {
         })
       })
 
-      viewManager.registerViewWithExtensions(['md', 'markdown'], 'core.markdown', (s) =>
-        MarkdownEditorView.instanceCount === 0
-          ? new MarkdownEditorView(s.state.tabs)
-          : viewManager.getViewCreatorByType('core.md-preview')(s)
-      )
-      viewManager.registerView('core.md-preview', (s) => new MarkdownPreview(s.state.path))
-      viewManager.registerView('core.empty', () => new EmptyView())
+      viewManager.registerViewWithExtensions(['md', 'markdown'], 'core.markdown', (leaf, s) => new MarkdownEditorView(leaf, s.state.path))
+      viewManager.registerView('core.md-preview', (leaf, s) => new MarkdownPreview(leaf, s.state.path))
+      viewManager.registerView('core.empty', (leaf) => new EmptyView(leaf))
 
       this.rootSplit.appendChild(createTabs(this.activeFile))
     })

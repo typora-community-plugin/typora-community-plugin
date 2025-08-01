@@ -1,4 +1,5 @@
-import { View } from "./common/view"
+import type { WorkspaceLeaf } from "./layout/workspace-leaf"
+import { WorkspaceView } from "./layout/workspace-view"
 
 
 export interface ViewState {
@@ -7,7 +8,7 @@ export interface ViewState {
   state?: Record<string, any>
 }
 
-type ViewFactory = (state?: ViewState) => View
+type ViewFactory = (leaf: WorkspaceLeaf, state?: ViewState) => WorkspaceView
 
 export class ViewManager {
 

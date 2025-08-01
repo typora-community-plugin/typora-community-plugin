@@ -23,4 +23,8 @@ content.typ-workspace-binding {
     z-index: -999;
     pointer-events: none;
   }
+
+  textarea {
+    display: none;
+  }
 }

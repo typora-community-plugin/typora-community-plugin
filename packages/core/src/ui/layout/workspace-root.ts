@@ -4,6 +4,14 @@ import { WorkspaceLeaf } from "./workspace-leaf"
 import type { Workspace } from "../workspace"
 
 
+export type WorkspaceEvents = {
+  'layout-changed'(): void
+  // 'leaf:active'(leaf: WorkspaceLeaf): void
+  // 'leaf:deactive'(leaf: WorkspaceLeaf): void
+  // 'leaf:toggle'(leaf: WorkspaceLeaf): void
+}
+
+
 export class WorkspaceRoot extends WorkspaceSplit {
 
   constructor(workspace: Workspace) {
