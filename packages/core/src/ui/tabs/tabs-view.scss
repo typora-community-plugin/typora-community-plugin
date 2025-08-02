@@ -1,15 +1,5 @@
-body.typ-file-tabs--enable {
-
-  content {
-    top: 2rem;
-  }
-
-  &.unibody-window {
-
-    content {
-      top: 3.75rem;
-    }
-  }
+body.typ-file-tabs--enable content {
+  top: calc(var(--typ-workspace-top) + var(--typ-tabs-height));
 }
 
 .typ-file-tabs {
@@ -31,6 +21,7 @@ body.typ-file-tabs--enable {
   .unibody-window & {
     margin-top: 28px;
   }
+
   .html-for-mac.mac-seamless-mode & {
     margin-top: 22px;
   }

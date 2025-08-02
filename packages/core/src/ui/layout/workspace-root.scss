@@ -4,7 +4,7 @@
 
 div.typ-workspace-root {
   position: absolute;
-  top: 3.75rem;
+  top: var(--typ-workspace-top);
   left: calc(var(--typ-ribbon-width) + var(--sidebar-width));
   z-index: -1;
   width: calc(100% - var(--typ-ribbon-width) - var(--sidebar-width));

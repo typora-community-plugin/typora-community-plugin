@@ -34,3 +34,11 @@
     --typ-shadow-color: var(--typ-color-gray-5);
   }
 }
+
+body {
+  --typ-workspace-top: 0;
+
+  &.unibody-window {
+    --typ-workspace-top: 1.75rem;
+  }
+}
