@@ -9,5 +9,4 @@ div.typ-workspace-root {
   z-index: -1;
   width: calc(100% - var(--typ-ribbon-width) - var(--sidebar-width));
   height: calc(100% - var(--typ-footer-height));
-  background: radial-gradient(black, transparent);
 }

@@ -43,6 +43,7 @@ export class TabsView extends Component {
   onload() {
     this.container ??= new FileTabContainer({
       className: 'typ-file-tabs',
+      draggable: true,
       onToggle: (tabId) => this.toggleTab(tabId),
       onClose: (tabId) => this.removeTab(tabId),
     })

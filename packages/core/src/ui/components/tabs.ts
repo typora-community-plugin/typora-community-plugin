@@ -6,6 +6,7 @@ import { draggable } from "./draggable"
 
 interface TabContainerProps {
   className?: string
+  draggable?: boolean
   onToggle: (tabId: string, tabEl: HTMLElement) => void
   onClose: (tabId: string, tabEl: HTMLElement) => void
 }
@@ -60,7 +61,7 @@ export class TabContainer extends View {
     )
 
     // handle: draggable
-    draggable(this.containerEl, 'x')
+    if(props.draggable) draggable(this.containerEl, 'x')
   }
 
   showTab(tabEl: HTMLElement) {

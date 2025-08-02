@@ -43,9 +43,7 @@ export class WorkspaceTabs extends WorkspaceParent {
   // --------- Tab Operators ---------
 
   toggleTab(path: string, tabEl?: HTMLElement): void {
-    if (!tabEl) {
-      tabEl = $(`.typ-tab[data-id="${path.replace(/\\/g, '\\\\')}"]`)[0]
-    }
+    tabEl ??= findTabEl(path)
 
     this.tabHeader.activeTab(tabEl)
     this.tabContentEl.querySelector('.mod-active')?.classList.remove('mod-active')
@@ -56,9 +54,7 @@ export class WorkspaceTabs extends WorkspaceParent {
   }
 
   removeTab(path: string, tabEl?: HTMLElement): void {
-    if (!tabEl) {
-      tabEl = $(`.typ-tab[data-id="${path.replace(/\\/g, '\\\\')}"]`)[0]
-    }
+    tabEl ??= findTabEl(path)
 
     this.tabHeader.closeTab(tabEl)
 
@@ -75,4 +71,8 @@ export class WorkspaceTabs extends WorkspaceParent {
       }
     }
   }
+}
+
+function findTabEl(path: string) {
+  return $(`.typ-tab[data-id="${path.replace(/\\/g, '\\\\')}"]`)[0]
 }
