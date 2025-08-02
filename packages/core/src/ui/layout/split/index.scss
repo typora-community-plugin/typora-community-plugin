@@ -4,6 +4,7 @@
   &>.typ-workspace-node {
     display: flex;
     flex: 1;
+    min-width: 0;
   }
 
   &.mod-vertical {
