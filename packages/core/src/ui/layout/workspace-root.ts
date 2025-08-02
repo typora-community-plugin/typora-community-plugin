@@ -1,10 +1,15 @@
 import './workspace-root.scss'
+import { editor } from 'typora'
+import decorate from '@plylrnsdy/decorate.js'
+import { Component } from 'src/common/component'
 import type { Workspace } from "../workspace"
 import type { WorkspaceParent } from './workspace-parent'
 import { WorkspaceLeaf } from "./workspace-leaf"
 import { WorkspaceSplit } from "./split"
 import type { WorkspaceTabs } from './tabs'
 import { createEditorLeaf } from './workspace-utils'
+import { MarkdownEditorView } from '../views/markdown-editor-view'
+import { useEventBus } from 'src/common/eventbus'
 
 
 export type WorkspaceEvents = {
@@ -16,6 +21,8 @@ export type WorkspaceEvents = {
 
 
 export class WorkspaceRoot extends WorkspaceSplit {
+
+  private component = new Component()
 
   constructor(workspace: Workspace) {
     super('vertical')
@@ -29,14 +36,24 @@ export class WorkspaceRoot extends WorkspaceSplit {
           workspace.activeLeaf = this.findLeaves(this, leaf => leaf.containerEl === el).pop()
         }))
 
-    workspace.on('file:open', (file) => {
-      const activeTabs = workspace.activeLeaf.parent as WorkspaceTabs
-      if (this.findLeaves(activeTabs, leaf => leaf.state.path === file).length) {
-        activeTabs.toggleTab(file)
-        return
-      }
-      activeTabs.appendChild(createEditorLeaf(file))
-    })
+    this.component.register(
+      decorate(editor.library, 'openFile', fn => (file, callback) => {
+        const activeTabs = workspace.activeLeaf?.parent as WorkspaceTabs
+        if (MarkdownEditorView.parent === activeTabs)
+          fn(file, callback)
+        else
+          useEventBus('workspace').emit('file:open', file)
+      }))
+
+    this.component.register(
+      workspace.on('file:open', (file) => {
+        const activeTabs = workspace.activeLeaf.parent as WorkspaceTabs
+        if (this.findLeaves(activeTabs, leaf => leaf.state.path === file).length) {
+          activeTabs.toggleTab(file)
+          return
+        }
+        activeTabs.appendChild(createEditorLeaf(file))
+      }))
   }
 
   eachLeaves(parent: WorkspaceParent, iteratee: (leaf: WorkspaceLeaf) => boolean | void) {

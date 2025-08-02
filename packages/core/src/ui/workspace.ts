@@ -49,7 +49,7 @@ export class Workspace extends Events<WorkspaceEvents> {
   //
   get activeLeaf(): WorkspaceLeaf {
     if (!this._activeLeaf?.parent) {
-      this.activeLeaf = (this.rootSplit.children[0] as WorkspaceParent).children[0] as WorkspaceLeaf
+      this.activeLeaf = (this.rootSplit.children[0] as WorkspaceParent)?.children[0] as WorkspaceLeaf
     }
     return this._activeLeaf
   }
