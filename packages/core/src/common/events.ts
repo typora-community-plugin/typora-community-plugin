@@ -5,7 +5,7 @@ import type { DisposeFunc } from "src/utils/types"
 
 type EventListener = (...args: any[]) => any
 
-type EventDefination = Record<string, EventListener>
+export type EventDefination = Record<string, EventListener>
 
 type EventMap = Record<string, EventListener[]>
 
@@ -76,5 +76,16 @@ export class Events<E extends EventDefination> {
 
   getEventNames() {
     return Object.keys(this._listeners)
+  }
+}
+
+export class PublicEvents<E extends EventDefination> extends Events<E> {
+
+  constructor(scope: string) {
+    super(scope)
+  }
+
+  public emit<K extends keyof E>(event: K, ...args: Parameters<E[K]>) {
+    return super.emit(event, ...args)
   }
 }

@@ -4,7 +4,7 @@ import type { VaultEvents } from "src/io/vault"
 import type { WorkspaceEvents } from "src/ui/workspace"
 import type { MarkdownEditorEvents } from "src/ui/editor/markdown-editor"
 import { memorize } from "src/utils"
-import { Events } from "./events"
+import { PublicEvents } from "./events"
 
 
 type EventbusMap = {
@@ -17,6 +17,6 @@ type EventbusMap = {
 
 export const useEventBus = memorize(
   function <T extends keyof EventbusMap>(scope: T) {
-    return new Events<EventbusMap[T]>(scope)
+    return new PublicEvents<EventbusMap[T]>(scope)
   }
 )
