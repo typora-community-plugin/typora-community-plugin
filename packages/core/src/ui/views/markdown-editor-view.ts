@@ -20,6 +20,8 @@ export class MarkdownEditorView extends WorkspaceView {
    * Placeholder
    */
   containerEl = $('<div class="typ-editor-view"></div>')[0]
+
+  mode: EditorMode
   codemirrorEditor?: InternalCodeMirror
 
   constructor(leaf: WorkspaceLeaf, public filePath?: string) {
@@ -40,9 +42,11 @@ export class MarkdownEditorView extends WorkspaceView {
 
   onOpen() {
     this.autoSetMode()
+    if(this.mode === EditorMode.Typora) editor.library.openFile(this.filePath)
   }
 
   private setMode(mode: EditorMode) {
+    this.mode = mode
     if (mode === EditorMode.Typora) {
       this.switchToTyporaMode()
     } else {
