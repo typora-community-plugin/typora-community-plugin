@@ -45,6 +45,20 @@ export class MarkdownEditorView extends WorkspaceView {
     if (this.mode === EditorMode.Typora) editor.library.openFile(this.filePath)
   }
 
+  onClose() {
+    if (this.mode === EditorMode.Typora) {
+      // fix: can not close codemirror editor when dragging the only one Typora editor tab from Tabs A to Tabs B (which contains CodeMirror editor)
+      if (this.leaf.parent.children.length === 1) {
+        MarkdownEditorView.parent = null
+      }
+    }
+    else {
+      // fix: can not close codemirror tab when dragging it from Tabs B to Tabs A (which contains Typora editor)
+      this.codemirrorEditor?.deactive()
+      this.codemirrorEditor = null
+    }
+  }
+
   private setMode(mode: EditorMode) {
     this.mode = mode
     if (mode === EditorMode.Typora) {
