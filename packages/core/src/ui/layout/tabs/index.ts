@@ -56,8 +56,10 @@ export class WorkspaceTabs extends WorkspaceParent {
   toggleTab(path: string, tabEl?: HTMLElement): void {
     tabEl ??= findTabEl(path)
 
-    this.tabHeader.activeTab(tabEl)
+    this.activedLeaf.view.close()
     this.tabContentEl.querySelector('.mod-active')?.classList.remove('mod-active')
+
+    this.tabHeader.activeTab(tabEl)
 
     const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)
     leaf.containerEl.classList.add('mod-active')

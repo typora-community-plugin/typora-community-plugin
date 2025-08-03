@@ -1,8 +1,14 @@
-content.typ-workspace-binding {
-  top: var(--typ-editor-top);
-  left: var(--typ-editor-left) !important;
-  width: var(--typ-editor-width);
-  height: var(--typ-editor-height);
+content {
+  &.typ-workspace-binding {
+    top: var(--typ-editor-top);
+    left: var(--typ-editor-left) !important;
+    width: var(--typ-editor-width);
+    height: var(--typ-editor-height);
+  }
+
+  &.typ-deactive {
+    display: none;
+  }
 }
 
 .typ-editor-view {

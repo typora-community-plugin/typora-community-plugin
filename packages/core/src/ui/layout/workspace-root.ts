@@ -46,6 +46,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
       decorate(editor.library, 'openFile', fn => (file, callback) => {
         const activeTabs = workspace.activeLeaf?.parent as WorkspaceTabs
         if (
+          !MarkdownEditorView.parent ||
           // handle: click file tree → open file in ActivedTabs
           MarkdownEditorView.parent === activeTabs ||
           // handle: (drag ActivedTab → close ActivedTab → open SiblingTab → open file in Non-ActivedTabs) in the Tabs with MarkdownEditorView (mode: Typora)
