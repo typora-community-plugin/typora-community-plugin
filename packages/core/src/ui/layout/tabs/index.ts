@@ -3,6 +3,7 @@ import { Tab, TabContainer } from 'src/ui/components/tabs'
 import { WorkspaceParent } from "../workspace-parent"
 import type { WorkspaceLeaf } from '../workspace-leaf'
 import { createEmptyLeaf } from '../workspace-utils'
+import { WorkspaceNode } from '../workspace-node'
 
 
 export class WorkspaceTabs extends WorkspaceParent {
@@ -40,7 +41,17 @@ export class WorkspaceTabs extends WorkspaceParent {
     this.tabContentEl.insertBefore(child.containerEl, this.tabContentEl.children[index])
   }
 
+  removeChild(child: WorkspaceNode): void {
+    this.removeTab((child as WorkspaceLeaf).state.path)
+  }
+
   // --------- Tab Operators ---------
+
+  get activedLeaf() {
+    const path = $(this.tabHeader.containerEl).find('.typ-tab.active').data('id')
+    const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)
+    return leaf
+  }
 
   toggleTab(path: string, tabEl?: HTMLElement): void {
     tabEl ??= findTabEl(path)
@@ -60,7 +71,7 @@ export class WorkspaceTabs extends WorkspaceParent {
 
     const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)
     leaf.view.close()
-    this.removeChild(leaf)
+    super.removeChild(leaf)
 
     if (!this.children.length) {
       if (this.getRoot() !== this.parent || this.parent.children.length > 1) {

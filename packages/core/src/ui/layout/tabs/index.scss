@@ -1,6 +1,21 @@
 .typ-workspace-tabs {
   flex-direction: column;
 
+  &.mod-drag-over {
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #7c3aed88;
+      z-index: 5;
+    }
+  }
+
   .typ-workspace-tab-header .typ-tab:only-child .typ-close {
     display: unset;
   }

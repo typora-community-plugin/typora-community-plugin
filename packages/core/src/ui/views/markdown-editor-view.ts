@@ -42,7 +42,7 @@ export class MarkdownEditorView extends WorkspaceView {
 
   onOpen() {
     this.autoSetMode()
-    if(this.mode === EditorMode.Typora) editor.library.openFile(this.filePath)
+    if (this.mode === EditorMode.Typora) editor.library.openFile(this.filePath)
   }
 
   private setMode(mode: EditorMode) {
