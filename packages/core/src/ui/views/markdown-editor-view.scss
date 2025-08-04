@@ -30,6 +30,9 @@ content {
   }
 
   textarea {
-    display: none;
+    position: absolute;
+    height: 0;
+    border: 0;
+    padding: 0;
   }
 }
