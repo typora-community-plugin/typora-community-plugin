@@ -12,10 +12,10 @@ export function draggable(root: WorkspaceRoot) {
 
   function onDragStart(e: MouseEvent) {
     if (e.button !== 0) return
-    e.preventDefault()
 
     const draggableEl = $(e.target).closest('[draggable=true]')[0]
     if (!draggableEl) return
+    e.preventDefault()
     draggedStartTime = Date.now()
     draggingTabEl = $(draggableEl).closest('.typ-tab')[0]
 
