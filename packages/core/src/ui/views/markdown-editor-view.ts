@@ -1,17 +1,14 @@
 import './markdown-editor-view.scss'
-import { editor, CodeMirror } from "typora"
+import { editor } from "typora"
 import { useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
 import { WorkspaceView } from '../layout/workspace-view'
 import type { WorkspaceTabs } from '../layout/tabs'
 import type { WorkspaceLeaf } from '../layout/workspace-leaf'
-import { uniqueId } from 'src/utils'
 
 
-enum EditorMode { Typora, CodeMirror }
+enum EditorMode { Typora, Previewer }
 
-// 状态模式、状态机、状态转移算法
-// 同步占位 view 的位置、大小到 content
 export class MarkdownEditorView extends WorkspaceView {
 
   static parent: WorkspaceTabs
@@ -22,7 +19,7 @@ export class MarkdownEditorView extends WorkspaceView {
   containerEl = $('<div class="typ-editor-view"></div>')[0]
 
   mode: EditorMode
-  codemirrorEditor?: InternalCodeMirror
+  mdPreviewer?: MarkdownPreviewer
 
   constructor(leaf: WorkspaceLeaf, public filePath?: string) {
     super(leaf)
@@ -36,7 +33,7 @@ export class MarkdownEditorView extends WorkspaceView {
       this.setMode(EditorMode.Typora)
     }
     else {
-      this.setMode(EditorMode.CodeMirror)
+      this.setMode(EditorMode.Previewer)
     }
   }
 
@@ -58,8 +55,8 @@ export class MarkdownEditorView extends WorkspaceView {
     }
     else {
       // fix: can not close codemirror tab when dragging it from Tabs B to Tabs A (which contains Typora editor)
-      this.codemirrorEditor?.deactive()
-      this.codemirrorEditor = null
+      this.mdPreviewer?.deactive(this.containerEl)
+      this.mdPreviewer = null
     }
   }
 
@@ -68,22 +65,32 @@ export class MarkdownEditorView extends WorkspaceView {
     if (mode === EditorMode.Typora) {
       this.switchToTyporaMode()
     } else {
-      this.switchToCodeMirrorMode(this.filePath)
+      this.switchToPreviewerMode(this.filePath)
     }
   }
 
   private switchToTyporaMode() {
-    this.codemirrorEditor?.deactive()
-    this.codemirrorEditor = null
-    InternalEditor.instance.active(this.leaf, this.containerEl)
+    const { containerEl } = this
+    containerEl.classList.remove('mode-previewer')
+    this.mdPreviewer?.deactive(containerEl)
+    this.mdPreviewer = null
+    setTimeout(() => (this.leaf.parent as WorkspaceTabs)?.removeTabClass(this.filePath, 'prefix-preview'))
+
+    containerEl.classList.add('mode-typora')
+    InternalEditor.instance.active(containerEl, this.leaf);
   }
 
-  private switchToCodeMirrorMode(filePath?: string) {
+  private switchToPreviewerMode(filePath?: string) {
+    const { containerEl } = this
+    containerEl.classList.remove('mode-typora')
     if (MarkdownEditorView.parent === this.leaf.parent) {
-      InternalEditor.instance.deactive(this.containerEl)
+      InternalEditor.instance.deactive(containerEl)
     }
-    this.codemirrorEditor = new InternalCodeMirror()
-    this.codemirrorEditor.active(filePath, this.containerEl)
+
+    containerEl.classList.add('mode-previewer')
+    this.mdPreviewer = new MarkdownPreviewer()
+    this.mdPreviewer.active(containerEl, filePath);
+    setTimeout(() => (this.leaf.parent as WorkspaceTabs)?.addTabClass(filePath, 'prefix-preview'))
   }
 }
 
@@ -96,8 +103,8 @@ class InternalEditor {
 
   private constructor() { }
 
-  active(leaf: WorkspaceLeaf, el: HTMLElement) {
-    el.innerHTML = '<object type="text/html" data="about:blank"></object>'
+  active(containerEl: HTMLElement, leaf: WorkspaceLeaf) {
+    containerEl.innerHTML = '<object type="text/html" data="about:blank"></object>'
 
     this.contentEl.classList.add('typ-workspace-binding')
     this.contentEl.addEventListener('mousedown', this.handleSettingActiveLeaf = () => {
@@ -106,17 +113,17 @@ class InternalEditor {
     setTimeout(() => {
       MarkdownEditorView.parent = leaf.parent as WorkspaceTabs
       this.syncSize()
-      this.registerObserver(el)
-      leaf.getRoot().on('layout-changed', () => this.registerObserver(el))
+      this.registerObserver(containerEl)
+      leaf.getRoot().on('layout-changed', () => this.registerObserver(containerEl))
     })
   }
 
-  deactive(el: HTMLElement) {
-    el.innerHTML = ''
+  deactive(containerEl: HTMLElement) {
+    containerEl.innerHTML = ''
 
     this.contentEl.classList.remove('typ-workspace-binding')
     this.contentEl.removeEventListener('mousedown', this.handleSettingActiveLeaf!)
-    this.unregisterObserver(el)
+    this.unregisterObserver(containerEl)
   }
 
   private registerObserver(el: HTMLElement) {
@@ -142,52 +149,15 @@ class InternalEditor {
   }
 }
 
-const OPTIONS = {
-  mode: 'markdown',
-  styleSelectedText: true,
-  maxHighlightLength: 1 / 0,
-  viewportMargin: 1 / 0,
-  styleActiveLine: true,
-  theme: " inner null-scroll",
-  lineWrapping: true,
-  lineNumbers: true,
-  resetSelectionOnContextMenu: true,
-  cursorScrollMargin: 60,
-  dragDrop: false,
-  scrollbarStyle: "null",
-}
+class MarkdownPreviewer {
 
-const FAKE_EDITOR = {
-  sourceView: {
-    inSourceMode: false,
-  },
-  undo: {
-    register() { },
-    lastRegisteredOperationCommand() { },
-  }
-}
-
-class InternalCodeMirror {
-
-  private cm: ReturnType<typeof CodeMirror>
-
-  getText() {
-    return this.cm.getValue()
+  active(containerEl: HTMLElement, path: string) {
+    const md = fs.readTextSync(path)
+    const [html] = editor.nodeMap.allNodes.first().__proto__.constructor.parseFrom(md)
+    containerEl.innerHTML = html.replace(/ contenteditable='true'/g, '')
   }
 
-  setText(text: string) {
-    this.cm.setValue(text)
-  }
-
-  active(filePath: string | undefined, el: HTMLElement) {
-    el.innerHTML = '<textarea></textarea>'
-    this.cm = CodeMirror(el, OPTIONS, FAKE_EDITOR, uniqueId('cm'))
-    if (filePath) {
-      this.cm.setValue(fs.readTextSync(filePath))
-    }
-  }
-
-  deactive() {
-    this.cm = null
+  deactive(containerEl: HTMLElement) {
+    containerEl.innerHTML = ''
   }
 }

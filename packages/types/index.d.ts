@@ -106,9 +106,6 @@ interface TClientCommand {
 }
 
 
-export declare function CodeMirror(containerElement: HTMLElement, options: any, parentEditor: any, cid: string): OriginalCodeMirror.Editor
-
-
 export declare var debugMode: boolean
 
 

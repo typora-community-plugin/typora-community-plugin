@@ -53,8 +53,16 @@ export class WorkspaceTabs extends WorkspaceParent {
     return leaf
   }
 
+  addTabClass(path: string, className: string) {
+    findTabEl(this.containerEl, path)?.classList.add(className)
+  }
+
+  removeTabClass(path: string, className: string) {
+    findTabEl(this.containerEl, path)?.classList.remove(className)
+  }
+
   toggleTab(path: string, tabEl?: HTMLElement): void {
-    tabEl ??= findTabEl(path)
+    tabEl ??= findTabEl(this.containerEl, path)
 
     this.activedLeaf.view.close()
     this.tabContentEl.querySelector('.mod-active')?.classList.remove('mod-active')
@@ -67,7 +75,7 @@ export class WorkspaceTabs extends WorkspaceParent {
   }
 
   removeTab(path: string, tabEl?: HTMLElement): void {
-    tabEl ??= findTabEl(path)
+    tabEl ??= findTabEl(this.containerEl, path)
 
     this.tabHeader.closeTab(tabEl)
 
@@ -86,6 +94,6 @@ export class WorkspaceTabs extends WorkspaceParent {
   }
 }
 
-function findTabEl(path: string) {
-  return $(`.typ-tab[data-id="${path.replace(/\\/g, '\\\\')}"]`)[0]
+function findTabEl(el: HTMLElement, path: string) {
+  return $(`.typ-tab[data-id="${path.replace(/\\/g, '\\\\')}"]`, el)[0]
 }

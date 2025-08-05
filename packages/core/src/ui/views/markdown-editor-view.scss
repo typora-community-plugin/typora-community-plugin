@@ -14,7 +14,7 @@ content {
 .typ-editor-view {
   width: 100%;
 
-  object {
+  &.mode-typora object {
     display: block;
     position: absolute;
     top: 0px;
@@ -29,10 +29,11 @@ content {
     pointer-events: none;
   }
 
-  textarea {
-    position: absolute;
-    height: 0;
-    border: 0;
-    padding: 0;
+  &.mode-previewer {
+    padding: 0 2rem 2rem;
   }
+}
+
+.typ-tab.prefix-preview::before {
+  content: '🔍 ';
 }
