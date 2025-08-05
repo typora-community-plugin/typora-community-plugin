@@ -49,7 +49,7 @@ export class MarkdownEditorView extends WorkspaceView {
     if (this.mode === EditorMode.Typora) {
       editor.writingArea.parentElement.classList.add('typ-deactive')
       // fix: can not close codemirror editor when dragging the only one Typora editor tab from Tabs A to Tabs B (which contains CodeMirror editor)
-      if (this.leaf.parent.children.length === 1) {
+      if (MarkdownEditorView.parent.children.length === 1) {
         MarkdownEditorView.parent = null
       }
     }

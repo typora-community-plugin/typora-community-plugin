@@ -33,6 +33,7 @@ export class WorkspaceTabs extends WorkspaceParent {
       text: child.state.title,
     }))
     super.insertChild(index, child)
+    child.view.open()
   }
 
   _insertChildEl(index: number, child: WorkspaceLeaf) {

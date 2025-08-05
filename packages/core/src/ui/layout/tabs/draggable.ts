@@ -2,7 +2,7 @@ import type { WorkspaceTabs } from "."
 import type { WorkspaceRoot } from "../workspace-root"
 
 
-export function draggable(root: WorkspaceRoot) {
+export function draggableTabs(root: WorkspaceRoot) {
 
   const rootEl = root.containerEl
   let draggedStartTime = Number.MAX_SAFE_INTEGER

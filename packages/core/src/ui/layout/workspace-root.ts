@@ -8,7 +8,7 @@ import type { WorkspaceParent } from './workspace-parent'
 import type { WorkspaceLeaf } from "./workspace-leaf"
 import { WorkspaceSplit } from "./split"
 import type { WorkspaceTabs } from './tabs'
-import { draggable } from './tabs/draggable'
+import { draggableTabs } from './tabs/draggable'
 import { createEditorLeaf } from './workspace-utils'
 import { MarkdownEditorView } from '../views/markdown-editor-view'
 import { useEventBus } from 'src/common/eventbus'
@@ -39,7 +39,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
         }))
 
     this.component.register(
-      draggable(this)
+      draggableTabs(this)
     )
 
     this.component.register(
