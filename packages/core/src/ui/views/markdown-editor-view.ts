@@ -21,7 +21,11 @@ export class MarkdownEditorView extends WorkspaceView {
   mode: EditorMode
   mdPreviewer?: MarkdownPreviewer
 
-  constructor(leaf: WorkspaceLeaf, public filePath?: string) {
+  constructor(
+    leaf: WorkspaceLeaf,
+    public filePath?: string,
+    private workspace = useService('workspace'),
+  ) {
     super(leaf)
 
     setTimeout(() => this.autoSetMode())
@@ -47,7 +51,8 @@ export class MarkdownEditorView extends WorkspaceView {
 
   onClose() {
     if (this.mode === EditorMode.Typora) {
-      editor.writingArea.parentElement.classList.add('typ-deactive')
+      if (this.workspace.activeFile === this.filePath)
+        editor.writingArea.parentElement.classList.add('typ-deactive')
       // fix: can not close codemirror editor when dragging the only one Typora editor tab from Tabs A to Tabs B (which contains CodeMirror editor)
       if (MarkdownEditorView.parent.children.length === 1) {
         MarkdownEditorView.parent = null
@@ -96,19 +101,23 @@ export class MarkdownEditorView extends WorkspaceView {
 
 class InternalEditor {
 
-  static instance = new InternalEditor()
+  private static _instance: InternalEditor
+
+  static get instance() {
+    return this._instance ??= new InternalEditor()
+  }
 
   contentEl = editor.writingArea.parentElement
   handleSettingActiveLeaf: (this: HTMLElement, ev: MouseEvent) => any
 
-  private constructor() { }
+  private constructor(private workspace = useService('workspace')) { }
 
   active(containerEl: HTMLElement, leaf: WorkspaceLeaf) {
     containerEl.innerHTML = '<object type="text/html" data="about:blank"></object>'
 
     this.contentEl.classList.add('typ-workspace-binding')
     this.contentEl.addEventListener('mousedown', this.handleSettingActiveLeaf = () => {
-      useService('workspace').activeLeaf = leaf
+      this.workspace.activeLeaf = leaf
     })
     setTimeout(() => {
       MarkdownEditorView.parent = leaf.parent as WorkspaceTabs
