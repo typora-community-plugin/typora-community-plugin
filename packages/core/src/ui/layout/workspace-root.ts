@@ -12,6 +12,7 @@ import { draggableTabs } from './tabs/draggable'
 import { createEditorLeaf } from './workspace-utils'
 import { MarkdownEditorView } from '../views/markdown-editor-view'
 import { useEventBus } from 'src/common/eventbus'
+import { onTabsContextMenu } from './tabs/contextmenu'
 
 
 export type WorkspaceEvents = {
@@ -22,6 +23,7 @@ export type WorkspaceEvents = {
 }
 
 
+// TODO move each/find/filter to Node
 export class WorkspaceRoot extends WorkspaceSplit {
 
   private component = new Component()
@@ -38,9 +40,9 @@ export class WorkspaceRoot extends WorkspaceSplit {
           workspace.activeLeaf = this.findLeaf(this, leaf => leaf.containerEl === el)
         }))
 
-    this.component.register(
-      draggableTabs(this)
-    )
+    this.component.register(draggableTabs(this))
+
+    this.component.registerDomEvent(this.containerEl, 'contextmenu', onTabsContextMenu(this))
 
     this.component.register(
       decorate(editor.library, 'openFile', fn => (file, callback) => {

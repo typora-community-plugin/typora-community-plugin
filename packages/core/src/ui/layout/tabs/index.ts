@@ -55,15 +55,15 @@ export class WorkspaceTabs extends WorkspaceParent {
   }
 
   addTabClass(path: string, className: string) {
-    findTabEl(this.containerEl, path)?.classList.add(className)
+    this.findTabEl(path)?.classList.add(className)
   }
 
   removeTabClass(path: string, className: string) {
-    findTabEl(this.containerEl, path)?.classList.remove(className)
+    this.findTabEl(path)?.classList.remove(className)
   }
 
   toggleTab(path: string, tabEl?: HTMLElement): void {
-    tabEl ??= findTabEl(this.containerEl, path)
+    tabEl ??= this.findTabEl(path)
 
     this.activedLeaf.view.close()
     this.tabContentEl.querySelector('.mod-active')?.classList.remove('mod-active')
@@ -76,7 +76,7 @@ export class WorkspaceTabs extends WorkspaceParent {
   }
 
   removeTab(path: string, tabEl?: HTMLElement): void {
-    tabEl ??= findTabEl(this.containerEl, path)
+    tabEl ??= this.findTabEl(path)
 
     this.tabHeader.closeTab(tabEl)
 
@@ -93,8 +93,18 @@ export class WorkspaceTabs extends WorkspaceParent {
       }
     }
   }
-}
 
-function findTabEl(el: HTMLElement, path: string) {
-  return $(`.typ-tab[data-id="${path.replace(/\\/g, '\\\\')}"]`, el)[0]
+  removeOthers(path: string) {
+    this.toggleTab(path)
+    this.tabHeader.closeOtherTabs(this.findTabEl(path))
+  }
+
+  removeRight(path: string) {
+    this.toggleTab(path)
+    this.tabHeader.closeRightTabs(this.findTabEl(path))
+  }
+
+  private findTabEl(path: string) {
+    return $(`.typ-tab[data-id="${path.replace(/\\/g, '\\\\')}"]`, this.tabHeader.containerEl)[0]
+  }
 }

@@ -99,7 +99,7 @@ export class TabContainer extends View {
   closeOtherTabs(tabEl: HTMLElement) {
     (Array.from(this.container.children) as HTMLElement[])
       .filter(el => el !== tabEl)
-      .forEach(el => this.props.onClose(el.dataset.id, tabEl))
+      .forEach(el => this.props.onClose(el.dataset.id, el))
   }
 
   closeRightTabs(tabEl: HTMLElement) {
