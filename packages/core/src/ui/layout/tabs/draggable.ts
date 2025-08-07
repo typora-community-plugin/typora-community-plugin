@@ -27,7 +27,11 @@ export function draggableTabs(root: WorkspaceRoot) {
     if (!draggingTabEl) return
     if (Date.now() - draggedStartTime <= 300) return
     $('.mod-drag-over').removeClass('mod-drag-over')
-    $(e.target).closest('.typ-workspace-tabs').addClass('mod-drag-over')
+    const $tabEl = $(e.target).closest('.typ-tab')
+    if ($tabEl)
+      $tabEl.addClass('mod-drag-over')
+    else
+      $(e.target).closest('.typ-workspace-tabs').addClass('mod-drag-over')
   }
 
   function onDrop(e: MouseEvent) {
@@ -35,12 +39,22 @@ export function draggableTabs(root: WorkspaceRoot) {
     $('.mod-drag-over').removeClass('mod-drag-over')
 
     const draggingLeaf = root.findLeaf(root, leaf => leaf.state.path === draggingTabEl.dataset.id)
-    const dragOverEl = $(e.target).closest('.typ-workspace-tabs')[0]
-    const dragOverTabs = root.findNode(root, node => node.containerEl === dragOverEl) as WorkspaceTabs
+    const dragOverTabEl = $(e.target).closest('.typ-tab')[0]
+    const dragOverTabsEl = $(e.target).closest('.typ-workspace-tabs')[0]
+    const dragOverTabs = root.findNode(root, node => node.containerEl === dragOverTabsEl) as WorkspaceTabs
+    const isDroppingInOriginalTabs = draggingLeaf.parent === dragOverTabs
 
-    if (draggingLeaf.parent !== dragOverTabs) {
+    if (isDroppingInOriginalTabs) {
+      if (dragOverTabEl) {
+        dragOverTabEl.parentElement.insertBefore(draggingTabEl, dragOverTabEl)
+      }
+    }
+    else {
+      const i = dragOverTabEl
+        ? Array.from(dragOverTabEl.parentElement.children).findIndex(el => el === dragOverTabEl)
+        : dragOverTabs.children.length
       draggingLeaf.detach()
-      setTimeout(() => dragOverTabs.appendChild(draggingLeaf))
+      setTimeout(() => dragOverTabs.insertChild(i, draggingLeaf))
     }
 
     draggedStartTime = Number.MAX_SAFE_INTEGER

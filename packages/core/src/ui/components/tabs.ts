@@ -61,7 +61,7 @@ export class TabContainer extends View {
     )
 
     // handle: draggable
-    if(props.draggable) draggable(this.containerEl, 'x')
+    if (props.draggable) draggable(this.containerEl, 'x')
   }
 
   showTab(tabEl: HTMLElement) {
@@ -69,8 +69,12 @@ export class TabContainer extends View {
   }
 
   addTab(tab: Tab) {
+    this.insertTab(this.container.children.length, tab)
+  }
+
+  insertTab(index: number, tab: Tab) {
     this.activeTab(tab.containerEl)
-    this.container.append(tab.containerEl)
+    this.container.insertBefore(tab.containerEl, this.container.children[index])
     this.showTab(tab.containerEl)
   }
 

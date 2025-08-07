@@ -28,7 +28,7 @@ export class WorkspaceTabs extends WorkspaceParent {
   }
 
   insertChild(index: number, child: WorkspaceLeaf) {
-    this.tabHeader.addTab(new Tab({
+    this.tabHeader.insertTab(index, new Tab({
       id: child.state.path,
       text: child.state.title,
     }))
