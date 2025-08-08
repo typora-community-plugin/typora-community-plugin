@@ -5,7 +5,10 @@ import type { WorkspaceRoot } from "../workspace-root"
 export function draggableTabs(root: WorkspaceRoot) {
 
   const rootEl = root.containerEl
-  let draggedStartTime = Number.MAX_SAFE_INTEGER
+
+  let startX = 0
+  let startY = 0
+  let isMouseDown = false
   let draggingTabEl: HTMLElement
 
   rootEl.addEventListener('mousedown', onDragStart)
@@ -16,7 +19,10 @@ export function draggableTabs(root: WorkspaceRoot) {
     const draggableEl = $(e.target).closest('[draggable=true]')[0]
     if (!draggableEl) return
     e.preventDefault()
-    draggedStartTime = Date.now()
+
+    startX = e.clientX
+    startY = e.clientY
+    isMouseDown = true
     draggingTabEl = $(draggableEl).closest('.typ-tab')[0]
 
     rootEl.addEventListener('mousemove', onDragOver)
@@ -24,9 +30,11 @@ export function draggableTabs(root: WorkspaceRoot) {
   }
 
   function onDragOver(e: MouseEvent) {
-    if (!draggingTabEl) return
-    if (Date.now() - draggedStartTime <= 300) return
+    if (!isMouseDown) return
+    if (moveLessThan9px(e.clientX, e.clientY)) return
+
     $('.mod-drag-over').removeClass('mod-drag-over')
+
     const $tabEl = $(e.target).closest('.typ-tab')
     if ($tabEl)
       $tabEl.addClass('mod-drag-over')
@@ -35,13 +43,21 @@ export function draggableTabs(root: WorkspaceRoot) {
   }
 
   function onDrop(e: MouseEvent) {
+    isMouseDown = false
+    rootEl.removeEventListener('mousemove', onDragOver)
+    rootEl.removeEventListener('mouseup', onDrop)
+
+    if (moveLessThan9px(e.clientX, e.clientY)) {
+      draggingTabEl = null
+    }
     if (!draggingTabEl) return
+
     $('.mod-drag-over').removeClass('mod-drag-over')
 
-    const draggingLeaf = root.findLeaf(root, leaf => leaf.state.path === draggingTabEl.dataset.id)
+    const draggingLeaf = root.findLeaf(leaf => leaf.state.path === draggingTabEl.dataset.id)
     const dragOverTabEl = $(e.target).closest('.typ-tab')[0]
     const dragOverTabsEl = $(e.target).closest('.typ-workspace-tabs')[0]
-    const dragOverTabs = root.findNode(root, node => node.containerEl === dragOverTabsEl) as WorkspaceTabs
+    const dragOverTabs = root.findNode(node => node.containerEl === dragOverTabsEl) as WorkspaceTabs
     const isDroppingInOriginalTabs = draggingLeaf.parent === dragOverTabs
 
     if (isDroppingInOriginalTabs) {
@@ -57,10 +73,11 @@ export function draggableTabs(root: WorkspaceRoot) {
       setTimeout(() => dragOverTabs.insertChild(i, draggingLeaf))
     }
 
-    draggedStartTime = Number.MAX_SAFE_INTEGER
     draggingTabEl = null
-    rootEl.removeEventListener('mousemove', onDragOver)
-    rootEl.removeEventListener('mouseup', onDrop)
+  }
+
+  function moveLessThan9px(currentX: number, currentY: number) {
+    return Math.abs(startX - currentX) < 9 && Math.abs(startY - currentY) < 9
   }
 
   return () => {
