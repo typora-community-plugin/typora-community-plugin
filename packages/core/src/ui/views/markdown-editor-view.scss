@@ -7,7 +7,12 @@ content {
   }
 
   &.typ-deactive {
-    display: none;
+    width: 0;
+    height: 0;
+
+    #write {
+      display: none;
+    }
   }
 }
 
