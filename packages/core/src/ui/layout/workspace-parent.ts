@@ -10,6 +10,8 @@ export abstract class WorkspaceParent extends WorkspaceNode {
     return false
   }
 
+  // --------- Child Node Operators ---------
+
   appendChild(child: WorkspaceNode) {
     this.insertChild(this.children.length, child)
   }
@@ -49,6 +51,61 @@ export abstract class WorkspaceParent extends WorkspaceNode {
     this.children.splice(index, 1)
     child.setParent(null)
     child.containerEl.remove()
+  }
+
+  // --------- Iteration Operators ---------
+
+  eachNodes(iteratee: (node: WorkspaceNode) => boolean | void, parent: WorkspaceParent = this) {
+    const nodes = parent.children
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i]
+      if (iteratee(node)) break
+      if (node.type !== 'leaf') {
+        this.eachNodes(iteratee, node as WorkspaceParent)
+      }
+    }
+  }
+
+  findNode(iteratee: (node: WorkspaceNode) => boolean) {
+    let res: WorkspaceNode
+    this.eachNodes(node => {
+      if (iteratee(node)) {
+        res = node
+        return true
+      }
+    })
+    return res
+  }
+
+  eachLeaves(iteratee: (leaf: WorkspaceLeaf) => boolean | void, parent: WorkspaceParent = this) {
+    const nodes = parent.children
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i]
+      if (node.type === 'leaf') {
+        if (iteratee(node as WorkspaceLeaf)) break
+      } else {
+        this.eachLeaves(iteratee, node as WorkspaceParent)
+      }
+    }
+  }
+
+  findLeaf(iteratee: (leaf: WorkspaceLeaf) => boolean) {
+    let res: WorkspaceLeaf
+    this.eachLeaves(leaf => {
+      if (iteratee(leaf)) {
+        res = leaf
+        return true
+      }
+    })
+    return res
+  }
+
+  filterLeaves(iteratee: (leaf: WorkspaceLeaf) => boolean) {
+    const res: WorkspaceLeaf[] = []
+    this.eachLeaves(leaf => {
+      if (iteratee(leaf)) res.push(leaf)
+    })
+    return res
   }
 
   toJSON() {

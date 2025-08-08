@@ -14,7 +14,7 @@ export function onTabsContextMenu(root: WorkspaceRoot, i18n = useService('i18n')
     const $tabEl = $(event.target).closest('.typ-tab')
     const clickedTabPath = $tabEl.data('id')
     const tabsEl = $tabEl.closest('.typ-workspace-tabs')[0]
-    const tabs = root.findNode(root, n => n.containerEl === tabsEl) as WorkspaceTabs
+    const tabs = root.findNode(n => n.containerEl === tabsEl) as WorkspaceTabs
 
     menu.empty()
 

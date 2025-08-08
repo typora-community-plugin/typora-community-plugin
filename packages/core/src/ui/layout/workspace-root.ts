@@ -3,9 +3,6 @@ import { editor } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
 import { Component } from 'src/common/component'
 import type { Workspace } from "../workspace"
-import type { WorkspaceNode } from './workspace-node'
-import type { WorkspaceParent } from './workspace-parent'
-import type { WorkspaceLeaf } from "./workspace-leaf"
 import { WorkspaceSplit } from "./split"
 import type { WorkspaceTabs } from './tabs'
 import { draggableTabs } from './tabs/draggable'
@@ -37,7 +34,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
         .on('click', e => {
           const el = e.target.closest('.typ-workspace-leaf')
           if (!el) return
-          workspace.activeLeaf = this.findLeaf(this, leaf => leaf.containerEl === el)
+          workspace.activeLeaf = this.findLeaf(leaf => leaf.containerEl === el)
         }))
 
     this.component.register(draggableTabs(this))
@@ -62,64 +59,11 @@ export class WorkspaceRoot extends WorkspaceSplit {
     this.component.register(
       workspace.on('file:open', (file) => {
         const activeTabs = workspace.activeLeaf.parent as WorkspaceTabs
-        if (this.findLeaf(activeTabs, leaf => leaf.state.path === file)) {
+        if (activeTabs.findLeaf(leaf => leaf.state.path === file)) {
           activeTabs.toggleTab(file)
           return
         }
         activeTabs.appendChild(createEditorLeaf(file))
       }))
-  }
-
-  eachNodes(parent: WorkspaceParent, iteratee: (node: WorkspaceNode) => boolean | void) {
-    const nodes = parent.children
-    for (let i = 0; i < nodes.length; i++) {
-      const node = nodes[i]
-      if (iteratee(node)) break
-      if (node.type !== 'leaf') {
-        this.eachNodes(node as WorkspaceParent, iteratee)
-      }
-    }
-  }
-
-  findNode(parent: WorkspaceParent, iteratee: (node: WorkspaceNode) => boolean) {
-    let res: WorkspaceNode
-    this.eachNodes(parent, node => {
-      if (iteratee(node)) {
-        res = node
-        return true
-      }
-    })
-    return res
-  }
-
-  eachLeaves(parent: WorkspaceParent, iteratee: (leaf: WorkspaceLeaf) => boolean | void) {
-    const nodes = parent.children
-    for (let i = 0; i < nodes.length; i++) {
-      const node = nodes[i]
-      if (node.type === 'leaf') {
-        if (iteratee(node as WorkspaceLeaf)) break
-      } else {
-        this.eachLeaves(node as WorkspaceParent, iteratee)
-      }
-    }
-  }
-
-  findLeaf(parent: WorkspaceParent, iteratee: (leaf: WorkspaceLeaf) => boolean) {
-    let res: WorkspaceLeaf
-    this.eachLeaves(parent, leaf => {
-      if (iteratee(leaf)) {
-        res = leaf
-        return true
-      }
-    })
-    return res
-  }
-
-  filterLeaves(parent: WorkspaceParent, iteratee: (leaf: WorkspaceLeaf) => boolean) {
-    const res: WorkspaceLeaf[] = []
-    this.eachLeaves(parent, leaf => {
-      if (iteratee(leaf)) res.push(leaf)
-    })
-    return res
   }
 }

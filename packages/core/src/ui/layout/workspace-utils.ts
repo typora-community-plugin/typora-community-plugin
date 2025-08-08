@@ -1,7 +1,6 @@
 import path from "src/path"
 import { useService } from "src/common/service"
 import type { Direction, WorkspaceSplit } from "./split"
-import type { WorkspaceTabs } from "./tabs"
 import { uniqueId } from "src/utils"
 
 
