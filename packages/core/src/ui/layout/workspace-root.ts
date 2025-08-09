@@ -21,7 +21,6 @@ export type WorkspaceEvents = {
 }
 
 
-// TODO move each/find/filter to Node
 export class WorkspaceRoot extends WorkspaceSplit {
 
   private component = new Component()
@@ -29,7 +28,8 @@ export class WorkspaceRoot extends WorkspaceSplit {
   constructor(
     workspace: Workspace,
     commands = useService('command-manager'),
-    settings = useService('settings')
+    { t } = useService('i18n'),
+    settings = useService('settings'),
   ) {
     super('vertical')
 
@@ -78,7 +78,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
           menu.insertItemAfter('[data-action="open"]', item => {
             item
               .setKey('typ-split-right')
-              .setTitle('在右侧打开预览')
+              .setTitle(t.workspace.fileContextMenuSplitRight)
               .onClick(event => splitRight(path))
           })
         }))
@@ -86,7 +86,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
       this.component.register(
         commands.register({
           id: 'core.workspace.split-right',
-          title: 'Split Right',
+          title: t.workspace.commandSplitRight,
           scope: 'global',
           callback: splitRight,
         }))
@@ -94,9 +94,20 @@ export class WorkspaceRoot extends WorkspaceSplit {
       this.component.register(
         commands.register({
           id: 'core.workspace.split-down',
-          title: 'Split Down',
+          title: t.workspace.commandSplitDown,
           scope: 'global',
           callback: splitDown,
+        }))
+
+      this.component.register(
+        commands.register({
+          id: 'core.workspace.reset',
+          title: t.workspace.commandReset,
+          scope: 'global',
+          callback: () => {
+            this.component.unload()
+            this.component.load()
+          },
         }))
 
       this.appendChild(createTabs(workspace.activeFile))
@@ -107,6 +118,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
       this.children.forEach(child => child.detach())
       this.containerEl.remove()
       editor.writingArea.parentElement.setAttribute('class', '')
+      MarkdownEditorView.parent = null
     }
 
     settings.onChange('useWorkspace', (_, isEnabled) => {

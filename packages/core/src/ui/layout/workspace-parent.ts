@@ -55,13 +55,13 @@ export abstract class WorkspaceParent extends WorkspaceNode {
 
   // --------- Iteration Operators ---------
 
-  eachNodes(iteratee: (node: WorkspaceNode) => boolean | void, parent: WorkspaceParent = this) {
-    const nodes = parent.children
+  eachNodes(iteratee: (node: WorkspaceNode) => boolean | void) {
+    const nodes = this.children
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i]
       if (iteratee(node)) break
       if (node.type !== 'leaf') {
-        this.eachNodes(iteratee, node as WorkspaceParent)
+        (node as WorkspaceParent).eachNodes(iteratee)
       }
     }
   }
@@ -77,14 +77,14 @@ export abstract class WorkspaceParent extends WorkspaceNode {
     return res
   }
 
-  eachLeaves(iteratee: (leaf: WorkspaceLeaf) => boolean | void, parent: WorkspaceParent = this) {
-    const nodes = parent.children
+  eachLeaves(iteratee: (leaf: WorkspaceLeaf) => boolean | void) {
+    const nodes = this.children
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i]
       if (node.type === 'leaf') {
         if (iteratee(node as WorkspaceLeaf)) break
       } else {
-        this.eachLeaves(iteratee, node as WorkspaceParent)
+        (node as WorkspaceParent).eachLeaves(iteratee)
       }
     }
   }

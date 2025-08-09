@@ -115,5 +115,11 @@
     "close": "Close",
     "closeOthers": "Close other tabs",
     "closeRight": "Close tabs to right"
+  },
+  "workspace": {
+    "commandSplitRight": "Workspace: Split right",
+    "commandSplitDown": "Workspace: Split down",
+    "commandReset": "Workspace: Reset",
+    "fileContextMenuSplitRight": "Open to the right"
   }
 }

@@ -115,5 +115,11 @@
     "close": "关闭标签",
     "closeOthers": "关闭其他标签",
     "closeRight": "关闭右侧标签"
+  },
+  "workspace": {
+    "commandSplitRight": "Workspace: 右侧打开窗格",
+    "commandSplitDown": "Workspace: 下方打开窗格",
+    "commandReset": "Workspace: 重置",
+    "fileContextMenuSplitRight": "在右侧打开预览"
   }
 }
