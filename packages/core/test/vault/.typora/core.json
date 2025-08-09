@@ -20,6 +20,7 @@
         "order": 2
       }
     },
-    "showFileTabs": false
+    "showFileTabs": false,
+    "useWorkspace": true
   }
 }

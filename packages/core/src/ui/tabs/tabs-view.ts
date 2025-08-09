@@ -28,13 +28,17 @@ export class TabsView extends Component {
   ) {
     super()
 
+    settings.onChange('useWorkspace', (_, isEnabled) => {
+      isEnabled ? this.unload() : this.load()
+    })
+
     settings.onChange('showFileTabs', (_, isEnabled) => {
       isEnabled ? this.load() : this.unload()
     })
   }
 
   load() {
-    if (!this.settings.get('showFileTabs')) {
+    if (this.settings.get('useWorkspace') || !this.settings.get('showFileTabs')) {
       return
     }
     super.load()

@@ -19,7 +19,6 @@ import { useService } from 'src/common/service'
 import { WorkspaceRoot } from './layout/workspace-root'
 import type { WorkspaceParent } from './layout/workspace-parent'
 import { WorkspaceLeaf } from './layout/workspace-leaf'
-import { createTabs, splitDown, splitRight } from './layout/workspace-utils'
 import type { ViewState } from './view-manager'
 import { EmptyView } from './views/empty-view'
 import { MarkdownEditorView } from './views/markdown-editor-view'
@@ -97,34 +96,9 @@ export class Workspace extends Events<WorkspaceEvents> {
 
     setTimeout(() => this._children.forEach(child => child.load()))
 
-    setTimeout(() => {
-      commands.register({
-        id: 'core.workspace.split-right',
-        title: 'Split Right',
-        scope: 'global',
-        callback: splitRight,
-      })
-      commands.register({
-        id: 'core.workspace.split-down',
-        title: 'Split Down',
-        scope: 'global',
-        callback: splitDown,
-      })
-      this.on('file-menu', ({ menu, path }) => {
-        menu.insertItemAfter('[data-action="open"]', item => {
-          item
-            .setKey('typ-split-right')
-            .setTitle('在右侧打开预览')
-            .onClick(event => splitRight(path))
-        })
-      })
-
-      viewManager.registerViewWithExtensions(['md', 'markdown'], 'core.markdown', (leaf, s) => new MarkdownEditorView(leaf, s.state.path))
-      viewManager.registerView('core.md-preview', (leaf, s) => new MarkdownPreview(leaf, s.state.path))
-      viewManager.registerView('core.empty', (leaf) => new EmptyView(leaf))
-
-      this.rootSplit.appendChild(createTabs(this.activeFile))
-    })
+    viewManager.registerViewWithExtensions(['md', 'markdown'], 'core.markdown', (leaf, s) => new MarkdownEditorView(leaf, s.state.path))
+    viewManager.registerView('core.md-preview', (leaf, s) => new MarkdownPreview(leaf, s.state.path))
+    viewManager.registerView('core.empty', (leaf) => new EmptyView(leaf))
   }
 
   createLeaf(state?: ViewState) {

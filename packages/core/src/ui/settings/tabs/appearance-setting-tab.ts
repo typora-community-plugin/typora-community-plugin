@@ -7,6 +7,7 @@ export type AppearanceSettings = {
   keepSearchResult: boolean
   showSearchResultFullPath: boolean
   showRibbon: boolean
+  useWorkspace: boolean
   showFileTabs: boolean
   hideExtensionInFileTab: boolean
 }
@@ -16,6 +17,7 @@ export const DEFAULT_APPEARANCE_SETTINGS: AppearanceSettings = {
   keepSearchResult: false,
   showSearchResultFullPath: false,
   showRibbon: true,
+  useWorkspace: false,
   showFileTabs: true,
   hideExtensionInFileTab: false,
 }
@@ -90,13 +92,28 @@ export class AppearanceSettingTab extends SettingTab {
       })
     })
     this.addSetting(setting => {
+      setting.addName(t.workspace)
+      setting.addDescription(t.workspaceDesc)
+      setting.addCheckbox(checkbox => {
+        checkbox.checked = settings.get('useWorkspace')
+        checkbox.onclick = () => {
+          settings.set('useWorkspace', checkbox.checked)
+        }
+      })
+    })
+    this.addSetting(setting => {
       setting.addName(t.fileTabs)
       setting.addDescription(t.fileTabsDesc)
       setting.addCheckbox(checkbox => {
+        checkbox.disabled = settings.get('useWorkspace')
         checkbox.checked = settings.get('showFileTabs')
         checkbox.onclick = () => {
           settings.set('showFileTabs', checkbox.checked)
         }
+        settings.onChange('useWorkspace', (_, isEnabled) => {
+          checkbox.disabled = isEnabled
+          if (isEnabled) checkbox.checked = false
+        })
       })
     })
     this.addSetting(setting => {
