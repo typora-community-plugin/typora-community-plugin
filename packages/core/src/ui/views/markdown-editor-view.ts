@@ -27,9 +27,12 @@ export class MarkdownEditorView extends WorkspaceView {
     private workspace = useService('workspace'),
   ) {
     super(leaf)
+  }
 
+  onload() {
     setTimeout(() => this.autoSetMode())
-    leaf.getRoot().on('layout-changed', () => this.autoSetMode())
+    this.register(
+      this.leaf.getRoot().on('layout-changed', () => this.autoSetMode()))
   }
 
   autoSetMode() {
@@ -82,7 +85,7 @@ export class MarkdownEditorView extends WorkspaceView {
     setTimeout(() => (this.leaf.parent as WorkspaceTabs)?.removeTabClass(this.filePath, 'prefix-preview'))
 
     containerEl.classList.add('mode-typora')
-    InternalEditor.instance.active(containerEl, this.leaf);
+    InternalEditor.instance.active(containerEl, this);
   }
 
   private switchToPreviewerMode(filePath?: string) {
@@ -112,18 +115,19 @@ class InternalEditor {
 
   private constructor(private workspace = useService('workspace')) { }
 
-  active(containerEl: HTMLElement, leaf: WorkspaceLeaf) {
+  active(containerEl: HTMLElement, view: MarkdownEditorView) {
     containerEl.innerHTML = '<object type="text/html" data="about:blank"></object>'
 
     this.contentEl.classList.add('typ-workspace-binding')
     this.contentEl.addEventListener('mousedown', this.handleSettingActiveLeaf = () => {
-      this.workspace.activeLeaf = leaf
+      this.workspace.activeLeaf = view.leaf
     })
     setTimeout(() => {
-      MarkdownEditorView.parent = leaf.parent as WorkspaceTabs
+      MarkdownEditorView.parent = view.leaf.parent as WorkspaceTabs
       this.syncSize()
       this.registerObserver(containerEl)
-      leaf.getRoot().on('layout-changed', () => this.registerObserver(containerEl))
+      view.register(
+        view.leaf.getRoot().on('layout-changed', () => this.registerObserver(containerEl)))
     })
   }
 

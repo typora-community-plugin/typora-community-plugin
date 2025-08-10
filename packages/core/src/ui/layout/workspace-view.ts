@@ -1,14 +1,18 @@
-import { Closeable, View } from "../common/view"
+import { Component } from "src/common/component"
+import { Closeable } from "../common/view"
 import type { WorkspaceLeaf } from "./workspace-leaf"
 
 
-export abstract class WorkspaceView extends View implements Closeable {
+export abstract class WorkspaceView extends Component implements Closeable {
+
+  containerEl: HTMLElement
 
   constructor(public leaf: WorkspaceLeaf) {
     super()
   }
 
   open() {
+    this.load()
     this.onOpen()
   }
 
@@ -16,6 +20,7 @@ export abstract class WorkspaceView extends View implements Closeable {
 
   close() {
     this.onClose()
+    this.unload()
   }
 
   onClose() { }
