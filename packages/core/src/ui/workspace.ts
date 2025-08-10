@@ -21,7 +21,7 @@ import type { WorkspaceParent } from './layout/workspace-parent'
 import { WorkspaceLeaf } from './layout/workspace-leaf'
 import type { ViewState } from './view-manager'
 import { EmptyView } from './views/empty-view'
-import { MarkdownEditorView } from './views/markdown-editor-view'
+import { MarkdownView } from './views/markdown-view'
 
 
 export type WorkspaceEvents = {
@@ -95,7 +95,7 @@ export class Workspace extends Events<WorkspaceEvents> {
 
     setTimeout(() => this._children.forEach(child => child.load()))
 
-    viewManager.registerViewWithExtensions(['md', 'markdown'], 'core.markdown', (leaf, s) => new MarkdownEditorView(leaf, s.state.path))
+    viewManager.registerViewWithExtensions(['md', 'markdown'], 'core.markdown', (leaf, s) => new MarkdownView(leaf, s.state.path))
     viewManager.registerView('core.empty', (leaf) => new EmptyView(leaf))
   }
 

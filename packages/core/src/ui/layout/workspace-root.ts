@@ -8,7 +8,7 @@ import { WorkspaceSplit } from "./split"
 import type { WorkspaceTabs } from './tabs'
 import { draggableTabs } from './tabs/draggable'
 import { createEditorLeaf, createTabs, splitDown, splitRight } from './workspace-utils'
-import { MarkdownEditorView } from '../views/markdown-editor-view'
+import { MarkdownView } from '../views/markdown-view'
 import { useEventBus } from 'src/common/eventbus'
 import { onTabsContextMenu } from './tabs/contextmenu'
 import { FileTabContainer } from './tabs/file-tabs'
@@ -60,11 +60,11 @@ export class WorkspaceRoot extends WorkspaceSplit {
         decorate(editor.library, 'openFile', fn => (file, callback) => {
           const activeTabs = workspace.activeLeaf?.parent as WorkspaceTabs
           if (
-            !MarkdownEditorView.parent ||
+            !MarkdownView.parent ||
             // handle: click file tree → open file in ActivedTabs
-            MarkdownEditorView.parent === activeTabs ||
+            MarkdownView.parent === activeTabs ||
             // handle: (drag ActivedTab → close ActivedTab → open SiblingTab → open file in Non-ActivedTabs) in the Tabs with MarkdownEditorView (mode: Typora)
-            MarkdownEditorView.parent.activedLeaf.state.path === file
+            MarkdownView.parent.activedLeaf.state.path === file
           )
             fn(file, callback)
           else
@@ -134,7 +134,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
       this.children.forEach(child => child.detach())
       this.containerEl.remove()
       editor.writingArea.parentElement.setAttribute('class', '')
-      MarkdownEditorView.parent = null
+      MarkdownView.parent = null
     }
 
     settings.onChange('useWorkspace', (_, isEnabled) => {

@@ -1,4 +1,4 @@
-import './markdown-editor-view.scss'
+import './markdown-view.scss'
 import { editor } from "typora"
 import { useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
@@ -7,9 +7,9 @@ import type { WorkspaceTabs } from '../layout/tabs'
 import type { WorkspaceLeaf } from '../layout/workspace-leaf'
 
 
-enum EditorMode { Typora, Previewer }
+enum Mode { Typora, Previewer }
 
-export class MarkdownEditorView extends WorkspaceView {
+export class MarkdownView extends WorkspaceView {
 
   static parent: WorkspaceTabs
 
@@ -18,7 +18,7 @@ export class MarkdownEditorView extends WorkspaceView {
    */
   containerEl = $('<div class="typ-editor-view"></div>')[0]
 
-  mode: EditorMode
+  currentMode: Mode
   mdPreviewer?: MarkdownPreviewer
 
   constructor(
@@ -36,29 +36,29 @@ export class MarkdownEditorView extends WorkspaceView {
   }
 
   autoSetMode() {
-    if (!MarkdownEditorView.parent || MarkdownEditorView.parent === this.leaf.parent) {
-      this.setMode(EditorMode.Typora)
+    if (!MarkdownView.parent || MarkdownView.parent === this.leaf.parent) {
+      this.setMode(Mode.Typora)
     }
     else {
-      this.setMode(EditorMode.Previewer)
+      this.setMode(Mode.Previewer)
     }
   }
 
   onOpen() {
     this.autoSetMode()
-    if (this.mode === EditorMode.Typora) {
+    if (this.currentMode === Mode.Typora) {
       editor.writingArea.parentElement.classList.remove('typ-deactive')
       editor.library.openFile(this.filePath)
     }
   }
 
   onClose() {
-    if (this.mode === EditorMode.Typora) {
+    if (this.currentMode === Mode.Typora) {
       if (this.workspace.activeFile === this.filePath)
         editor.writingArea.parentElement.classList.add('typ-deactive')
       // fix: can not close codemirror editor when dragging the only one Typora editor tab from Tabs A to Tabs B (which contains CodeMirror editor)
-      if (MarkdownEditorView.parent.children.length === 1) {
-        MarkdownEditorView.parent = null
+      if (MarkdownView.parent.children.length === 1) {
+        MarkdownView.parent = null
       }
     }
     else {
@@ -68,9 +68,9 @@ export class MarkdownEditorView extends WorkspaceView {
     }
   }
 
-  private setMode(mode: EditorMode) {
-    this.mode = mode
-    if (mode === EditorMode.Typora) {
+  private setMode(mode: Mode) {
+    this.currentMode = mode
+    if (mode === Mode.Typora) {
       this.switchToTyporaMode()
     } else {
       this.switchToPreviewerMode(this.filePath)
@@ -91,7 +91,7 @@ export class MarkdownEditorView extends WorkspaceView {
   private switchToPreviewerMode(filePath?: string) {
     const { containerEl } = this
     containerEl.classList.remove('mode-typora')
-    if (MarkdownEditorView.parent === this.leaf.parent) {
+    if (MarkdownView.parent === this.leaf.parent) {
       InternalEditor.instance.deactive(containerEl)
     }
 
@@ -115,7 +115,7 @@ class InternalEditor {
 
   private constructor(private workspace = useService('workspace')) { }
 
-  active(containerEl: HTMLElement, view: MarkdownEditorView) {
+  active(containerEl: HTMLElement, view: MarkdownView) {
     containerEl.innerHTML = '<object type="text/html" data="about:blank"></object>'
 
     this.contentEl.classList.add('typ-workspace-binding')
@@ -123,7 +123,7 @@ class InternalEditor {
       this.workspace.activeLeaf = view.leaf
     })
     setTimeout(() => {
-      MarkdownEditorView.parent = view.leaf.parent as WorkspaceTabs
+      MarkdownView.parent = view.leaf.parent as WorkspaceTabs
       this.syncSize()
       this.registerObserver(containerEl)
       view.register(
@@ -150,10 +150,10 @@ class InternalEditor {
   }
 
   private syncSize() {
-    if (!MarkdownEditorView.parent) return
+    if (!MarkdownView.parent) return
 
     const { style } = document.body
-    const targetEl = MarkdownEditorView.parent.tabContentEl
+    const targetEl = MarkdownView.parent.tabContentEl
     const rect = targetEl.getBoundingClientRect()
     style.setProperty('--typ-editor-top', rect.top + 'px')
     style.setProperty('--typ-editor-left', rect.left + 'px')
