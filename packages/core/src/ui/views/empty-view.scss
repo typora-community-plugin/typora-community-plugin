@@ -1,9 +1,31 @@
 .typ-empty-view {
+  display: flex;
   width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
 
-  div {
-    margin: auto;
-    width: 100%;
-    text-align: center;
+  .typ-empty-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--tw-ring-color);
+  }
+
+  .typ-empty-hotkey {
+    display: inline-table;
+    margin: 2rem 0 8rem 0;
+    color: var(--blur-text-color);
+  }
+
+  dl {
+    display: table-row;
+  }
+
+  dt {
+    padding-right: 1rem;
+  }
+
+  dt, dd {
+    display: table-cell;
   }
 }

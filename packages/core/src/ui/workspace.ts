@@ -22,7 +22,6 @@ import { WorkspaceLeaf } from './layout/workspace-leaf'
 import type { ViewState } from './view-manager'
 import { EmptyView } from './views/empty-view'
 import { MarkdownEditorView } from './views/markdown-editor-view'
-import { MarkdownPreview } from './views/markdown-preview'
 
 
 export type WorkspaceEvents = {
@@ -97,7 +96,6 @@ export class Workspace extends Events<WorkspaceEvents> {
     setTimeout(() => this._children.forEach(child => child.load()))
 
     viewManager.registerViewWithExtensions(['md', 'markdown'], 'core.markdown', (leaf, s) => new MarkdownEditorView(leaf, s.state.path))
-    viewManager.registerView('core.md-preview', (leaf, s) => new MarkdownPreview(leaf, s.state.path))
     viewManager.registerView('core.empty', (leaf) => new EmptyView(leaf))
   }
 

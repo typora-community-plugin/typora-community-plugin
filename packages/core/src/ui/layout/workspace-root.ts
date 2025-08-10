@@ -85,7 +85,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
 
       this.component.register(
         commands.register({
-          id: 'core.workspace.split-right',
+          id: 'core.workspace:split-right',
           title: t.workspace.commandSplitRight,
           scope: 'global',
           callback: splitRight,
@@ -93,7 +93,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
 
       this.component.register(
         commands.register({
-          id: 'core.workspace.split-down',
+          id: 'core.workspace:split-down',
           title: t.workspace.commandSplitDown,
           scope: 'global',
           callback: splitDown,
@@ -101,7 +101,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
 
       this.component.register(
         commands.register({
-          id: 'core.workspace.reset',
+          id: 'core.workspace:reset',
           title: t.workspace.commandReset,
           scope: 'global',
           callback: () => {

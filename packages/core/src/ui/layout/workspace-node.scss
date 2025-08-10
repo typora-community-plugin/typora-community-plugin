@@ -12,7 +12,7 @@ hr.typ-workspace-leaf-resize-handle {
   transition: background .1s;
 
   &:hover {
-    background: #dccfff44;
+    background: var(--tw-ring-color);
   }
 
   .typ-workspace-node:first-of-type>& {
