@@ -110,6 +110,14 @@ export class WorkspaceRoot extends WorkspaceSplit {
           },
         }))
 
+      // fix anchor jumping offset
+      this.component.register(
+        decorate.parameters(editor.selection, 'scrollAdjust', ([$el, offset, p2, p3]) => {
+          if ($el && offset) offset += 28
+          return [$el, offset, p2, p3]
+        })
+      )
+
       this.appendChild(createTabs(workspace.activeFile))
     }
 
