@@ -5,6 +5,7 @@ import fs from 'src/io/fs/filesystem'
 import { WorkspaceView } from '../layout/workspace-view'
 import type { WorkspaceTabs } from '../layout/tabs'
 import type { WorkspaceLeaf } from '../layout/workspace-leaf'
+import { parseMarkdown } from 'src/utils'
 
 
 enum Mode { Typora, Previewer }
@@ -166,8 +167,10 @@ class MarkdownPreviewer {
 
   active(containerEl: HTMLElement, path: string) {
     const md = fs.readTextSync(path)
-    const [html] = editor.nodeMap.allNodes.first().__proto__.constructor.parseFrom(md)
-    containerEl.innerHTML = html.replace(/ contenteditable='true'/g, '')
+    const { frontMatters, content } = parseMarkdown(md)
+    const frontMattersHtml = `<pre mdtype="meta_block" class="md-meta-block md-end-block">${frontMatters.join('\n')}</pre>`
+    const [contentHtml] = editor.nodeMap.allNodes.first().__proto__.constructor.parseFrom(content)
+    containerEl.innerHTML = frontMattersHtml + contentHtml.replace(/ contenteditable='true'/g, '')
   }
 
   deactive(containerEl: HTMLElement) {

@@ -1,3 +1,7 @@
+---
+tag: A, B, C
+---
+
 # Title
 
 Lorem, ipsum dolor sit amet consectetur adipisicing elit.

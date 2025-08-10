@@ -36,6 +36,11 @@ content {
 
   &.mode-previewer {
     padding: 0 2rem 2rem;
+
+    pre.md-meta-block {
+      padding: 1rem;
+      background-color: var(--light-bg-color);
+    }
   }
 }
 

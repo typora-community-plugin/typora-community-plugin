@@ -7,6 +7,7 @@ export * from './schedule/debounce'
 export * from './string/capitalize'
 export * from './string/format'
 export * from './string/is-markdown-url'
+export * from './string/markdown'
 export * from './string/truncate'
 
 export * from './constant'
