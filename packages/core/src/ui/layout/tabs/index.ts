@@ -1,16 +1,16 @@
 import './index.scss'
-import { Tab, TabContainer } from 'src/ui/components/tabs'
 import { WorkspaceParent } from "../workspace-parent"
 import type { WorkspaceLeaf } from '../workspace-leaf'
 import { createEmptyLeaf } from '../workspace-utils'
 import { WorkspaceNode } from '../workspace-node'
+import { FileTab, FileTabContainer } from './file-tabs'
 
 
 export class WorkspaceTabs extends WorkspaceParent {
 
   type = 'tabs'
 
-  private tabHeader = new TabContainer({
+  private tabHeader = new FileTabContainer({
     className: 'typ-workspace-tab-header',
     onToggle: (tabId, tabEl) => this.toggleTab(tabId, tabEl),
     onClose: (tabId, tabEl) => this.removeTab(tabId, tabEl),
@@ -28,10 +28,7 @@ export class WorkspaceTabs extends WorkspaceParent {
   }
 
   insertChild(index: number, child: WorkspaceLeaf) {
-    this.tabHeader.insertTab(index, new Tab({
-      id: child.state.path,
-      text: child.state.title,
-    }))
+    this.tabHeader.insertTab(index, new FileTab(child.state.path))
     super.insertChild(index, child)
     child.view.open()
   }

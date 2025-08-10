@@ -2,7 +2,7 @@ body.typ-file-tabs--enable content {
   top: calc(var(--typ-workspace-top) + var(--typ-tabs-height));
 }
 
-.typ-file-tabs {
+content .typ-file-tabs {
   position: fixed;
   top: 0;
 
@@ -25,8 +25,4 @@ body.typ-file-tabs--enable content {
   .html-for-mac.mac-seamless-mode & {
     margin-top: 22px;
   }
-}
-
-.typ-file-ext--hide .typ-file-ext {
-  display: none;
 }

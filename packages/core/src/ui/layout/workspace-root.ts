@@ -11,6 +11,7 @@ import { createEditorLeaf, createTabs, splitDown, splitRight } from './workspace
 import { MarkdownEditorView } from '../views/markdown-editor-view'
 import { useEventBus } from 'src/common/eventbus'
 import { onTabsContextMenu } from './tabs/contextmenu'
+import { FileTabContainer } from './tabs/file-tabs'
 
 
 export type WorkspaceEvents = {
@@ -47,6 +48,13 @@ export class WorkspaceRoot extends WorkspaceSplit {
       this.component.registerDomEvent(this.containerEl, 'contextmenu', onTabsContextMenu(this))
 
       this.component.register(draggableTabs(this))
+
+      FileTabContainer.hideTabExtension(settings.get('hideExtensionInFileTab'))
+      this.component.register(
+        settings.onChange('hideExtensionInFileTab', (_, isHide) => {
+          FileTabContainer.hideTabExtension(isHide)
+        })
+      )
 
       this.component.register(
         decorate(editor.library, 'openFile', fn => (file, callback) => {

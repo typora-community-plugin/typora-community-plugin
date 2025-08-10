@@ -1,16 +1,12 @@
 import './tabs-view.scss'
-import path from 'src/path'
 import { editor } from "typora"
 import decorate from "@plylrnsdy/decorate.js"
 import { Component } from 'src/common/component'
 import { useService } from 'src/common/service'
 import { useEventBus } from 'src/common/eventbus'
 import { Menu } from 'src/ui/components/menu'
-import { Tab, TabContainer } from 'src/ui/components/tabs'
-import { truncate } from 'src/utils'
+import { FileTab, FileTabContainer } from '../layout/tabs/file-tabs'
 
-
-const MAX_LENGHT = { length: 20, omission: '…' }
 
 export class TabsView extends Component {
 
@@ -98,10 +94,10 @@ export class TabsView extends Component {
       })
     )
 
-    this.container.hideTabExtension(this.settings.get('hideExtensionInFileTab'))
+    FileTabContainer.hideTabExtension(this.settings.get('hideExtensionInFileTab'))
     this.register(
       this.settings.onChange('hideExtensionInFileTab', (_, isHide) => {
-        this.container.hideTabExtension(isHide)
+        FileTabContainer.hideTabExtension(isHide)
       })
     )
   }
@@ -189,27 +185,5 @@ export class TabsView extends Component {
   removeRight(path: string) {
     editor.library.openFile(path)
     this.container.closeRightTabs(this.tabs.get(path)!)
-  }
-}
-
-class FileTabContainer extends TabContainer {
-
-  hideTabExtension(isHide: boolean) {
-    $('.typ-file-tabs').toggleClass('typ-file-ext--hide', isHide)
-  }
-}
-
-export class FileTab extends Tab {
-  constructor(filePath: string, vault = useService('vault')) {
-    const longPath = path.relative(vault.path, filePath)
-      .replace(/(\.textbundle)[\\/]text\.(?:md|markdown)$/, '$1')
-    const ext = path.extname(filePath)
-    const shortName = truncate(path.basename(longPath, ext), MAX_LENGHT)
-
-    super({
-      id: filePath,
-      text: () => $(`<span>${shortName}</span><span class="typ-file-ext">${ext}</span>`),
-      title: longPath,
-    })
   }
 }
