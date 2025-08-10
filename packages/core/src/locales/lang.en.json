@@ -116,6 +116,11 @@
     "closeOthers": "Close other tabs",
     "closeRight": "Close tabs to right"
   },
+  "views": {
+    "empty": {
+      "noFile": "No file is open."
+    }
+  },
   "workspace": {
     "commandSplitRight": "Workspace: Split right",
     "commandSplitDown": "Workspace: Split down",

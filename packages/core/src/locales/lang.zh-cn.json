@@ -116,6 +116,11 @@
     "closeOthers": "关闭其他标签",
     "closeRight": "关闭右侧标签"
   },
+  "views": {
+    "empty": {
+      "noFile": "无打开文件"
+    }
+  },
   "workspace": {
     "commandSplitRight": "Workspace: 右侧打开窗格",
     "commandSplitDown": "Workspace: 下方打开窗格",
