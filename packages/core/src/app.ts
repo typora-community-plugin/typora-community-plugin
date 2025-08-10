@@ -198,5 +198,6 @@ export class App extends Events<AppEvents> {
   openFileWithDefaultApp(filepath: string) {
     return fs.access(filepath)
       .then(() => JSBridge.invoke("shell.openItem", filepath))
+      .catch(e => this.logger.error(e))
   }
 }
