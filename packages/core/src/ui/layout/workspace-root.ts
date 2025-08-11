@@ -27,7 +27,7 @@ export type WorkspaceEvents = {
  */
 export class WorkspaceRoot extends WorkspaceSplit {
 
-  private component = new Component()
+  private registry = new Component()
 
   constructor(
     workspace: Workspace,
@@ -39,27 +39,29 @@ export class WorkspaceRoot extends WorkspaceSplit {
 
     $(this.containerEl).addClass('typ-workspace-root')
 
-    this.component.onload = () => {
+    this.registry.onload = () => {
       $(document.body).append(this.containerEl)
 
-      this.component.registerDomEvent(this.containerEl, 'click', e => {
-        const el = (e.target as HTMLElement).closest('.typ-workspace-leaf')
-        if (!el) return
-        workspace.activeLeaf = this.findLeaf(leaf => leaf.containerEl === el)
+      this.registry.registerDomEvent(this.containerEl, 'click', e => {
+        const LeafEl = (e.target as HTMLElement).closest('.typ-workspace-leaf')
+        if (LeafEl) workspace.activeLeaf = this.findLeaf(leaf => leaf.containerEl === LeafEl)
+
+        const $anchorEl = $(e.target).closest('a')
+        if ($anchorEl.length) editor.tryOpenLink($anchorEl)
       })
 
-      this.component.registerDomEvent(this.containerEl, 'contextmenu', onTabsContextMenu(this))
+      this.registry.registerDomEvent(this.containerEl, 'contextmenu', onTabsContextMenu(this))
 
-      this.component.register(draggableTabs(this))
+      this.registry.register(draggableTabs(this))
 
       FileTabContainer.hideTabExtension(settings.get('hideExtensionInFileTab'))
-      this.component.register(
+      this.registry.register(
         settings.onChange('hideExtensionInFileTab', (_, isHide) => {
           FileTabContainer.hideTabExtension(isHide)
         })
       )
 
-      this.component.register(
+      this.registry.register(
         decorate(editor.library, 'openFile', fn => (file, callback) => {
           const activeTabs = workspace.activeLeaf?.parent as WorkspaceTabs
           if (
@@ -74,7 +76,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
             useEventBus('workspace').emit('file:open', file)
         }))
 
-      this.component.register(
+      this.registry.register(
         workspace.on('file:open', (file) => {
           const activeTabs = workspace.activeLeaf.parent as WorkspaceTabs
           if (activeTabs.findLeaf(leaf => leaf.state.path === file)) {
@@ -84,7 +86,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
           activeTabs.appendChild(createEditorLeaf(file))
         }))
 
-      this.component.register(
+      this.registry.register(
         workspace.on('file-menu', ({ menu, path }) => {
           menu.insertItemAfter('[data-action="open"]', item => {
             item
@@ -94,7 +96,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
           })
         }))
 
-      this.component.register(
+      this.registry.register(
         commands.register({
           id: 'core.workspace:split-right',
           title: t.workspace.commandSplitRight,
@@ -102,7 +104,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
           callback: splitRight,
         }))
 
-      this.component.register(
+      this.registry.register(
         commands.register({
           id: 'core.workspace:split-down',
           title: t.workspace.commandSplitDown,
@@ -110,19 +112,19 @@ export class WorkspaceRoot extends WorkspaceSplit {
           callback: splitDown,
         }))
 
-      this.component.register(
+      this.registry.register(
         commands.register({
           id: 'core.workspace:reset',
           title: t.workspace.commandReset,
           scope: 'global',
           callback: () => {
-            this.component.unload()
-            this.component.load()
+            this.registry.unload()
+            this.registry.load()
           },
         }))
 
       // fix anchor jumping offset
-      this.component.register(
+      this.registry.register(
         decorate.parameters(editor.selection, 'scrollAdjust', ([$el, offset, p2, p3]) => {
           if ($el && offset) offset += 28
           return [$el, offset, p2, p3]
@@ -132,7 +134,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
       this.appendChild(createTabs(workspace.activeFile))
     }
 
-    this.component.onunload = () => {
+    this.registry.onunload = () => {
       this.eachLeaves(leaf => leaf.detach())
       this.children.forEach(child => child.detach())
       this.containerEl.remove()
@@ -141,11 +143,11 @@ export class WorkspaceRoot extends WorkspaceSplit {
     }
 
     settings.onChange('useWorkspace', (_, isEnabled) => {
-      isEnabled ? this.component.load() : this.component.unload()
+      isEnabled ? this.registry.load() : this.registry.unload()
     })
 
     setTimeout(() => {
-      settings.get('useWorkspace') ? this.component.load() : this.component.unload()
+      settings.get('useWorkspace') ? this.registry.load() : this.registry.unload()
     })
   }
 }
