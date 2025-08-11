@@ -165,12 +165,16 @@ class InternalEditor {
 
 class MarkdownPreviewer {
 
+  constructor(private editor = useService('markdown-editor')) {}
+
   active(containerEl: HTMLElement, path: string) {
-    const md = fs.readTextSync(path)
+    let md = fs.readTextSync(path)
+    md = this.editor.preProcessor.process('preload', md)
     const { frontMatters, content } = parseMarkdown(md)
     const frontMattersHtml = `<pre mdtype="meta_block" class="md-meta-block md-end-block">${frontMatters.join('\n')}</pre>`
     const [contentHtml] = editor.nodeMap.allNodes.first().__proto__.constructor.parseFrom(content)
     containerEl.innerHTML = frontMattersHtml + contentHtml.replace(/ contenteditable='true'/g, '')
+    // this.editor.postProcessor.processAll(containerEl)
   }
 
   deactive(containerEl: HTMLElement) {

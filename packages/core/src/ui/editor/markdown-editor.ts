@@ -1,7 +1,7 @@
 import { editor, File } from "typora"
 import { Events } from "src/common/events"
-import { MarkdownPostProcessor } from "./postprocessor/postprocessor-manager"
-import { MarkdownPreProcessor } from "./preprocessor/preprocessor"
+import { bindPostProcessorToEditor, MarkdownPostProcessor } from "./postprocessor/postprocessor-manager"
+import { bindPreProcessorToEditor, MarkdownPreProcessor } from "./preprocessor/preprocessor"
 import { EditorSelection } from "./selection"
 import { EditorSuggestManager } from "./suggestion/suggest-manager"
 import { MarkdownLinkWitoutExtension, OpenLinkInCurrentWin } from "./link"
@@ -51,6 +51,9 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
       el.parentElement!.addEventListener('scroll',
         debounce(() => this.emit('scroll'), 200)
       )
+
+      bindPreProcessorToEditor(this)
+      bindPostProcessorToEditor(this)
     })
   }
 
@@ -72,32 +75,6 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
 
   setMarkdown(markdown: string) {
     File.reloadContent(markdown, false, true, false, true)
-  }
-
-  getContainerWidth() {
-    return editor.writingArea.parentElement.offsetWidth
-  }
-
-  getContainerHeight() {
-    return editor.writingArea.parentElement.offsetHeight
-  }
-
-  setWidth(width: number) {
-    document.body.style.setProperty('--typ-editor-width', width + 'px')
-  }
-
-  setHeight(height: number) {
-    document.body.style.setProperty('--typ-editor-height', height + 'px')
-  }
-
-  setSize(width: number, height: number) {
-    this.setWidth(width)
-    this.setHeight(height)
-  }
-
-  resetSize() {
-    document.body.style.removeProperty('--typ-editor-width')
-    document.body.style.removeProperty('--typ-editor-height')
   }
 }
 

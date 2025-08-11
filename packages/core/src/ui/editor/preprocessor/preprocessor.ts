@@ -1,8 +1,9 @@
 import decorate from '@plylrnsdy/decorate.js'
-import { editor, File } from 'typora'
-import type { DisposeFunc } from 'src/utils/types'
-import { HtmlMask, RegexpBasedStringMask } from './string-mask'
+import { File } from 'typora'
 import { useService } from 'src/common/service'
+import type { MarkdownEditor } from '../markdown-editor'
+import { HtmlMask, RegexpBasedStringMask } from './string-mask'
+import type { DisposeFunc } from 'src/utils/types'
 
 
 type ProcessTime = 'preload' | 'presave'
@@ -34,9 +35,7 @@ export class MarkdownPreProcessor {
 
   constructor(
     private logger = useService('logger', ['MarkdownPreProcessor']),
-  ) {
-    this._registerProcessors()
-  }
+  ) { }
 
   register(processor: TPreProcessor): DisposeFunc {
     const { when, type } = processor
@@ -53,34 +52,11 @@ export class MarkdownPreProcessor {
     o.length--
   }
 
-  protected _registerProcessors() {
-    File.isNode
-      ? decorate.returnValue(File, 'readContentFrom', (args, res) => {
-        if (!this._processors.preload.length) {
-          return res
-        }
-
-        res[1] = this._process('preload', res[1])
-        return res
-      })
-      : decorate.parameters(File, 'loadFile', (args) => {
-        if (!this._processors.preload.length) {
-          return args
-        }
-
-        args[2][0] = this._process('preload', args[2][0])
-        return args
-      })
-
-    decorate.returnValue(editor, 'getMarkdown', (args, md) => {
-      if (!this._processors.presave.length) {
-        return md
-      }
-      return this._process('presave', md)
-    })
+  isEmpty(when: ProcessTime) {
+    return !this._processors[when].length
   }
 
-  protected _process(when: ProcessTime, md: string) {
+  process(when: ProcessTime, md: string) {
     this.codeMasker.reset()
     this.htmlMasker.reset()
 
@@ -118,4 +94,34 @@ export class MarkdownPreProcessor {
       return original
     }
   }
+}
+
+export function bindPreProcessorToEditor(editor: MarkdownEditor) {
+
+  const { preProcessor } = editor
+
+  File.isNode
+    ? decorate.returnValue(File, 'readContentFrom', (args, res) => {
+      if (preProcessor.isEmpty('preload')) {
+        return res
+      }
+
+      res[1] = preProcessor.process('preload', res[1])
+      return res
+    })
+    : decorate.parameters(File, 'loadFile', (args) => {
+      if (preProcessor.isEmpty('preload')) {
+        return args
+      }
+
+      args[2][0] = preProcessor.process('preload', args[2][0])
+      return args
+    })
+
+  decorate.returnValue(editor, 'getMarkdown', (args, md) => {
+      if (preProcessor.isEmpty('presave')) {
+      return md
+    }
+    return preProcessor.process('presave', md)
+  })
 }
