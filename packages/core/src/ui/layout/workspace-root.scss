@@ -4,9 +4,16 @@
 
 div.typ-workspace-root {
   position: absolute;
-  top: var(--typ-workspace-top);
-  left: calc(var(--typ-ribbon-width) + var(--sidebar-width));
   z-index: -1;
-  width: calc(100% - var(--typ-ribbon-width) - var(--sidebar-width));
+  top: var(--typ-workspace-top);
+
+  left: calc(var(--typ-ribbon-width));
+  width: calc(100% - var(--typ-ribbon-width));
+
+  .pin-outline & {
+    left: calc(var(--typ-ribbon-width) + var(--sidebar-width));
+    width: calc(100% - var(--typ-ribbon-width) - var(--sidebar-width));
+  }
+
   height: calc(100% - var(--typ-footer-height));
 }

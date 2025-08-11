@@ -22,6 +22,9 @@ export type WorkspaceEvents = {
 }
 
 
+/**
+ * @since v2.5.0
+ */
 export class WorkspaceRoot extends WorkspaceSplit {
 
   private component = new Component()
