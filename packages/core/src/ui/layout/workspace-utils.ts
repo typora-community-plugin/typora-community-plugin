@@ -1,4 +1,3 @@
-import path from "src/path"
 import { useService } from "src/common/service"
 import type { Direction, WorkspaceSplit } from "./split"
 import { uniqueId } from "src/utils"
@@ -17,9 +16,9 @@ export function createTabs(path?: string) {
 
 export function createEditorLeaf(filePath: string) {
   return useService('workspace').createLeaf({
-    type: 'core.markdown', state: {
+    type: 'core.markdown',
+    state: {
       path: filePath,
-      title: path.basename(filePath),
     }
   })
 }
@@ -28,8 +27,7 @@ export function createEmptyLeaf() {
   return useService('workspace').createLeaf({
     type: 'core.empty',
     state: {
-      path: uniqueId('@@leaf'),
-      title: 'New tab',
+      path: uniqueId('typ://') + '/New tab',
     }
   })
 }
