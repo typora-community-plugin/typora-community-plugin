@@ -6,8 +6,12 @@ import { useService } from 'src/common/service'
 import { useEventBus } from 'src/common/eventbus'
 import { Menu } from 'src/ui/components/menu'
 import { FileTab, FileTabContainer } from '../layout/tabs/file-tabs'
+import type { WorkspaceTabs } from '../layout/tabs'
 
 
+/**
+ * @deprecated in v2.5.0. Use {@link WorkspaceTabs} instead.
+ */
 export class TabsView extends Component {
 
   private container: FileTabContainer

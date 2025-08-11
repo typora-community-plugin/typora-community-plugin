@@ -1,5 +1,12 @@
+.typ-workspace-root {
+  // hide left-border of the tab at left
+  margin-left: -1px;
+}
+
 .typ-workspace-tabs {
   flex-direction: column;
+
+  border-left: solid 1px rgb(var(--typ-border-color));
 
   &.mod-drag-over {
     position: relative;
