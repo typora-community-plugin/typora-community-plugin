@@ -1,1 +1,1 @@
-["ClientCommand","File","JSBridge","_options","bridge","debugMode","editor","getMarkdown","isInputComponent","reqnode"]
+["ClientCommand","CodeMirror","File","JSBridge","_options","bridge","debugMode","editor","getCodeMirrorMode","getMarkdown","isInputComponent","reqnode"]

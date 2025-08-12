@@ -1,11 +1,11 @@
 import './markdown-view.scss'
-import { editor } from "typora"
+import { CodeMirror, editor, getCodeMirrorMode } from "typora"
 import { useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
 import { WorkspaceView } from '../layout/workspace-view'
 import type { WorkspaceTabs } from '../layout/tabs'
 import type { WorkspaceLeaf } from '../layout/workspace-leaf'
-import { parseMarkdown } from 'src/utils'
+import { parseMarkdown, uniqueId } from 'src/utils'
 
 
 enum Mode { Typora, Previewer }
@@ -163,17 +163,61 @@ class InternalEditor {
   }
 }
 
+const OPTIONS = {
+  mode: 'text',
+  readOnly: true,
+  styleSelectedText: true,
+  maxHighlightLength: 1 / 0,
+  viewportMargin: 1 / 0,
+  styleActiveLine: true,
+  theme: " inner null-scroll",
+  lineWrapping: true,
+  lineNumbers: true,
+  resetSelectionOnContextMenu: true,
+  cursorScrollMargin: 60,
+  dragDrop: false,
+  scrollbarStyle: "null",
+}
+
+const FAKE_EDITOR = {
+  sourceView: {
+    inSourceMode: false,
+  },
+  undo: {
+    register() { },
+    lastRegisteredOperationCommand() { },
+  }
+}
+
 class MarkdownPreviewer {
 
-  constructor(private editor = useService('markdown-editor')) {}
+  constructor(private editor = useService('markdown-editor')) { }
 
   active(containerEl: HTMLElement, path: string) {
     let md = fs.readTextSync(path)
+
+    // handle: preprocessor
     md = this.editor.preProcessor.process('preload', md)
+
+    // handle: front matter
     const { frontMatters, content } = parseMarkdown(md)
     const frontMattersHtml = `<pre mdtype="meta_block" class="md-meta-block md-end-block">${frontMatters.join('\n')}</pre>`
+
+    // handle: markdown → html
     const [contentHtml] = editor.nodeMap.allNodes.first().__proto__.constructor.parseFrom(content)
-    containerEl.innerHTML = frontMattersHtml + contentHtml.replace(/ contenteditable='true'/g, '')
+    containerEl.innerHTML = frontMattersHtml + contentHtml
+    $('[contenteditable="true"]', containerEl).attr('contenteditable', 'false')
+
+    // handle: code block highlight
+    $('pre.md-fences', containerEl).each((i, el) => {
+      const code = el.innerText
+      el.innerHTML = ''
+      const opts = { ...OPTIONS, mode: getCodeMirrorMode(el.getAttribute('lang')) }
+      const cm = CodeMirror(el, opts, FAKE_EDITOR, uniqueId('cm'))
+      cm.setValue(code)
+    })
+
+    // handle: postprocessor
     // this.editor.postProcessor.processAll(containerEl)
   }
 

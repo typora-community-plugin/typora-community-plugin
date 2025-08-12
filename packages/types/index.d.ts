@@ -106,6 +106,9 @@ interface TClientCommand {
 }
 
 
+export declare function CodeMirror(containerElement: HTMLElement, options: any, parentEditor: any, cid: string): OriginalCodeMirror.Editor
+
+
 export declare var debugMode: boolean
 
 
@@ -628,6 +631,9 @@ interface MegaMenu {
 interface Options {
   imageUploader: string
 }
+
+
+export declare function getCodeMirrorMode(lang: string, arg1?: boolean, arg2?: boolean): string
 
 
 export declare function isInputComponent(el: Element | null): boolean
