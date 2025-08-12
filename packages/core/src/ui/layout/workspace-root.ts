@@ -6,6 +6,7 @@ import { useService } from 'src/common/service'
 import type { Workspace } from "../workspace"
 import { WorkspaceSplit } from "./split"
 import type { WorkspaceTabs } from './tabs'
+import type { WorkspaceLeaf } from './workspace-leaf'
 import { draggableTabs } from './tabs/draggable'
 import { createEditorLeaf, createTabs, splitDown, splitRight } from './workspace-utils'
 import { MarkdownView } from '../views/markdown-view'
@@ -132,6 +133,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
       )
 
       this.appendChild(createTabs(workspace.activeFile))
+      workspace.activeLeaf = (this.children[0] as WorkspaceTabs).children[0] as WorkspaceLeaf
     }
 
     this.registry.onunload = () => {
