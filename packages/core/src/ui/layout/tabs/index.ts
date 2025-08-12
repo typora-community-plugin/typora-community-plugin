@@ -10,7 +10,7 @@ export class WorkspaceTabs extends WorkspaceParent {
 
   type = 'tabs'
 
-  private tabHeader = new FileTabContainer({
+  tabHeader = new FileTabContainer({
     className: 'typ-workspace-tab-header',
     onToggle: (tabId, tabEl) => this.toggleTab(tabId, tabEl),
     onClose: (tabId, tabEl) => this.removeTab(tabId, tabEl),
@@ -51,19 +51,11 @@ export class WorkspaceTabs extends WorkspaceParent {
     return leaf
   }
 
-  addTabClass(path: string, className: string) {
-    this.tabHeader.getTab(path)?.classList.add(className)
-  }
-
-  removeTabClass(path: string, className: string) {
-    this.tabHeader.getTab(path)?.classList.remove(className)
-  }
-
   toggleTab(path: string, tabEl?: HTMLElement): void {
     this.activedLeaf.view.close()
     this.tabContentEl.querySelector('.mod-active')?.classList.remove('mod-active')
 
-    tabEl ??= this.tabHeader.getTab(path)
+    tabEl ??= this.tabHeader.getTabById(path)
     this.tabHeader.activeTab(tabEl)
 
     const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)
@@ -72,7 +64,7 @@ export class WorkspaceTabs extends WorkspaceParent {
   }
 
   removeTab(path: string, tabEl?: HTMLElement): void {
-    tabEl ??= this.tabHeader.getTab(path)
+    tabEl ??= this.tabHeader.getTabById(path)
     this.tabHeader.closeTab(tabEl)
 
     const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)
@@ -91,11 +83,11 @@ export class WorkspaceTabs extends WorkspaceParent {
 
   removeOthers(path: string) {
     this.toggleTab(path)
-    this.tabHeader.closeOtherTabs(this.tabHeader.getTab(path))
+    this.tabHeader.closeOtherTabs(this.tabHeader.getTabById(path))
   }
 
   removeRight(path: string) {
     this.toggleTab(path)
-    this.tabHeader.closeRightTabs(this.tabHeader.getTab(path))
+    this.tabHeader.closeRightTabs(this.tabHeader.getTabById(path))
   }
 }

@@ -117,7 +117,7 @@ export class TabContainer extends View {
     return this.container.querySelector('.typ-tab.active') as HTMLElement
   }
 
-  getTab(id: string) {
+  getTabById(id: string) {
     return $(`.typ-tab[data-id="${id.replace(/\\/g, '\\\\')}"]`, this.container)[0]
   }
 

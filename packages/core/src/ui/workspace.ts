@@ -68,7 +68,6 @@ export class Workspace extends Events<WorkspaceEvents> {
 
   constructor(
     app = useEventBus('app'),
-    commands = useService('command-manager'),
     viewManager = useService('view-manager'),
   ) {
     super('workspace')

@@ -23,7 +23,7 @@ export class FileTab extends Tab {
 
     super({
       id: filePath,
-      text: () => $(`<span>${shortName}</span><span class="typ-file-ext">${ext}</span>`),
+      text: () => $(`<i class="typ-file-icon fa fa-file-o"></i><span class="typ-file-basename">${shortName}</span><span class="typ-file-ext">${ext}</span>`),
       title: longPath,
     })
   }
