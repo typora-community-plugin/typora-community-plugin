@@ -8,9 +8,14 @@
   @media (prefers-color-scheme: dark) {
     --typ-tab-border-color: #555;
   }
-  overflow: hidden;
 
   background: var(--bg-color);
+
+  overflow-x: auto;
+  overflow-y: hidden;
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
 }
 
 %typ-tabs__child {
