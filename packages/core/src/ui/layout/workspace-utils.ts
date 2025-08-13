@@ -5,7 +5,7 @@ import { uniqueId } from "src/utils"
 
 export function createTabs(path?: string) {
   const workspace = useService('workspace')
-  const tabs = useService('@@tabs')
+  const tabs = useService('workspace-tabs')
   tabs.appendChild(workspace.activeLeaf =
     path
       ? createEditorLeaf(path)
@@ -47,7 +47,7 @@ function split(direction: Direction, path?: string) {
   if (parentSplit.direction === direction)
     parentSplit.appendChild(createTabs(path))
   else {
-    const verticalSplit = useService('@@split', [direction])
+    const verticalSplit = useService('workspace-split', [direction])
     parentSplit.replaceChild(left, verticalSplit)
     verticalSplit.appendChild(left)
     verticalSplit.appendChild(createTabs(path))

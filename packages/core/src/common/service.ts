@@ -19,7 +19,6 @@ import type { FileExplorer } from "src/ui/sidebar/file-explorer"
 import type { Sidebar } from "src/ui/sidebar/sidebar"
 import type { ViewManager } from "src/ui/view-manager"
 import type { Workspace } from "src/ui/workspace"
-import type { WorkspaceLeaf } from "src/ui/layout/workspace-leaf"
 import type { Direction, WorkspaceSplit } from "src/ui/layout/split"
 import type { WorkspaceTabs } from "src/ui/layout/tabs"
 import type { Notice } from "src/ui/components/notice"
@@ -52,12 +51,12 @@ type ServiceMap = {
   'quick-pick'(): QuickPick
   'notice'(message: string, delay?: number): Notice
 
-  '@@split'(direction: Direction): WorkspaceSplit
-  '@@tabs'(): WorkspaceTabs
-  '@@leaf'(): WorkspaceLeaf
+  'workspace-split'(direction: Direction): WorkspaceSplit
+  'workspace-tabs'(): WorkspaceTabs
 }
 
 const services: Partial<ServiceMap> = {}
+const loadedServices: Record<string, boolean> = {}
 const stacks: string[] = []
 const fixedSerivcesLoadingOrder: (keyof ServiceMap)[] = [
   'app', 'config-repository', 'settings', 'i18n', 'workspace'
@@ -90,7 +89,10 @@ export function useService<K extends keyof ServiceMap>(id: K, args?: Parameters<
 
   stacks.push(id)
 
-  if (isDebug()) console.log(`[Service] Loading "${stacks.join(' → ')}"...`)
+  if (isDebug() && !loadedServices[id]) {
+    loadedServices[id] = true
+    console.log(`[Service] Loading "${stacks.join(' → ')}"...`)
+  }
 
   const service = (<any>services[id])(args) as ReturnType<ServiceMap[K]>
 

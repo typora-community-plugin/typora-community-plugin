@@ -91,6 +91,5 @@ registerService('file-explorer', memorize(() => new FileExplorer()))
 registerService('sidebar', memorize(() => useService('workspace').sidebar))
 registerService('notice', ([message, delay]) => new Notice(message, delay))
 
-registerService('@@split', ([direction]) => new WorkspaceSplit(direction))
-registerService('@@tabs', () => new WorkspaceTabs())
-registerService('@@leaf', () => new WorkspaceLeaf())
+registerService('workspace-split', ([direction]) => new WorkspaceSplit(direction))
+registerService('workspace-tabs', () => new WorkspaceTabs())
