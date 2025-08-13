@@ -7,6 +7,8 @@ import { html } from 'src/utils'
 
 export class EmptyView extends WorkspaceView {
 
+  static type = 'core.empty'
+
   constructor(leaf: WorkspaceLeaf) {
     super(leaf)
 

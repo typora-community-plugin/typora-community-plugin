@@ -94,8 +94,8 @@ export class Workspace extends Events<WorkspaceEvents> {
 
     setTimeout(() => this._children.forEach(child => child.load()))
 
-    viewManager.registerViewWithExtensions(['md', 'markdown'], 'core.markdown', (leaf, s) => new MarkdownView(leaf, s.state.path))
-    viewManager.registerView('core.empty', (leaf) => new EmptyView(leaf))
+    viewManager.registerViewWithExtensions(['md', 'markdown'], MarkdownView.type, (leaf, s) => new MarkdownView(leaf, s.state.path))
+    viewManager.registerView(EmptyView.type, (leaf) => new EmptyView(leaf))
   }
 
   createLeaf(state?: ViewState) {

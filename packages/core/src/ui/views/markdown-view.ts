@@ -12,6 +12,8 @@ enum Mode { Typora, Previewer }
 
 export class MarkdownView extends WorkspaceView {
 
+  static type = 'core.markdown'
+
   static parent: WorkspaceTabs
 
   /**

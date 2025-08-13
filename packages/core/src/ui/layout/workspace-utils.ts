@@ -1,6 +1,8 @@
 import { useService } from "src/common/service"
 import type { Direction, WorkspaceSplit } from "./split"
 import { uniqueId } from "src/utils"
+import { MarkdownView } from "../views/markdown-view"
+import { EmptyView } from "../views/empty-view"
 
 
 export function createTabs(path?: string) {
@@ -16,7 +18,7 @@ export function createTabs(path?: string) {
 
 export function createEditorLeaf(filePath: string) {
   return useService('workspace').createLeaf({
-    type: 'core.markdown',
+    type: MarkdownView.type,
     state: {
       path: filePath,
     }
@@ -25,9 +27,9 @@ export function createEditorLeaf(filePath: string) {
 
 export function createEmptyLeaf() {
   return useService('workspace').createLeaf({
-    type: 'core.empty',
+    type: EmptyView.type,
     state: {
-      path: uniqueId('typ://') + '/New tab',
+      path: uniqueId(`typ://${EmptyView.type}/`) + '/New tab',
     }
   })
 }
