@@ -12,7 +12,7 @@ To be on the safe side, install an open source plugin that can review the source
 
 ## Preview
 
-| Ribbon & Multi File Tabs              | Command Panel                             |
+| Ribbon & Workspace                    | Command Panel                             |
 | :-----------------------------------: | :---------------------------------------: |
 | ![](./docs/assets/base.jpg)           | ![](./docs/assets/command-modal.jpg)      |
 | Settings Modal                        | Plugin Marketplace                        |
@@ -36,7 +36,9 @@ To be on the safe side, install an open source plugin that can review the source
   - [x] Enable/Disable plugin
 - New UI components
   - [x] Ribbon
-  - [x] (Virtual) Multi File Tabs
+  - [x] Workspace <sup>`New`</sup>
+    - [x] (Virtual) Multi File Tabs
+    - [x] Split View <sup>`New`</sup>
 - [x] Custom command hotkey
 - [x] I18n: follow system or manual configure, now support English and Chinese
 - [x] Compatible with macOS

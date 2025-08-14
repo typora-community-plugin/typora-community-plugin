@@ -1,5 +1,7 @@
 # File Tabs
 
+> **Deprecated**, the existing features have been integrated into the [Workspace](./3-workspace.md), and this function will no longer be updated. Please use the [Workspace](./3-workspace.md) instead.
+
 It likes to be the tabs of the browser, can simulate opening multiple files.
 
 Better to enable "App Setting → General → Save without asking when switch files on side panel"
