@@ -1,5 +1,9 @@
 # Feature Changelog
 
+## v2.5.0
+
+- feat(core/ui/layout): Add **Workspace API**, supports SplitView
+
 ## v2.4.1
 
 - feat(core/export-manager): Support using **Export API** to modify the exported HTML.

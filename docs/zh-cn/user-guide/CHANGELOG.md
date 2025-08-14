@@ -1,5 +1,9 @@
 # 特性更新日志
 
+## v2.5.0
+
+- feat(core/ui/layout): 添加 **Workspace API**，支持分屏
+
 ## v2.4.1
 
 - feat(core/export-manager): 支持使用 **Export API** 修改导出的 HTML。
