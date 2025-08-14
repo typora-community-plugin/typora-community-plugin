@@ -9,6 +9,8 @@ export class WorkspaceSplit extends WorkspaceParent {
 
   type = 'split'
 
+  private sizes: number[] = []
+
   constructor(public direction: Direction) {
     super()
 
@@ -23,6 +25,23 @@ export class WorkspaceSplit extends WorkspaceParent {
       .addClass(`mod-${direction}`)
   }
 
+  insertChild(index: number, child: WorkspaceNode): void {
+    const prevChild = this.children[index - 1] ?? this.children[index]
+    const prevSizeIdx = this.children.findIndex(c => c === prevChild)
+
+    super.insertChild(index, child)
+
+    if (this.children.length === 1) {
+      this.sizes.push(1)
+    }
+    else {
+      const avgWidth = this.sizes[prevSizeIdx] / 2
+      this.sizes[prevSizeIdx] = avgWidth
+      this.sizes.splice(index, 0, avgWidth)
+    }
+    this.updatePaneSizes()
+  }
+
   protected _insertChildEl(index: number, child: WorkspaceNode) {
     this.containerEl.insertBefore(child.containerEl, this.containerEl.children[index + 1])
   }
@@ -30,52 +49,84 @@ export class WorkspaceSplit extends WorkspaceParent {
   removeChild(child: WorkspaceNode) {
     super.removeChild(child)
 
+    const idx = this.children.findIndex(c => c === child)
+    const [leftWidth] = this.sizes.splice(idx, 1)
+
+    if (this.children.length) {
+      const avgWidth = leftWidth / this.children.length
+      this.sizes = this.sizes.map(s => s + avgWidth)
+      this.updatePaneSizes()
+    }
+
     if (this.children.length === 1) {
       this.parent?.replaceChild(this, this.children[0])
     }
   }
 
-  protected _removeChild(child: WorkspaceNode) {
-    const splits = this.children
-    const rightIdx = this.children.findIndex(c => c === child)
-    const leftIdx = rightIdx === 0 ? 0 : rightIdx - 1
-    const leftDom = splits[leftIdx].containerEl
-    const rightDom = splits[rightIdx].containerEl
-    leftDom.style.cssText = ''
-    rightDom.style.cssText = ''
-
-    super._removeChild(child)
-  }
-
   onChildResizeStart(child: WorkspaceNode, e: MouseEvent) {
     let dragging = true
-    const startPos = this.direction === 'vertical' ? e.clientX : e.clientY
+    const isVertical = this.direction === 'vertical'
     const splits = this.children
-    const rightIdx = this.children.findIndex(c => c === child)
-    const leftIdx = rightIdx - 1
+    const idx = splits.findIndex(c => c === child)
+
+    if (idx === 0) return
+    const leftIdx = idx - 1
+
+    const containerRect = this.containerEl.getBoundingClientRect()
+    const totalPixel = isVertical ? containerRect.width : containerRect.height
+
     const leftDom = splits[leftIdx].containerEl
-    const rightDom = splits[rightIdx].containerEl
-    const startLeftW = this.direction === 'vertical' ? leftDom.offsetWidth : leftDom.offsetHeight
-    const startRightW = this.direction === 'vertical' ? rightDom.offsetWidth : rightDom.offsetHeight
+    const rightDom = splits[idx].containerEl
+    const leftW = isVertical ? leftDom.offsetWidth : leftDom.offsetHeight
+    const rightW = isVertical ? rightDom.offsetWidth : rightDom.offsetHeight
+    const startPos = isVertical ? e.clientX : e.clientY
+
     document.onmousemove = (e2) => {
-      if (!dragging) return
-      const curPos = this.direction === 'vertical' ? e2.clientX : e2.clientY
-      const delta = curPos - startPos
-      const newLeft = Math.max(120, startLeftW + delta)
-      const newRight = Math.max(120, startRightW - delta)
-      leftDom.style.flex = 'unset'
-      rightDom.style.flex = 'unset'
-      if (this.direction === 'vertical') {
-        leftDom.style.width = newLeft + "px"
-        rightDom.style.width = newRight + "px"
-      } else {
-        leftDom.style.height = newLeft + "px"
-        rightDom.style.height = newRight + "px"
+      if (!dragging) return;
+      const curPos = isVertical ? e2.clientX : e2.clientY
+      const deltaPx = curPos - startPos
+
+      let newLeftPx = Math.max(120, leftW + deltaPx)
+      let newRightPx = Math.max(120, rightW - deltaPx)
+
+      if (newLeftPx + newRightPx > totalPixel) {
+        newRightPx = totalPixel - newLeftPx
       }
+
+      const newLeftSize = newLeftPx / totalPixel
+      const newRightSize = newRightPx / totalPixel
+
+      this.sizes[leftIdx] = newLeftSize
+      this.sizes[idx] = newRightSize
+
+      const remain = 1 - (newLeftSize + newRightSize)
+      const otherIdx = this.sizes
+        .map((v, index) => (index === leftIdx || index === idx ? -1 : index))
+        .filter(i => i !== -1)
+
+      if (otherIdx.length > 0) {
+        const fact = remain / otherIdx.length
+        otherIdx.forEach(i => this.sizes[i] = fact)
+      }
+
+      this.updatePaneSizes()
     }
+
     document.onmouseup = () => {
       dragging = false
       document.onmousemove = document.onmouseup = null
     }
+  }
+
+  private updatePaneSizes() {
+    this.children.forEach((child, i) => {
+      const dom = child.containerEl
+      dom.style.flex = "0 0 auto"
+      if (this.direction === 'vertical') {
+        dom.style.flexBasis = (this.sizes[i] * 100) + "%"
+      } else {
+        dom.style.flexBasis = (this.sizes[i] * 100) + "%"
+      }
+    })
   }
 }
