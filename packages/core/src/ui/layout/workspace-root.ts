@@ -134,6 +134,10 @@ export class WorkspaceRoot extends WorkspaceSplit {
 
       this.appendChild(createTabs(workspace.activeFile))
       workspace.activeLeaf = (this.children[0] as WorkspaceTabs).children[0] as WorkspaceLeaf
+
+      if (!workspace.activeFile) {
+        $(editor.writingArea).parent().addClass('typ-deactive')
+      }
     }
 
     this.registry.onunload = () => {
