@@ -8,11 +8,9 @@ import { EmptyView } from "../views/empty-view"
 export function createTabs(path?: string) {
   const workspace = useService('workspace')
   const tabs = useService('workspace-tabs')
-  tabs.appendChild(workspace.activeLeaf =
-    path
-      ? createEditorLeaf(path)
-      : createEmptyLeaf()
-  )
+  const newLeaf = path ? createEditorLeaf(path) : createEmptyLeaf()
+  tabs.appendChild(newLeaf)
+  workspace.activeLeaf = newLeaf
   return tabs
 }
 
