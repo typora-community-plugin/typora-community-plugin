@@ -46,8 +46,8 @@ export class WorkspaceTabs extends WorkspaceParent {
   // --------- Tab Operators ---------
 
   get activedLeaf() {
-    const path = this.tabHeader.getActiveTab()?.dataset.id
-    const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)
+    const el = this.containerEl.querySelector('.typ-workspace-leaf.mod-active')
+    const leaf = (this.children as WorkspaceLeaf[]).find(c => c.containerEl === el)
     return leaf
   }
 

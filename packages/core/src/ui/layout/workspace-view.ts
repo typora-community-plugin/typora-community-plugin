@@ -16,7 +16,7 @@ export abstract class WorkspaceView extends Component implements Closeable {
 
   setIcon(icon: string) {
     setTimeout(() => {
-      $((this.leaf.parent as WorkspaceTabs).tabHeader.getTabById(this.leaf.state.path))
+      $((this.leaf.parent as WorkspaceTabs)?.tabHeader.getTabById(this.leaf.state.path))
         .find('.typ-file-icon')
         .removeClass(this.icon)
         .addClass(icon)

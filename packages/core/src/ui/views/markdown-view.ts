@@ -65,8 +65,11 @@ export class MarkdownView extends WorkspaceView {
         MarkdownView.parent = null
 
         // fix: will not open typora editor after the only one closed
-        const nextMdLeaf = this.leaf.getRoot().findLeaf(leaf => leaf.viewType === MarkdownView.type);
-        (nextMdLeaf?.parent as WorkspaceTabs).activedLeaf.view.onOpen()
+        const nextMdLeaf = this.leaf.getRoot()
+          .filterLeaves(leaf => leaf.viewType === MarkdownView.type)
+          .filter(leaf => leaf !== this.leaf)
+          .shift()
+        if (nextMdLeaf) (nextMdLeaf.parent as WorkspaceTabs).activedLeaf.view.onOpen()
       }
     }
     else {
