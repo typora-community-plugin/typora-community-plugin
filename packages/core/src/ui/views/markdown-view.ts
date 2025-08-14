@@ -6,6 +6,7 @@ import { WorkspaceView } from '../layout/workspace-view'
 import type { WorkspaceTabs } from '../layout/tabs'
 import type { WorkspaceLeaf } from '../layout/workspace-leaf'
 import { parseMarkdown, uniqueId } from 'src/utils'
+import type { DisposeFunc } from 'src/utils/types'
 
 
 enum Mode { Typora, Previewer }
@@ -49,10 +50,6 @@ export class MarkdownView extends WorkspaceView {
 
   onOpen() {
     this.autoSetMode()
-    if (this.currentMode === Mode.Typora) {
-      editor.writingArea.parentElement.classList.remove('typ-deactive')
-      editor.library.openFile(this.filePath)
-    }
   }
 
   onClose() {
@@ -88,7 +85,7 @@ export class MarkdownView extends WorkspaceView {
     this.setIcon('fa-file-text-o')
 
     containerEl.classList.add('mode-typora')
-    InternalEditor.instance.active(containerEl, this);
+    InternalEditor.instance.active(containerEl, this)
   }
 
   private switchToPreviewerMode(filePath?: string) {
@@ -115,6 +112,7 @@ class InternalEditor {
 
   contentEl = editor.writingArea.parentElement
   handleSettingActiveLeaf: (this: HTMLElement, ev: MouseEvent) => any
+  handleLayoutChanged: DisposeFunc
 
   private constructor(private workspace = useService('workspace')) { }
 
@@ -122,15 +120,18 @@ class InternalEditor {
     containerEl.innerHTML = '<object type="text/html" data="about:blank"></object>'
 
     this.contentEl.classList.add('typ-workspace-binding')
+    this.contentEl.classList.remove('typ-deactive')
     this.contentEl.addEventListener('mousedown', this.handleSettingActiveLeaf = () => {
       this.workspace.activeLeaf = view.leaf
     })
+
+    MarkdownView.parent = view.leaf.parent as WorkspaceTabs
     setTimeout(() => {
-      MarkdownView.parent = view.leaf.parent as WorkspaceTabs
+      editor.library.openFile(view.filePath)
       this.syncSize()
       this.registerObserver(containerEl)
-      view.register(
-        view.leaf.getRoot().on('layout-changed', () => this.registerObserver(containerEl)))
+      this.handleLayoutChanged = view.leaf.getRoot()
+        .on('layout-changed', () => this.registerObserver(containerEl))
     })
   }
 
@@ -140,6 +141,8 @@ class InternalEditor {
     this.contentEl.classList.remove('typ-workspace-binding')
     this.contentEl.removeEventListener('mousedown', this.handleSettingActiveLeaf!)
     this.unregisterObserver(containerEl)
+    this.handleLayoutChanged?.()
+    this.handleLayoutChanged = null
   }
 
   private registerObserver(el: HTMLElement) {
