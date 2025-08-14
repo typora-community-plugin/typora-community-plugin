@@ -9,7 +9,7 @@ export function parseMarkdown(md: string) {
       return ''
     })
 
-  const frontMatters = frontMatter.split(/\n(?=\S)/)
+  const frontMatters = frontMatter ? frontMatter.split(/\n(?=\S)/) : []
 
   return { frontMatters, content }
 }

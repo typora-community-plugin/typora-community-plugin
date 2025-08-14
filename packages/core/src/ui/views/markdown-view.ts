@@ -206,7 +206,7 @@ class MarkdownPreviewer {
 
     // handle: front matter
     const { frontMatters, content } = parseMarkdown(md)
-    const frontMattersHtml = `<pre mdtype="meta_block" class="md-meta-block md-end-block">${frontMatters.join('\n')}</pre>`
+    const frontMattersHtml = frontMatters.length ? `<pre mdtype="meta_block" class="md-meta-block md-end-block">${frontMatters.join('\n')}</pre>` : ''
 
     // handle: markdown → html
     const [contentHtml] = editor.nodeMap.allNodes.first().__proto__.constructor.parseFrom(content)
