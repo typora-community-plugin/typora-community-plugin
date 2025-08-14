@@ -23,7 +23,12 @@
     }
   }
 
+  &.mod-active .typ-tab.active {
+    border-top: var(--typ-indicator-width)solid var(--active-file-border-color);
+  }
+
   .typ-workspace-tab-header .typ-tab {
+
     &:only-child .typ-close {
       display: unset;
     }

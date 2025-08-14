@@ -47,7 +47,6 @@
   &.active {
     padding-top: 5px;
     border: 1px solid var(--typ-tab-border-color);
-    border-top: var(--typ-indicator-width) solid var(--active-file-border-color);
     border-bottom: 1px solid transparent;
 
     &:first-child {

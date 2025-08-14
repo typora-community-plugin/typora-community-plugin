@@ -53,7 +53,9 @@ export class Workspace extends Events<WorkspaceEvents> {
   }
   //
   set activeLeaf(leaf: WorkspaceLeaf) {
+    this._activeLeaf?.parent?.containerEl.classList.remove('mod-active')
     this._activeLeaf = leaf
+    leaf?.parent?.containerEl.classList.add('mod-active')
     this.emit('active-leaf:change', leaf)
   }
 
