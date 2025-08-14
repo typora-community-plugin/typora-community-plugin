@@ -44,14 +44,14 @@ export function splitDown(path?: string) {
 
 function split(direction: Direction, path?: string) {
   const workspace = useService('workspace')
-  const left = workspace.activeLeaf.closest('tabs')
-  const parentSplit = left.closest('split') as WorkspaceSplit
+  const previousTabs = workspace.activeLeaf.closest('tabs')
+  const parentSplit = previousTabs.closest('split') as WorkspaceSplit
   if (parentSplit.direction === direction)
     parentSplit.appendChild(createTabs(path))
   else {
-    const verticalSplit = useService('workspace-split', [direction])
-    parentSplit.replaceChild(left, verticalSplit)
-    verticalSplit.appendChild(left)
-    verticalSplit.appendChild(createTabs(path))
+    const newSplit = useService('workspace-split', [direction])
+    parentSplit.replaceChild(previousTabs, newSplit)
+    newSplit.appendChild(previousTabs)
+    newSplit.appendChild(createTabs(path))
   }
 }

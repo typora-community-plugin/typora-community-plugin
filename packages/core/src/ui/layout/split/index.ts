@@ -27,6 +27,14 @@ export class WorkspaceSplit extends WorkspaceParent {
     this.containerEl.insertBefore(child.containerEl, this.containerEl.children[index + 1])
   }
 
+  removeChild(child: WorkspaceNode) {
+    super.removeChild(child)
+
+    if (this.children.length === 1) {
+      this.parent?.replaceChild(this, this.children[0])
+    }
+  }
+
   protected _removeChild(child: WorkspaceNode) {
     const splits = this.children
     const rightIdx = this.children.findIndex(c => c === child)
@@ -37,10 +45,6 @@ export class WorkspaceSplit extends WorkspaceParent {
     rightDom.style.cssText = ''
 
     super._removeChild(child)
-
-    if (this.children.length === 1) {
-      this.parent?.replaceChild(this, this.children[0])
-    }
   }
 
   onChildResizeStart(child: WorkspaceNode, e: MouseEvent) {
