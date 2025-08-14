@@ -16,15 +16,20 @@ export class FileTabContainer extends TabContainer {
 
 export class FileTab extends Tab {
   constructor(filePath: string, vault = useService('vault')) {
-    const longPath = path.relative(vault.path, filePath)
-      .replace(/(\.textbundle)[\\/]text\.(?:md|markdown)$/, '$1')
+    const isUri = filePath.startsWith('typ://')
+    const longPath = isUri ? filePath : simplifyFilePath(vault.path, filePath)
     const ext = path.extname(filePath)
     const shortName = truncate(path.basename(longPath, ext), MAX_LENGHT)
 
     super({
       id: filePath,
       text: () => $(`<i class="typ-file-icon fa fa-file-o"></i><span class="typ-file-basename">${shortName}</span><span class="typ-file-ext">${ext}</span>`),
-      title: longPath,
+      title: isUri ? shortName : longPath,
     })
   }
+}
+
+function simplifyFilePath(root: string, filePath: string) {
+  return path.relative(root, filePath)
+    .replace(/(\.textbundle)[\\/]text\.(?:md|markdown)$/, '$1')
 }
