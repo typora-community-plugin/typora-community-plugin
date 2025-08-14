@@ -312,13 +312,15 @@ export declare class Node {
 
   static parseFrom(markdown: string): [string]
 
+  __proto__: {
+    constructor: typeof Node
+  }
+
   id: string
   cid: string
   attributes: NodeAttribute
 
-  __proto__: {
-    constructor: typeof Node
-  }
+  constructor(options: NodeConstructOpts)
 
   get(key: "before" | "after"): Node | undefined
   get(key: string): any
@@ -338,6 +340,17 @@ interface NodeAttribute {
   }
   before?: Node
   after?: Node
+}
+
+interface NodeConstructOpts {
+  type: string
+  in?: NodeMap
+  attachTo?: NodeMap
+  after?: Node
+  before?: Node
+  lang?: string
+  text?: string
+  pattern?: string
 }
 
 interface EditHelper {
