@@ -1,12 +1,13 @@
 import { editor } from "typora"
+import { useEventBus } from "src/common/eventbus"
+import { useService } from "src/common/service"
+import type { MarkdownEditor } from "../markdown-editor"
 import { PostProcessor, type RawProcessor } from './postprocessor'
 import { HtmlPostProcessor } from './html-postprocessor'
 import { CodeblockPostProcessor } from './codeblock-postprocessor'
-import type { DisposeFunc } from "src/utils/types"
-import { useEventBus } from "src/common/eventbus"
-import { useService } from "src/common/service"
 import { CodeblockExportProcessor } from "src/export-manager"
 import { noop } from "src/utils"
+import type { DisposeFunc } from "src/utils/types"
 
 
 export type TPostProcessor = RawProcessor | PostProcessor | HtmlPostProcessor | CodeblockPostProcessor
@@ -17,28 +18,17 @@ export class MarkdownPostProcessor {
   private _codePreviewProcessors: Record<string, CodeblockPostProcessor> = {}
 
   constructor(private exporter = useService('exporter')) {
-    setTimeout(() => this._registerProcessors())
   }
 
-  private _registerProcessors() {
-    const workspace = useEventBus('workspace')
-    const activeEditor = useEventBus('markdown-editor')
-
-    workspace.on('file:open', this._processAll)
-    activeEditor.on('edit', this._processAll)
-    activeEditor.on('scroll', this._processAllCodeblock)
+  process(writingArea: HTMLElement, processors: HtmlPostProcessor[] = this._processors) {
+    processors.forEach(p => p._process(writingArea))
   }
 
-  private _process(processors: HtmlPostProcessor[]) {
-    processors.forEach(p => p._process(editor.writingArea))
-  }
+  processAll = (writingArea: HTMLElement = editor.writingArea) =>
+    this.process(writingArea, this._processors)
 
-  private _processAll = () => this._process(this._processors)
-
-  private _processAllCodeblock = () => this._process(
-    this._processors.filter(p =>
-      'type' in p && p.type === 'codeblock'
-    ))
+  processAllCodeblock = (writingArea: HTMLElement = editor.writingArea) =>
+    this.process(writingArea, this._processors.filter(p => 'type' in p && p.type === 'codeblock'))
 
   register(processor: TPostProcessor): DisposeFunc {
     if (typeof processor === 'function') {
@@ -74,4 +64,14 @@ export class MarkdownPostProcessor {
     }
     this._processors = this._processors.filter(p => p !== processor)
   }
+}
+
+export function bindPostProcessorToEditor(editor: MarkdownEditor) {
+
+  const workspace = useEventBus('workspace')
+  const { postProcessor } = editor
+
+  workspace.on('file:open', () => postProcessor.processAll())
+  editor.on('edit', postProcessor.processAll)
+  editor.on('scroll', postProcessor.processAllCodeblock)
 }
