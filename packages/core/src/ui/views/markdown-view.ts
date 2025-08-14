@@ -50,19 +50,27 @@ export class MarkdownView extends WorkspaceView {
 
   onOpen() {
     this.autoSetMode()
+    if (this.currentMode === Mode.Typora) {
+      editor.writingArea.parentElement.classList.remove('typ-deactive')
+      editor.library.openFile(this.filePath)
+    }
   }
 
   onClose() {
     if (this.currentMode === Mode.Typora) {
       if (this.workspace.activeFile === this.filePath)
         editor.writingArea.parentElement.classList.add('typ-deactive')
-      // fix: can not close codemirror editor when dragging the only one Typora editor tab from Tabs A to Tabs B (which contains CodeMirror editor)
+      // fix: can not close preview when dragging the only one Typora editor tab from Tabs A to Tabs B (which contains preview)
       if (MarkdownView.parent.children.length === 1) {
         MarkdownView.parent = null
+
+        // fix: will not open typora editor after the only one closed
+        const nextMdLeaf = this.leaf.getRoot().findLeaf(leaf => leaf.viewType === MarkdownView.type);
+        (nextMdLeaf?.parent as WorkspaceTabs).activedLeaf.view.onOpen()
       }
     }
     else {
-      // fix: can not close codemirror tab when dragging it from Tabs B to Tabs A (which contains Typora editor)
+      // fix: can not close preview tab when dragging it from Tabs B to Tabs A (which contains preview)
       this.mdPreviewer?.deactive(this.containerEl)
       this.mdPreviewer = null
     }
@@ -120,14 +128,12 @@ class InternalEditor {
     containerEl.innerHTML = '<object type="text/html" data="about:blank"></object>'
 
     this.contentEl.classList.add('typ-workspace-binding')
-    this.contentEl.classList.remove('typ-deactive')
     this.contentEl.addEventListener('mousedown', this.handleSettingActiveLeaf = () => {
       this.workspace.activeLeaf = view.leaf
     })
 
     MarkdownView.parent = view.leaf.parent as WorkspaceTabs
     setTimeout(() => {
-      editor.library.openFile(view.filePath)
       this.syncSize()
       this.registerObserver(containerEl)
       this.handleLayoutChanged = view.leaf.getRoot()
