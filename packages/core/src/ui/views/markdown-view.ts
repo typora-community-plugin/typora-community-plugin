@@ -85,7 +85,7 @@ export class MarkdownView extends WorkspaceView {
     containerEl.classList.remove('mode-previewer')
     this.mdPreviewer?.deactive(containerEl)
     this.mdPreviewer = null
-    setTimeout(() => this.setIcon('fa-file-text-o'))
+    this.setIcon('fa-file-text-o')
 
     containerEl.classList.add('mode-typora')
     InternalEditor.instance.active(containerEl, this);
@@ -101,7 +101,7 @@ export class MarkdownView extends WorkspaceView {
     containerEl.classList.add('mode-previewer')
     this.mdPreviewer = new MarkdownPreviewer()
     this.mdPreviewer.active(containerEl, filePath);
-    setTimeout(() => this.setIcon('fa-file-text'))
+    this.setIcon('fa-file-text')
   }
 }
 
