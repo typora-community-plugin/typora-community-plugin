@@ -23,11 +23,7 @@
     }
   }
 
-  &.mod-active .typ-tab.active {
-    border-top: var(--typ-indicator-width)solid var(--active-file-border-color);
-  }
-
-  .typ-workspace-tab-header .typ-tab {
+  .typ-tab {
 
     &:only-child .typ-close {
       display: unset;
@@ -36,6 +32,14 @@
     &.mod-drag-over {
       box-shadow: 2px 0 0 0 var(--tw-ring-color) inset;
     }
+  }
+
+  .typ-tab.active {
+    border-top: 1px solid var(--typ-tab-border-color);
+  }
+
+  &.mod-active .typ-tab.active {
+    border-top: var(--typ-indicator-width) solid var(--active-file-border-color);
   }
 
   &>.typ-workspace-tab-content {
