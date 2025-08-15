@@ -1,5 +1,9 @@
 # 特性更新日志
 
+## v2.5.4
+
+- fix(core/ui/editor/preprocessor): 无法在保存前还原笔记
+
 ## v2.5.3
 
 - feat(core/ui/layout/tabs): 区分 非活动的/打开的/活动的 标签

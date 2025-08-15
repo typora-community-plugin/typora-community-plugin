@@ -1,5 +1,9 @@
 # Feature Changelog
 
+## v2.5.4
+
+- fix(core/ui/editor/preprocessor): can not process note before saving it
+
 ## v2.5.3
 
 - feat(core/ui/layout/tabs): seperate deactive/opened/actived tab
