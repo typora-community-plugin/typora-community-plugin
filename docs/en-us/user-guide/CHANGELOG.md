@@ -4,6 +4,7 @@
 
 - feat(core/ui/layout/tabs): seperate deactive/opened/actived tab
 - fix(core/ui/layout/views/markdown): can not open NewTab after closed the only one tab
+- fix(core/ui/layout): lost activeLeaf after split view
 
 ## v2.5.1
 

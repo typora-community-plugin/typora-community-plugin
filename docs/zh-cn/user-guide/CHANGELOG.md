@@ -4,6 +4,7 @@
 
 - feat(core/ui/layout/tabs): 区分 非活动的/打开的/活动的 标签
 - fix(core/ui/layout/views/markdown): 关闭唯一一个标签后，不能打开新标签页
+- fix(core/ui/layout): 分屏后丢失活动的标签
 
 ## v2.5.1
 
