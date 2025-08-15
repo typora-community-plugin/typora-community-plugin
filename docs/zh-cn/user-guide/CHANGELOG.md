@@ -1,5 +1,14 @@
 # 特性更新日志
 
+## v2.5.3
+
+- feat(core/ui/layout/tabs): 区分 非活动的/打开的/活动的 标签
+- fix(core/ui/layout/views/markdown): 关闭唯一一个标签后，不能打开新标签页
+
+## v2.5.1
+
+- fix(core/ui/views/markdown): 无法正确打开文件
+
 ## v2.5.0
 
 - feat(core/ui/layout): 添加 **Workspace API**，支持分屏

@@ -1,5 +1,14 @@
 # Feature Changelog
 
+## v2.5.3
+
+- feat(core/ui/layout/tabs): seperate deactive/opened/actived tab
+- fix(core/ui/layout/views/markdown): can not open NewTab after closed the only one tab
+
+## v2.5.1
+
+- fix(core/ui/views/markdown): can not open file correctly
+
 ## v2.5.0
 
 - feat(core/ui/layout): Add **Workspace API**, supports SplitView
