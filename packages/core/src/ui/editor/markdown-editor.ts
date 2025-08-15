@@ -32,6 +32,9 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
   constructor() {
     super('markdown-editor')
 
+    bindPreProcessorToEditor(this)
+    bindPostProcessorToEditor(this)
+
     setTimeout(() => {
       this._openLinkInCurrentWin = new OpenLinkInCurrentWin()
       this._markdownLinkWitoutExtension = new MarkdownLinkWitoutExtension()
@@ -51,9 +54,6 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
       el.parentElement!.addEventListener('scroll',
         debounce(() => this.emit('scroll'), 200)
       )
-
-      bindPreProcessorToEditor(this)
-      bindPostProcessorToEditor(this)
     })
   }
 

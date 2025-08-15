@@ -1,5 +1,5 @@
 import decorate from '@plylrnsdy/decorate.js'
-import { File } from 'typora'
+import { editor, File } from 'typora'
 import { useService } from 'src/common/service'
 import type { MarkdownEditor } from '../markdown-editor'
 import { HtmlMask, RegexpBasedStringMask } from './string-mask'
@@ -96,9 +96,9 @@ export class MarkdownPreProcessor {
   }
 }
 
-export function bindPreProcessorToEditor(editor: MarkdownEditor) {
+export function bindPreProcessorToEditor(mdEditor: MarkdownEditor) {
 
-  const { preProcessor } = editor
+  const { preProcessor } = mdEditor
 
   File.isNode
     ? decorate.returnValue(File, 'readContentFrom', (args, res) => {
@@ -119,7 +119,7 @@ export function bindPreProcessorToEditor(editor: MarkdownEditor) {
     })
 
   decorate.returnValue(editor, 'getMarkdown', (args, md) => {
-      if (preProcessor.isEmpty('presave')) {
+    if (preProcessor.isEmpty('presave')) {
       return md
     }
     return preProcessor.process('presave', md)

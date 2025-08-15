@@ -66,12 +66,12 @@ export class MarkdownPostProcessor {
   }
 }
 
-export function bindPostProcessorToEditor(editor: MarkdownEditor) {
+export function bindPostProcessorToEditor(mdEditor: MarkdownEditor) {
 
   const workspace = useEventBus('workspace')
-  const { postProcessor } = editor
+  const { postProcessor } = mdEditor
 
   workspace.on('file:open', () => postProcessor.processAll())
-  editor.on('edit', postProcessor.processAll)
-  editor.on('scroll', postProcessor.processAllCodeblock)
+  mdEditor.on('edit', postProcessor.processAll)
+  mdEditor.on('scroll', postProcessor.processAllCodeblock)
 }
