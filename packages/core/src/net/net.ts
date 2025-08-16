@@ -1,4 +1,4 @@
-import type { ServerResponse } from 'node:http'
+import type { IncomingMessage } from 'node:http'
 import { File, _options, reqnode } from 'typora'
 import fs from 'src/io/fs/filesystem'
 import path from 'src/path'
@@ -36,36 +36,59 @@ function download(url: string, dest: string) {
   }
 }
 
-function downloadByNodejs(url: string, dest: string) {
+function downloadByNodejs(url: string, dest: string, maxRedirects = 5) {
   return new Promise<void>((resolve, reject) => {
-    const [module] = url.match(/^https?/)
-    const net = reqnode(module)
-    const fs = reqnode('fs')
-    const file = fs.createWriteStream(dest)
-    net
-      .get(url, (response: ServerResponse) => {
-        if (response.statusCode !== 200) {
-          file.close()
-          fs.unlink(dest, noop)
+    let isFinished = false
+    const fs = reqnode('fs') as typeof import('fs')
 
-          const msg = `Request Failed. Status Code: ${response.statusCode}`
-          reject(Error(msg))
-          useService('notice', [msg])
-          return
-        }
-        response.pipe(file)
-        file.on('finish', () => {
-          file.close()
-          resolve()
+    doRequest(url)
+
+    function doRequest(currentUrl: string, redirectCount = 0) {
+      const [module] = currentUrl.match(/^https?/)
+      const net = reqnode(module)
+
+      net
+        .get(currentUrl, (response: IncomingMessage) => {
+
+          if ([301, 302, 303, 307, 308].includes(response.statusCode || 0)) {
+            if (redirectCount >= maxRedirects) {
+              return throws(new Error('Too many redirects'))
+            }
+            const { location } = response.headers
+            if (!location) {
+              return throws(new Error('Redirect location header missing'));
+            }
+            const newUrl = new URL(location, currentUrl).toString()
+            response.resume()
+            return doRequest(newUrl, redirectCount + 1)
+          }
+
+          if (response.statusCode !== 200) {
+            response.resume()
+            return throws(new Error(`Request Failed. Status Code: ${response.statusCode}`))
+          }
+
+          const file = fs.createWriteStream(dest)
+          response
+            .pipe(file)
+            .on('error', cleanUp)
+          file
+            .on('finish', () => file.close(() => resolve()))
+            .on('error', cleanUp)
+
+          function cleanUp(err: Error) {
+            if (isFinished) return
+            isFinished = true
+            file.close(() => fs.unlink(dest, () => throws(err)))
+          }
         })
-      })
-      .on('error', (err: Error) => {
-        file.close()
-        fs.unlink(dest, noop)
+        .on('error', throws)
 
+      function throws(err: Error) {
         reject(err)
         useService('notice', [err.message])
-      })
+      }
+    }
   })
 }
 
