@@ -16,18 +16,14 @@ export function onTabsContextMenu(root: WorkspaceRoot, i18n = useService('i18n')
     const tabsEl = $tabEl.closest('.typ-workspace-tabs')[0]
     const tabs = root.findNode(n => n.containerEl === tabsEl) as WorkspaceTabs
 
-    menu.empty()
-
-    if (tabs.children.length > 1) {
-      menu.addItem(item => {
+    menu
+      .empty()
+      .addItem(item => {
         item
           .setKey('removeTab')
           .setTitle(t.tabview.close)
           .onClick(() => tabs.removeTab(clickedTabPath))
       })
-    }
-
-    menu
       .addItem(item => {
         item
           .setKey('removeOthers')
