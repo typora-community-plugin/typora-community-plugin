@@ -19,6 +19,8 @@ export { Notice } from './ui/components/notice'
 export { openInputBox } from './ui/components/quick-open'
 export { openQuickPick } from './ui/components/quick-open'
 
+export { WorkspaceView } from './ui/layout/workspace-view'
+
 export { SettingTab } from './ui/settings/setting-tab'
 export { SettingItem } from './ui/settings/setting-item'
 
