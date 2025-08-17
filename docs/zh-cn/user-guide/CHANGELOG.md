@@ -1,5 +1,11 @@
 # 特性更新日志
 
+## v2.5.7
+
+- feat(core/net): 支持切换下载器
+- fix(core/net): 不支持重定向
+- fix(core/export): 不能导出 html/pdf
+
 ## v2.5.4
 
 - fix(core/ui/editor/preprocessor): 无法在保存前还原笔记

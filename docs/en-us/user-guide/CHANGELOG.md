@@ -1,5 +1,11 @@
 # Feature Changelog
 
+## v2.5.7
+
+- feat(core/net): can switch the downloader
+- fix(core/net): can not support redirecting
+- fix(core/export): can not export html/pdf
+
 ## v2.5.4
 
 - fix(core/ui/editor/preprocessor): can not process note before saving it
