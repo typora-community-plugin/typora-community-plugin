@@ -59,7 +59,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
         setting.addName(t.downloader)
         setting.addDescription(t.downloaderDesc)
         setting.addSelect({
-          options: Object.values(Downloader),
+          options: Object.values(Downloader).filter(d => d !== 'CLI'),
           selected: settings.get('downloader'),
           onchange: event => settings.set('downloader', event.target.value)
         })
