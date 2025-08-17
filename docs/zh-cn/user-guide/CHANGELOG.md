@@ -1,5 +1,9 @@
 # 特性更新日志
 
+## v2.5.8
+
+- fix(core/ui/layout/tabs): 不能通过右键菜单关闭唯一的 Tab
+
 ## v2.5.7
 
 - feat(core/net): 支持切换下载器

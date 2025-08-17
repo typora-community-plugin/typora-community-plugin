@@ -1,5 +1,9 @@
 # Feature Changelog
 
+## v2.5.8
+
+- fix(core/ui/layout/tabs): can not close the only tab by contextmenu
+
 ## v2.5.7
 
 - feat(core/net): can switch the downloader
