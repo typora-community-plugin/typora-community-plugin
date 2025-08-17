@@ -13,8 +13,7 @@ export class ExportManager {
       const { postProcessor } = useService('markdown-editor')
 
       decorate.returnValue(editor.export, 'exportToHTML', (args, html) => {
-        // @ts-ignore
-        postProcessor._processAllCodeblock()
+        postProcessor.processAllCodeblock()
 
         const doc = new DOMParser().parseFromString(html, 'text/html')
         const ctx: HtmlExportContext = {
