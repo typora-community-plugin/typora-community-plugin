@@ -68,6 +68,8 @@
     },
     "pluginMarketplace": {
       "name": "插件市场",
+      "downloader": "下载器",
+      "downloaderDesc": "- Typora: 更稳定，显示很少错误信息；\n- Nodejs: 显示更多错误信息。",
       "githubProxy": "Github 代理",
       "githubProxyDesc": "用于加载插件列表和下载插件。",
       "searchPlugin": "搜索插件:",

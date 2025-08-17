@@ -3,6 +3,8 @@ import { platform } from "src/common/constants"
 import type { PluginMarketInfo } from "src/plugin/plugin-marketplace"
 import { SettingTab } from "../setting-tab"
 import { debounce, uniqueId } from "src/utils"
+import { Downloader } from "src/net/net"
+import { File } from "typora"
 
 
 const platformIcons: Record<string, string> = {
@@ -12,10 +14,12 @@ const platformIcons: Record<string, string> = {
 }
 
 export type PluginMarketplaceSettings = {
+  downloader: string
   githubProxy: string
 }
 
 export const DEFAULT_PLUGIN_MARKETPLACE_SETTINGS: PluginMarketplaceSettings = {
+  downloader: File.isNode ? 'Typora' : 'CLI',
   githubProxy: 'github',
 }
 
@@ -49,6 +53,17 @@ export class PluginMarketplaceSettingTab extends SettingTab {
   render() {
     const { settings } = this
     const t = this.i18n.t.settingTabs.pluginMarketplace
+
+    if (File.isNode)
+      this.addSetting(setting => {
+        setting.addName(t.downloader)
+        setting.addDescription(t.downloaderDesc)
+        setting.addSelect({
+          options: Object.values(Downloader),
+          selected: settings.get('downloader'),
+          onchange: event => settings.set('downloader', event.target.value)
+        })
+      })
 
     this.addSetting(setting => {
       setting.addName(t.githubProxy)

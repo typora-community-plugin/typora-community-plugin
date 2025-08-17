@@ -1,12 +1,18 @@
 import type { IncomingMessage } from 'node:http'
-import { File, _options, reqnode } from 'typora'
+import { File, JSBridge, _options, reqnode } from 'typora'
 import fs from 'src/io/fs/filesystem'
 import path from 'src/path'
 import { Shell } from 'src/io/shell'
-import { noop, uniqueId } from "src/utils"
+import { uniqueId } from "src/utils"
 import { unzip } from 'src/common/zlib'
 import { useService } from 'src/common/service'
 
+
+export enum Downloader {
+  Typora = "Typora",
+  Nodejs = "Nodejs",
+  CLI = "CLI",
+}
 
 /**
  * Download zip file and extract it into temporary folder.
@@ -29,11 +35,20 @@ export function downloadThenUnzipToTemp(url: string) {
 
 function download(url: string, dest: string) {
   if (File.isNode) {
-    return downloadByNodejs(url, dest)
+    const settings = useService('settings')
+    return settings.get('downloader') === Downloader.Typora
+      ? downloadByTypora(url, dest)
+      : downloadByNodejs(url, dest)
   }
   else {
     return Shell.run(`curl -fLsS '${url}' -o '${dest}'`)
   }
+}
+
+function downloadByTypora(url: string, dest: string) {
+  const dir = path.dirname(dest)
+  const file = path.basename(dest)
+  return JSBridge.invoke('app.download', url, dir, file)
 }
 
 function downloadByNodejs(url: string, dest: string, maxRedirects = 5) {

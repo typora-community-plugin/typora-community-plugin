@@ -68,6 +68,8 @@
     },
     "pluginMarketplace": {
       "name": "Plugin Marketplace",
+      "downloader": "Downloader",
+      "downloaderDesc": "- Typora: More stable, shows very few error messages;\n- Nodejs: Shows more error messages.",
       "githubProxy": "Github proxy",
       "githubProxyDesc": "Proxy of github for loading plugin list and downloading plugin.",
       "searchPlugin": "Search plugins:",
