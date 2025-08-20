@@ -1,3 +1,4 @@
+import type { DisposeFunc } from "src/utils/types"
 import type { WorkspaceLeaf } from "./layout/workspace-leaf"
 import { WorkspaceView } from "./layout/workspace-view"
 
@@ -15,19 +16,25 @@ export class ViewManager {
   private viewByType: Record<string, ViewFactory> = {}
   private typeByExtension: Record<string, string> = {}
 
-  registerViewWithExtensions(extensions: string[], type: string, viewFactory: ViewFactory) {
+  registerViewWithExtensions(extensions: string[], type: string, viewFactory: ViewFactory): DisposeFunc {
     this.registerExtensions(extensions, type)
     this.registerView(type, viewFactory)
+    return () => {
+      this.unregisterExtensions(extensions)
+      this.unregisterView(type)
+    }
   }
 
-  registerExtensions(extensions: string[], type: string) {
+  registerExtensions(extensions: string[], type: string): DisposeFunc {
     extensions.forEach(ext => {
       this.registerExtension(ext, type)
     })
+    return () => this.unregisterExtensions(extensions)
   }
 
-  registerExtension(extension: string, type: string) {
+  registerExtension(extension: string, type: string): DisposeFunc {
     this.typeByExtension[extension] = type
+    return () => this.unregisterExtension(extension)
   }
 
   unregisterExtensions(extensions: string[]) {
@@ -44,8 +51,9 @@ export class ViewManager {
     return !!this.getTypeByExtension(extension)
   }
 
-  registerView(type: string, viewFactory: ViewFactory) {
+  registerView(type: string, viewFactory: ViewFactory): DisposeFunc {
     this.viewByType[type] = viewFactory
+    return () => this.unregisterView(type)
   }
 
   unregisterView(type: string) {
