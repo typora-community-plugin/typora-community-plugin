@@ -27,7 +27,6 @@ export class WorkspaceLeaf extends WorkspaceNode {
     this.state = state.state ?? {}
     this.viewType = state.type
     this.view = factory(this, state)
-    this.view.open()
     this.containerEl.append(this.view.containerEl)
     return this
   }
