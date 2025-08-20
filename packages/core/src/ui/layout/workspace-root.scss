@@ -6,6 +6,7 @@ div.typ-workspace-root {
   position: absolute;
   z-index: -1;
   top: var(--typ-workspace-top);
+  bottom: var(--typ-footer-height);
 
   left: calc(var(--typ-ribbon-width));
   width: calc(100% - var(--typ-ribbon-width));
@@ -14,6 +15,4 @@ div.typ-workspace-root {
     left: calc(var(--typ-ribbon-width) + var(--sidebar-width));
     width: calc(100% - var(--typ-ribbon-width) - var(--sidebar-width));
   }
-
-  height: calc(100% - var(--typ-footer-height));
 }
