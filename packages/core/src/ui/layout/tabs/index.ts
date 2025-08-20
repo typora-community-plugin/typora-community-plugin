@@ -30,7 +30,7 @@ export class WorkspaceTabs extends WorkspaceParent {
   insertChild(index: number, child: WorkspaceLeaf) {
     this.tabHeader.insertTab(index, new FileTab(child.state.path))
     super.insertChild(index, child)
-    child.view.open()
+    this.toggleTab(child.state.path)
   }
 
   _insertChildEl(index: number, child: WorkspaceLeaf) {
@@ -45,10 +45,10 @@ export class WorkspaceTabs extends WorkspaceParent {
 
   // --------- Tab Operators ---------
 
+  private _activeLeaf: WorkspaceLeaf
+
   get activedLeaf() {
-    const el = this.containerEl.querySelector('.typ-workspace-leaf.mod-active')
-    const leaf = (this.children as WorkspaceLeaf[]).find(c => c.containerEl === el)
-    return leaf
+    return this._activeLeaf ?? this.children[0] as WorkspaceLeaf
   }
 
   toggleTab(path: string, tabEl?: HTMLElement): void {
@@ -61,6 +61,8 @@ export class WorkspaceTabs extends WorkspaceParent {
     const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)
     leaf.containerEl.classList.add('mod-active')
     leaf.view.open()
+
+    this._activeLeaf = leaf
   }
 
   removeTab(path: string, tabEl?: HTMLElement): void {
