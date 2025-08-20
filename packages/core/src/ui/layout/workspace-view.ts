@@ -24,7 +24,11 @@ export abstract class WorkspaceView extends Component implements Closeable {
     }, 100)
   }
 
+  private isOpen = false
+
   open() {
+    if (this.isOpen) return
+    this.isOpen = true
     this.setIcon(this.icon)
     this.load()
     this.onOpen()
@@ -33,6 +37,8 @@ export abstract class WorkspaceView extends Component implements Closeable {
   onOpen() { }
 
   close() {
+    if (!this.isOpen) return
+    this.isOpen = false
     this.onClose()
     this.unload()
   }
