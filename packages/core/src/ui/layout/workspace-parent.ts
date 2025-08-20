@@ -77,6 +77,14 @@ export abstract class WorkspaceParent extends WorkspaceNode {
     return res
   }
 
+  filterNodes(iteratee: (node: WorkspaceNode) => boolean) {
+    const res: WorkspaceNode[] = []
+    this.eachNodes(node => {
+      if (iteratee(node)) res.push(node)
+    })
+    return res
+  }
+
   eachLeaves(iteratee: (leaf: WorkspaceLeaf) => boolean | void) {
     const nodes = this.children
     for (let i = 0; i < nodes.length; i++) {
