@@ -10,6 +10,7 @@ foreach ($path in $uninstallPaths) {
         $props = Get-ItemProperty $_.PSPath -ErrorAction SilentlyContinue
         if ($props.DisplayName -like "*Typora*") {
             $typoraPath = $props.InstallLocation
+            break 2
         }
     }
 }
