@@ -5,12 +5,12 @@ $uninstallPaths = @(
 
 $typoraPath = $null
 
-foreach ($path in $uninstallPaths) {
-    Get-ChildItem $path -ErrorAction SilentlyContinue | ForEach-Object {
+:label foreach ($path in $uninstallPaths) {
+    Get-ChildItem $path | ForEach-Object {
         $props = Get-ItemProperty $_.PSPath -ErrorAction SilentlyContinue
         if ($props.DisplayName -like "*Typora*") {
             $typoraPath = $props.InstallLocation
-            break 2
+			      break label
         }
     }
 }
