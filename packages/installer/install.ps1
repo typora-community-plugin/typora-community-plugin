@@ -1,21 +1,30 @@
-#
-# @example &'install.ps1'
-# @example &'install.ps1' -root <custom_install_path>
-#
-
-[CmdletBinding()]
-Param(
-  [string] $root
+$uninstallPaths = @(
+    "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall",
+    "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
 )
 
-If ($root -eq "") {
-  $root = If (Test-Path "C:\Program Files\Typora") {
-    "C:\Program Files\Typora"
-  } ElseIf (Test-Path "C:\Program Files (x86)\Typora") {
-    "C:\Program Files (x86)\Typora"
-  } Else {
-    "$env:UserProfile\AppData\Local\Programs\Typora"
-  }
+$typoraPath = $null
+
+foreach ($path in $uninstallPaths) {
+    Get-ChildItem $path -ErrorAction SilentlyContinue | ForEach-Object {
+        $props = Get-ItemProperty $_.PSPath -ErrorAction SilentlyContinue
+        if ($props.DisplayName -like "*Typora*") {
+            $typoraPath = $props.InstallLocation
+        }
+    }
+}
+
+if ($typoraPath -and (Test-Path $typoraPath)) {
+    Write-Output "Detected Typora installation path: $typoraPath"
+    $confirm = Read-Host "Use this path? (Y/N)"
+    if ($confirm -match '^[Yy]$') {
+        $root = $typoraPath
+    } else {
+        $root = Read-Host "Please enter the Typora installation path"
+    }
+} else {
+    Write-Output "Could not find Typora installation path from registry"
+    $root = Read-Host "Please enter the Typora installation path"
 }
 
 $htmlPath = "$root\resources\window.html"
@@ -38,3 +47,7 @@ If (-not (Test-Path "%UserProfile%\\AppData\\Roaming\\Typora\\plugins")) {
 }
 
 Copy-Item ./* -Destination $env:UserProfile/.typora/community-plugins -Recurse
+
+Write-Host "`nInstallation succeeded."
+Write-Host "`Press any key to exit..."
+[void][System.Console]::ReadKey($true)
