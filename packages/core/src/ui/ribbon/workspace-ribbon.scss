@@ -48,6 +48,11 @@
   &.typora-node .sidebar-content {
     top: 18px;
   }
+
+  // fix: can not show all search panel when showing sidebar on macOS
+  #md-searchpanel {
+    width: auto;
+  }
 }
 
 /**
