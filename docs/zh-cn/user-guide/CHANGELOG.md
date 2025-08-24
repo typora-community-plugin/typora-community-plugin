@@ -1,5 +1,10 @@
 # 特性更新日志
 
+## v2.5.10
+
+- feat(installer): 从注册表查找 Typora 安装路径。by @Veik
+- fix(core/ui): 在 macOS 中打开侧栏时，不能显示完整的搜索面板
+
 ## v2.5.8
 
 - fix(core/ui/layout/tabs): 不能通过右键菜单关闭唯一的 Tab

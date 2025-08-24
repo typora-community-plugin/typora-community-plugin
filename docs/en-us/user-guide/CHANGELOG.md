@@ -1,5 +1,10 @@
 # Feature Changelog
 
+## v2.5.10
+
+- feat(installer): find Typora installation postion from registry. by @Veik
+- fix(core/ui): can not show all search panel when showing sidebar on macOS
+
 ## v2.5.8
 
 - fix(core/ui/layout/tabs): can not close the only tab by contextmenu

@@ -6,7 +6,7 @@
 
 1. 从 [Release][release] 下载 `typora-community-plugin.zip`。
 2. 解压文件。
-3. 以管理员身份运行 `install.ps1` (只适用于 Windows)。 <br> 如果你想为自定义安装目录的 Typora 安装它，请以管理员身份运行 `install.ps1 -root <TyporaHome>`。
+3. 以管理员身份运行 `install.ps1` (只适用于 Windows)。
 
 
 

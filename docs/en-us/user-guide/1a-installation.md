@@ -6,7 +6,7 @@
 
 1. Download [Release][release] `typora-community-plugin.zip`.
 2. Unzip it.
-3. Run `install.ps1` (only for Windows) as Admin to install. <br> If you want to install it for custom Typora installed directory, run `install.ps1 -root <TyporaHome>` as Admin.
+3. Run `install.ps1` (only for Windows) as Admin to install.
 
 
 
