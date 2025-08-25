@@ -1,5 +1,9 @@
 # 特性更新日志
 
+## v2.5.11
+
+- fix(core/ui/views/markdown): `#write` 宽度大于 `content`，无法完整显示内容 [#69](https://github.com/typora-community-plugin/typora-community-plugin/issues/69)
+
 ## v2.5.10
 
 - feat(installer): 从注册表查找 Typora 安装路径。by @Veik

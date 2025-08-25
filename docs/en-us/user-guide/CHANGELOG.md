@@ -1,5 +1,9 @@
 # Feature Changelog
 
+## v2.5.11
+
+- fix(core/ui/views/markdown): `#write` width is larger than `content` #69
+
 ## v2.5.10
 
 - feat(installer): find Typora installation postion from registry. by @Veik
