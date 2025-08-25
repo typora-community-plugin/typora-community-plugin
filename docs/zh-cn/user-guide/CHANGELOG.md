@@ -1,5 +1,10 @@
 # 特性更新日志
 
+## v2.5.13
+
+- fix(core/ui/editor/postprocessor): 编辑器事件会额外触发预览视图的后处理器
+- fix(core/ui/editor/postprocessor): 打开任意文件（包括新增的预览视图）会触发编辑器的后处理器
+
 ## v2.5.11
 
 - fix(core/ui/views/markdown): `#write` 宽度大于 `content`，无法完整显示内容 [#69](https://github.com/typora-community-plugin/typora-community-plugin/issues/69)

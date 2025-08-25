@@ -1,5 +1,10 @@
 # Feature Changelog
 
+## v2.5.13
+
+- fix(core/ui/editor/postprocessor): editor's events will emit previewer's postprocessors
+- fix(core/ui/editor/postprocessor): open any file (includes previewer) will emit editor's postprocessors
+
 ## v2.5.11
 
 - fix(core/ui/views/markdown): `#write` width is larger than `content` #69
