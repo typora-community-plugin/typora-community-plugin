@@ -27,7 +27,7 @@ export class HtmlPostProcessor extends PostProcessor {
   _process(el: HTMLElement) {
     try {
       const elements = this.selector
-        ? $(this.selector).toArray()
+        ? $(this.selector, el).toArray()
         : [el]
       elements.forEach(this.process, this)
     }
