@@ -1,11 +1,10 @@
 import './markdown-view.scss'
-import { CodeMirror, editor, getCodeMirrorMode } from "typora"
+import { editor } from "typora"
 import { useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
 import { WorkspaceView } from '../layout/workspace-view'
 import type { WorkspaceTabs } from '../layout/tabs'
 import type { WorkspaceLeaf } from '../layout/workspace-leaf'
-import { parseMarkdown, uniqueId } from 'src/utils'
 import type { DisposeFunc } from 'src/utils/types'
 
 
@@ -17,9 +16,6 @@ export class MarkdownView extends WorkspaceView {
 
   static parent: WorkspaceTabs
 
-  /**
-   * Placeholder
-   */
   containerEl = $('<div class="typ-editor-view"></div>')[0]
 
   currentMode: Mode
@@ -128,6 +124,9 @@ class InternalEditor {
   private constructor(private workspace = useService('workspace')) { }
 
   active(containerEl: HTMLElement, view: MarkdownView) {
+    /**
+     * Placeholder
+     */
     containerEl.innerHTML = '<object type="text/html" data="about:blank"></object>'
 
     this.contentEl.classList.add('typ-workspace-binding')
@@ -177,62 +176,14 @@ class InternalEditor {
   }
 }
 
-const OPTIONS = {
-  mode: 'text',
-  readOnly: true,
-  styleSelectedText: true,
-  maxHighlightLength: 1 / 0,
-  viewportMargin: 1 / 0,
-  styleActiveLine: true,
-  theme: " inner null-scroll",
-  lineWrapping: true,
-  lineNumbers: true,
-  resetSelectionOnContextMenu: true,
-  cursorScrollMargin: 60,
-  dragDrop: false,
-  scrollbarStyle: "null",
-}
-
-const FAKE_EDITOR = {
-  sourceView: {
-    inSourceMode: false,
-  },
-  undo: {
-    register() { },
-    lastRegisteredOperationCommand() { },
-  }
-}
-
 class MarkdownPreviewer {
 
-  constructor(private editor = useService('markdown-editor')) { }
+  constructor(private mdRenderer = useService('markdown-renderer')) { }
 
   active(containerEl: HTMLElement, path: string) {
     let md = fs.readTextSync(path)
 
-    // handle: preprocessor
-    md = this.editor.preProcessor.process('preload', md)
-
-    // handle: front matter
-    const { frontMatters, content } = parseMarkdown(md)
-    const frontMattersHtml = frontMatters.length ? `<pre mdtype="meta_block" class="md-meta-block md-end-block">${frontMatters.join('\n')}</pre>` : ''
-
-    // handle: markdown → html
-    const [contentHtml] = editor.nodeMap.allNodes.first().__proto__.constructor.parseFrom(content)
-    containerEl.innerHTML = frontMattersHtml + contentHtml
-    $('[contenteditable="true"]', containerEl).attr('contenteditable', 'false')
-
-    // handle: code block highlight
-    $('pre.md-fences', containerEl).each((i, el) => {
-      const code = el.innerText
-      el.innerHTML = ''
-      const opts = { ...OPTIONS, mode: getCodeMirrorMode(el.getAttribute('lang')) }
-      const cm = CodeMirror(el, opts, FAKE_EDITOR, uniqueId('cm'))
-      cm.setValue(code)
-    })
-
-    // handle: postprocessor
-    // this.editor.postProcessor.processAll(containerEl)
+    this.mdRenderer.renderTo(md, containerEl)
   }
 
   deactive(containerEl: HTMLElement) {

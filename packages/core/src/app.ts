@@ -22,6 +22,7 @@ import type { CoreSettings } from 'src/ui/settings/tabs/about-tab'
 import type { ViewManager } from './ui/view-manager'
 import type { Workspace } from 'src/ui/workspace'
 import type { MarkdownEditor } from './ui/editor/markdown-editor'
+import { MarkdownRenderer } from './ui/editor/markdown-renderer'
 import type { RibbonSettings } from 'src/ui/ribbon/workspace-ribbon'
 import { GlobalSearch } from './ui/sidebar/search/global-search'
 import { isMarkdownUrl } from 'src/utils'
@@ -93,6 +94,7 @@ export class App extends Events<AppEvents> {
     exporter: ExportManager,
     globalSearch: GlobalSearch,
     markdownEditor: MarkdownEditor,
+    markdownRenderer: MarkdownRenderer,
   }
 
   constructor() {
@@ -120,6 +122,7 @@ export class App extends Events<AppEvents> {
         exporter: useService('exporter'),
         globalSearch: new GlobalSearch(),
         markdownEditor: useService('markdown-editor'),
+        markdownRenderer: useService('markdown-renderer'),
       }
       this._isReady = true
     })

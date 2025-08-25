@@ -16,6 +16,7 @@ import { Settings } from "./settings/settings"
 import { ViewManager } from "./ui/view-manager"
 import { Workspace } from "./ui/workspace"
 import { MarkdownEditor } from "./ui/editor/markdown-editor"
+import { MarkdownRenderer } from "./ui/editor/markdown-renderer"
 import { DEFAULT_RIBBON_SETTINGS, WorkspaceRibbon } from "./ui/ribbon/workspace-ribbon"
 import { DEFAULT_APPEARANCE_SETTINGS } from "./ui/settings/tabs/appearance-setting-tab"
 import { DEFAULT_FILE_LINK_SETTINGS } from "./ui/settings/tabs/file-link-setting-tab"
@@ -28,7 +29,6 @@ import { TabsView } from "./ui/tabs/tabs-view"
 import { ExportManager } from "./export-manager"
 import { WorkspaceSplit } from "./ui/layout/split"
 import { WorkspaceTabs } from "./ui/layout/tabs"
-import { WorkspaceLeaf } from "./ui/layout/workspace-leaf"
 
 
 
@@ -86,6 +86,7 @@ registerService('view-manager', memorize(() => new ViewManager()))
 registerService('workspace', memorize(() => new Workspace()))
 registerService('file-tabs', memorize(() => new TabsView()))
 registerService('markdown-editor', memorize(() => new MarkdownEditor()))
+registerService('markdown-renderer', memorize(() => new MarkdownRenderer()))
 registerService('ribbon', memorize(() => new WorkspaceRibbon()))
 registerService('file-explorer', memorize(() => new FileExplorer()))
 registerService('sidebar', memorize(() => useService('workspace').sidebar))

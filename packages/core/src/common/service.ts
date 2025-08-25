@@ -14,6 +14,7 @@ import type { PluginMarketplace } from "src/plugin/plugin-marketplace"
 import type { Settings } from "src/settings/settings"
 import type { TabsView } from "src/ui/tabs/tabs-view"
 import type { MarkdownEditor } from "src/ui/editor/markdown-editor"
+import type { MarkdownRenderer } from "src/ui/editor/markdown-renderer"
 import type { WorkspaceRibbon } from "src/ui/ribbon/workspace-ribbon"
 import type { FileExplorer } from "src/ui/sidebar/file-explorer"
 import type { Sidebar } from "src/ui/sidebar/sidebar"
@@ -44,6 +45,7 @@ type ServiceMap = {
   'workspace'(): Workspace
   'file-tabs'(): TabsView
   'markdown-editor'(): MarkdownEditor
+  'markdown-renderer'(): MarkdownRenderer
   'ribbon'(): WorkspaceRibbon
   'file-explorer'(): FileExplorer
   'sidebar'(): Sidebar
