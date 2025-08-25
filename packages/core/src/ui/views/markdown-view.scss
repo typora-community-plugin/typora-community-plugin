@@ -4,6 +4,10 @@ content {
     left: var(--typ-editor-left) !important;
     width: var(--typ-editor-width);
     height: var(--typ-editor-height);
+
+    #write {
+      width: unset;
+    }
   }
 
   &.typ-deactive {
