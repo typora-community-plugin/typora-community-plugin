@@ -1,3 +1,4 @@
+import './markdown-renderer.scss'
 import { CodeMirror, editor, getCodeMirrorMode } from "typora"
 import { useService } from "src/common/service"
 import { parseMarkdown, uniqueId } from "src/utils"
@@ -47,6 +48,7 @@ export class MarkdownRenderer {
 
     // handle: markdown → html
     const [contentHtml] = editor.nodeMap.allNodes.first().__proto__.constructor.parseFrom(content)
+    targetEl.classList.add('typ-markdown-preview')
     targetEl.innerHTML = frontMattersHtml + contentHtml
     $('[contenteditable="true"]', targetEl).attr('contenteditable', 'false')
 

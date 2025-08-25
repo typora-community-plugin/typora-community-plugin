@@ -37,15 +37,6 @@ content {
     z-index: -999;
     pointer-events: none;
   }
-
-  &.mode-previewer {
-    padding: 0 2rem 2rem;
-
-    pre.md-meta-block {
-      padding: 1rem;
-      background-color: var(--light-bg-color);
-    }
-  }
 }
 
 .typ-tab.prefix-preview::before {
