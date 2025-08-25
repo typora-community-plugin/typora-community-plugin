@@ -17,9 +17,10 @@ import { FileTabContainer } from './tabs/file-tabs'
 
 export type WorkspaceEvents = {
   'layout-changed'(): void
+  'leaf:open'(leaf: WorkspaceLeaf): void
   // 'leaf:active'(leaf: WorkspaceLeaf): void
   // 'leaf:deactive'(leaf: WorkspaceLeaf): void
-  // 'leaf:toggle'(leaf: WorkspaceLeaf): void
+  // 'leaf:close'(leaf: WorkspaceLeaf): void
 }
 
 

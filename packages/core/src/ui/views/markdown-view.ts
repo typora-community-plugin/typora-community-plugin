@@ -35,6 +35,10 @@ export class MarkdownView extends WorkspaceView {
       this.leaf.getRoot().on('layout-changed', () => this.autoSetMode()))
   }
 
+  isEidtor() {
+    return this.currentMode === Mode.Typora
+  }
+
   autoSetMode() {
     if (!MarkdownView.parent || MarkdownView.parent === this.leaf.parent) {
       this.setMode(Mode.Typora)
