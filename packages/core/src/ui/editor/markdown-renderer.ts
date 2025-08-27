@@ -1,5 +1,5 @@
 import './markdown-renderer.scss'
-import { CodeMirror, editor, getCodeMirrorMode } from "typora"
+import { CodeMirror, editor, getCodeMirrorMode, MathJax } from "typora"
 import { useService } from "src/common/service"
 import { parseMarkdown, uniqueId } from "src/utils"
 
@@ -60,6 +60,9 @@ export class MarkdownRenderer {
       const cm = CodeMirror(el, opts, FAKE_EDITOR, uniqueId('cm'))
       cm.setValue(code)
     })
+
+    // handle: latex render
+    MathJax.typesetPromise($('.math-jax-preprocess', targetEl).toArray())
 
     // handle: postprocessor
     // this.mdEditor.postProcessor.processAll(targetEl)

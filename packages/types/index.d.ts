@@ -308,6 +308,12 @@ interface DocMenu {
   writeProperty(key: string, value: string): void
 }
 
+export declare var MathJax: TMathJax
+
+interface TMathJax {
+  typesetPromise(elements: HTMLElement[]): Promise<any>
+}
+
 export declare class Node {
 
   static parseFrom(markdown: string): [string]
