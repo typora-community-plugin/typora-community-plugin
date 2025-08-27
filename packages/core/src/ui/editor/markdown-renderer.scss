@@ -5,4 +5,8 @@
     padding: 1rem;
     background-color: var(--rawblock-edit-panel-bd);
   }
+
+  .md-p:empty:after {
+    content: '\200B';
+  }
 }
