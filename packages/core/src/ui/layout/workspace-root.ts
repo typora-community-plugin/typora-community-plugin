@@ -145,6 +145,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
       this.eachLeaves(leaf => leaf.detach())
       this.children.forEach(child => child.detach())
       this.containerEl.remove()
+      workspace.activeLeaf = null
       editor.writingArea.parentElement.setAttribute('class', '')
       MarkdownView.parent = null
     }

@@ -56,7 +56,7 @@ export class Workspace extends Events<WorkspaceEvents> {
     this._activeLeaf?.parent?.containerEl.classList.remove('mod-active')
     this._activeLeaf = leaf
     leaf?.parent?.containerEl.classList.add('mod-active')
-    this.emit('active-leaf:change', leaf)
+    leaf && this.emit('active-leaf:change', leaf)
   }
 
   activeEditor: MarkdownEditor
