@@ -77,7 +77,7 @@ export class MarkdownRenderer {
    * Get the `CodeMirror` instance of the codeblock rendered by the `MarkdownRenderer` in the `WorkspaceRoot`
    */
   getCodeMirrorInstance(cid: string): CodeMirror.Editor {
-    const el = $('.workspace-root').find(`[cid="${cid}"]`)[0]
+    const el = $('.typ-workspace-root').find(`[cid="${cid}"]`)[0]
     return this._cmInstances.get(el)
   }
 }

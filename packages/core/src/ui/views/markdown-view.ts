@@ -14,6 +14,9 @@ export class MarkdownView extends WorkspaceView {
 
   static type = 'core.markdown'
 
+  /**
+   * Typora editor's tabs
+   */
   static parent: WorkspaceTabs
 
   containerEl = $('<div class="typ-markdown-view"></div>')[0]

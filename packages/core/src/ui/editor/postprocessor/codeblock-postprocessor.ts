@@ -1,7 +1,9 @@
 import decorate from "@plylrnsdy/decorate.js"
 import { editor } from "typora"
+import { useService } from "src/common/service"
 import { HtmlPostProcessor } from "./html-postprocessor"
 import type { ButtonOptions, PostProcessorContext } from "./postprocessor"
+import { MarkdownView } from "src/ui/views/markdown-view"
 import { debounce } from "src/utils"
 
 
@@ -30,6 +32,12 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
 
   exportPreview = false
 
+  constructor(
+    private workspace = useService('workspace'),
+  ) {
+    super()
+  }
+
   preview(code: string, el: HTMLElement): HTMLElement | Promise<HTMLElement> {
     throw new Error('Method not implemented.')
   }
@@ -39,7 +47,7 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
       this.renderButton(el, this.button)
     }
     if (this.hasPreview()) {
-      this.buildPreviewer(el, this.preview)
+      this.buildPreviewer(el, context, this.preview)
     }
   }
 
@@ -68,7 +76,8 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
 
   private buildPreviewer(
     codeblock: HTMLElement,
-    preview: CodeblockPostProcessor['preview']
+    context: PostProcessorContext,
+    preview: CodeblockPostProcessor['preview'],
   ) {
     if (codeblock.querySelector('.md-diagram-panel-preview')) {
       return
@@ -82,7 +91,12 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
 
     const containerEl = previewer.querySelector('.md-diagram-panel-preview')!
     const render = async () => {
-      const code = editor.fences.getValue(codeblock.getAttribute('cid')!)
+      const rootEl = context.containerEl
+      const leaf = rootEl === editor.writingArea
+        ? MarkdownView.parent.activedLeaf
+        : this.workspace.rootSplit.findLeaf(leaf => leaf.view.containerEl === rootEl)
+      const mdView = leaf.view as MarkdownView
+      const code = mdView.getCodeMirrorInstance(codeblock.getAttribute('cid')!).getValue()
       const previewEl = await preview(code, codeblock)
       containerEl.innerHTML = ''
       containerEl.append(previewEl)
