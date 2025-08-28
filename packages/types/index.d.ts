@@ -397,6 +397,8 @@ interface Fences {
    */
   getCm(cid: string): OriginalCodeMirror.Editor | null
   getValue(cid: string): string
+
+  refreshEditor(p0?: boolean, p1?: boolean, containerEl?: HTMLElement): void
 }
 
 interface ImageEdit {

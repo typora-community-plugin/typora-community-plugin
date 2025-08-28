@@ -1,7 +1,8 @@
 import { editor, File } from "typora"
 import { Events } from "src/common/events"
-import { bindPostProcessorToEditor, MarkdownPostProcessor } from "./postprocessor/postprocessor-manager"
 import { bindPreProcessorToEditor, MarkdownPreProcessor } from "./preprocessor/preprocessor"
+import { bindPostProcessorToEditor, MarkdownPostProcessor } from "./postprocessor/postprocessor-manager"
+import { blockMarkdownViewPreviewMode } from "./postprocessor/codeblock-postprocessor"
 import { EditorSelection } from "./selection"
 import { EditorSuggestManager } from "./suggestion/suggest-manager"
 import { MarkdownLinkWitoutExtension, OpenLinkInCurrentWin } from "./link"
@@ -34,6 +35,7 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
 
     bindPreProcessorToEditor(this)
     bindPostProcessorToEditor(this)
+    blockMarkdownViewPreviewMode()
 
     setTimeout(() => {
       this._openLinkInCurrentWin = new OpenLinkInCurrentWin()

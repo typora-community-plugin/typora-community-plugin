@@ -1,3 +1,4 @@
+import decorate from "@plylrnsdy/decorate.js"
 import { editor } from "typora"
 import { HtmlPostProcessor } from "./html-postprocessor"
 import type { ButtonOptions, PostProcessorContext } from "./postprocessor"
@@ -98,4 +99,12 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
     Object.assign(processor, options)
     return processor
   }
+}
+
+/**
+ * Block `editor.fences.refreshEditor()` selecting `"[mdtype='fences']"` (including
+ * preview of `MarkdownView`) out of `div#write`
+ */
+export function blockMarkdownViewPreviewMode() {
+  decorate.parameters(editor.fences, 'refreshEditor', ([a0, a1, a2]) => [a0, a1, a2 ?? editor.writingArea])
 }
