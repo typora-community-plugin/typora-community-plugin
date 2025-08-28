@@ -12,10 +12,6 @@ const OPTIONS = {
   viewportMargin: 1 / 0,
   styleActiveLine: true,
   theme: " inner null-scroll",
-  lineWrapping: !File.option.noLineWrapping,
-  lineNumbers: File.option.showLineNumbersForFence,
-  indentUnit: File.option.codeIndentSize,
-  tabSize: File.option.codeIndentSize,
   resetSelectionOnContextMenu: true,
   cursorScrollMargin: 60,
   dragDrop: false,
@@ -60,7 +56,14 @@ export class MarkdownRenderer {
     $('pre.md-fences', targetEl).each((i, el) => {
       const code = el.innerText
       el.innerHTML = ''
-      const opts = { ...OPTIONS, mode: getCodeMirrorMode(el.getAttribute('lang')) }
+      const opts = {
+        ...OPTIONS,
+        mode: getCodeMirrorMode(el.getAttribute('lang')),
+        lineWrapping: !File.option.noLineWrapping,
+        lineNumbers: File.option.showLineNumbersForFence,
+        indentUnit: File.option.codeIndentSize,
+        tabSize: File.option.codeIndentSize,
+      }
       const cm = CodeMirror(el, opts, FAKE_EDITOR, uniqueId('cm'))
       cm.setValue(code)
       this._cmInstances.set(el, cm)
