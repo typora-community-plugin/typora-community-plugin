@@ -2,6 +2,7 @@ import './workspace-root.scss'
 import { editor } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
 import { Component } from 'src/common/component'
+import { useEventBus } from 'src/common/eventbus'
 import { useService } from 'src/common/service'
 import type { Workspace } from "../workspace"
 import { WorkspaceSplit } from "./split"
@@ -10,7 +11,6 @@ import type { WorkspaceLeaf } from './workspace-leaf'
 import { draggableTabs } from './tabs/draggable'
 import { createEditorLeaf, createTabs, splitDown, splitRight } from './workspace-utils'
 import { MarkdownView } from '../views/markdown-view'
-import { useEventBus } from 'src/common/eventbus'
 import { onTabsContextMenu } from './tabs/contextmenu'
 import { FileTabContainer } from './tabs/file-tabs'
 
@@ -33,6 +33,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
 
   constructor(
     workspace: Workspace,
+    app = useService('app'),
     commands = useService('command-manager'),
     { t } = useService('i18n'),
     settings = useService('settings'),
@@ -49,7 +50,18 @@ export class WorkspaceRoot extends WorkspaceSplit {
         if (LeafEl) workspace.activeLeaf = this.findLeaf(leaf => leaf.containerEl === LeafEl)
 
         const $anchorEl = $(e.target).closest('a')
-        if ($anchorEl.length) editor.tryOpenLink($anchorEl)
+        if ($anchorEl.length) {
+          const url = $anchorEl.attr('href')
+          if (url) {
+            // fix: clicking on the link out of `div#wirte` will close Typora unexpectly
+            e.preventDefault()
+            e.stopPropagation()
+            app.openLink($anchorEl.attr('href'))
+          }
+          else {
+            editor.tryOpenLink($anchorEl)
+          }
+        }
       })
 
       this.registry.registerDomEvent(this.containerEl, 'contextmenu', onTabsContextMenu(this))
