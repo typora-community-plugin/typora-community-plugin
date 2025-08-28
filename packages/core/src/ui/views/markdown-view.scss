@@ -20,7 +20,8 @@ content {
   }
 }
 
-.typ-editor-view {
+.typ-markdown-view {
+  position: relative;
   width: 100%;
 
   &.mode-typora object {

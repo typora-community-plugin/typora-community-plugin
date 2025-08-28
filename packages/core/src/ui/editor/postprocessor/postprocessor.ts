@@ -3,6 +3,15 @@ import { useService } from 'src/common/service'
 import { randomString } from "src/utils"
 
 
+export interface PostProcessorContext {
+  /**
+   * MarkdownView root element:
+   * - in editor mode is `#write`
+   * - in preview mode is `.typ-markdown-view`
+   */
+  containerEl: HTMLElement
+}
+
 export type ButtonMouseEventListener<T> = (event: MouseEvent & { target: HTMLElement }, context: T) => void
 
 export interface ButtonOptions<T = any> {
@@ -24,14 +33,14 @@ export class PostProcessor {
 
   _process(el: HTMLElement) {
     try {
-      this.process(el)
+      this.process(el, { containerEl: el })
     }
     catch (e) {
       this.logger.error(e)
     }
   }
 
-  process(el: HTMLElement) {
+  process(el: HTMLElement, context: PostProcessorContext) {
     throw new Error('Method not implemented.')
   }
 

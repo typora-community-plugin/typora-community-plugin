@@ -1,5 +1,6 @@
 import { useService } from 'src/common/service'
 import { PostProcessor } from "./postprocessor"
+import type { PostProcessorContext } from "./postprocessor"
 
 
 export class HtmlPostProcessor extends PostProcessor {
@@ -20,7 +21,7 @@ export class HtmlPostProcessor extends PostProcessor {
     this._selector = value
   }
 
-  process(el: HTMLElement) {
+  process(el: HTMLElement, context: PostProcessorContext) {
     throw new Error('Method not implemented.')
   }
 
@@ -29,7 +30,7 @@ export class HtmlPostProcessor extends PostProcessor {
       const elements = this.selector
         ? $(this.selector, el).toArray()
         : [el]
-      elements.forEach(this.process, this)
+      elements.forEach(selected => this.process(selected, { containerEl: el }), this)
     }
     catch (error) {
       this.logger.error(error)

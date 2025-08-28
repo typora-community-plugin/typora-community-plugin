@@ -16,7 +16,7 @@ export class MarkdownView extends WorkspaceView {
 
   static parent: WorkspaceTabs
 
-  containerEl = $('<div class="typ-editor-view"></div>')[0]
+  containerEl = $('<div class="typ-markdown-view"></div>')[0]
 
   currentMode: Mode
   mdPreviewer?: MarkdownPreviewer

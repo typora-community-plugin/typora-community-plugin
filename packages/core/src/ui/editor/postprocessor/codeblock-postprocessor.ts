@@ -1,6 +1,6 @@
 import { editor } from "typora"
 import { HtmlPostProcessor } from "./html-postprocessor"
-import type { ButtonOptions } from "./postprocessor"
+import type { ButtonOptions, PostProcessorContext } from "./postprocessor"
 import { debounce } from "src/utils"
 
 
@@ -33,7 +33,7 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
     throw new Error('Method not implemented.')
   }
 
-  process(el: HTMLElement) {
+  process(el: HTMLElement, context: PostProcessorContext) {
     if (this.button) {
       this.renderButton(el, this.button)
     }
