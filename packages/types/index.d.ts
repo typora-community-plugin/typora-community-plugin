@@ -382,6 +382,19 @@ interface Fences {
    * Create a new CodeMirror instance on the `<pre>` element and add it to queue.
    */
   addCodeBlock(cid: string): OriginalCodeMirror.Editor
+  /**
+   * Get the `CodeMirror` instance of the codeblock in the Typora editor `div#write`.
+   *
+   * @tips **[[Typroa Community Plugin]](https://github.com/typora-community-plugin/typora-community-plugin)**
+   * If you need to get the `CodeMirror` instance in the `MarkdownView` (including the editing view and
+   * the previewing view), please use `MarkdownView.getCodeMirrorInstance()`.
+   * @example
+   * ```js
+   * if (app.workspace.activeLeaf.type === 'core.markdown') {
+   *   app.workspace.activeLeaf.view.getCodeMirrorInstance()
+   * }
+   * ```
+   */
   getCm(cid: string): OriginalCodeMirror.Editor | null
   getValue(cid: string): string
 }

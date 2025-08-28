@@ -1,5 +1,5 @@
 import './markdown-view.scss'
-import { editor } from "typora"
+import { CodeMirror, editor } from "typora"
 import { useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
 import { WorkspaceView } from '../layout/workspace-view'
@@ -25,6 +25,7 @@ export class MarkdownView extends WorkspaceView {
     leaf: WorkspaceLeaf,
     public filePath?: string,
     private workspace = useService('workspace'),
+    private mdRenderer = useService('markdown-renderer'),
   ) {
     super(leaf)
   }
@@ -50,14 +51,14 @@ export class MarkdownView extends WorkspaceView {
 
   onOpen() {
     this.autoSetMode()
-    if (this.currentMode === Mode.Typora) {
+    if (this.isEidtor()) {
       editor.writingArea.parentElement.classList.remove('typ-deactive')
       editor.library.openFile(this.filePath)
     }
   }
 
   onClose() {
-    if (this.currentMode === Mode.Typora) {
+    if (this.isEidtor()) {
       if (this.workspace.activeFile === this.filePath)
         editor.writingArea.parentElement.classList.add('typ-deactive')
       // fix: can not close preview when dragging the only one Typora editor tab from Tabs A to Tabs B (which contains preview)
@@ -110,6 +111,12 @@ export class MarkdownView extends WorkspaceView {
     this.mdPreviewer = new MarkdownPreviewer()
     this.mdPreviewer.active(containerEl, filePath);
     this.setIcon('fa-file-text')
+  }
+
+  getCodeMirrorInstance(cid: string): CodeMirror.Editor {
+    return this.isEidtor()
+      ? editor.fences.getCm(cid)
+      : this.mdRenderer.getCodeMirrorInstance(cid)
   }
 }
 

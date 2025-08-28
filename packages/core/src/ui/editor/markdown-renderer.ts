@@ -34,6 +34,8 @@ const FAKE_EDITOR = {
 
 export class MarkdownRenderer {
 
+  private _cmInstances: WeakMap<HTMLElement, CodeMirror.Editor> = new WeakMap()
+
   constructor(private mdEditor = useService('markdown-editor')) { }
 
   /**
@@ -61,6 +63,7 @@ export class MarkdownRenderer {
       const opts = { ...OPTIONS, mode: getCodeMirrorMode(el.getAttribute('lang')) }
       const cm = CodeMirror(el, opts, FAKE_EDITOR, uniqueId('cm'))
       cm.setValue(code)
+      this._cmInstances.set(el, cm)
     })
 
     // handle: latex render
@@ -68,5 +71,13 @@ export class MarkdownRenderer {
 
     // handle: postprocessor
     // this.mdEditor.postProcessor.processAll(targetEl)
+  }
+
+  /**
+   * Get the `CodeMirror` instance of the codeblock rendered by the `MarkdownRenderer` in the `WorkspaceRoot`
+   */
+  getCodeMirrorInstance(cid: string): CodeMirror.Editor {
+    const el = $('.workspace-root').find(`[cid="${cid}"]`)[0]
+    return this._cmInstances.get(el)
   }
 }
