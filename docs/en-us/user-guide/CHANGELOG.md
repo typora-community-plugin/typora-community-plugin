@@ -1,13 +1,25 @@
 # Feature Changelog
 
+## v2.5.19
+
+- **Workspace** → Markdown Preview
+  - feat(core/ui/editor/renderer): support render multi-line LaTex in preview
+  - feat(core/ui/editor/postprocessor): support to get the code of the codeblock in the preview view
+  - feat(core/ui/editor/postprocessor/html): support to get the containerEl of MarkdownView (including preview view)
+  - refactor(core/ui/editor/renderer): use Typora codeblock settings to render preview's codeblock
+  - fix(core/ui/editor/renderer): can not show empty line in preview
+  - fix(core/ui/layout/root): clicking on the link out of editor will close Typora unexpectly
+
 ## v2.5.13
 
-- fix(core/ui/editor/postprocessor): editor's events will emit previewer's postprocessors
-- fix(core/ui/editor/postprocessor): open any file (includes previewer) will emit editor's postprocessors
+- **Workspace**
+  - fix(core/ui/editor/postprocessor): editor's events will emit previewer's postprocessors
+  - fix(core/ui/editor/postprocessor): open any file (includes previewer) will emit editor's postprocessors
 
 ## v2.5.11
 
-- fix(core/ui/views/markdown): `#write` width is larger than `content` #69
+- **Workspace**
+  - fix(core/ui/views/markdown): `#write` width is larger than `content` #69
 
 ## v2.5.10
 
@@ -16,7 +28,8 @@
 
 ## v2.5.8
 
-- fix(core/ui/layout/tabs): can not close the only tab by contextmenu
+- **Workspace**
+  - fix(core/ui/layout/tabs): can not close the only tab by contextmenu
 
 ## v2.5.7
 
@@ -30,13 +43,15 @@
 
 ## v2.5.3
 
-- feat(core/ui/layout/tabs): seperate deactive/opened/actived tab
-- fix(core/ui/layout/views/markdown): can not open NewTab after closed the only one tab
-- fix(core/ui/layout): lost activeLeaf after split view
+- **Workspace**
+  - feat(core/ui/layout/tabs): seperate deactive/opened/actived tab
+  - fix(core/ui/layout/views/markdown): can not open NewTab after closed the only one tab
+  - fix(core/ui/layout): lost activeLeaf after split view
 
 ## v2.5.1
 
-- fix(core/ui/views/markdown): can not open file correctly
+- **Workspace**
+  - fix(core/ui/views/markdown): can not open file correctly
 
 ## v2.5.0
 

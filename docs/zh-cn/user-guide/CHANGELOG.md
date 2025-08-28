@@ -1,13 +1,25 @@
 # 特性更新日志
 
+## v2.5.19
+
+- **工作区** → Markdown 预览
+  - feat(core/ui/editor/renderer): 支持在预览视图渲染多行 LaTex
+  - feat(core/ui/editor/postprocessor/codeblock): 支持从预览视图中的代码块获取代码
+  - feat(core/ui/editor/postprocessor/html): 支持获取编辑/预览视图的根元素
+  - refactor(core/ui/editor/renderer): 使用 Typora 代码块设置渲染预览视图中的代码块
+  - fix(core/ui/editor/renderer): 修复预览视图不能显示空行的问题
+  - fix(core/ui/layout/root): 修复点击工作区中的网络链接导致 Typora 闪退的问题
+
 ## v2.5.13
 
-- fix(core/ui/editor/postprocessor): 编辑器事件会额外触发预览视图的后处理器
-- fix(core/ui/editor/postprocessor): 打开任意文件（包括新增的预览视图）会触发编辑器的后处理器
+- **工作区**
+  - fix(core/ui/editor/postprocessor): 编辑器事件会额外触发预览视图的后处理器
+  - fix(core/ui/editor/postprocessor): 打开任意文件（包括新增的预览视图）会触发编辑器的后处理器
 
 ## v2.5.11
 
-- fix(core/ui/views/markdown): `#write` 宽度大于 `content`，无法完整显示内容 [#69](https://github.com/typora-community-plugin/typora-community-plugin/issues/69)
+- **工作区**
+  - fix(core/ui/views/markdown): `#write` 宽度大于 `content`，无法完整显示内容 [#69](https://github.com/typora-community-plugin/typora-community-plugin/issues/69)
 
 ## v2.5.10
 
@@ -16,7 +28,8 @@
 
 ## v2.5.8
 
-- fix(core/ui/layout/tabs): 不能通过右键菜单关闭唯一的 Tab
+- **工作区**
+  - fix(core/ui/layout/tabs): 不能通过右键菜单关闭唯一的 Tab
 
 ## v2.5.7
 
@@ -30,13 +43,15 @@
 
 ## v2.5.3
 
-- feat(core/ui/layout/tabs): 区分 非活动的/打开的/活动的 标签
-- fix(core/ui/layout/views/markdown): 关闭唯一一个标签后，不能打开新标签页
-- fix(core/ui/layout): 分屏后丢失活动的标签
+- **工作区**
+  - feat(core/ui/layout/tabs): 区分 非活动的/打开的/活动的 标签
+  - fix(core/ui/layout/views/markdown): 关闭唯一一个标签后，不能打开新标签页
+  - fix(core/ui/layout): 分屏后丢失活动的标签
 
 ## v2.5.1
 
-- fix(core/ui/views/markdown): 无法正确打开文件
+- **工作区**
+  - fix(core/ui/views/markdown): 无法正确打开文件
 
 ## v2.5.0
 
