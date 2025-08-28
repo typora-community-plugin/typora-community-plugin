@@ -1,5 +1,5 @@
 import './markdown-renderer.scss'
-import { CodeMirror, editor, getCodeMirrorMode, MathJax } from "typora"
+import { CodeMirror, editor, File, getCodeMirrorMode, MathJax } from "typora"
 import { useService } from "src/common/service"
 import { parseMarkdown, uniqueId } from "src/utils"
 
@@ -12,8 +12,10 @@ const OPTIONS = {
   viewportMargin: 1 / 0,
   styleActiveLine: true,
   theme: " inner null-scroll",
-  lineWrapping: true,
-  lineNumbers: true,
+  lineWrapping: !File.option.noLineWrapping,
+  lineNumbers: File.option.showLineNumbersForFence,
+  indentUnit: File.option.codeIndentSize,
+  tabSize: File.option.codeIndentSize,
   resetSelectionOnContextMenu: true,
   cursorScrollMargin: 60,
   dragDrop: false,

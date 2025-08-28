@@ -649,6 +649,9 @@ interface MegaMenu {
 
 interface Options {
   imageUploader: string
+  noLineWrapping: boolean
+  showLineNumbersForFence: boolean
+  codeIndentSize: number
 }
 
 
