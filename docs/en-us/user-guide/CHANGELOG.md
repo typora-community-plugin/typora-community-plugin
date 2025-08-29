@@ -1,5 +1,10 @@
 # Feature Changelog
 
+## v2.5.20
+
+- **Workspace** 
+  - feat(core/ui/editor/renderer): enable postprocessor for preview in MarkdownView
+
 ## v2.5.19
 
 - **Workspace** → Markdown Preview

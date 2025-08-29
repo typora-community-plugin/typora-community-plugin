@@ -1,5 +1,10 @@
 # 特性更新日志
 
+## v2.5.20
+
+- **Workspace** 
+  - feat(core/ui/editor/renderer): 为预览视图启用后处理器
+
 ## v2.5.19
 
 - **工作区** → Markdown 预览
