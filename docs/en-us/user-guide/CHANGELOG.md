@@ -10,6 +10,9 @@
   - fix(core/ui/editor/renderer): can not show empty line in preview
   - fix(core/ui/layout/root): clicking on the link out of editor will close Typora unexpectly
 
+- **Plugin Update**
+  - [collapsible-section][]: compatible with workspace api
+
 ## v2.5.13
 
 - **Workspace**

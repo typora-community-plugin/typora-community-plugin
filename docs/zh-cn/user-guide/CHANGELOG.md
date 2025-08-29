@@ -10,6 +10,9 @@
   - fix(core/ui/editor/renderer): 修复预览视图不能显示空行的问题
   - fix(core/ui/layout/root): 修复点击工作区中的网络链接导致 Typora 闪退的问题
 
+- **Plugin Update**
+  - [collapsible-section][]: 兼容工作区API
+
 ## v2.5.13
 
 - **工作区**
