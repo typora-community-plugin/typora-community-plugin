@@ -73,7 +73,7 @@ export class MarkdownRenderer {
     MathJax.typesetPromise($('.math-jax-preprocess', targetEl).toArray())
 
     // handle: postprocessor
-    // this.mdEditor.postProcessor.processAll(targetEl)
+    this.mdEditor.postProcessor.processAll(targetEl)
   }
 
   /**
