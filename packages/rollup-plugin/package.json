@@ -1,6 +1,6 @@
 {
   "name": "@typora-community-plugin/rollup-plugin-typora",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Build typora community plugin with rollup.",
   "type": "module",
   "main": "index.js",
