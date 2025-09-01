@@ -1,6 +1,7 @@
 import './markdown-renderer.scss'
 import { CodeMirror, editor, File, getCodeMirrorMode, MathJax } from "typora"
 import { useService } from "src/common/service"
+import type { MarkdownPreviewer } from '../views/markdown-view'
 import { parseMarkdown, uniqueId } from "src/utils"
 
 
@@ -58,7 +59,8 @@ export class MarkdownRenderer {
       el.innerHTML = ''
       const opts = {
         ...OPTIONS,
-        mode: getCodeMirrorMode(el.getAttribute('lang')),
+        // @ts-ignore
+        mode: window.getCodeMirrorMode(el.getAttribute('lang')),
         lineWrapping: !File.option.noLineWrapping,
         lineNumbers: File.option.showLineNumbersForFence,
         indentUnit: File.option.codeIndentSize,
@@ -77,7 +79,7 @@ export class MarkdownRenderer {
   }
 
   /**
-   * Get the `CodeMirror` instance of the codeblock rendered by the `MarkdownRenderer` in the `WorkspaceRoot`
+   * Get the `CodeMirror` instance of the codeblock rendered by the {@link MarkdownPreviewer} in the `WorkspaceRoot`
    */
   getCodeMirrorInstance(cid: string): CodeMirror.Editor {
     const el = $('.typ-workspace-root').find(`[cid="${cid}"]`)[0]

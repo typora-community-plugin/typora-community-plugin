@@ -190,7 +190,7 @@ class InternalEditor {
   }
 }
 
-class MarkdownPreviewer {
+export class MarkdownPreviewer {
 
   constructor(private mdRenderer = useService('markdown-renderer')) { }
 
