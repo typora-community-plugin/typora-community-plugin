@@ -47,7 +47,7 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
       this.renderButton(el, this.button)
     }
     if (this.hasPreview()) {
-      this.buildPreviewer(el, context, this.preview)
+      this.buildPreviewer(el, this.preview)
     }
   }
 
@@ -65,8 +65,7 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
         ...button,
         onclick: (event) => {
           const pre = event.target.closest('pre')!
-          const cid = pre.getAttribute('cid')!
-          const code = editor.fences.getValue(cid)
+          const code = this.getValueOfCodeblock(pre)
           button!.onclick(event, { codeblock: pre, code })
         },
       }
@@ -74,11 +73,7 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
     super.renderButton(parent, btn.$button)
   }
 
-  private buildPreviewer(
-    codeblock: HTMLElement,
-    context: PostProcessorContext,
-    preview: CodeblockPostProcessor['preview'],
-  ) {
+  private buildPreviewer(codeblock: HTMLElement, preview: CodeblockPostProcessor['preview']) {
     if (codeblock.querySelector('.md-diagram-panel-preview')) {
       return
     }
@@ -91,12 +86,7 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
 
     const containerEl = previewer.querySelector('.md-diagram-panel-preview')!
     const render = async () => {
-      const rootEl = context.containerEl
-      const leaf = rootEl === editor.writingArea
-        ? MarkdownView.parent.activedLeaf
-        : this.workspace.rootSplit.findLeaf(leaf => leaf.view.containerEl === rootEl)
-      const mdView = leaf.view as MarkdownView
-      const code = mdView.getCodeMirrorInstance(codeblock.getAttribute('cid')!).getValue()
+      const code = this.getValueOfCodeblock(codeblock)
       const previewEl = await preview(code, codeblock)
       containerEl.innerHTML = ''
       containerEl.append(previewEl)
@@ -106,6 +96,15 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
     codeblock.classList.add('md-diagram', 'md-fences-advanced')
     codeblock.addEventListener('keyup', debounce(render, 1000))
     codeblock.append(previewer)
+  }
+
+  private getValueOfCodeblock(codeblock: HTMLElement) {
+    const rootEl = codeblock.closest('#write') ?? codeblock.closest('.typ-markdown-view')
+    const leaf = $(rootEl).is('#write')
+      ? MarkdownView.parent.activedLeaf
+      : this.workspace.rootSplit.findLeaf(leaf => leaf.view.containerEl === rootEl)
+    const mdView = leaf.view as MarkdownView
+    return mdView.getCodeMirrorInstance(codeblock.getAttribute('cid')!).getValue()
   }
 
   static from(options: Partial<Pick<CodeblockPostProcessor, 'lang' | 'button' | 'preview' | 'exportPreview' | 'process'>>) {
