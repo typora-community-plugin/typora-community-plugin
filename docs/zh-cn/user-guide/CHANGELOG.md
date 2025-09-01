@@ -1,4 +1,14 @@
-# 特性更新日志
+# 更新日志
+
+## v2.5.22
+
+- **Workspace**
+  - feat(core/ui/editor/postprocessor): 代码块按钮支持从预览视图中获取代码
+
+- **Plugin Update**
+  - [codeblock-highlight-mapper][]: 支持工作区预览视图
+  - [front-matter][]: 修复不能正确禁用 `updated` 属性的问题. by @Veikkkk
+
 
 ## v2.5.20
 
@@ -31,7 +41,7 @@
 
 ## v2.5.10
 
-- feat(installer): 从注册表查找 Typora 安装路径。by @Veik
+- feat(installer): 从注册表查找 Typora 安装路径。by @Veikkkk
 - fix(core/ui): 在 macOS 中打开侧栏时，不能显示完整的搜索面板
 
 ## v2.5.8
@@ -458,6 +468,8 @@
 
 
 [abcjs]: https://github.com/typora-community-plugin/typora-plugin-abcjs
+
+[codeblock-copy-button]:https://github.com/typora-community-plugin/typora-plugin-codeblock-copy-button
 
 [codeblock-highlight-mapper]: https://github.com/typora-community-plugin/typora-plugin-codeblock-highlight-mapper
 

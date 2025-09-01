@@ -1,4 +1,13 @@
-# Feature Changelog
+# Changelog
+
+## v2.5.22
+
+- **Workspace**
+  - feat(core/ui/editor/postprocessor): support get the code of the codeblock in the preview view's codeblock button
+
+- **Plugin Update**
+  - [codeblock-highlight-mapper][]: supported in Workspace's previewer
+  - [front-matter][]: fix that can not disable `useUpdated`. by @Veikkkk
 
 ## v2.5.20
 
@@ -27,11 +36,11 @@
 ## v2.5.11
 
 - **Workspace**
-  - fix(core/ui/views/markdown): `#write` width is larger than `content` #69
+  - fix(core/ui/views/markdown): `#write` width is larger than `content` [#69](https://github.com/typora-community-plugin/typora-community-plugin/issues/69)
 
 ## v2.5.10
 
-- feat(installer): find Typora installation postion from registry. by @Veik
+- feat(installer): find Typora installation postion from registry. by @Veikkkk
 - fix(core/ui): can not show all search panel when showing sidebar on macOS
 
 ## v2.5.8
@@ -458,6 +467,8 @@
 
 
 [abcjs]: https://github.com/typora-community-plugin/typora-plugin-abcjs
+
+[codeblock-copy-button]:https://github.com/typora-community-plugin/typora-plugin-codeblock-copy-button
 
 [codeblock-highlight-mapper]: https://github.com/typora-community-plugin/typora-plugin-codeblock-highlight-mapper
 
