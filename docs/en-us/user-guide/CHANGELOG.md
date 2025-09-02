@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.5.24
+
+- **Workspace**
+  - fix(core/ui/layout/tabs): right click on new tab will show the contextmenu of the file tabs
+  - fix(core/ui/layout/root): can not show the file tabs of the Workspace on macOS
+
 ## v2.5.22
 
 - **Workspace**

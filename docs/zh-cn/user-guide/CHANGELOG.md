@@ -1,18 +1,24 @@
 # 更新日志
 
+## v2.5.24
+
+- **工作区**
+  - fix(core/ui/layout/tabs): 修复右键“New Tab”内容区会打开标签栏右键菜单的问题
+  - fix(core/ui/layout/root): 修复无法在 macOS 显示工作区的文件标签栏的问题
+
 ## v2.5.22
 
-- **Workspace**
+- **工作区**
   - feat(core/ui/editor/postprocessor): 代码块按钮支持从预览视图中获取代码
 
-- **Plugin Update**
+- **插件更新**
   - [codeblock-highlight-mapper][]: 支持工作区预览视图
   - [front-matter][]: 修复不能正确禁用 `updated` 属性的问题. by @Veikkkk
 
 
 ## v2.5.20
 
-- **Workspace** 
+- **工作区** 
   - feat(core/ui/editor/renderer): 为预览视图启用后处理器
 
 ## v2.5.19
