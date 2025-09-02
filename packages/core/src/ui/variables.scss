@@ -41,4 +41,8 @@ body {
   &.unibody-window {
     --typ-workspace-top: 1.75rem;
   }
+
+  &.html-for-mac.mac-seamless-mode {
+    --typ-workspace-top: var(--typ-tabs-height);
+  }
 }

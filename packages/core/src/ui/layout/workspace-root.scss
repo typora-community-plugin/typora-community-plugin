@@ -4,12 +4,18 @@
 
 div.typ-workspace-root {
   position: absolute;
+  // fix: .typ-workspace-root will cover `<content>` in Electron.
   z-index: -1;
   top: var(--typ-workspace-top);
   bottom: var(--typ-footer-height);
 
   left: calc(var(--typ-ribbon-width));
   width: calc(100% - var(--typ-ribbon-width));
+
+  .html-for-mac & {
+    // fix: `<content>` will cover `.typ-workspace-root` in webview (Safari) on macOS.
+    z-index: 0;
+  }
 
   .pin-outline & {
     left: calc(var(--typ-ribbon-width) + var(--sidebar-width));

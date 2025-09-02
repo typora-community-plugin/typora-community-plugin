@@ -5,6 +5,15 @@ content {
     width: var(--typ-editor-width);
     height: var(--typ-editor-height);
 
+    .html-for-mac & {
+      // fix: `<content>` will cover `.typ-workspace-root` in webview (Safari) on macOS.
+      //
+      //      It can not change `z-index` of `<content>` in Electron, because the siderbar
+      //      will cover the contextmenu of the sidebar.
+      z-index: 1;
+      margin-top: 0;
+    }
+
     #write {
       width: unset;
     }
