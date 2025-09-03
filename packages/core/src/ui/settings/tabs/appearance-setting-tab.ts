@@ -17,8 +17,8 @@ export const DEFAULT_APPEARANCE_SETTINGS: AppearanceSettings = {
   keepSearchResult: false,
   showSearchResultFullPath: false,
   showRibbon: true,
-  useWorkspace: false,
-  showFileTabs: true,
+  useWorkspace: true,
+  showFileTabs: false,
   hideExtensionInFileTab: false,
 }
 
