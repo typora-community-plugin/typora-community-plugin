@@ -4,15 +4,15 @@ import type { ViewState } from "../view-manager"
 import { WorkspaceView } from "./workspace-view"
 
 
-export class WorkspaceLeaf extends WorkspaceNode {
+export class WorkspaceLeaf<V extends WorkspaceView = WorkspaceView> extends WorkspaceNode {
 
   type = 'leaf'
 
   state: ViewState['state']
   viewType: string
-  view: WorkspaceView
+  view: V
 
-  constructor(view?: WorkspaceView, private viewManager = useService('view-manager')) {
+  constructor(view?: V, private viewManager = useService('view-manager')) {
     super()
     this.containerEl.classList.add('typ-workspace-leaf')
     this.view = view
@@ -26,7 +26,7 @@ export class WorkspaceLeaf extends WorkspaceNode {
     const factory = this.viewManager.getViewCreatorByType(state.type)
     this.state = state.state ?? {}
     this.viewType = state.type
-    this.view = factory(this, state)
+    this.view = factory(this, state) as V
     this.containerEl.append(this.view.containerEl)
     return this
   }
