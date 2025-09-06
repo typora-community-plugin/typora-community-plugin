@@ -1,5 +1,7 @@
 import { useService } from "src/common/service"
+import type { Workspace } from "../workspace"
 import type { Direction, WorkspaceSplit } from "./split"
+import type { WorkspaceTabs } from "./tabs"
 import { WorkspaceLeaf } from "./workspace-leaf"
 import { MarkdownView } from "../views/markdown-view"
 import { EmptyView } from "../views/empty-view"
@@ -63,6 +65,9 @@ export function splitDown(path?: string) {
   split('horizontal', path)
 }
 
+/**
+ * Split the parent {@link WorkspaceTabs} of the {@link Workspace.activeLeaf}
+ */
 function split(direction: Direction, path?: string) {
   const workspace = useService('workspace')
   const previousTabs = workspace.activeLeaf.closest('tabs')

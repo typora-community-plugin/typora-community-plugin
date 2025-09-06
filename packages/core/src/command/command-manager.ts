@@ -14,8 +14,23 @@ export type Command = {
    * @default true
    */
   showInCommandPanel?: boolean
-  callback: () => void
+  /**
+   * MUST support not passing any parameters.
+   */
+  callback: (...args: any[]) => void
 }
+
+type InternalCommands = {
+  'command:open'(): void
+  'config:global'(): void
+  'config:vault'(): void
+  'core.workspace:reset'(): void
+  'core.workspace:split-right'(path?: string): void
+  'core.workspace:split-down'(path?: string): void
+  'settings:open'(): void
+}
+
+type COMMAND_NAMES = keyof InternalCommands
 
 
 export class CommandManager {
@@ -82,9 +97,11 @@ export class CommandManager {
     this.disposableMap[command.id] = []
   }
 
-  run(commandId: string) {
+  run<K extends COMMAND_NAMES>(commandId: K, args: Parameters<InternalCommands[K]>): void
+  run(commandId: string, args?: any[]): void
+  run(commandId: string, args: any[] = []) {
     try {
-      this.commandMap[commandId]?.callback()
+      this.commandMap[commandId]?.callback(...args)
     }
     catch (error) {
       this.logger.error(`run:${commandId}`, error)
