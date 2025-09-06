@@ -1,21 +1,33 @@
 import { useService } from "src/common/service"
 import type { Direction, WorkspaceSplit } from "./split"
-import { uniqueId } from "src/utils"
+import { WorkspaceLeaf } from "./workspace-leaf"
 import { MarkdownView } from "../views/markdown-view"
 import { EmptyView } from "../views/empty-view"
+import type { ViewState } from "../view-manager"
+import { uniqueId } from "src/utils"
 
 
 export function createTabs(path?: string) {
   const workspace = useService('workspace')
   const tabs = useService('workspace-tabs')
-  const newLeaf = path ? createEditorLeaf(path) : createEmptyLeaf()
+  const newLeaf = path
+    ? path.startsWith('typ://')
+      ? createCustomLeaf(path)
+      : createEditorLeaf(path)
+    : createEmptyLeaf()
   tabs.appendChild(newLeaf)
   workspace.activeLeaf = newLeaf
   return tabs
 }
 
+export function createLeaf(state?: ViewState) {
+  const leaf = new WorkspaceLeaf()
+  if (state) leaf.setState(state)
+  return leaf
+}
+
 export function createEditorLeaf(filePath: string) {
-  return useService('workspace').createLeaf({
+  return createLeaf({
     type: MarkdownView.type,
     state: {
       path: filePath,
@@ -23,8 +35,19 @@ export function createEditorLeaf(filePath: string) {
   })
 }
 
+const RE_TYPE = /^typ:\/\/([^/]+)/
+
+function createCustomLeaf(path: string) {
+  return createLeaf({
+    type: path.match(RE_TYPE)[1],
+    state: {
+      path,
+    }
+  })
+}
+
 export function createEmptyLeaf() {
-  return useService('workspace').createLeaf({
+  return createLeaf({
     type: EmptyView.type,
     state: {
       path: uniqueId(`typ://${EmptyView.type}/`) + '/New tab',

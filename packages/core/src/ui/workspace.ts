@@ -18,8 +18,8 @@ import { useEventBus } from 'src/common/eventbus'
 import { useService } from 'src/common/service'
 import { WorkspaceRoot } from './layout/workspace-root'
 import type { WorkspaceParent } from './layout/workspace-parent'
-import { WorkspaceLeaf } from './layout/workspace-leaf'
-import type { ViewState } from './view-manager'
+import type { WorkspaceLeaf } from './layout/workspace-leaf'
+import { createLeaf } from './layout/workspace-utils'
 import { EmptyView } from './views/empty-view'
 import { MarkdownView } from './views/markdown-view'
 
@@ -100,11 +100,7 @@ export class Workspace extends Events<WorkspaceEvents> {
     viewManager.registerView(EmptyView.type, (leaf) => new EmptyView(leaf))
   }
 
-  createLeaf(state?: ViewState) {
-    const leaf = new WorkspaceLeaf()
-    if (state) leaf.setState(state)
-    return leaf
-  }
+  createLeaf = createLeaf
 
   getViewByType<T extends new (...args: any) => any>(cls: T) {
     let res = undefined
