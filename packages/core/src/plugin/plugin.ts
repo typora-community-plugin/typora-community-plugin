@@ -94,6 +94,31 @@ export abstract class Plugin<T extends Record<string, any> = {}>
       ))
   }
 
+  registerScript(relativePath: string) {
+    this.register(this.importScript(relativePath))
+  }
+
+  importScript(relativePath: string) {
+    const script = document.createElement('script')
+    script.dataset.by = this.manifest.id
+    script.src = 'file://' + path.join(this.manifest.dir!, relativePath)
+    document.head.appendChild(script)
+    return () => script.remove()
+  }
+
+  registerCss(relativePath: string) {
+    this.register(this.importCss(relativePath))
+  }
+
+  importCss(relativePath: string) {
+    const link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.dataset.by = this.manifest.id
+    link.href = 'file://' + path.join(this.manifest.dir!, relativePath)
+    document.head.appendChild(link)
+    return () => link.remove()
+  }
+
   addStatusBarItem(options?: StatusBarItemOptions) {
     options ??= { position: 'left' }
     const { hint = '' } = options
