@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.5.28
+
+- **Workspace**
+  - feat(core/command): support run command with arguments
+  - feat(core/ui/layout): support creating custom view by uri
+  - refactor(core/ui): enable Workspace by default
+  - fix(core/ui/layout/root): workspace position is not correctly after disabled the ribbon
+
+- **Plugin Update**
+  - [codeblock-highlight-mapper][]: fix: can not show hightlight for default language
+  - [markmap][] fix: can not show image
+
 ## v2.5.24
 
 - **Workspace**

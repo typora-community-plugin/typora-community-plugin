@@ -1,5 +1,17 @@
 # 更新日志
 
+## v2.5.28
+
+- **Workspace**
+  - feat(core/command): 运行命令时支持传参
+  - feat(core/ui/layout): 支持通过 URI 创建自定义视图
+  - refactor(core/ui): 默认启用工作区
+  - fix(core/ui/layout/root): 修复禁用活动栏后工作区位置不正确的问题
+
+- **Plugin Update**
+  - [codeblock-highlight-mapper][]: 修复默认语言高亮不正确的问题
+  - [markmap][] 修复不能显示图片的问题
+
 ## v2.5.24
 
 - **工作区**
