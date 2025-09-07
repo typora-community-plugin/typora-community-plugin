@@ -1,16 +1,26 @@
 # 更新日志
 
+## v2.5.29
+
+- refactor(core): 在 macOS 为 `String.trimEnd()` 添加兼容
+
+- **插件更新**
+  - [markmap][]
+    - feat: 使用命令 `在右侧打开正在编辑的 Markdown 的 Markmap 视图`
+    - fix: 支持在 Markdown 文件 `frontMatter.markmap` 写入 markmap 配置
+    - fix: 修复不能使用语法 `<img>` 显示图片的问题
+
 ## v2.5.28
 
-- **Workspace**
+- **工作区**
   - feat(core/command): 运行命令时支持传参
   - feat(core/ui/layout): 支持通过 URI 创建自定义视图
   - refactor(core/ui): 默认启用工作区
   - fix(core/ui/layout/root): 修复禁用活动栏后工作区位置不正确的问题
 
-- **Plugin Update**
+- **插件更新**
   - [codeblock-highlight-mapper][]: 修复默认语言高亮不正确的问题
-  - [markmap][] 修复不能显示图片的问题
+  - [markmap][] 修复不能使用语法 `![]()` 显示图片的问题
 
 ## v2.5.24
 

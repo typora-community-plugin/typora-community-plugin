@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.5.29
+
+- refactor(core): compatible `String.trimEnd()` with macOS
+
+- **Plugin Update**
+  - [markmap][]
+    - feat: Use command to `View the editing markdown with Markmap on right`
+    - fix: can not write `markmapOptions` in `frontMatter.markmap`
+    - fix: can not show the image with `<img>`
+
 ## v2.5.28
 
 - **Workspace**
@@ -10,7 +20,7 @@
 
 - **Plugin Update**
   - [codeblock-highlight-mapper][]: fix: can not show hightlight for default language
-  - [markmap][] fix: can not show image
+  - [markmap][] fix: can not show the image with `![]()`
 
 ## v2.5.24
 
