@@ -9,7 +9,7 @@
   .typ-empty-title {
     font-size: 1.5rem;
     font-weight: 500;
-    color: var(--tw-ring-color);
+    color: var(--select-text-bg-color);
   }
 
   .typ-empty-hotkey {
@@ -26,7 +26,8 @@
     padding-right: 1rem;
   }
 
-  dt, dd {
+  dt,
+  dd {
     display: table-cell;
   }
 }

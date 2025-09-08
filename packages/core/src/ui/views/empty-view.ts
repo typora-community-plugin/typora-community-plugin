@@ -9,10 +9,18 @@ export class EmptyView extends WorkspaceView {
 
   static type = 'core.empty'
 
-  constructor(leaf: WorkspaceLeaf) {
-    super(leaf)
+  containerEl = html`<div></div>`
 
-    this.containerEl = $(`<div class="typ-empty-view"><div><div class="typ-empty-title"></div><div class="typ-empty-hotkey"></div></div></div>`)[0]
+  constructor(leaf: WorkspaceLeaf, private settings = useService('settings')) {
+    super(leaf)
+  }
+
+  onload() {
+    if (this.settings.get('useBlankNewTab')) return
+
+    $(this.containerEl)
+      .addClass('typ-empty-view')
+      .append(html`<div><div class="typ-empty-title"></div><div class="typ-empty-hotkey"></div></div>`)
 
     setTimeout(() => {
       const config = useService('config-repository')

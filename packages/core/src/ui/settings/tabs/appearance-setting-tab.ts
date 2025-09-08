@@ -8,8 +8,10 @@ export type AppearanceSettings = {
   showSearchResultFullPath: boolean
   showRibbon: boolean
   useWorkspace: boolean
+  /** @deprecated */
   showFileTabs: boolean
   hideExtensionInFileTab: boolean
+  useBlankNewTab: boolean
 }
 
 export const DEFAULT_APPEARANCE_SETTINGS: AppearanceSettings = {
@@ -20,6 +22,7 @@ export const DEFAULT_APPEARANCE_SETTINGS: AppearanceSettings = {
   useWorkspace: true,
   showFileTabs: false,
   hideExtensionInFileTab: false,
+  useBlankNewTab: false,
 }
 
 export class AppearanceSettingTab extends SettingTab {
@@ -123,6 +126,15 @@ export class AppearanceSettingTab extends SettingTab {
         checkbox.checked = settings.get('hideExtensionInFileTab')
         checkbox.onclick = () => {
           settings.set('hideExtensionInFileTab', checkbox.checked)
+        }
+      })
+    })
+    this.addSetting(setting => {
+      setting.addName(t.useBlankNewTab)
+      setting.addCheckbox(checkbox => {
+        checkbox.checked = settings.get('useBlankNewTab')
+        checkbox.onclick = () => {
+          settings.set('useBlankNewTab', checkbox.checked)
         }
       })
     })
