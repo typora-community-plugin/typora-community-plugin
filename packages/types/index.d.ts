@@ -87,6 +87,7 @@ export declare var ClientCommand: TClientCommand
 
 interface TClientCommand {
   copyAsMarkdown(): void
+  cut(): void
   setTheme(cssFilename: string): void
 
   /**
@@ -230,6 +231,7 @@ interface Editor {
   EditHelper: EditHelper
   export: Export
   fences: Fences
+  focusCid: string
   imgEdit: ImageEdit
   library: Library
   localSettingBridge: LocalSettingBridge
@@ -649,6 +651,8 @@ interface Command {
 
 interface TUserOp {
   backspaceHandler(editor: Editor, event: Event | null, type: 'delSelection' | 'Backspace' | 'Delete'): void
+  deleteLine(editor: Editor): void
+  getMarkdownSourceFrom($el: JQuery): string
   pasteHandler(editor: Editor, content: string, isMarkdown?: boolean, param3?: boolean | Function): void
   setClipboard(html: string | null, markhtml: string | null, text: string, shouldClear?: boolean, event?: any): void
 }
