@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.5.32
+
+- **UI**
+  - fix: cannot update a text setting after closing the Settings Modal because it does not lose focus.
+
+- **Workspace**
+  - feat(core/ui/view/empty): show blank new tab
+  - fix(core/ui/views/empty): show the extra content in a new tab after re-showing the content
+
+- **Plugin Update**
+  - [collapsible-section][]: fix: can not auto fold codeblock in EditorView
+  - [image-viewer][] fix: compatible with the Workspace API
+
 ## v2.5.29
 
 - refactor(core): compatible `String.trimEnd()` with macOS
@@ -19,7 +32,7 @@
   - fix(core/ui/layout/root): workspace position is not correctly after disabled the ribbon
 
 - **Plugin Update**
-  - [codeblock-highlight-mapper][]: fix: can not show hightlight for default language
+  - [codeblock-highlight-mapper][] fix: can not show hightlight for default language
   - [markmap][] fix: can not show the image with `![]()`
 
 ## v2.5.24

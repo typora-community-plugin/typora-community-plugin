@@ -1,5 +1,19 @@
 # 更新日志
 
+## v2.5.32
+
+- **视图**
+  - fix: 修复关闭设置对话框后，不能更新文本类型的设置项（因为输入框没有失去焦点）的问题
+
+- **工作区**
+  - feat(core/ui/view/empty): 支持修改设置，现在可以显示空白的新标签页
+  - fix(core/ui/views/empty): 重新显示新标签页时，重复渲染其内容
+
+- **插件更新**
+  - [collapsible-section][]: 修复在编辑视图无法自动折叠代码的问题
+  - [image-viewer][]: 兼容 Workspace API
+
+
 ## v2.5.29
 
 - refactor(core): 在 macOS 为 `String.trimEnd()` 添加兼容
