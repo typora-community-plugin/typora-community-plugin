@@ -15,8 +15,8 @@ importers:
   packages/core:
     dependencies:
       '@plylrnsdy/decorate.js':
-        specifier: ^1.0.1
-        version: 1.0.1
+        specifier: ^1.0.4
+        version: 1.0.4
     devDependencies:
       '@babel/core':
         specifier: ^7.23.2
@@ -1046,8 +1046,8 @@ packages:
     resolution: {integrity: sha512-dfUnCxiN9H4ap84DvD2ubjw+3vUNpstxa0TneY/Paat8a3R4uQZDLSvWjmznAY/DoahqTHl9V46HF/Zs3F29pg==}
     engines: {node: '>= 10.0.0'}
 
-  '@plylrnsdy/decorate.js@1.0.1':
-    resolution: {integrity: sha512-bXwea+WJ3GOJDnXnzmhK1fUJnSOBiN/mjaPNryY+Shy0hPS1qr3cngsWOGEOgCddBFzef5cELObC6HDlIQ8Uxg==}
+  '@plylrnsdy/decorate.js@1.0.4':
+    resolution: {integrity: sha512-Sj6CnM2NC4vuTUYoGtxSOrlehfaQRariXIZ1L4TyQEls7r1eXahYgXcJkwqP+2g+v+NHyM1lXwZOOs5iic4P+Q==}
 
   '@rollup/plugin-babel@6.0.4':
     resolution: {integrity: sha512-YF7Y52kFdFT/xVSuVdjkV5ZdX/3YtmX0QulG+x0taQOtJdHYzVU61aSSkAgVJ7NOv6qPkIYiJSgSWWN/DM5sGw==}
@@ -3446,7 +3446,7 @@ snapshots:
       '@parcel/watcher-win32-x64': 2.5.1
     optional: true
 
-  '@plylrnsdy/decorate.js@1.0.1':
+  '@plylrnsdy/decorate.js@1.0.4':
     dependencies:
       typescript: 5.8.3
 
