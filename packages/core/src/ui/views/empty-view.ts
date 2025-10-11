@@ -20,6 +20,7 @@ export class EmptyView extends WorkspaceView {
 
     $(this.containerEl)
       .addClass('typ-empty-view')
+      .empty()
       .append(html`<div><div class="typ-empty-title"></div><div class="typ-empty-hotkey"></div></div>`)
 
     setTimeout(() => {
