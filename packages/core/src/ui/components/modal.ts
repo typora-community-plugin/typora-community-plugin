@@ -82,5 +82,8 @@ export class Modal extends View implements Closeable {
   close() {
     this.closeListeners.forEach(callback => callback())
     this.containerEl.style.display = "none"
+
+    // fix: cannot update a text setting after closing the Settings Modal because it does not lose focus.
+    $('input', this.containerEl).each((i, el) => el.blur())
   }
 }
