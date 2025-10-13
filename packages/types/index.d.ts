@@ -304,9 +304,11 @@ interface Brush {
 }
 
 interface DocMenu {
+  addEmptyDef(supText: string, type: string): void
   getMetaNode(): Node
   getLocalRootUrl(path?: string): string
   getValueInMeta(key: string, metaNode?: Node): string
+  showTooltipForSup($sup: JQuery): void
   writeProperty(key: string, value: string): void
 }
 
@@ -322,6 +324,8 @@ export declare class Node {
 
   __proto__: {
     constructor: typeof Node
+    get(key: string): any
+    set(key: string, value: string): void
   }
 
   id: string
@@ -362,6 +366,8 @@ interface NodeConstructOpts {
 }
 
 interface EditHelper {
+  markRange(range: Rangy, className: string): void
+
   /**
    * Show notification on top of editing area.
    *
@@ -552,6 +558,7 @@ interface QuickOpenPanel {
 }
 
 interface Selection {
+  rangy: RangyNs
   getRangy(): Rangy
   setRange(range: Rangy, param1: boolean): void
 
@@ -574,6 +581,10 @@ type TextAround = [
   textAfter: string,
   cursorRange: TRange
 ]
+
+interface RangyNs {
+  createRange(): Rangy
+}
 
 interface Rangy {
   collapsed: boolean
