@@ -318,14 +318,23 @@ interface TMathJax {
   typesetPromise(elements: HTMLElement[]): Promise<any>
 }
 
+/**
+ * @example
+ * // import type
+ * import { Node } from 'typora'
+ * let node: Node
+ * let nodeClass: typeof Node
+ *
+ * @example
+ * // get constructor of Node
+ * let nodeClass = editor.nodeMap.allNodes.first()?.__proto__.constructor
+ */
 export declare class Node {
 
   static parseFrom(markdown: string): [string]
 
   __proto__: {
     constructor: typeof Node
-    get(key: string): any
-    set(key: string, value: string): void
   }
 
   id: string
@@ -338,6 +347,9 @@ export declare class Node {
   get(key: string): any
 
   set(key: string, value: any): void
+
+  /** @since Typora v1.x */
+  addAfter(node: Node): void
 }
 
 interface NodeAttribute {
