@@ -37,10 +37,10 @@
 
 1. Download [Release][release] `typora-community-plugin.zip`.
 2. Unzip it.
-3. Copy files to `/Users/{UserName}/Library/Application%20Support/abnerworks.Typora/plugins`.
+3. Copy files to `/Users/{UserName}/Library/Application Support/abnerworks.Typora/plugins`.（If the `plugins` folder does not exist, create it manually.）
 4. Right click `Typora.app`, then click menu item "Show Package Contents" to open the app inner folder.
 5. Backup `Typora.app/Contents/Resources/TypeMark/index.html`. (If fail to use this plugin system after installation, you can revert it back to the original file and try again.)
-6. Modify `Typora.app/Contents/Resources/TypeMark/index.html`. Open the file with encoding UTF-8, then replace text `</body>` at the end of file as `<script src="file:///Users/{UserName}/Library/Application%20Support/abnerworks.Typora/plugins/loader.js" type="module"></script></body>`, and `{UserName}` need to be replaced with your current user name of macOS.
+6. Modify `Typora.app/Contents/Resources/TypeMark/index.html`. Open the file with encoding UTF-8, then replace text `</body>` at the end of file as `<script src="file:///Users/{UserName}/Library/Application Support/abnerworks.Typora/plugins/loader.js" type="module"></script></body>`, and `{UserName}` need to be replaced with your current user name of macOS.
 
 
 
