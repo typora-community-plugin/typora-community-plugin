@@ -107,6 +107,9 @@ interface TClientCommand {
 }
 
 
+/**
+ * Typora's CodeMirror. Can be used to read code outside the editing area `div#write`, but cannot edit.
+ */
 export declare function CodeMirror(containerElement: HTMLElement, options: any, parentEditor: any, cid: string): OriginalCodeMirror.Editor
 
 
@@ -304,12 +307,19 @@ interface Brush {
 }
 
 interface DocMenu {
-  addEmptyDef(supText: string, type: string): void
+  buildMetaMap(): Record<string, any>
   getMetaNode(): Node
-  getLocalRootUrl(path?: string): string
   getValueInMeta(key: string, metaNode?: Node): string
-  showTooltipForSup($sup: JQuery): void
+  removeProperty(key: string, metaNode?: Node): void
   writeProperty(key: string, value: string): void
+
+  getLocalRootUrl(path?: string): string
+
+  addEmptyDef(supText: string, type: string): void
+  jumpToFootnote(p0: any, p1: any): any
+  jumpToFootnoteDef(p0: any): any
+  refreshFootnoteReverseLink(p0: any): any
+  showTooltipForSup($sup: JQuery): void
 }
 
 export declare var MathJax: TMathJax
@@ -323,11 +333,11 @@ interface TMathJax {
  * // import type
  * import { Node } from 'typora'
  * let node: Node
- * let nodeClass: typeof Node
+ * let NodeClass: typeof Node
  *
  * @example
  * // get constructor of Node
- * let nodeClass = editor.nodeMap.allNodes.first()?.__proto__.constructor
+ * let NodeClass = editor.nodeMap.allNodes.first()?.__proto__.constructor
  */
 export declare class Node {
 
@@ -378,6 +388,16 @@ interface NodeConstructOpts {
 }
 
 interface EditHelper {
+  /**
+   * Wrap the range `[start, end)` within the text node with `<span class="className">`.
+   *
+   * The range will be unwrapped after the text in that line is edited.
+   *
+   * @example
+   * const range = editor.selection.rangy.createRange()
+   * range.moveToBookmark({ containerNode, start, end })
+   * editor.EditHelper.markRange(range, className)
+   */
   markRange(range: Rangy, className: string): void
 
   /**
@@ -453,10 +473,10 @@ interface Library {
   ): void
 
   /**
-   * @param normalizePath If path are not normalized, it may judge as different vault and open a new window to load the file.
+   * @param normalizedPath If path are not normalized, it may judge as different vault and open a new window to load the file.
    * @param callback When it call, writting area DOM is not prepared
    */
-  openFile(normalizePath: string, callback?: Function): void
+  openFile(normalizedPath: string, callback?: Function): void
 
   refreshPanelCommand(): void
 
@@ -611,12 +631,14 @@ interface Rangy {
   extractContents(): DocumentFragment
   cloneContents(): DocumentFragment
   deleteContents(): void
+
+  moveToBookmark(bookmark: Bookmark): void
 }
 
 interface Bookmark {
+  containerNode: globalThis.Node
   start: number
   end: number
-  containerNode: HTMLElement
 }
 
 interface SourceView {
