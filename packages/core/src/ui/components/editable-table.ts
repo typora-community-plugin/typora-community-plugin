@@ -90,6 +90,11 @@ export class EditableTable<T extends Record<string, any>> extends View {
       .html(footer)
   }
 
+  /** Return a copy of the table data. */
+  getData(): T[] {
+    return JSON.parse(JSON.stringify(this.data))
+  }
+
   setData(data: T[]) {
     this.data = data
     this.renderBody()
