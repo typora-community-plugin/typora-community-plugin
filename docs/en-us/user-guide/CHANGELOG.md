@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.5.33
+
+- **UI**
+  - fix(core/ui/settings/tabs/marketplace): can not re-show the install button after installation failed
+
+- **New Plugin**
+  - [styled-text][]: Decorate the text matching RegExp.
+
 ## v2.5.32
 
 - **UI**
@@ -530,6 +538,8 @@
 [markmap]: https://github.com/typora-community-plugin/typora-plugin-markmap
 
 [note-snippets]: https://github.com/typora-community-plugin/typora-plugin-note-snippets
+
+[styled-text]: https://github.com/typora-community-plugin/typora-plugin-styled-text
 
 [tag]: https://github.com/typora-community-plugin/typora-plugin-tag
 

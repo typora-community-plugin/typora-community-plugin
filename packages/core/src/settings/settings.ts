@@ -71,6 +71,10 @@ export class Settings<T extends Record<string, any>> {
     Object.assign(this._defaultSettings, settings)
   }
 
+  /**
+   * @tips If the `value` does not change, it will not trigger an update.
+   * @tips If the `value` is an **object type**, the same reference will not trigger an update.
+   */
   set<K extends keyof T>(key: K, value: T[K]) {
     if (this._stores.settings[key] === value) return
     this._stores.settings[key] = value

@@ -22,10 +22,10 @@ To be on the safe side, install an open source plugin that can review the source
 
 ## Compatible
 
-| Tested |                  |                 |                 |
-| :----: | ---------------- | --------------- | --------------- |
-| Typora | v1.5.x - v1.10.x | v1.5.x - v1.9.x | v1.4.8 - v1.9.4 |
-| OS     | Windows 10       | Ubuntu 22       | macOS 10.13, 14 |
+| Tested |                  |                  |                 |
+| :----: | ---------------- | ---------------- | --------------- |
+| Typora | v1.5.x - v1.12.x | v1.5.x - v1.12.x | v1.4.8 - v1.9.4 |
+| OS     | Windows 10       | Ubuntu 22        | macOS 10.13, 14 |
 
 
 
@@ -66,6 +66,7 @@ You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from
 | [markmap][p11]                   | Support Markmap in codeblock.                             |
 | [note-refactor][p7]              | Extract selection to new file.                            |
 | [note-snippets][p8]              | Use slash command to autocomplete note snippets.          |
+| [styled-text][p21]               | Decorate the text matching RegExp.                        |
 | [tag][p9]                        | Support tag like `#tag`.                                  |
 | [templater][p19]                 | Create notes from templates.                              |
 | [trigger][p20]                   | Set a trigger for the command to execute automatically.   |
@@ -129,3 +130,4 @@ If you have any problem or suggestion please open an issue [here](https://github
 [p18]: https://github.com/typora-community-plugin/typora-plugin-footnotes
 [p19]: https://github.com/typora-community-plugin/typora-plugin-templater
 [p20]: https://github.com/typora-community-plugin/typora-plugin-trigger
+[p21]: https://github.com/typora-community-plugin/typora-plugin-styled-text

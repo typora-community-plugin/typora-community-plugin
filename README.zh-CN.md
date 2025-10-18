@@ -24,7 +24,7 @@
 
 | 已测试  |                 |                  |                 |
 | :----: | ---------------- | ---------------- | --------------- |
-| Typora | v1.5.x - v1.10.x | v1.5.x - v1.10.x | v1.4.8 - v1.9.4 |
+| Typora | v1.5.x - v1.12.x | v1.5.x - v1.12.x | v1.4.8 - v1.9.4 |
 | 系统    | Windows 10      | Ubuntu 22        | macOS 10.13, 14 |
 
 
@@ -67,6 +67,7 @@
 | [note-refactor][p7]              | 提取选中文本到新文件                           |
 | [note-snippets][p8]              | 使用斜线指令输入笔记片段                        |
 | [tag][p9]                        | 高亮 `#tag` 语法，自动完成，提供标签面板管理和搜索标签 |
+| [styled-text][p21]               | 为匹配正则表达式的文本添加临时样式               |
 | [templater][p19]                 | 从模板创建笔记                                 |
 | [trigger][p20]                   | 为命令设置一个触发器，以自动执行。               |
 | [wavedrom][p17]                  | 支持在多行代码块中使用 WaveDrom                 |
@@ -128,3 +129,4 @@
 [p18]: https://github.com/typora-community-plugin/typora-plugin-footnotes
 [p19]: https://github.com/typora-community-plugin/typora-plugin-templater
 [p20]: https://github.com/typora-community-plugin/typora-plugin-trigger
+[p21]: https://github.com/typora-community-plugin/typora-plugin-styled-text

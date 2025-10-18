@@ -1,5 +1,13 @@
 # 更新日志
 
+## v2.5.33
+
+- **视图**
+  - fix(core/ui/settings/tabs/marketplace): 安装失败后不显示安装按钮
+
+- **新增插件**
+  - [styled-text][]: 为匹配正则表达式的文本添加临时样式
+
 ## v2.5.32
 
 - **视图**
@@ -532,6 +540,8 @@
 [markmap]: https://github.com/typora-community-plugin/typora-plugin-markmap
 
 [note-snippets]: https://github.com/typora-community-plugin/typora-plugin-note-snippets
+
+[styled-text]: https://github.com/typora-community-plugin/typora-plugin-styled-text
 
 [tag]: https://github.com/typora-community-plugin/typora-plugin-tag
 
