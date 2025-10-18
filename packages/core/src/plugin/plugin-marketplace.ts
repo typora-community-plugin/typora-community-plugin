@@ -3,6 +3,7 @@ import { useService } from 'src/common/service'
 import { Notice } from 'src/ui/components/notice'
 import fs from 'src/io/fs/filesystem'
 import type { PluginManifest, PluginPostion } from "./plugin-manifest"
+import { format } from 'src/utils'
 
 
 export type PluginMarketInfo = Pick<PluginManifest, "id" | "name" | "description" | "author" | "repo" | "platforms"> & {
@@ -42,6 +43,7 @@ export class PluginMarketplace {
   }
 
   installPlugin(info: PluginMarketInfo, pos: PluginPostion) {
+    const t = this.i18n.t.pluginMarketplace
     return this.getPluginNewestVersion(info)
       .then(version => this.github.downloadThenUnzipToTemp(info.repo, version, 'plugin.zip'))
       .then(tmp => {
@@ -56,7 +58,7 @@ export class PluginMarketplace {
           .then(manifest => {
             if (info.id !== manifest.id) {
               fs.remove(tmp)
-              new Notice(this.i18n.t.pluginMarketplace.idNotCorrect)
+              new Notice(t.idNotCorrect)
             }
             else {
               manifest.postion = pos
@@ -68,6 +70,9 @@ export class PluginMarketplace {
                 .then(() => fs.move(tmp, root))
             }
           })
+      })
+      .then(() => {
+        new Notice(format(t.installSuccessful, info))
       })
       .catch(error => {
         this.logger.error(error)

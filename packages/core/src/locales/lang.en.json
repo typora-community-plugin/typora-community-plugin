@@ -19,7 +19,8 @@
     "updateSuccessful": "The plugin \"{name}\" has been updated successfully."
   },
   "pluginMarketplace": {
-    "idNotCorrect": "Downloaded plugin \"{name}\" id is not equal to user install plugin id."
+    "idNotCorrect": "Downloaded plugin \"{name}\" id is not equal to user install plugin id.",
+    "installSuccessful": "The plugin \"{name}\" has been installed successfully."
   },
   "settingModal": {
     "commandOpen": "Open Plugin Settings Modal",
@@ -80,8 +81,7 @@
       "installToGlobal": "Global",
       "installToGlobalDesc": "Install to global",
       "installToVault": "Vault",
-      "installToVaultDesc": "Install to vault",
-      "installSuccessful": "The plugin \"{name}\" has been installed successfully."
+      "installToVaultDesc": "Install to vault"
     },
     "plugins": {
       "name": "Installed Plugins",

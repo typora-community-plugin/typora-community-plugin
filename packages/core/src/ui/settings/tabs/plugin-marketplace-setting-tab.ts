@@ -154,10 +154,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
         button.onclick = () => {
           button.disabled = true
           this.marketplace.installPlugin(info, 'global')
-            .then(() => {
-              setting.controls.remove()
-              new Notice(format(t.installSuccessful, this.plugins.manifests[info.id]))
-            })
+            .then(() => setting.controls.remove())
             .catch(() => button.disabled = false)
         }
       })
@@ -171,10 +168,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
         button.onclick = () => {
           button.disabled = true
           this.marketplace.installPlugin(info, 'vault')
-            .then(() => {
-              setting.controls.remove()
-              new Notice(format(t.installSuccessful, this.plugins.manifests[info.id]))
-            })
+            .then(() => setting.controls.remove())
             .catch(() => button.disabled = false)
         }
       })
