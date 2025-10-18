@@ -80,7 +80,8 @@
       "installToGlobal": "全局",
       "installToGlobalDesc": "安装到全局",
       "installToVault": "笔记库",
-      "installToVaultDesc": "安装到笔记库"
+      "installToVaultDesc": "安装到笔记库",
+      "installSuccessful": "插件 \"{name}\" 安装成功。"
     },
     "plugins": {
       "name": "已安装插件",

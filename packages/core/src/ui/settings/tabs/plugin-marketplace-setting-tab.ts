@@ -2,9 +2,10 @@ import { useService } from "src/common/service"
 import { platform } from "src/common/constants"
 import type { PluginMarketInfo } from "src/plugin/plugin-marketplace"
 import { SettingTab } from "../setting-tab"
-import { debounce, uniqueId } from "src/utils"
+import { debounce, format, uniqueId } from "src/utils"
 import { Downloader } from "src/net/net"
 import { File } from "typora"
+import { Notice } from "src/ui/components/notice"
 
 
 const platformIcons: Record<string, string> = {
@@ -150,9 +151,15 @@ export class PluginMarketplaceSettingTab extends SettingTab {
         button.innerHTML = '<span class="fa fa-cloud-download"></span> ' + t.installToGlobal
         button.title = t.installToGlobalDesc
         button.classList.add('primary')
-        button.onclick = () =>
+        button.onclick = () => {
+          button.disabled = true
           this.marketplace.installPlugin(info, 'global')
-            .then(() => setting.controls.remove())
+            .then(() => {
+              setting.controls.remove()
+              new Notice(format(t.installSuccessful, this.plugins.manifests[info.id]))
+            })
+            .catch(() => button.disabled = false)
+        }
       })
 
       if (this.config.isUsingGlobalConfig) return
@@ -161,9 +168,15 @@ export class PluginMarketplaceSettingTab extends SettingTab {
         button.innerHTML = '<span class="fa fa-cloud-download"></span> ' + t.installToVault
         button.title = t.installToVaultDesc
         button.classList.add('primary')
-        button.onclick = () =>
+        button.onclick = () => {
+          button.disabled = true
           this.marketplace.installPlugin(info, 'vault')
-            .then(() => setting.controls.remove())
+            .then(() => {
+              setting.controls.remove()
+              new Notice(format(t.installSuccessful, this.plugins.manifests[info.id]))
+            })
+            .catch(() => button.disabled = false)
+        }
       })
     })
   }

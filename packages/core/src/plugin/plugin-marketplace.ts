@@ -72,6 +72,7 @@ export class PluginMarketplace {
       .catch(error => {
         this.logger.error(error)
         new Notice(error.message)
+        throw error
       })
   }
 }

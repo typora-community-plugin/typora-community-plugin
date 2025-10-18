@@ -16,7 +16,7 @@
   "pluginManager": {
     "needNewerCoreVersion": "Plugin \"{name}\" need higher version Typora Community Plugin. Please check for update.",
     "upToDate": "Plugin \"{name}\" is up to date.",
-    "updateSuccessful": "Plugin \"{name}\" update successful."
+    "updateSuccessful": "The plugin \"{name}\" has been updated successfully."
   },
   "pluginMarketplace": {
     "idNotCorrect": "Downloaded plugin \"{name}\" id is not equal to user install plugin id."
@@ -80,7 +80,8 @@
       "installToGlobal": "Global",
       "installToGlobalDesc": "Install to global",
       "installToVault": "Vault",
-      "installToVaultDesc": "Install to vault"
+      "installToVaultDesc": "Install to vault",
+      "installSuccessful": "The plugin \"{name}\" has been installed successfully."
     },
     "plugins": {
       "name": "Installed Plugins",
