@@ -53,6 +53,9 @@ export abstract class Plugin<T extends Record<string, any> = {}>
         .addTab(tab))
   }
 
+  /**
+   * ActualCommand.id = `${this.manifest.id}:${command.id}`
+   */
   registerCommand(command: Command) {
     command.id = this.manifest.id + ':' + command.id
     command.title = this.manifest.name + ': ' + command.title

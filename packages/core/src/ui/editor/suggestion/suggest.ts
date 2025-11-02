@@ -30,6 +30,10 @@ export abstract class EditorSuggest<T> {
     editor.autoComplete.show(this._placeholder, range, query, this._handlers)
   }
 
+  hide() {
+    editor.autoComplete.hide()
+  }
+
   abstract findQuery(textBefore: string, textAfter: string, range: TRange): { isMatched: boolean, query?: string }
 
   abstract getSuggestions(query: string): NonNullable<T>[]
