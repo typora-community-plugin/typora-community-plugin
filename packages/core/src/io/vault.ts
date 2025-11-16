@@ -73,17 +73,22 @@ export class Vault extends Events<VaultEvents> {
       }
     })
 
+    const renamingFiles = new Set<string>()
     File.isNode
       ? (
         decorate.afterCall(JSBridge, 'invoke', async (args) => {
           if ("app.sendEvent" === args[0] && "didRename" === args[1]) {
             const { oldPath, newPath } = args[2]
             const type = (await fs.stat(newPath)).isDirectory() ? 'directory' : 'file'
+            renamingFiles.add(oldPath)
             this.emit(`${type}:rename`, oldPath, newPath)
+            setTimeout(() => renamingFiles.delete(oldPath), 333)
           }
         }),
         decorate.afterCall(editor.library.fileTree, 'onRemoveFile', ([file]) => {
-          this.emit('file:delete', file)
+          if (typeof file === 'string' && !renamingFiles.has(file)) {
+            this.emit('file:delete', file)
+          }
         })
       )
       : decorate.afterCall(editor.library, 'onFileChanges', ([events]) => {
