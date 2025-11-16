@@ -65,6 +65,16 @@ export class WorkspaceTabs extends WorkspaceParent {
     this._activeLeaf = leaf
   }
 
+  renameTab(oldPath: string, newPath: string): void {
+    const tabEl = this.tabHeader.getTabById(oldPath)
+    const newTab = new FileTab(newPath)
+    this.tabHeader.renameTab(tabEl, newTab)
+
+    const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === oldPath)
+    leaf.state.path = newPath
+    leaf.view.setIcon(leaf.view.icon)
+  }
+
   removeTab(path: string, tabEl?: HTMLElement): void {
     tabEl ??= this.tabHeader.getTabById(path)
     this.tabHeader.closeTab(tabEl)

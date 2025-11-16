@@ -37,6 +37,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
     commands = useService('command-manager'),
     { t } = useService('i18n'),
     settings = useService('settings'),
+    vault = useEventBus('vault'),
   ) {
     super('vertical')
 
@@ -98,6 +99,30 @@ export class WorkspaceRoot extends WorkspaceSplit {
             return
           }
           activeTabs.appendChild(createEditorLeaf(file))
+        }))
+
+      this.registry.register(
+        vault.on('file:rename', (oldPath, newPath) => {
+          const tabs = this.findLeaf(leaf => leaf.state.path === oldPath).parent as WorkspaceTabs
+          tabs.renameTab(oldPath, newPath)
+        }))
+
+      this.registry.register(
+        vault.on('directory:rename', (oldDirPath, newDirPath) => {
+          this.eachLeaves(leaf => {
+            console.log(leaf.state.path)
+            if (!leaf.state.path.startsWith(oldDirPath)) return
+            const oldFilePath = leaf.state.path
+            const newFilePath = newDirPath + oldFilePath.slice(oldDirPath.length)
+            const tabs = leaf.parent as WorkspaceTabs
+            console.log(1111, oldFilePath, newFilePath)
+            tabs.renameTab(oldFilePath, newFilePath)
+          })
+        }))
+
+      this.registry.register(
+        vault.on('file:delete', (file) => {
+          this.findLeaf(leaf => leaf.state.path === file)?.detach()
         }))
 
       this.registry.register(

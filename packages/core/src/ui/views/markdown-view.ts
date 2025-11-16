@@ -25,12 +25,15 @@ export class MarkdownView extends WorkspaceView {
   mdPreviewer?: MarkdownPreviewer
 
   constructor(
-    leaf: WorkspaceLeaf,
-    public filePath?: string,
+    public leaf: WorkspaceLeaf,
     private workspace = useService('workspace'),
     private mdRenderer = useService('markdown-renderer'),
   ) {
     super(leaf)
+  }
+
+  get filePath() {
+    return this.leaf.state.path
   }
 
   onload() {

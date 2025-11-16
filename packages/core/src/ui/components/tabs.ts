@@ -79,8 +79,9 @@ export class TabContainer extends View {
   }
 
   renameTab(tabEl: HTMLElement, tab: Tab) {
+    const isActive = tabEl.classList.contains('active')
     tabEl.replaceWith(tab.containerEl)
-    this.activeTab(tab.containerEl)
+    if (isActive) tab.containerEl.classList.add('active')
   }
 
   activeTab(tabEl: HTMLElement) {
