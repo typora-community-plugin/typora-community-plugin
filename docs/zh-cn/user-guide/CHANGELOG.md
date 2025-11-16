@@ -1,5 +1,20 @@
 # 更新日志
 
+## v2.5.35
+
+- fix(core/io/vault): 事件 `file:rename` 同时会触发 `file:delete`
+- fix(core/ui/workspace/root): 文件 重命名/删除 不能更新文件标签
+
+- **插件更新**
+  - [collapsible-section][]
+    - feat: 折叠代码块的新样式 `first_line`
+  - [footnotes][]
+    - feat: 使用自动完成添加脚注定义
+    - fix: 修复自动完成建议为空时不能添加脚注定义的问题
+  - [templater][]
+    - feat: 创建笔记之后支持打开
+    - fix: 修复 rollup 转译 `AsyncFunction` 为 `Function` 后导致抛出错误
+
 ## v2.5.33
 
 - **视图**

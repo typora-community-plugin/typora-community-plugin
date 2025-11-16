@@ -1,5 +1,20 @@
 # Changelog
 
+## v2.5.35
+
+- fix(core/io/vault): event `file:rename` will also emit `file:delete`
+- fix(core/ui/workspace/root): can not update tabs after renamed/deleted files
+
+- **Plugin Update**
+  - [collapsible-section][]
+    - feat: new folded codeblock style `first_line`
+  - [footnotes][]
+    - feat: use `suggest` to add a footnotes defination
+    - fix: can not add footnote defination if suggestions is not empty
+  - [templater][]
+    - feat: support `openNote` after created a note
+    - fix: throw an error because the `AsyncFunction` is transformed to a `Function` by rollup
+
 ## v2.5.33
 
 - **UI**
