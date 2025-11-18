@@ -17,7 +17,7 @@ const LogLevel: Record<string, Level> = {
 
 const RESET_STYLES = 'color:unset; background:unset; padding:unset; border-radius:unset;'
 
-function badage(message: string, bgColor: string): [string, string, string] {
+export function badage(message: string, bgColor: string): [string, string, string] {
   return [
     `%c${message}%c `,
     `color:#fff; background:${bgColor}; padding: 2px 4px; border-radius: 4px;`,
@@ -25,7 +25,7 @@ function badage(message: string, bgColor: string): [string, string, string] {
   ]
 }
 
-function badages(...messages: [string, string, string][]) {
+export function badages(...messages: [string, string, string][]) {
   return messages
     .filter(identity)
     .reduce((acc, b) => {
