@@ -3,7 +3,7 @@ import { useService } from "./service"
 import type { DisposeFunc } from "src/utils/types"
 
 
-type EventListener = (...args: any[]) => any
+export type EventListener = (...args: any[]) => any
 
 export type EventDefination = Record<string, EventListener>
 
@@ -66,12 +66,14 @@ export class Events<E extends EventDefination> {
       this.logger.debug(`${this.scope} @${event as string}\n`, ...args)
     }
 
-    try {
-      this._listeners[event]?.forEach(fn => fn(...args))
-    }
-    catch (error) {
-      this.logger.error(`${this.scope} @${event as string}\n`, error)
-    }
+    this._listeners[event]?.forEach(fn => {
+      try {
+        fn(...args)
+      }
+      catch (error) {
+        this.logger.error(`${this.scope} @${event as string}\n`, error)
+      }
+    })
   }
 
   getEventNames() {
