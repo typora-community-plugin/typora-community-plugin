@@ -54,7 +54,9 @@ After installation, if you can't see Ribbon and Multi File Tabs, please check th
 
 - Open the developer tools, check if there is an error
   - Windows/Linux: Use <kbd>Shift</kbd>+<kbd>F12</kbd> to open the developer tools
-  - macOS: In menu "Help" → "Enable Debugging", then right click the editor area, select "Inspect Element" to open developer tools
+  - macOS
+    - In menu "Help" → "Enable Debugging", then right click the editor area, select "Inspect Element" to open developer tools
+    - For macOS ≥ 13.3 and Typora ≥ 1.9, See [Debug in Typora](https://support.typora.io/Debug-Themes/).
 - If there is some errors, please screenshot or copy the log and report it in [Issues][issues].
 - If there is no error
   1. Modify the `loader.json` file, change `"debug":false` to `"debug":true`, then restart Typora

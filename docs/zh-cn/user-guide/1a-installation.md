@@ -55,7 +55,9 @@
 
 - 打开开发人员工具，检查是否有报错
   - Windows/Linux: 使用快捷键 <kbd>Shift</kbd>+<kbd>F12</kbd> 打开开发人员工具
-  - macOS: 菜单栏“帮助” → “启用调试”，然后右键单击编辑区，选择“检查元素”，打开开发人员工具
+  - macOS
+    - 菜单栏“帮助” → “启用调试”，然后右键单击编辑区，选择“检查元素”，打开开发人员工具
+    - 对于 macOS ≥ 13.3 且 Typora ≥ 1.9，见 [如何在 Typora 中调试](https://support.typoraio.cn/Debug-Themes/)。
 - 如果有报错，请截图或复制日志，在 [Issues][issues] 中反馈。
 - 如果没报错
   1. 修改 `loader.json` 文件中的 `"debug":false` 为 `"debug":true` ，然后重启 Typora
