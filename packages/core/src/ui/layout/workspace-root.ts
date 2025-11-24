@@ -13,6 +13,7 @@ import { createEditorLeaf, createTabs, splitDown, splitRight } from './workspace
 import { MarkdownView } from '../views/markdown-view'
 import { onTabsContextMenu } from './tabs/contextmenu'
 import { FileTabContainer } from './tabs/file-tabs'
+import { useScrollRecord } from './tabs/use-scroll-record'
 
 
 export type WorkspaceRootEvents = {
@@ -75,6 +76,8 @@ export class WorkspaceRoot extends WorkspaceSplit {
           FileTabContainer.hideTabExtension(isHide)
         })
       )
+
+      useScrollRecord(this.registry)
 
       this.registry.register(
         decorate(editor.library, 'openFile', fn => (file, callback) => {
