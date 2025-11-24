@@ -4,6 +4,7 @@ import type { WorkspaceLeaf } from '../workspace-leaf'
 import { createEmptyLeaf } from '../workspace-utils'
 import { WorkspaceNode } from '../workspace-node'
 import { FileTab, FileTabContainer } from './file-tabs'
+import { useActiveLeaf } from '../use-active-leaf'
 
 
 export class WorkspaceTabs extends WorkspaceParent {
@@ -58,11 +59,13 @@ export class WorkspaceTabs extends WorkspaceParent {
     tabEl ??= this.tabHeader.getTabById(path)
     this.tabHeader.activeTab(tabEl)
 
+    const [, setActiveLeaf] = useActiveLeaf()
     const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)
     leaf.containerEl.classList.add('mod-active')
     leaf.view.open()
 
     this._activeLeaf = leaf
+    setActiveLeaf(leaf)
   }
 
   renameTab(oldPath: string, newPath: string): void {

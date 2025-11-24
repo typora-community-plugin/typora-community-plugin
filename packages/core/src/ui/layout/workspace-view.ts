@@ -1,7 +1,6 @@
 import { Component } from "src/common/component"
-import type { PublicEvents } from "src/common/events"
+import { useEventBus } from "src/common/eventbus"
 import type { Closeable } from "../common/view"
-import type { WorkspaceEvents } from "./workspace-root"
 import type { WorkspaceTabs } from "./tabs"
 import type { WorkspaceLeaf } from "./workspace-leaf"
 
@@ -34,7 +33,7 @@ export abstract class WorkspaceView extends Component implements Closeable {
     this.setIcon(this.icon)
     this.load()
     this.onOpen();
-    (this.leaf.getRoot() as unknown as PublicEvents<WorkspaceEvents>).emit('leaf:open', this.leaf)
+    useEventBus('workspace-root').emit('leaf:open', this.leaf)
   }
 
   onOpen() { }

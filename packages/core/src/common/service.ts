@@ -20,6 +20,7 @@ import type { FileExplorer } from "src/ui/sidebar/file-explorer"
 import type { Sidebar } from "src/ui/sidebar/sidebar"
 import type { ViewManager } from "src/ui/view-manager"
 import type { Workspace } from "src/ui/workspace"
+import type { WorkspaceRoot } from "src/ui/layout/workspace-root"
 import type { Direction, WorkspaceSplit } from "src/ui/layout/split"
 import type { WorkspaceTabs } from "src/ui/layout/tabs"
 import type { Notice } from "src/ui/components/notice"
@@ -53,6 +54,7 @@ type ServiceMap = {
   'quick-pick'(): QuickPick
   'notice'(message: string, delay?: number): Notice
 
+  'workspace-root'(): WorkspaceRoot
   'workspace-split'(direction: Direction): WorkspaceSplit
   'workspace-tabs'(): WorkspaceTabs
 }

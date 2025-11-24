@@ -15,11 +15,11 @@ import { onTabsContextMenu } from './tabs/contextmenu'
 import { FileTabContainer } from './tabs/file-tabs'
 
 
-export type WorkspaceEvents = {
+export type WorkspaceRootEvents = {
   'layout-changed'(): void
   'leaf:open'(leaf: WorkspaceLeaf): void
-  // 'leaf:active'(leaf: WorkspaceLeaf): void
-  // 'leaf:deactive'(leaf: WorkspaceLeaf): void
+  'leaf:active'(leaf: WorkspaceLeaf): void
+  'leaf:will-deactive'(leaf: WorkspaceLeaf): void
   // 'leaf:close'(leaf: WorkspaceLeaf): void
 }
 
@@ -110,12 +110,10 @@ export class WorkspaceRoot extends WorkspaceSplit {
       this.registry.register(
         vault.on('directory:rename', (oldDirPath, newDirPath) => {
           this.eachLeaves(leaf => {
-            console.log(leaf.state.path)
             if (!leaf.state.path.startsWith(oldDirPath)) return
             const oldFilePath = leaf.state.path
             const newFilePath = newDirPath + oldFilePath.slice(oldDirPath.length)
             const tabs = leaf.parent as WorkspaceTabs
-            console.log(1111, oldFilePath, newFilePath)
             tabs.renameTab(oldFilePath, newFilePath)
           })
         }))

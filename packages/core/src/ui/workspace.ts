@@ -17,8 +17,8 @@ import type { Component } from 'src/common/component'
 import { useEventBus } from 'src/common/eventbus'
 import { useService } from 'src/common/service'
 import { WorkspaceRoot } from './layout/workspace-root'
-import type { WorkspaceParent } from './layout/workspace-parent'
 import type { WorkspaceLeaf } from './layout/workspace-leaf'
+import { useActiveLeaf } from './layout/use-active-leaf'
 import { createLeaf } from './layout/workspace-utils'
 import { EmptyView } from './views/empty-view'
 import { MarkdownView } from './views/markdown-view'
@@ -43,20 +43,13 @@ export class Workspace extends Events<WorkspaceEvents> {
   sidebar: Sidebar
   rootSplit: WorkspaceRoot = new WorkspaceRoot(this)
 
-  private _activeLeaf: WorkspaceLeaf
-  //
   get activeLeaf(): WorkspaceLeaf {
-    if (!this._activeLeaf?.parent) {
-      this.activeLeaf = (this.rootSplit.children[0] as WorkspaceParent)?.children[0] as WorkspaceLeaf
-    }
-    return this._activeLeaf
+    const [getActiveLeaf] = useActiveLeaf()
+    return getActiveLeaf()
   }
-  //
   set activeLeaf(leaf: WorkspaceLeaf) {
-    this._activeLeaf?.parent?.containerEl.classList.remove('mod-active')
-    this._activeLeaf = leaf
-    leaf?.parent?.containerEl.classList.add('mod-active')
-    leaf && this.emit('active-leaf:change', leaf)
+    const [, setActiveLeaf] = useActiveLeaf()
+    setActiveLeaf(leaf)
   }
 
   activeEditor: MarkdownEditor
