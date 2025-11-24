@@ -1,5 +1,11 @@
 # 更新日志
 
+## v2.5.37
+
+- **工作区**
+  - feat(core/ui/workspace/layout/root): 新增事件 `leaf:will-deactive` `leaf:active`
+  - feat(core/ui/workspace/layout/tabs): 记录文件标签的滚动条位置 ([#78](https://github.com/typora-community-plugin/typora-community-plugin/issues/78))
+
 ## v2.5.35
 
 - fix(core/io/vault): 事件 `file:rename` 同时会触发 `file:delete`

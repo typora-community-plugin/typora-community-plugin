@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.5.37
+
+- **Workspace**
+  - feat(core/ui/workspace/layout/root): new evnet `leaf:will-deactive` `leaf:active`
+  - feat(core/ui/workspace/layout/tabs): record tab's scrollTop ([#78](https://github.com/typora-community-plugin/typora-community-plugin/issues/78))
+
 ## v2.5.35
 
 - fix(core/io/vault): event `file:rename` will also emit `file:delete`
