@@ -9,13 +9,15 @@ import { type TRange, editor } from 'typora'
  *
  * → `suggest.findQuery()`
  *
- * → `suggest.lengthOfTextBeforeToBeReplaced()`
- *
  * → `suggest.show()` → typora.autoComplete #serach()
  *
  * → `suggest.getSuggestions()` → typora.autoComplete #render()
  *
- * → `suggest.renderSuggestion()` → User picks an item
+ * → `suggest.renderSuggestion()` → User picks an item → id
+ *
+ * → `suggest.lengthOfTextBeforeToBeReplaced()`
+ *
+ * → `suggest.getSuggestionById(id)`
  *
  * → `suggest.beforeApply()` → typora.autoComplete #apply()
  */
@@ -28,6 +30,7 @@ export abstract class EditorSuggest<T> {
    */
   abstract triggerText: string
 
+  private _query = ''
   private _placeholder: string[] = []
 
   get isUsing() {
@@ -44,6 +47,7 @@ export abstract class EditorSuggest<T> {
   }
 
   show(range: TRange, query: string) {
+    this._query = query
     editor.autoComplete.show(this._placeholder, range, query, this._handlers)
   }
 

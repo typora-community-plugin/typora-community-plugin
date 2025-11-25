@@ -3,6 +3,7 @@ import decorate from '@plylrnsdy/decorate.js'
 import { EditorSuggest } from './suggest'
 import type { DisposeFunc } from "src/utils/types"
 import { useEventBus } from 'src/common/eventbus'
+import { MergedSuggest } from './merged-suggest'
 
 
 export class EditorSuggestManager {
@@ -26,10 +27,12 @@ export class EditorSuggestManager {
         const range = editor.selection.getRangy()
         const { anchor } = editor.autoComplete.state
         const textNode = anchor.containerNode.firstChild! as Element
-        range.setStart(textNode, anchor.start)
+        const suggest = this._currentSuggest!
+        // @ts-ignore
+        range.setStart(textNode, anchor.start - suggest.lengthOfTextBeforeToBeReplaced(suggest._query))
         range.setEnd(textNode, anchor.end)
         editor.selection.setRange(range, true)
-        editor.UserOp.pasteHandler(editor, this._currentSuggest!._beforeApply(text), true)
+        editor.UserOp.pasteHandler(editor, suggest._beforeApply(text), true)
         editor.autoComplete.hide()
         return
       }
@@ -38,12 +41,27 @@ export class EditorSuggestManager {
   }
 
   register(suggest: EditorSuggest<any>): DisposeFunc {
+    const sameTriggerSuggest = this._suggests.find(s => s.triggerText === suggest.triggerText)
+    if (sameTriggerSuggest) {
+      const merged = new MergedSuggest(suggest.triggerText)
+      this.unregister(sameTriggerSuggest)
+      merged.add(sameTriggerSuggest)
+      merged.add(suggest)
+      suggest = merged
+    }
     this._suggests.push(suggest)
     return () => this.unregister(suggest)
   }
 
   unregister(suggest: EditorSuggest<any>) {
-    this._suggests = this._suggests.filter(s => s !== suggest)
+    const filtered = this._suggests.filter(s => s !== suggest)
+    if (filtered.length < this._suggests.length)
+      this._suggests = filtered
+    else
+      this._suggests.forEach(s => {
+        if (s instanceof MergedSuggest)
+          s.delete(suggest)
+      })
   }
 
   private _onEdit() {
@@ -61,7 +79,6 @@ export class EditorSuggestManager {
       const { isMatched, query = '' } = suggest.findQuery(textBefore, textAfter, range)
       if (!isMatched) continue
 
-      range.start -= suggest.lengthOfTextBeforeToBeReplaced(query)
       suggest.show(range, query)
       break
     }
