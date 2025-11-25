@@ -2,6 +2,23 @@ import './suggest.scss'
 import { type TRange, editor } from 'typora'
 
 
+/**
+ * **Execution Flow**
+ *
+ * `suggest.canTrigger()`
+ *
+ * → `suggest.findQuery()`
+ *
+ * → `suggest.lengthOfTextBeforeToBeReplaced()`
+ *
+ * → `suggest.show()` → typora.autoComplete #serach()
+ *
+ * → `suggest.getSuggestions()` → typora.autoComplete #render()
+ *
+ * → `suggest.renderSuggestion()` → User picks an item
+ *
+ * → `suggest.beforeApply()` → typora.autoComplete #apply()
+ */
 export abstract class EditorSuggest<T> {
 
   /**
