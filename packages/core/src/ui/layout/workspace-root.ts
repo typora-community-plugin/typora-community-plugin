@@ -86,7 +86,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
             file === workspace.activeFile &&
             // handle: do not re-execute after `openFileInActiveTabs` has be called once.
             //         [Call Chain] 'file:will-open' → openFileInActiveTabs() → MarkdownView#onOpen() → editor.library.openFile() → 'file:will-open'
-            file !== MarkdownView.parent.activedLeaf.state.path
+            file !== MarkdownView.parent?.activedLeaf.state.path
           ) {
             openFileInActiveTabs(file)
           }
