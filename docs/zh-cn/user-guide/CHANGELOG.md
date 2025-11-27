@@ -1,10 +1,23 @@
 # 更新日志
 
+## v2.5.40
+
+- **工作区**
+  - fix(core/ui/layout/root): 关闭唯一一个文件后，无法再次打开。([#79](https://github.com/typora-community-plugin/typora-community-plugin/issues/79))
+  - fix(core/ui/ribbon): 不能正确调整侧栏宽度的问题
+- **开发者**
+  - feat(core/ui/editor/suggestion): 支持多个相同的触发文本的输入建议（自动完成）
+
+- **插件更新**
+  - [collapsible-section][]
+    - fix(codeblock): 修复自动折叠空代码块的问题
+
 ## v2.5.37
 
 - **工作区**
-  - feat(core/ui/workspace/layout/root): 新增事件 `leaf:will-deactive` `leaf:active`
   - feat(core/ui/workspace/layout/tabs): 记录文件标签的滚动条位置 ([#78](https://github.com/typora-community-plugin/typora-community-plugin/issues/78))
+- **开发者**
+  - feat(core/ui/workspace/layout/root): 新增事件 `leaf:will-deactive` `leaf:active`
 
 ## v2.5.35
 

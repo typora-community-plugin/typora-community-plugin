@@ -1,10 +1,23 @@
 # Changelog
 
+## v2.5.40
+
+- **Workspace**
+  - fix(core/ui/layout/root): after closing the only file, it cannot be opened again. ([#79](https://github.com/typora-community-plugin/typora-community-plugin/issues/79))
+  - fix(core/ui/ribbon): can not set width of the sidebar correctly
+- **Developer**
+  - feat(core/ui/editor/suggestion): support multiple suggestions with the same trigger text
+
+- **Plugin Update**
+  - [collapsible-section][]
+    - fix(codeblock): auto fold the empty codeblock
+
 ## v2.5.37
 
 - **Workspace**
-  - feat(core/ui/workspace/layout/root): new evnet `leaf:will-deactive` `leaf:active`
   - feat(core/ui/workspace/layout/tabs): record tab's scrollTop ([#78](https://github.com/typora-community-plugin/typora-community-plugin/issues/78))
+- **Developer**
+  - feat(core/ui/workspace/layout/root): new evnet `leaf:will-deactive` `leaf:active`
 
 ## v2.5.35
 
