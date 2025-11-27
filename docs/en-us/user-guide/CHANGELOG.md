@@ -1,6 +1,6 @@
 # Changelog
 
-## v2.5.41
+## v2.5.42
 
 - **Workspace**
   - fix(core/ui/layout/root): after closing the only file, it cannot be opened again. ([#79](https://github.com/typora-community-plugin/typora-community-plugin/issues/79))
