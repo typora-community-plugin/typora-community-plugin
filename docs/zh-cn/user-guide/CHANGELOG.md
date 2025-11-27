@@ -1,6 +1,6 @@
 # 更新日志
 
-## v2.5.40
+## v2.5.41
 
 - **工作区**
   - fix(core/ui/layout/root): 关闭唯一一个文件后，无法再次打开。([#79](https://github.com/typora-community-plugin/typora-community-plugin/issues/79))
