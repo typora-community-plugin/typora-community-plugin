@@ -9,7 +9,7 @@ import { WorkspaceSplit } from "./split"
 import type { WorkspaceTabs } from './tabs'
 import type { WorkspaceLeaf } from './workspace-leaf'
 import { draggableTabs } from './tabs/draggable'
-import { createEditorLeaf, createTabs, splitDown, splitRight } from './workspace-utils'
+import { createTabs, openFileInActiveTabs, splitDown, splitRight } from './workspace-utils'
 import { MarkdownView } from '../views/markdown-view'
 import { onTabsContextMenu } from './tabs/contextmenu'
 import { FileTabContainer } from './tabs/file-tabs'
@@ -80,6 +80,14 @@ export class WorkspaceRoot extends WorkspaceSplit {
       useScrollRecord(this.registry)
 
       this.registry.register(
+        workspace.on('file:will-open', (file) => {
+          // handle: after closing the only file, it should be able to be opened again.
+          if (file === workspace.activeFile) {
+            openFileInActiveTabs(file)
+          }
+        }))
+
+      this.registry.register(
         decorate(editor.library, 'openFile', fn => (file, callback) => {
           const activeTabs = workspace.activeLeaf?.parent as WorkspaceTabs
           if (
@@ -91,18 +99,10 @@ export class WorkspaceRoot extends WorkspaceSplit {
           )
             fn(file, callback)
           else
-            useEventBus('workspace').emit('file:open', file)
+            openFileInActiveTabs(file)
         }))
 
-      this.registry.register(
-        workspace.on('file:open', (file) => {
-          const activeTabs = workspace.activeLeaf.parent as WorkspaceTabs
-          if (activeTabs.findLeaf(leaf => leaf.state.path === file)) {
-            activeTabs.toggleTab(file)
-            return
-          }
-          activeTabs.appendChild(createEditorLeaf(file))
-        }))
+      this.registry.register(workspace.on('file:open', openFileInActiveTabs))
 
       this.registry.register(
         vault.on('file:rename', (oldPath, newPath) => {
