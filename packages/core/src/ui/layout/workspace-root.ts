@@ -81,8 +81,13 @@ export class WorkspaceRoot extends WorkspaceSplit {
 
       this.registry.register(
         workspace.on('file:will-open', (file) => {
-          // handle: after closing the only file, it should be able to be opened again.
-          if (file === workspace.activeFile) {
+          if (
+            // handle: after closing the only file, it should be able to be opened again.
+            file === workspace.activeFile &&
+            // handle: do not re-execute after `openFileInActiveTabs` has be called once.
+            //         [Call Chain] 'file:will-open' → openFileInActiveTabs() → MarkdownView#onOpen() → editor.library.openFile() → 'file:will-open'
+            file !== MarkdownView.parent.activedLeaf.state.path
+          ) {
             openFileInActiveTabs(file)
           }
         }))
