@@ -71,7 +71,7 @@ export class WorkspaceRibbon extends Component {
   }
 
   get ribbonWidth() {
-    const root = document.documentElement
+    const root = document.body
     return +getComputedStyle(root)
       .getPropertyValue('--typ-ribbon-width')
       .trim()
