@@ -5,6 +5,7 @@ import { createEmptyLeaf } from '../workspace-utils'
 import { WorkspaceNode } from '../workspace-node'
 import { FileTab, FileTabContainer } from './file-tabs'
 import { useActiveLeaf } from '../use-active-leaf'
+import { EmptyView } from 'src/ui/views/empty-view'
 
 
 export class WorkspaceTabs extends WorkspaceParent {
@@ -32,6 +33,13 @@ export class WorkspaceTabs extends WorkspaceParent {
     this.tabHeader.insertTab(index, new FileTab(child.state.path))
     super.insertChild(index, child)
     this.toggleTab(child.state.path)
+
+    if (
+      this.children.length === 2 &&
+      (this.children[0] as WorkspaceLeaf).state.path.startsWith(`typ://${EmptyView.type}`)
+    ) {
+      this.removeChild(this.children[0])
+    }
   }
 
   _insertChildEl(index: number, child: WorkspaceLeaf) {
