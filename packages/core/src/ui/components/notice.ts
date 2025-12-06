@@ -1,5 +1,5 @@
-import { Component } from 'src/common/component'
 import './notice.scss'
+import { Component } from 'src/common/component'
 import { Closeable, View } from 'src/ui/common/view'
 import { html } from 'src/utils'
 
@@ -31,18 +31,20 @@ export const noticeContainer = new NoticeContainer()
 
 export class Notice extends View {
 
-  private closeable = false
-
   /**
    * @param delay Hide notice after `delay` ms. `delay = 0` will not be hidden.
    */
   constructor(message: string, delay = 5000) {
     super()
-    this.containerEl = html`<div class="typ-notice">${message}</div>`
+    this.containerEl = $(`<div class="typ-notice"></div>`)
+      .append(`<div>${message}</div>`)
+      .append($('<div class="typ-notice__close"><i class="typ-icon typ-close"></i></div>')
+        .on('click', () => this.close()))
+      .get(0)
 
-    this.show()
+    this.show();
 
-    delay && setTimeout(() => this.close(), delay)
+    (delay > 0) && setTimeout(() => this.close(), delay)
   }
 
   /**
@@ -50,8 +52,6 @@ export class Notice extends View {
    */
   set message(msg: string) {
     this.containerEl.innerText = msg
-    if (this.closeable) this.setCloseable(true)
-
   }
 
   setMessage(msg: string) {
@@ -59,17 +59,10 @@ export class Notice extends View {
     return this
   }
 
+  /**
+   * @deprecated Notices should always be closable.
+   */
   setCloseable(closeable: boolean) {
-    this.closeable = closeable
-    if (closeable)
-      $(this.containerEl).append(
-        $(`<div class="typ-notice__close"><i class="typ-icon typ-close"></i></div>`)
-          .on('click', () => this.close())
-      )
-    else
-      $(this.containerEl)
-        .find('.typ-notice__close')
-        .remove()
     return this
   }
 

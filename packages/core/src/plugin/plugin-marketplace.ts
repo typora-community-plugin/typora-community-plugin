@@ -58,7 +58,7 @@ export class PluginMarketplace {
           .then(manifest => {
             if (info.id !== manifest.id) {
               fs.remove(tmp)
-              new Notice(t.idNotCorrect)
+              throw new Error(t.idNotCorrect)
             }
             else {
               manifest.postion = pos

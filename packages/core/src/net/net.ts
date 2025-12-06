@@ -101,7 +101,7 @@ function downloadByNodejs(url: string, dest: string, maxRedirects = 5) {
 
       function throws(err: Error) {
         reject(err)
-        useService('notice', [err.message])
+        useService('notice', [err.message, 0])
       }
     }
   })
@@ -109,8 +109,9 @@ function downloadByNodejs(url: string, dest: string, maxRedirects = 5) {
 
 function checkFileExistence(path: string) {
   return fs.access(path)
-    .catch(() => {
+    .catch((err) => {
       const i18n = useService('i18n')
-      useService('notice', [i18n.t.net.fileDownloadFailed])
+      useService('notice', [i18n.t.net.fileDownloadFailed, 0])
+      throw err
     })
 }

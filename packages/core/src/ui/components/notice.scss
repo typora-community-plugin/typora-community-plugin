@@ -24,9 +24,14 @@
   @include shadow(0 .125rem .5rem rgb(var(--typ-shadow-color)));
 
   .typ-notice__close {
+    display: none;
     position: absolute;
     top: .5rem;
     right: .5rem;
     width: 1.4rem;
+  }
+
+  &:hover .typ-notice__close {
+    display: block;
   }
 }

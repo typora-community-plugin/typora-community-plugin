@@ -108,7 +108,7 @@ export class AboutTab extends SettingTab {
       })
       .catch(error => {
         this.logger.error(error)
-        new Notice(error.message)
+        new Notice(error.message, 0)
       })
   }
 
