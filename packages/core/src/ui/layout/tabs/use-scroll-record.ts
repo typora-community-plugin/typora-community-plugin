@@ -1,24 +1,27 @@
 import { editor } from "typora"
 import type { Component } from "src/common/component"
-import { useEventBus } from "src/common/eventbus"
+import { useService } from "src/common/service"
 import type { MarkdownView } from "src/ui/views/markdown-view"
 
 
-export function useScrollRecord(registry: Component, rootSplit = useEventBus('workspace-root')) {
+export function useScrollRecord(registry: Component, workspace = useService('workspace')) {
 
   registry.register(
-    rootSplit.on('leaf:will-deactive', (leaf) => {
-      if (!leaf.state.path.endsWith('.md')) return
+    workspace.on('file:will-open', (file) => {
+      if (!file.endsWith('.md')) return
 
+      const leaf = workspace.rootSplit.findLeaf(l => l.state.path === file)
       leaf.state.scrollTop = (leaf.view as MarkdownView).isEidtor()
         ? editor.writingArea.parentElement.scrollTop
         : leaf.view.containerEl.scrollTop
     }))
 
   registry.register(
-    rootSplit.on('leaf:active', (leaf) => {
-      if (!leaf.state.path.endsWith('.md')) return
-      if (!leaf.state.scrollTop) return
+    workspace.on('file:open', (file) => {
+      if (!file.endsWith('.md')) return
+
+      const leaf = workspace.rootSplit.findLeaf(l => l.state.path === file)
+      if (!leaf?.state?.scrollTop) return
 
       setTimeout(() => {
         if ((leaf.view as MarkdownView).isEidtor())
