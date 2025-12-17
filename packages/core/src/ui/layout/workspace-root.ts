@@ -185,8 +185,15 @@ export class WorkspaceRoot extends WorkspaceSplit {
     }
 
     this.registry.onunload = () => {
+      // Removing the current tabs in reverse order causes the left tab to keep reopening, resulting in two tabs remaining after resetting the workspace.
+      // So it is necessary to handle the current Tabs separately.
+      const activeTabs = workspace.activeLeaf.parent as WorkspaceTabs
+      activeTabs.removeOthers(workspace.activeLeaf.state.path)
+
+      // Elements need to be deleted in reverse order
       this.eachLeaves(leaf => leaf.detach())
-      this.children.forEach(child => child.detach())
+      this.children.reverse().forEach(child => child.detach())
+
       this.containerEl.remove()
       workspace.activeLeaf = null
       editor.writingArea.parentElement.setAttribute('class', '')

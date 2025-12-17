@@ -87,7 +87,7 @@ export abstract class WorkspaceParent extends WorkspaceNode {
 
   eachLeaves(iteratee: (leaf: WorkspaceLeaf) => boolean | void) {
     const nodes = this.children
-    for (let i = 0; i < nodes.length; i++) {
+    for (let i = nodes.length - 1; i >= 0; i--) {
       const node = nodes[i]
       if (node.type === 'leaf') {
         if (iteratee(node as WorkspaceLeaf)) break
