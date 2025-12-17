@@ -104,7 +104,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
           )
             fn(file, callback)
           else
-            openFileInActiveTabs(file)
+            setTimeout(() => openFileInActiveTabs(file))
         }))
 
       this.registry.register(workspace.on('file:open', openFileInActiveTabs))
