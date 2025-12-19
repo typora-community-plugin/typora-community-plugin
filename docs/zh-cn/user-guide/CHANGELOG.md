@@ -1,5 +1,15 @@
 # 更新日志
 
+## v2.5.46
+
+- **工作区**
+  - feat(core/ui/layout/tabs): 打开 Markdown 后关闭 NewTab
+  - fix(core/ui/layout/tabs/scroll-record): 修复有时候不能记录编辑器滚动条位置的问题 ([#80](https://github.com/typora-community-plugin/typora-community-plugin/issues/80))
+  - fix(core/ui/layout/root): 修复“重置工作区”后不能编辑文件的问题
+  - fix(core/ui/layout/root): 修复在分栏情况下，打开非活动的编辑器 Tab 会在活动的预览分栏中打开 Tab 的问题
+- **开发者**
+  - refactor(core/ui/components/notice): 移除 Notice 的 `closeable` 属性（现在 Notice 是必须可关闭的）
+
 ## v2.5.42
 
 - **工作区**

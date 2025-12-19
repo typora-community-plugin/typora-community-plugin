@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.5.46
+
+- **Workspace**
+  - feat(core/ui/layout/tabs): close the NewTab after opening a markdown tab
+  - fix(core/ui/layout/tabs/scroll-record): sometime can not record the scroll of editor ([#80](https://github.com/typora-community-plugin/typora-community-plugin/issues/80))
+  - fix(core/ui/layout/root): can not edit markdown after resetting the workspace
+  - fix(core/ui/layout/root): opening the deactived MarkdownEditor will open file in the actived SplitView
+- **Developer**
+  - refactor(core/ui/components/notice): remove `closeable`
+
 ## v2.5.42
 
 - **Workspace**
