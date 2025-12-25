@@ -4,14 +4,68 @@ Auto setup typora-community-plugin
 
 ## Install
 
-Windows
+### Windows
 
 ```powershell
-&'install.ps1'
+&'install-windows.ps1'
+
+# custom install postion
+&'install-windows.ps1' -p <typora_home>
 ```
 
-Windows (custom install postion)
+### Linux
+
+```bash
+chmod +x install-linux.sh
+su root
+./install-linux.sh
+
+# custom install postion
+./install-linux.sh -p <typora_home>
+```
+
+### macOS
+
+macOS Settings → Privacy & Security → App Management → allow "Terminal" to modify App files
+
+```bash
+chmod +x install-linux.sh
+./install-macos.sh
+
+# custom install postion
+./install-macos.sh -p <typora_home>
+```
+
+## Uninstall
+
+### Windows
 
 ```powershell
-&'install.ps1' -root <custom_install_path>
+&'uninstall-windows.ps1'
+
+# custom install postion
+&'uninstall-windows.ps1' -p <typora_home>
+```
+
+### Linux
+
+```bash
+chmod +x uninstall-linux.sh
+su root
+./uninstall-linux.sh
+
+# custom install postion
+./uninstall-linux.sh -p <typora_home>
+```
+
+### macOS
+
+macOS Settings → Privacy & Security → App Management → allow "Terminal" to modify App files
+
+```bash
+chmod +x uninstall-linux.sh
+./uninstall-macos.sh
+
+# custom install postion
+./uninstall-macos.sh -p <typora_home>
 ```

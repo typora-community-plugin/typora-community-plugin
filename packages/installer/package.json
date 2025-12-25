@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "name": "installer",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "keywords": [
+    "typora-plugin"
+  ],
+  "author": "plylrnsdy",
+  "license": "MIT"
+}
