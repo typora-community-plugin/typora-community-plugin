@@ -8,8 +8,7 @@ Auto setup typora-community-plugin
 
 ```powershell
 &'install-windows.ps1'
-
-# custom install postion
+# or custom install postion
 &'install-windows.ps1' -p <typora_home>
 ```
 
@@ -18,21 +17,21 @@ Auto setup typora-community-plugin
 ```bash
 chmod +x install-linux.sh
 su root
-./install-linux.sh
 
-# custom install postion
+./install-linux.sh
+# or custom install postion
 ./install-linux.sh -p <typora_home>
 ```
 
 ### macOS
 
-macOS Settings → Privacy & Security → App Management → allow "Terminal" to modify App files
+macOS "System Settings" → "Privacy & Security" → "App Management" → allow "Terminal" to update or delete other applications
 
 ```bash
 chmod +x install-linux.sh
-./install-macos.sh
 
-# custom install postion
+./install-macos.sh
+# or custom install postion
 ./install-macos.sh -p <typora_home>
 ```
 
@@ -42,8 +41,7 @@ chmod +x install-linux.sh
 
 ```powershell
 &'uninstall-windows.ps1'
-
-# custom install postion
+# or custom install postion
 &'uninstall-windows.ps1' -p <typora_home>
 ```
 
@@ -52,20 +50,20 @@ chmod +x install-linux.sh
 ```bash
 chmod +x uninstall-linux.sh
 su root
-./uninstall-linux.sh
 
-# custom install postion
+./uninstall-linux.sh
+# or custom install postion
 ./uninstall-linux.sh -p <typora_home>
 ```
 
 ### macOS
 
-macOS Settings → Privacy & Security → App Management → allow "Terminal" to modify App files
+macOS "System Settings" → "Privacy & Security" → "App Management" → allow "Terminal" to update or delete other applications
 
 ```bash
 chmod +x uninstall-linux.sh
-./uninstall-macos.sh
 
-# custom install postion
+./uninstall-macos.sh
+# or custom install postion
 ./uninstall-macos.sh -p <typora_home>
 ```

@@ -14,6 +14,7 @@ archive
   .directory('packages/core/dist', packageInfo.version)
   .file('packages/loader/index.js', { name: 'loader.js' })
   .file('packages/installer/README.md', { name: 'README.md' })
+  .file('packages/installer/README.zh-CN.md', { name: 'README.zh-CN.md' })
   .file('packages/installer/dist/install-linux.sh', { name: 'install-linux.sh' })
   .file('packages/installer/dist/install-macos.sh', { name: 'install-macos.sh' })
   .file('packages/installer/dist/install-windows.ps1', { name: 'install-windows.ps1' })
