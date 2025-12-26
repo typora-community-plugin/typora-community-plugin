@@ -1,5 +1,14 @@
 # 如何卸载
 
+## 脚本卸载
+
+1. 从 [Release][release] 下载 `typora-community-plugin.zip`。
+2. 解压文件。
+3. 运行 `uninstall-windows.ps1` 或者 `uninstall-*.sh`（详细用法请查看 `typora-community-plugin.zip` 中的 `README.zh-CN.md`）
+
+
+## 手动卸载
+
 **Windows 用户**
 
 1. 删除文件夹 `%UserProfile%/.typora/community-plugins`。

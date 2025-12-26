@@ -2,15 +2,15 @@
 
 
 
-### Script install
+### Script installation
 
 1. Download [Release][release] `typora-community-plugin.zip`.
 2. Unzip it.
-3. Run `install.ps1` (only for Windows) as Admin to install.
+3. Run `install-windows.ps1` or `install-*.sh` (See `README.md` in `typora-community-plugin.zip`)
 
 
 
-### Manual install
+### Manual installation
 
 **for Windows**
 

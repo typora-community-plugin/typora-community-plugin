@@ -6,6 +6,8 @@
 
 ### Windows
 
+需要使用管理员权限运行
+
 ```powershell
 # 自动查找 Typora 安装路径
 &'install-windows.ps1'
@@ -41,6 +43,8 @@ chmod +x install-linux.sh
 ## 卸载
 
 ### Windows
+
+需要使用管理员权限运行
 
 ```powershell
 # 自动查找 Typora 安装路径

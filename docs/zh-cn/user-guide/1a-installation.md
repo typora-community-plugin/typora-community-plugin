@@ -6,7 +6,7 @@
 
 1. 从 [Release][release] 下载 `typora-community-plugin.zip`。
 2. 解压文件。
-3. 以管理员身份运行 `install.ps1` (只适用于 Windows)。
+3. 运行 `install-windows.ps1` 或者 `install-*.sh`（详细用法请查看 `typora-community-plugin.zip` 中的 `README.zh-CN.md`）
 
 
 

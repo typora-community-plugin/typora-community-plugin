@@ -1,5 +1,14 @@
 # How to uninstall
 
+## Script uninstallation
+
+1. Download [Release][release] `typora-community-plugin.zip`.
+2. Unzip it.
+3. Run `uninstall-windows.ps1` or `uninstall-*.sh` (See `README.md` in `typora-community-plugin.zip` for details)
+
+
+## Manual uninstallation
+
 **for Windows**
 
 1. Delete the folder `%UserProfile%/.typora/community-plugins`.

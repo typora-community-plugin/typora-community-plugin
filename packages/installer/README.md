@@ -6,6 +6,8 @@ Auto setup typora-community-plugin
 
 ### Windows
 
+Run as administrator
+
 ```powershell
 &'install-windows.ps1'
 # or custom install postion
@@ -38,6 +40,8 @@ chmod +x install-linux.sh
 ## Uninstall
 
 ### Windows
+
+Run as administrator
 
 ```powershell
 &'uninstall-windows.ps1'
