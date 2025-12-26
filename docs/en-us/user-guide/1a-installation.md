@@ -6,7 +6,7 @@
 
 1. Download [Release][release] `typora-community-plugin.zip`.
 2. Unzip it.
-3. Run `install-windows.ps1` or `install-*.sh` (See `README.md` in `typora-community-plugin.zip`)
+3. Run `install-windows.ps1` or `install-*.sh` (See `README.md` in `typora-community-plugin.zip` for details)
 
 
 
@@ -61,7 +61,7 @@ After installation, if you can't see Ribbon and Multi File Tabs, please check th
 - If there is no error
   1. Modify the `loader.json` file, change `"debug":false` to `"debug":true`, then restart Typora
   2. Open the Console tab of the developer tools, filter logs by `core.js`
-  3. Screenshot or copy the log, and report it in [Issues][issues].\
+  3. Screenshot or copy the log, and report it in [Issues][issues].
 
 
 

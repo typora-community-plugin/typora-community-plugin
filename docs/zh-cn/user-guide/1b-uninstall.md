@@ -27,4 +27,5 @@
 
 
 
+[release]: https://github.com/typora-community-plugin/typora-community-plugin/releases
 [ws]: https://github.com/typora-community-plugin/typora-community-plugin/issues/9

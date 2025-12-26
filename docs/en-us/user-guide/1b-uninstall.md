@@ -25,3 +25,5 @@
 1. Delete the folder `/Users/{UserName}/Library/Application%20Support/abnerworks.Typora/plugins`.
 2. Right click `Typora.app`, then click menu item "Show Package Contents" to open the app inner folder. Modify `Typora.app/Contents/Resources/TypeMark/index.html`. Open the file with encoding UTF-8, then delete the text `<script src="file:///Users/{UserName}/Library/Application%20Support/abnerworks.Typora/plugins/loader.js" type="module"></script>` at the end of file, and `{UserName}` need to be replaced with your current user name of macOS.
 
+
+[release]: https://github.com/typora-community-plugin/typora-community-plugin/releases
