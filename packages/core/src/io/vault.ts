@@ -39,7 +39,7 @@ export class Vault extends Events<VaultEvents> {
 
   private _path = File.getMountFolder()
     ?? _options.mountFolder
-    ?? path.dirname(_options.initFilePath ?? File.bundle.filePath)
+    ?? path.dirname(_options.initFilePath ?? File.filePath ?? File.bundle.filePath)
 
   get id() {
     return hashCode(this.path)

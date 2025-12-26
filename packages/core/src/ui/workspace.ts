@@ -58,7 +58,7 @@ export class Workspace extends Events<WorkspaceEvents> {
    * Openned file's path
    */
   get activeFile() {
-    return File.bundle?.filePath
+    return File.filePath ?? File.bundle.filePath
   }
 
   constructor(
