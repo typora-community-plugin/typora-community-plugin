@@ -1,5 +1,12 @@
 # 更新日志
 
+## v2.5.48
+
+- chore: 兼容旧版本 Typora ([#82](https://github.com/typora-community-plugin/typora-community-plugin/issues/82))
+
+- **安装脚本**
+  - feat: 支持 windows/linux/macOS 安装/卸载 脚本
+
 ## v2.5.46
 
 - **工作区**

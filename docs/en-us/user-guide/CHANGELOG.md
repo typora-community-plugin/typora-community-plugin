@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.5.48
+
+- chore: compatible with old version Typora. ([#82](https://github.com/typora-community-plugin/typora-community-plugin/issues/82))
+
+- **Installer**
+  - feat: support windows/linux/macOS installer/uninstaller
+
 ## v2.5.46
 
 - **Workspace**
