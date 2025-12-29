@@ -2,7 +2,7 @@
 # {{ FIND_WINDOW_HTML }}
 # {{ FIND_USERDATA_DIR }}
 
-If ($html -match '/plugins/loader.js" type="module"></script>$') {
+If ($html -match '/plugins/loader.js" type="module"></script>') {
   echo "Editing File: $htmlPath"
 
   $html = $html -replace "<script src=""$userDataPath/plugins/loader.js"" type=""module""></script>", ''

@@ -2,7 +2,7 @@
 # {{ FIND_WINDOW_HTML }}
 # {{ FIND_USERDATA_DIR }}
 
-If ($html -notmatch '/plugins/loader.js" type="module"></script>$') {
+If ($html -notmatch '/plugins/loader.js" type="module"></script>') {
   Write-Host "Editing File: $htmlPath"
 
   $html = $html -replace '</body></html>$', "<script src=""$userDataPath/plugins/loader.js"" type=""module""></script>$&"
