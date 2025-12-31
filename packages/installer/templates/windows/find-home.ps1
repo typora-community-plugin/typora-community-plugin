@@ -8,17 +8,19 @@ param (
 $typoraHome = $Path
 
 # use Windows Operating System Registry
-$uninstallPaths = @(
-    "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall",
-    "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
-)
+if (-not ($typoraHome -and (Test-Path $typoraHome))) {
+    $uninstallPaths = @(
+        "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall",
+        "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+    )
 
-:labelA foreach ($path in $uninstallPaths) {
-    Get-ChildItem $path | ForEach-Object {
-        $props = Get-ItemProperty $_.PSPath -ErrorAction SilentlyContinue
-        if ($props.DisplayName -like "*Typora*") {
-            $typoraPath = $props.InstallLocation
-			      break label
+    :label foreach ($path in $uninstallPaths) {
+        Get-ChildItem $path | ForEach-Object {
+            $props = Get-ItemProperty $_.PSPath -ErrorAction SilentlyContinue
+            if ($props.DisplayName -like "*Typora*") {
+                $typoraHome = $props.InstallLocation
+                break label
+            }
         }
     }
 }
@@ -32,10 +34,10 @@ if (-not ($typoraHome -and (Test-Path $typoraHome))) {
         "$env:USERPROFILE\scoop\apps\typora\current"
     )
 
-    :labelB foreach ($path in $typoraCandidates) {
+    foreach ($path in $typoraCandidates) {
         if (Test-Path "$path\Typora.exe") {
             $typoraHome = $path
-            break labelB
+            break
         }
     }
 }
@@ -47,7 +49,8 @@ if ($typoraHome -and (Test-Path $typoraHome)) {
     if ($confirm -notmatch '^[Yy]$') {
         $typoraHome = Read-Host "Please enter the Typora installation path"
     }
-} else {
+}
+else {
     Write-Output "Could not find Typora installation path from registry"
     $typoraHome = Read-Host "Please enter the Typora installation path"
 }

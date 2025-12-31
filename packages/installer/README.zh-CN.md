@@ -29,7 +29,7 @@ su root
 
 ### macOS
 
-macOS 设置 → 隐私与安全 → App 管理 → 允许 "Terminal" 修改或删除其他应用程序
+macOS 设置 → 隐私与安全 → App 管理 → 允许“终端”修改或删除其他应用程序
 
 ```bash
 chmod +x install-linux.sh
@@ -67,7 +67,7 @@ su root
 
 ### macOS
 
-macOS 设置 → 隐私与安全 → App 管理 → 允许 "Terminal" 修改或删除其他应用程序
+macOS 设置 → 隐私与安全 → App 管理 → 允许“终端”修改或删除其他应用程序
 
 ```bash
 chmod +x uninstall-linux.sh

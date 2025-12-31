@@ -10,10 +10,10 @@ $windowHtmlPathCandiates = @(
     "$typoraHome\resources\window.html"
 )
 
-:labelC foreach ($path in $windowHtmlPathCandiates) {
+foreach ($path in $windowHtmlPathCandiates) {
     if (Test-Path $path) {
         $htmlPath = $path
-        break labelC
+        break
     }
 }
 
