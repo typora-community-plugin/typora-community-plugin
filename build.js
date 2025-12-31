@@ -14,6 +14,7 @@ archive
   .directory('packages/core/dist', packageInfo.version)
   .file('packages/loader/index.js', { name: 'loader.js' })
   .file('packages/installer/install.ps1', { name: 'install.ps1' })
+  .file('packages/installer/install.sh', { name: 'install.sh' })
   .append(`{"coreVersion":"${packageInfo.version}","debug":false}`, { name: 'loader.json' })
 
 archive.finalize()
