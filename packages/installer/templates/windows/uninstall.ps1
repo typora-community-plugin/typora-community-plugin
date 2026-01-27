@@ -2,10 +2,10 @@
 # {{ FIND_WINDOW_HTML }}
 # {{ FIND_USERDATA_DIR }}
 
-If ($html -match '/plugins/loader.js" type="module"></script>') {
+If ($html -match '/plugins/loader\.js" type="module"></script>') {
   echo "Editing File: $htmlPath"
 
-  $html = $html -replace "<script src=""$userDataPath/plugins/loader.js"" type=""module""></script>", ''
+  $html = $html -replace "<script src=""$userDataPath/plugins/loader\.js"" type=""module""></script>", ''
 
   $utf8NoBom = New-Object System.Text.UTF8Encoding $False
   [System.IO.File]::WriteAllLines($htmlPath, $html, $utf8NoBom)
