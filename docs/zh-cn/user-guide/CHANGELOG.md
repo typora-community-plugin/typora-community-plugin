@@ -1,5 +1,12 @@
 # 更新日志
 
+## v2.5.50
+
+- **安装脚本**
+  - fix(installer/windows): 无法正确提取 `$userDataPath`
+- **开发者**
+  - feat(rollup-plugin): 支持使用 `import` 导入 Node.js 内置模块
+
 ## v2.5.48
 
 - chore: 兼容旧版本 Typora ([#82](https://github.com/typora-community-plugin/typora-community-plugin/issues/82))

@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.5.50
+
+- **Installer**
+  - fix(installer/windows): can not find `$userDataPath`
+- **Developer**
+  - feat(rollup-plugin): support importing node modules
+
 ## v2.5.48
 
 - chore: compatible with old version Typora. ([#82](https://github.com/typora-community-plugin/typora-community-plugin/issues/82))
