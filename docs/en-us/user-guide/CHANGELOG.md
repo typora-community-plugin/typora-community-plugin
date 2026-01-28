@@ -1,11 +1,16 @@
 # Changelog
 
+## v2.5.51
+
+- **Installer**
+  - fix(installer/windows): can not copy files successfully
+
 ## v2.5.50
 
 - **Installer**
   - fix(installer/windows): can not find `$userDataPath`
 - **Developer**
-  - feat(rollup-plugin): support importing node modules
+  - feat(rollup-plugin): support importing node.js internal modules
 
 ## v2.5.48
 
