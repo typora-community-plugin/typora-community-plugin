@@ -11,8 +11,8 @@ If ($html -match '/plugins/loader\.js" type="module"></script>') {
   [System.IO.File]::WriteAllLines($htmlPath, $html, $utf8NoBom)
 }
 
-If (Test-Path "$env:USERPROFILE\AppData\Roaming\Typora\plugins") {
-  Remove-Item "$env:USERPROFILE\AppData\Roaming\Typora\plugins"
+If (Test-Path "$env:USERPROFILE/AppData/Roaming/Typora/plugins") {
+  Remove-Item "$env:USERPROFILE/AppData/Roaming/Typora/plugins"
 }
 
 Write-Host "`nUninstallation succeeded."
