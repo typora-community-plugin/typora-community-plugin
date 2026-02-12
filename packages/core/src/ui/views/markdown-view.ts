@@ -172,7 +172,7 @@ class InternalEditor {
 
   private registerObserver(el: HTMLElement) {
     const objectEl = el.children[0] as HTMLObjectElement
-    if (objectEl.contentWindow) objectEl.contentWindow.onresize = this.syncSize
+    if (objectEl?.contentWindow) objectEl.contentWindow.onresize = this.syncSize
   }
 
   private unregisterObserver(el: HTMLElement) {

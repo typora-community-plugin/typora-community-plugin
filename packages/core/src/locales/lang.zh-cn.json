@@ -118,7 +118,9 @@
   "tabview": {
     "close": "关闭标签",
     "closeOthers": "关闭其他标签",
-    "closeRight": "关闭右侧标签"
+    "closeRight": "关闭右侧标签",
+    "splitRight": "右侧打开",
+    "splitDown": "下方打开"
   },
   "views": {
     "empty": {

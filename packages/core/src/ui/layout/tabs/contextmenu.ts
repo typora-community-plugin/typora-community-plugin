@@ -2,6 +2,7 @@ import { useService } from "src/common/service"
 import { Menu } from "src/ui/components/menu"
 import type { WorkspaceRoot } from "../workspace-root"
 import type { WorkspaceTabs } from "."
+import { splitDown, splitRight } from "../workspace-utils"
 
 
 export function onTabsContextMenu(root: WorkspaceRoot, i18n = useService('i18n')) {
@@ -39,6 +40,30 @@ export function onTabsContextMenu(root: WorkspaceRoot, i18n = useService('i18n')
           .setTitle(t.tabview.closeRight)
           .onClick(() => tabs.removeRight(clickedTabPath))
       })
-      .showAtMouseEvent(event)
+
+    if (tabs.children.length > 1) {
+      menu
+        .addSeparator()
+        .addItem(item => {
+          item
+            .setKey('splitRight')
+            .setTitle(t.tabview.splitRight)
+            .onClick(() => {
+              tabs.removeTab(clickedTabPath)
+              setTimeout(() => splitRight(clickedTabPath), 167)
+            })
+        })
+        .addItem(item => {
+          item
+            .setKey('splitDown')
+            .setTitle(t.tabview.splitDown)
+            .onClick(() => {
+              tabs.removeTab(clickedTabPath)
+              setTimeout(() => splitDown(clickedTabPath), 167)
+            })
+        })
+    }
+
+    menu.showAtMouseEvent(event)
   }
 }

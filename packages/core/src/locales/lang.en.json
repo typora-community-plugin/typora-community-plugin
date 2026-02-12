@@ -118,7 +118,9 @@
   "tabview": {
     "close": "Close",
     "closeOthers": "Close other tabs",
-    "closeRight": "Close tabs to right"
+    "closeRight": "Close tabs to right",
+    "splitRight": "Split right",
+    "splitDown": "Split down"
   },
   "views": {
     "empty": {
