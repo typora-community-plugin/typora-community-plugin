@@ -9,6 +9,13 @@ import type { ViewState } from "../view-manager"
 import { uniqueId } from "src/utils"
 
 
+export function createUntitledTabs() {
+  const tabs = useService('workspace-tabs')
+  tabs.appendChild(createEditorLeaf(''))
+  tabs.once('tab:toggle', () => tabs.removeTab(''))
+  return tabs
+}
+
 export function createTabs(path?: string) {
   const workspace = useService('workspace')
   const tabs = useService('workspace-tabs')

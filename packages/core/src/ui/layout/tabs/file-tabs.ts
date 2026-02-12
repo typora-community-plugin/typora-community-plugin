@@ -14,6 +14,18 @@ export class FileTabContainer extends TabContainer {
   }
 }
 
+export class UntitledTab extends Tab {
+  constructor() {
+    const shortName = 'Untitled'
+
+    super({
+      id: '',
+      text: () => $(`<i class="typ-file-icon fa fa-file-o"></i><span class="typ-file-basename">${shortName}</span>`),
+      title: shortName,
+    })
+  }
+}
+
 export class FileTab extends Tab {
   constructor(filePath: string, vault = useService('vault')) {
     const isUri = filePath.startsWith('typ://')

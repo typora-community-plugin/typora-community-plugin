@@ -3,7 +3,7 @@ import { WorkspaceParent } from "../workspace-parent"
 import type { WorkspaceLeaf } from '../workspace-leaf'
 import { createEmptyLeaf } from '../workspace-utils'
 import { WorkspaceNode } from '../workspace-node'
-import { FileTab, FileTabContainer } from './file-tabs'
+import { FileTab, FileTabContainer, UntitledTab } from './file-tabs'
 import { useActiveLeaf } from '../use-active-leaf'
 import { EmptyView } from 'src/ui/views/empty-view'
 
@@ -30,7 +30,7 @@ export class WorkspaceTabs extends WorkspaceParent {
   }
 
   insertChild(index: number, child: WorkspaceLeaf) {
-    this.tabHeader.insertTab(index, new FileTab(child.state.path))
+    this.tabHeader.insertTab(index, child.state.path ? new FileTab(child.state.path) : new UntitledTab())
     super.insertChild(index, child)
     this.toggleTab(child.state.path)
 
@@ -74,6 +74,8 @@ export class WorkspaceTabs extends WorkspaceParent {
 
     this._activeLeaf = leaf
     setActiveLeaf(leaf)
+
+    this.emit('tab:toggle', leaf)
   }
 
   renameTab(oldPath: string, newPath: string): void {

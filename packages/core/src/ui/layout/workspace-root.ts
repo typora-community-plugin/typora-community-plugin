@@ -9,7 +9,7 @@ import { WorkspaceSplit } from "./split"
 import type { WorkspaceTabs } from './tabs'
 import type { WorkspaceLeaf } from './workspace-leaf'
 import { draggableTabs } from './tabs/draggable'
-import { createTabs, openFileInActiveTabs, splitDown, splitRight } from './workspace-utils'
+import { createTabs, createUntitledTabs, openFileInActiveTabs, splitDown, splitRight } from './workspace-utils'
 import { MarkdownView } from '../views/markdown-view'
 import { onTabsContextMenu } from './tabs/contextmenu'
 import { FileTabContainer } from './tabs/file-tabs'
@@ -176,12 +176,14 @@ export class WorkspaceRoot extends WorkspaceSplit {
         })
       )
 
-      this.appendChild(createTabs(workspace.activeFile))
-      workspace.activeLeaf = (this.children[0] as WorkspaceTabs).children[0] as WorkspaceLeaf
 
-      if (!workspace.activeFile) {
-        $(editor.writingArea).parent().addClass('typ-deactive')
+      if (workspace.activeFile) {
+        this.appendChild(createTabs(workspace.activeFile))
       }
+      else {
+        this.appendChild(createUntitledTabs())
+      }
+      workspace.activeLeaf = (this.children[0] as WorkspaceTabs).children[0] as WorkspaceLeaf
     }
 
     this.registry.onunload = () => {
