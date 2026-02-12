@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.5.54
+
+- **Workspace**
+  - feat(core/ui/layout/tabs/contextmenu): split tab to right/down on FileTab's contextmenu
+  - fix(core/ui/layout/tabs/use-scroll-record): can not recover `scrollTop` sometime
+  - fix(core/ui/layout/root): support untitled file (Ctrl+N) ([#87](https://github.com/typora-community-plugin/typora-community-plugin/issues/87))
+
 ## v2.5.51
 
 - **Installer**

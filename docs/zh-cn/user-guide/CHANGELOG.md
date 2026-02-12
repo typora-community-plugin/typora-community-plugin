@@ -1,5 +1,12 @@
 # 更新日志
 
+## v2.5.54
+
+- **工作区**
+  - feat(core/ui/layout/tabs/contextmenu): 文件标签页右键菜单支持“在 右侧/下方 打开”
+  - fix(core/ui/layout/tabs/use-scroll-record): 有时不能恢复滚动条位置
+  - fix(core/ui/layout/root): 支持未命名文件 (Ctrl+N) ([#87](https://github.com/typora-community-plugin/typora-community-plugin/issues/87))
+
 ## v2.5.51
 
 - **安装脚本**
