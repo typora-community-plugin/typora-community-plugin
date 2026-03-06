@@ -14,6 +14,14 @@ class MacFileStats implements FileStats {
   isFile() {
     return this.info.includes('FileType: Regular File')
   }
+
+  get mtimeMs() {
+    const [, modifyStr] = this.info.match(/Modify:\s+(.*)/) ?? []
+    if (!modifyStr) return undefined
+
+    const date = new Date(modifyStr)
+    return date.getTime()
+  }
 }
 
 export class MacFS implements FileAdapter {

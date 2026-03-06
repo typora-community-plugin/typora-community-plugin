@@ -58,6 +58,7 @@ export interface FileAdapter {
 export interface FileStats {
   isDirectory(): boolean
   isFile(): boolean
+  mtimeMs: number
 }
 
 const filesystem: FileAdapter = File.isNode ? new NodeFS() : new MacFS()
