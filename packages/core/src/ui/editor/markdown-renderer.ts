@@ -1,5 +1,5 @@
 import './markdown-renderer.scss'
-import { CodeMirror, editor, File, getCodeMirrorMode, MathJax } from "typora"
+import { CodeMirror, editor, File, MathJax } from "typora"
 import { useService } from "src/common/service"
 import type { MarkdownPreviewer } from '../views/markdown-view'
 import { parseMarkdown, uniqueId } from "src/utils"
@@ -44,8 +44,8 @@ export class MarkdownRenderer {
     md = this.mdEditor.preProcessor.process('preload', md)
 
     // handle: front matter
-    const { frontMatters, content } = parseMarkdown(md)
-    const frontMattersHtml = frontMatters.length ? `<pre mdtype="meta_block" class="md-meta-block md-end-block">${frontMatters.join('\n')}</pre>` : ''
+    const { frontMatter, content } = parseMarkdown(md)
+    const frontMattersHtml = frontMatter ? `<pre mdtype="meta_block" class="md-meta-block md-end-block">${frontMatter}</pre>` : ''
 
     // handle: markdown → html
     const [contentHtml] = editor.nodeMap.allNodes.first().__proto__.constructor.parseFrom(content)

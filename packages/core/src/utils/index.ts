@@ -9,6 +9,7 @@ export * from './string/format'
 export * from './string/is-markdown-url'
 export * from './string/markdown'
 export * from './string/truncate'
+export * from './string/yaml'
 
 export * from './constant'
 export * from './html'
