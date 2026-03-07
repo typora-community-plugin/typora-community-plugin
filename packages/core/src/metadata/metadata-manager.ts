@@ -4,13 +4,19 @@ import { Events } from 'src/common/events'
 import { useService } from 'src/common/service'
 
 
+class IndexAbortedError extends Error {
+  constructor() {
+    super('Indexing process was aborted.')
+    this.name = 'IndexAbortedError'
+  }
+}
+
 export type MeatdataEvents = {
   'index'(): void
   'index:update'(): void
 }
 
 class MetadataProviderContext {
-
   constructor(
     readonly filePath: string,
     private textContent?: string
@@ -42,8 +48,8 @@ export class MetadataManager extends Events<MeatdataEvents> {
 
   private vaultPath: string
   private concurrencyLimit: number
-  private stopRequested: boolean = false
   private isIndexing: boolean = false
+  private abortRequested: boolean = false
 
   /**
    * @param options.concurrency Number of files processed simultaneously, default 10
@@ -58,7 +64,7 @@ export class MetadataManager extends Events<MeatdataEvents> {
     this.concurrencyLimit = options.concurrency ?? 10
 
     workspace.on('file:will-save', (file) => {
-      this.processFile(file, editor.getMarkdown())
+      this.processFile(this.cache, file, editor.getMarkdown()).catch(() => { })
     })
 
     this.vaultPath = vault.path
@@ -79,7 +85,13 @@ export class MetadataManager extends Events<MeatdataEvents> {
    */
   stopIndex(): void {
     if (this.isIndexing) {
-      this.stopRequested = true
+      this.abortRequested = true
+    }
+  }
+
+  private checkAbort() {
+    if (this.abortRequested) {
+      throw new IndexAbortedError()
     }
   }
 
@@ -92,18 +104,27 @@ export class MetadataManager extends Events<MeatdataEvents> {
     }
 
     this.isIndexing = true
-    this.stopRequested = false
+    this.abortRequested = false
 
     try {
+      const indexingCache: Cache = {}
       const allFiles = await this.getAllFiles(this.vaultPath)
 
-      // Process files in parallel with concurrency control
-      await this.processQueue(allFiles)
+      await this.processQueue(indexingCache, allFiles)
 
+      this.cache = indexingCache
       this.emit('index')
+
+    } catch (error) {
+      if (error instanceof IndexAbortedError) {
+        console.log('Indexing stopped, temporary cache discarded')
+      } else {
+        console.error('Indexing failed due to error:', error)
+        throw error
+      }
     } finally {
       this.isIndexing = false
-      this.stopRequested = false
+      this.abortRequested = false
     }
   }
 
@@ -111,37 +132,45 @@ export class MetadataManager extends Events<MeatdataEvents> {
    * Recursively list all files in directory
    */
   private async getAllFiles(dirPath: string): Promise<string[]> {
-    // Check stop flag even during file discovery
-    if (this.stopRequested) return []
+    this.checkAbort()
 
     const names = await fs.list(dirPath)
-    const files = await Promise.all(
-      names.map(async (name) => {
-        const filePath = path.join(dirPath, name)
-        const isDirectory = (await fs.stat(filePath)).isDirectory()
-        return isDirectory ? this.getAllFiles(filePath) : filePath
-      })
-    );
-    return files.flat()
+    const files: string[] = []
+
+    for (const name of names) {
+      this.checkAbort()
+
+      const filePath = path.join(dirPath, name)
+      try {
+        const stats = await fs.stat(filePath)
+        if (stats.isDirectory()) {
+          const subFiles = await this.getAllFiles(filePath)
+          files.push(...subFiles)
+        } else {
+          files.push(filePath)
+        }
+      } catch (error) {
+        if (error instanceof IndexAbortedError) throw error
+        console.warn(`Failed to process ${filePath}:`, error)
+      }
+    }
+
+    return files
   }
 
-  private async processQueue(filePaths: string[]): Promise<void> {
-    const queue = [...filePaths]
-    const workers = []
-
+  private async processQueue(indexingCache: Cache, filePaths: string[]): Promise<void> {
     const worker = async () => {
-      while (queue.length > 0 && !this.stopRequested) {
-        const filePath = queue.shift()
+      while (filePaths.length > 0) {
+        this.checkAbort()
+        const filePath = filePaths.pop()
         if (filePath) {
-          await this.processFile(filePath)
+          await this.processFile(indexingCache, filePath)
         }
       }
-    };
+    }
 
     const count = Math.min(this.concurrencyLimit, filePaths.length)
-    for (let i = 0; i < count; i++) {
-      workers.push(worker())
-    }
+    const workers = Array.from({ length: count }, () => worker())
 
     await Promise.all(workers)
   }
@@ -149,9 +178,8 @@ export class MetadataManager extends Events<MeatdataEvents> {
   /**
    * Process a single file: with cache check and providers
    */
-  private async processFile(filePath: string, content?: string): Promise<void> {
-    // Immediate exit if stop requested
-    if (this.stopRequested) return
+  private async processFile(indexingCache: Cache, filePath: string, content?: string): Promise<void> {
+    this.checkAbort()
 
     const ext = path.extname(filePath).toLowerCase()
     const providers = this.providers[ext]
@@ -165,14 +193,15 @@ export class MetadataManager extends Events<MeatdataEvents> {
 
       const cached = this.cache[relativePath]
       if (cached && cached.mtime === mtime) {
+        indexingCache[relativePath] = cached
         return
       }
 
       const context = new MetadataProviderContext(filePath, content)
+
       const results = await Promise.all(
         providers.map(async (p) => {
-          // Double check stop flag before potentially heavy provider execution
-          if (this.stopRequested) return {}
+          this.checkAbort()
           try {
             return await p(context)
           } catch (e) {
@@ -180,16 +209,17 @@ export class MetadataManager extends Events<MeatdataEvents> {
             return {}
           }
         })
-      );
+      )
 
-      if (this.stopRequested) return
+      this.checkAbort()
 
       const mergedMetadata = results.reduce((acc, curr) => ({ ...acc, ...curr }), {})
-      this.cache[relativePath] = {
+      indexingCache[relativePath] = {
         mtime,
         metadata: mergedMetadata
       }
     } catch (error) {
+      if (error instanceof IndexAbortedError) throw error
       console.error(`Failed to process ${filePath}:`, error)
     }
   }
