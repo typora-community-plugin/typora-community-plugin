@@ -142,8 +142,8 @@ export class MetadataManager extends Events<MeatdataEvents> {
 
       const filePath = path.join(dirPath, name)
       try {
-        const stats = await fs.stat(filePath)
-        if (stats.isDirectory()) {
+        const isDirectory = await fs.isDirectory(filePath)
+        if (isDirectory) {
           const subFiles = await this.getAllFiles(filePath)
           files.push(...subFiles)
         } else {

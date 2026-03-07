@@ -41,6 +41,11 @@ export class MacFS implements FileAdapter {
       .then((out: string) => new MacFileStats(out))
   }
 
+  isDirectory(filepath: string): Promise<boolean> {
+    return new Promise(resolve =>
+      bridge.callHandler('path.isDirectory', filepath, resolve))
+  }
+
   mkdir(dirpath: string): Promise<void> {
     return Shell.run(`mkdir -p '${dirpath}'`) as Promise<void>
   }

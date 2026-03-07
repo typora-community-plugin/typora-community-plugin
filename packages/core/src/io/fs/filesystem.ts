@@ -6,33 +6,37 @@ import { MacFS } from "./fs.darwin"
 export interface FileAdapter {
 
   /**
-   * In macOS, it's very slow (about 2s).
+   * On macOS, it's very slow (about 2s).
    */
   access(filepath: string): Promise<void>
   /**
-   * In macOS, it's very slow (about 2s).
+   * On macOS, it's very slow (about 2s).
    */
   exists(filepath: string): Promise<boolean>
 
   /**
-   * In macOS, it's very slow.
+   * On macOS, it's very slow.
    */
   stat(filepath: string): Promise<FileStats>
+  /**
+   * On macOS, it's faster than `(await fs.stat(file)).isDirectory()`
+   */
+  isDirectory(filepath: string): Promise<boolean>
 
   /**
-   * In macOS, it's very slow.
+   * On macOS, it's very slow.
    */
   mkdir(dirpath: string): Promise<void>
   /**
-   * In macOS, it's very slow.
+   * On macOS, it's very slow.
    */
   copy(src: string, dest: string): Promise<void>
   /**
-   * In macOS, it's very slow.
+   * On macOS, it's very slow.
    */
   move(src: string, dest: string): Promise<void>
   /**
-   * In macOS, it's very slow.
+   * On macOS, it's very slow.
    */
   list(dirpath: string): Promise<string[]>
 
@@ -40,16 +44,16 @@ export interface FileAdapter {
   readTextSync(filepath: string): string
 
   /**
-   * In macOS, it's very slow.
+   * On macOS, it's very slow.
    */
   writeText(filepath: string, text: string): Promise<void>
   /**
-   * In macOS, it's very slow.
+   * On macOS, it's very slow.
    */
   appendText(filepath: string, text: string): Promise<void>
 
   /**
-   * In macOS, it's very slow.
+   * On macOS, it's very slow.
    */
   remove(filepath: string): Promise<void>
   trash(filepath: string): Promise<void>

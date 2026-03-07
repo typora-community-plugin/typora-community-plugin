@@ -79,7 +79,7 @@ export class Vault extends Events<VaultEvents> {
         decorate.afterCall(JSBridge, 'invoke', async (args) => {
           if ("app.sendEvent" === args[0] && "didRename" === args[1]) {
             const { oldPath, newPath } = args[2]
-            const type = (await fs.stat(newPath)).isDirectory() ? 'directory' : 'file'
+            const type = (await fs.isDirectory(newPath)) ? 'directory' : 'file'
             renamingFiles.add(oldPath)
             this.emit(`${type}:rename`, oldPath, newPath)
             setTimeout(() => renamingFiles.delete(oldPath), 333)

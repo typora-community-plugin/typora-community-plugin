@@ -22,6 +22,10 @@ export class NodeFS implements FileAdapter {
     return fsp.stat(filepath) as unknown as Promise<FileStats>
   }
 
+  isDirectory(filepath: string): Promise<boolean> {
+    return fsp.stat(filepath).then(stat => stat.isDirectory())
+  }
+
   mkdir(dirpath: string): Promise<void> {
     return fsp.mkdir(dirpath, { recursive: true })
       .then(noop)
