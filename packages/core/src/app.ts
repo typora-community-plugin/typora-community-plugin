@@ -13,6 +13,7 @@ import type { Vault } from "src/io/vault"
 import type { CommandManager } from 'src/command/command-manager'
 import type { I18n } from 'src/locales/i18n'
 import * as Locale from 'src/locales/lang.en.json'
+import type { MetadataManager } from './metadata/metadata-manager'
 import type { PluginManager } from "src/plugin/plugin-manager"
 import type { Settings } from 'src/settings/settings'
 import type { FileLinkSettings } from 'src/ui/settings/tabs/file-link-setting-tab'
@@ -89,6 +90,7 @@ export class App extends Events<AppEvents> {
   plugins: PluginManager
   viewManager: ViewManager
   workspace: Workspace
+  metadata: MetadataManager
 
   features: {
     exporter: ExportManager,
@@ -118,6 +120,7 @@ export class App extends Events<AppEvents> {
       this.plugins = useService('plugin-manager')
       this.viewManager = useService('view-manager')
       this.workspace = useService('workspace')
+      this.metadata = useService('metadata-manager')
       this.features = {
         exporter: useService('exporter'),
         globalSearch: new GlobalSearch(),
@@ -127,8 +130,9 @@ export class App extends Events<AppEvents> {
       this._isReady = true
     })
     this.config.on('switch', () => {
-      this.settings.load()
+      this.metadata.stopIndex()
       this.plugins.unloadPlugins()
+      this.settings.load()
       this.start()
     })
 
@@ -139,6 +143,7 @@ export class App extends Events<AppEvents> {
     if (!this._isReady) return
 
     await this.plugins.loadFromVault()
+    this.metadata.index()
 
     this.emit('load')
   }

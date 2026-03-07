@@ -29,6 +29,8 @@ import { TabsView } from "./ui/tabs/tabs-view"
 import { ExportManager } from "./export-manager"
 import { WorkspaceSplit } from "./ui/layout/split"
 import { WorkspaceTabs } from "./ui/layout/tabs"
+import { MetadataManager } from "./metadata/metadata-manager"
+import { registerDefaultMetadataProviders } from "./metadata/metadata-providers"
 
 
 
@@ -95,3 +97,9 @@ registerService('notice', ([message, delay]) => new Notice(message, delay))
 registerService('workspace-root', memorize(() => useService('workspace').rootSplit))
 registerService('workspace-split', ([direction]) => new WorkspaceSplit(direction))
 registerService('workspace-tabs', () => new WorkspaceTabs())
+
+registerService('metadata-manager', memorize(() => {
+  const metadata = new MetadataManager()
+  registerDefaultMetadataProviders(metadata)
+  return metadata
+}))

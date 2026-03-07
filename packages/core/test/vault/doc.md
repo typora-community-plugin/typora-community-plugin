@@ -1,5 +1,10 @@
 ---
-tag: A, B, C
+author: plylrnsdy
+tag:
+- A
+- B
+- C
+updated: 2026-03-07
 ---
 
 # Title
