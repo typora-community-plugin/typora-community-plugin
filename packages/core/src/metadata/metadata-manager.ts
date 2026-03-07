@@ -5,7 +5,8 @@ import { useService } from 'src/common/service'
 
 
 export type MeatdataEvents = {
-  'indexed'(): void
+  'index'(): void
+  'index:update'(): void
 }
 
 class MetadataProviderContext {
@@ -24,6 +25,10 @@ class MetadataProviderContext {
 
 export type MetadataProvider = (ctx: MetadataProviderContext) => Promise<Record<string, any>>
 
+interface Cache {
+  [filePath: string]: CacheEntry
+}
+
 interface CacheEntry {
   mtime: number // Last modification timestamp
   metadata: Record<string, any>
@@ -33,8 +38,9 @@ interface CacheEntry {
 export class MetadataManager extends Events<MeatdataEvents> {
 
   private providers: { [ext: string]: MetadataProvider[] } = {}
-  cache: { [filePath: string]: CacheEntry } = {}
+  cache: Cache = {}
 
+  private vaultPath: string
   private concurrencyLimit: number
   private stopRequested: boolean = false
   private isIndexing: boolean = false
@@ -46,6 +52,7 @@ export class MetadataManager extends Events<MeatdataEvents> {
     options: { concurrency?: number } = {},
     editor = useService('markdown-editor'),
     workspace = useService('workspace'),
+    vault = useService('vault'),
   ) {
     super('metadata')
     this.concurrencyLimit = options.concurrency ?? 10
@@ -53,6 +60,9 @@ export class MetadataManager extends Events<MeatdataEvents> {
     workspace.on('file:will-save', (file) => {
       this.processFile(file, editor.getMarkdown())
     })
+
+    this.vaultPath = vault.path
+    vault.on('change', path => { this.vaultPath = path })
   }
 
   /**
@@ -85,13 +95,12 @@ export class MetadataManager extends Events<MeatdataEvents> {
     this.stopRequested = false
 
     try {
-      const dirPath = useService('vault').path
-      const allFiles = await this.getAllFiles(dirPath)
+      const allFiles = await this.getAllFiles(this.vaultPath)
 
       // Process files in parallel with concurrency control
       await this.processQueue(allFiles)
 
-      this.emit('indexed')
+      this.emit('index')
     } finally {
       this.isIndexing = false
       this.stopRequested = false
@@ -152,8 +161,9 @@ export class MetadataManager extends Events<MeatdataEvents> {
     try {
       const stats = await fs.stat(filePath)
       const mtime = stats.mtimeMs
+      const relativePath = path.relative(this.vaultPath, filePath)
 
-      const cached = this.cache[filePath]
+      const cached = this.cache[relativePath]
       if (cached && cached.mtime === mtime) {
         return
       }
@@ -175,12 +185,19 @@ export class MetadataManager extends Events<MeatdataEvents> {
       if (this.stopRequested) return
 
       const mergedMetadata = results.reduce((acc, curr) => ({ ...acc, ...curr }), {})
-      this.cache[filePath] = {
+      this.cache[relativePath] = {
         mtime,
         metadata: mergedMetadata
       }
     } catch (error) {
       console.error(`Failed to process ${filePath}:`, error)
     }
+  }
+
+  /**
+   * Clear all cache
+   */
+  clear(): void {
+    this.cache = {}
   }
 }

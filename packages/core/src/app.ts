@@ -143,6 +143,7 @@ export class App extends Events<AppEvents> {
     if (!this._isReady) return
 
     await this.plugins.loadFromVault()
+    this.metadata.clear()
     this.metadata.index()
 
     this.emit('load')
