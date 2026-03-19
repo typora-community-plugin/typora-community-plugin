@@ -38,6 +38,9 @@ export class Sidebar extends Component {
   }
 
   addPanel(panel: SidebarPanel): DisposeFunc {
+    // fix: compatible with `workspace.getViewByType()` for the old plugins: tag
+    super.addChild(panel)
+
     // @deprecated
     if (panel instanceof ViewLegacy) {
       panel.load()
