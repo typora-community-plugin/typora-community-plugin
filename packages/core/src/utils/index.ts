@@ -16,6 +16,7 @@ export * from './string/truncate'
 export * from './string/yaml'
 
 export * from './html'
+export * from './indexed-db'
 export * from './uniqueId'
 export * from './until'
 export * from './versions'
