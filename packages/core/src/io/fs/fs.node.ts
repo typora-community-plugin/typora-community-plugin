@@ -1,12 +1,12 @@
 import { JSBridge, reqnode } from "typora"
-import type { FileStats, FileAdapter } from "./filesystem"
+import { FileStats, FileAdapter } from "./file-adapter"
 import { noop } from "src/utils"
 
 
 const fs = reqnode?.('fs') as typeof import('fs')
 const fsp = fs?.promises
 
-export class NodeFS implements FileAdapter {
+export class NodeFS extends FileAdapter {
 
   access(filepath: string): Promise<void> {
     return fsp.access(filepath)

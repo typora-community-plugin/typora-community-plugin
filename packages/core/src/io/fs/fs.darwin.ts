@@ -1,6 +1,6 @@
 import { bridge } from "typora"
 import { Shell } from "src/io/shell"
-import type { FileStats, FileAdapter } from "./filesystem"
+import { FileStats, FileAdapter } from "./file-adapter"
 
 
 class MacFileStats implements FileStats {
@@ -24,7 +24,7 @@ class MacFileStats implements FileStats {
   }
 }
 
-export class MacFS implements FileAdapter {
+export class MacFS extends FileAdapter {
 
   access(filepath: string): Promise<void> {
     return Shell.run(`test -e '${filepath}'`) as Promise<void>
