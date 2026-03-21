@@ -130,7 +130,6 @@ export class App extends Events<AppEvents> {
       this._isReady = true
     })
     this.config.on('switch', () => {
-      this.metadata.stopIndex()
       this.plugins.unloadPlugins()
       this.settings.load()
       this.start()
