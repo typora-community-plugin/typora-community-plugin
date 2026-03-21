@@ -5,7 +5,7 @@ type KeyOf<T> = Extract<keyof T, string>
 
 class Table<T, TKey = any> {
 
-  constructor(private dbInst: MiniDexie, private name: string) {}
+  constructor(private dbInst: MiniDexie, private name: string) { }
 
   /**
    * Internal helper to get a specific ObjectStore
@@ -26,6 +26,18 @@ class Table<T, TKey = any> {
     })
   }
 
+  private async _transaction(mode: IDBTransactionMode, callback: (store: IDBObjectStore) => void): Promise<void> {
+    const db = await this.dbInst._getDb()
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(this.name, mode)
+      transaction.oncomplete = () => resolve()
+      transaction.onerror = () => reject(transaction.error)
+
+      const store = transaction.objectStore(this.name)
+      callback(store)
+    })
+  }
+
   /**
    * Add a new record
    */
@@ -35,11 +47,25 @@ class Table<T, TKey = any> {
   }
 
   /**
+   * Add new records
+   */
+  async bulkAdd(data: T[]): Promise<void> {
+    return this._transaction('readwrite', store => data.forEach(row => store.add(row)))
+  }
+
+  /**
    * Update an existing record or add if it doesn't exist
    */
   async put(data: T): Promise<TKey> {
     const store = await this._getStore('readwrite')
     return this._promisify(store.put(data)) as unknown as Promise<TKey>
+  }
+
+  /**
+   * Update existing records or add if it doesn't exist
+   */
+  async bulkPut(data: T[]): Promise<void> {
+    return this._transaction('readwrite', store => data.forEach(row => store.put(row)))
   }
 
   /**

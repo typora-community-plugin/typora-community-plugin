@@ -2,6 +2,7 @@ import fs from 'src/io/fs/filesystem'
 import path from 'src/path'
 import { Events } from 'src/common/events'
 import { useService } from 'src/common/service'
+import { MiniDexie } from 'src/utils/indexed-db'
 
 
 class IndexAbortedError extends Error {
@@ -11,7 +12,7 @@ class IndexAbortedError extends Error {
   }
 }
 
-export type MeatdataEvents = {
+export type MetadataEvents = {
   'index'(): void
   'index:update'(): void
 }
@@ -41,15 +42,17 @@ interface CacheEntry {
   [prop: string]: any
 }
 
-export class MetadataManager extends Events<MeatdataEvents> {
+const DB_SCHEMA = {
+  files: 'path, metadata'
+}
+
+export class MetadataManager extends Events<MetadataEvents> {
 
   private providers: { [ext: string]: MetadataProvider[] } = {}
   cache: Cache = {}
 
-  private vaultPath: string
   private concurrencyLimit: number
   private isIndexing: boolean = false
-  private abortRequested: boolean = false
 
   /**
    * @param options.concurrency Number of files processed simultaneously, default 10
@@ -58,17 +61,16 @@ export class MetadataManager extends Events<MeatdataEvents> {
     options: { concurrency?: number } = {},
     editor = useService('markdown-editor'),
     workspace = useService('workspace'),
-    vault = useService('vault'),
+    private vault = useService('vault'),
   ) {
     super('metadata')
     this.concurrencyLimit = options.concurrency ?? 10
 
     workspace.on('file:will-save', (file) => {
-      this.processFile(this.cache, file, editor.getMarkdown()).catch(() => { })
+      this.processFile(this.cache, this.vault.path, file, editor.getMarkdown())
+        .then(() => this.emit('index:update'))
+        .catch(() => { })
     })
-
-    this.vaultPath = vault.path
-    vault.on('change', path => { this.vaultPath = path })
   }
 
   /**
@@ -81,21 +83,6 @@ export class MetadataManager extends Events<MeatdataEvents> {
   }
 
   /**
-   * Stop the current indexing process
-   */
-  stopIndex(): void {
-    if (this.isIndexing) {
-      this.abortRequested = true
-    }
-  }
-
-  private checkAbort() {
-    if (this.abortRequested) {
-      throw new IndexAbortedError()
-    }
-  }
-
-  /**
    * Index files in the vault
    */
   async index() {
@@ -104,19 +91,27 @@ export class MetadataManager extends Events<MeatdataEvents> {
     }
 
     this.isIndexing = true
-    this.abortRequested = false
 
     try {
-      const indexingCache: Cache = {}
-      const allFiles = await this.getAllFiles(this.vaultPath)
+      const { abort, signal } = new AbortController()
+      this.vault.on('change', () => abort())
 
-      await this.processQueue(indexingCache, allFiles)
+      const vaultPath = this.vault.path
+      const allFiles = await fs.listFiles(vaultPath, { recursive: true, signal })
+
+      signal.throwIfAborted()
+      const vaultId = this.vault.id
+      const indexingCache = await this.loadFromIndexedDb(vaultId)
+
+      signal.throwIfAborted()
+      await this.processQueue(indexingCache, vaultPath, allFiles, signal)
 
       this.cache = indexingCache
       this.emit('index')
+      this.saveToIndexedDb(vaultId, indexingCache)
 
     } catch (error) {
-      if (error instanceof IndexAbortedError) {
+      if (error.name === 'AbortError') {
         console.log('Indexing stopped, temporary cache discarded')
       } else {
         console.error('Indexing failed due to error:', error)
@@ -124,47 +119,16 @@ export class MetadataManager extends Events<MeatdataEvents> {
       }
     } finally {
       this.isIndexing = false
-      this.abortRequested = false
     }
   }
 
-  /**
-   * Recursively list all files in directory
-   */
-  private async getAllFiles(dirPath: string): Promise<string[]> {
-    this.checkAbort()
-
-    const names = await fs.list(dirPath)
-    const files: string[] = []
-
-    for (const name of names) {
-      this.checkAbort()
-
-      const filePath = path.join(dirPath, name)
-      try {
-        const isDirectory = await fs.isDirectory(filePath)
-        if (isDirectory) {
-          const subFiles = await this.getAllFiles(filePath)
-          files.push(...subFiles)
-        } else {
-          files.push(filePath)
-        }
-      } catch (error) {
-        if (error instanceof IndexAbortedError) throw error
-        console.warn(`Failed to process ${filePath}:`, error)
-      }
-    }
-
-    return files
-  }
-
-  private async processQueue(indexingCache: Cache, filePaths: string[]): Promise<void> {
+  private async processQueue(indexingCache: Cache, vaultPath: string, filePaths: string[], signal: AbortSignal): Promise<void> {
     const worker = async () => {
       while (filePaths.length > 0) {
-        this.checkAbort()
+        signal.throwIfAborted()
         const filePath = filePaths.pop()
         if (filePath) {
-          await this.processFile(indexingCache, filePath)
+          await this.processFile(indexingCache, vaultPath, filePath, null, signal)
         }
       }
     }
@@ -178,8 +142,8 @@ export class MetadataManager extends Events<MeatdataEvents> {
   /**
    * Process a single file: with cache check and providers
    */
-  private async processFile(indexingCache: Cache, filePath: string, content?: string): Promise<void> {
-    this.checkAbort()
+  private async processFile(indexingCache: Cache, vaultPath: string, filePath: string, content?: string, signal?: AbortSignal): Promise<void> {
+    signal?.throwIfAborted()
 
     const ext = path.extname(filePath).toLowerCase()
     const providers = this.providers[ext]
@@ -189,7 +153,7 @@ export class MetadataManager extends Events<MeatdataEvents> {
     try {
       const stats = await fs.stat(filePath)
       const mtime = stats.mtimeMs
-      const relativePath = path.relative(this.vaultPath, filePath)
+      const relativePath = path.relative(vaultPath, filePath)
 
       const cached = this.cache[relativePath]
       if (cached && cached.mtime === mtime) {
@@ -201,7 +165,7 @@ export class MetadataManager extends Events<MeatdataEvents> {
 
       const results = await Promise.all(
         providers.map(async (p) => {
-          this.checkAbort()
+          signal?.throwIfAborted()
           try {
             return await p(context)
           } catch (e) {
@@ -211,7 +175,7 @@ export class MetadataManager extends Events<MeatdataEvents> {
         })
       )
 
-      this.checkAbort()
+      signal?.throwIfAborted()
 
       const mergedMetadata = results.reduce((acc, curr) => ({ ...acc, ...curr }), {})
       indexingCache[relativePath] = {
@@ -229,5 +193,41 @@ export class MetadataManager extends Events<MeatdataEvents> {
    */
   clear(): void {
     this.cache = {}
+  }
+
+  async loadFromIndexedDb(vaultId: string): Promise<Cache> {
+    try {
+      const db = new MiniDexie(`metadata:${vaultId}`)
+        .version(1).stores(DB_SCHEMA)
+
+      const records = await db.files.toArray()
+      const loadedCache: Cache = {}
+      for (const record of records) {
+        const { path, metadata } = record
+        loadedCache[path] = metadata as CacheEntry
+      }
+
+      console.log(`[Metadata] Loaded ${records.length} items from IndexedDB.`)
+      return loadedCache
+    } catch (e) {
+      console.error('[Metadata] Failed to load IndexedDB:', e)
+    }
+  }
+
+  async saveToIndexedDb(vaultId: string, cache: Cache): Promise<void> {
+    try {
+      const db = new MiniDexie(`metadata:${vaultId}`)
+        .version(1).stores(DB_SCHEMA)
+
+      const rows = Object.entries(cache).map(([filePath, metadata]) => ({
+        path: filePath,
+        metadata,
+      }))
+
+      await db.files.bulkPut(rows)
+      console.log('[Metadata] Cache saved to IndexedDB.')
+    } catch (e) {
+      console.error('[Metadata] Failed to save IndexedDB:', e)
+    }
   }
 }
