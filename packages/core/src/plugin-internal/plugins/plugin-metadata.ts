@@ -20,7 +20,19 @@ export class MetadataPlugin extends InternalPlugin {
   }
 
   onload() {
-    this.app.metadata.index()
+    const el = this.addStatusBarItem({ position: 'right' })
+    const { metadata } = this.app
+    let $count: JQuery = null
+
+    metadata.on('index:all-count', count =>
+      $(el)
+        .text('Indexing: 0/')
+        .append($count = $(`<span>${count}</span>`)))
+
+    metadata.on('index:one', index => $count.text(index + 1))
+    metadata.on('index:all-completed', () => el.remove())
+
+    metadata.index()
   }
 
   onunload() {

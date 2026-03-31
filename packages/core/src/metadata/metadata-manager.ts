@@ -13,8 +13,13 @@ class IndexAbortedError extends Error {
 }
 
 export type MetadataEvents = {
-  'index'(): void
-  'index:update'(): void
+  // initial
+  'index:all-count'(count: number): void
+  'index:one'(index: number): void
+  'index:all-completed'(): void
+
+  // update
+  'index:one-updated'(): void
 }
 
 class MetadataProviderContext {
@@ -68,7 +73,7 @@ export class MetadataManager extends Events<MetadataEvents> {
 
     workspace.on('file:will-save', (file) => {
       this.processFile(this.cache, this.vault.path, file, editor.getMarkdown())
-        .then(() => this.emit('index:update'))
+        .then(() => this.emit('index:one-updated'))
         .catch(() => { })
     })
   }
@@ -98,6 +103,7 @@ export class MetadataManager extends Events<MetadataEvents> {
 
       const vaultPath = this.vault.path
       const allFiles = await fs.listFiles(vaultPath, { recursive: true, signal })
+      this.emit('index:all-count', allFiles.length)
 
       signal.throwIfAborted()
       const vaultId = this.vault.id
@@ -107,7 +113,7 @@ export class MetadataManager extends Events<MetadataEvents> {
       await this.processQueue(indexingCache, vaultPath, allFiles, signal)
 
       this.cache = indexingCache
-      this.emit('index')
+      this.emit('index:all-completed')
       this.saveToIndexedDb(vaultId, indexingCache)
 
     } catch (error) {
@@ -123,12 +129,14 @@ export class MetadataManager extends Events<MetadataEvents> {
   }
 
   private async processQueue(indexingCache: Cache, vaultPath: string, filePaths: string[], signal: AbortSignal): Promise<void> {
+    const allCount = filePaths.length
     const worker = async () => {
       while (filePaths.length > 0) {
         signal.throwIfAborted()
         const filePath = filePaths.pop()
         if (filePath) {
           await this.processFile(indexingCache, vaultPath, filePath, null, signal)
+          this.emit('index:one', allCount - filePaths.length - 1)
         }
       }
     }
@@ -225,7 +233,7 @@ export class MetadataManager extends Events<MetadataEvents> {
       }))
 
       await db.files.bulkPut(rows)
-      console.log('[Metadata] Cache saved to IndexedDB.')
+      console.log(`[Metadata] Saved ${rows.length} items to IndexedDB.`)
     } catch (e) {
       console.error('[Metadata] Failed to save IndexedDB:', e)
     }
