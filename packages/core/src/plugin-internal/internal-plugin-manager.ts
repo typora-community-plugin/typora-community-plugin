@@ -52,14 +52,16 @@ export class InternalPluginManager {
   }
 
   enablePlugin(id: string) {
-    if (!(id in this.instances)) return
+    if (this.enabledPlugins[id]) return
+    this.enabledPlugins[id] = true
     this.instances[id].load()
-    this.settings.set(KEY_OF_ENABLED_PLUGINS, this.enabledPlugins)
+    this.settings.set(KEY_OF_ENABLED_PLUGINS, { ...this.enabledPlugins })
   }
 
   disablePlugin(id: string) {
-    if (!(id in this.instances)) return
+    if (!this.enabledPlugins[id]) return
+    this.enabledPlugins[id] = false
     this.instances[id].unload()
-    this.settings.set(KEY_OF_ENABLED_PLUGINS, this.enabledPlugins)
+    this.settings.set(KEY_OF_ENABLED_PLUGINS, { ...this.enabledPlugins })
   }
 }

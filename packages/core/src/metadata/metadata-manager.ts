@@ -96,6 +96,7 @@ export class MetadataManager extends Events<MetadataEvents> {
     }
 
     this.isIndexing = true
+    console.log('[Metadata] Start indexing...')
 
     try {
       const { abort, signal } = new AbortController()
@@ -118,13 +119,14 @@ export class MetadataManager extends Events<MetadataEvents> {
 
     } catch (error) {
       if (error.name === 'AbortError') {
-        console.log('Indexing stopped, temporary cache discarded')
+        console.log('[Metadata] Indexing stopped, temporary cache discarded')
       } else {
-        console.error('Indexing failed due to error:', error)
+        console.error('[Metadata] Indexing failed due to error:', error)
         throw error
       }
     } finally {
       this.isIndexing = false
+    console.log('[Metadata] Indexing completed.')
     }
   }
 
