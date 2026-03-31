@@ -16,6 +16,14 @@ import type { EditorSuggest } from "src/ui/editor/suggestion/suggest"
 interface StatusBarItemOptions {
   position: 'left' | 'right',
   hint?: string,
+
+  /**
+   * - `"item"`: Always visible.
+   * - `"button"`: Hidden by default; appears when hovering over the status bar.
+   *
+   * @default "button"
+   */
+  type?: 'item' | 'button'
 }
 
 export abstract class Plugin<T extends Record<string, any> = {}>
@@ -124,9 +132,10 @@ export abstract class Plugin<T extends Record<string, any> = {}>
 
   addStatusBarItem(options?: StatusBarItemOptions) {
     options ??= { position: 'left' }
-    const { hint = '' } = options
+    const { hint = '', type = 'button' } = options
 
-    const el = $(`<div class="footer-item footer-item-${options.position} footer-btn" ty-hint="${hint}" aria-label="${hint}">`)
+    const btnCls = type === 'button' ? 'footer-btn' : ''
+    const el = $(`<div class="footer-item footer-item-${options.position} ${btnCls}" ty-hint="${hint}" aria-label="${hint}">`)
       .appendTo($('footer.ty-footer'))
       .get(0)
 

@@ -20,7 +20,7 @@ export class MetadataPlugin extends InternalPlugin {
   }
 
   onload() {
-    const el = this.addStatusBarItem({ position: 'right' })
+    const el = this.addStatusBarItem({ position: 'right', type: 'item' })
     const { metadata } = this.app
     let $indexedCount: JQuery = null
 

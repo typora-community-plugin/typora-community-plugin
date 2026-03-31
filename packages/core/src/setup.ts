@@ -83,6 +83,10 @@ registerService('settings', memorize(() => {
   return settings
 }))
 
+//
+// `app.settings` has not finished loading in this file.
+//
+
 registerService('internal-plugin-manager', memorize(() => new InternalPluginManager()))
 registerService('plugin-manager', memorize(() => new PluginManager()))
 registerService('plugin-marketplace', memorize(() => new PluginMarketplace()))
