@@ -13,6 +13,12 @@
   "githubAPI": {
     "proxyNotFound": "Github 代理失效，已自动恢复为默认设置。"
   },
+  "internalPlugins": {
+    "metadata": {
+      "name": "元数据",
+      "description": "索引笔记目录中所有文件的元数据"
+    }
+  },
   "pluginManager": {
     "needNewerCoreVersion": "插件 \"{name}\" 需要更高版本的 Typora Community Plugin。请检查更新。",
     "upToDate": "插件 \"{name}\" 已是最新版本。",
@@ -67,6 +73,9 @@
     "hotkey": {
       "name": "快捷键",
       "waitHotkey": "请按下快捷键..."
+    },
+    "internalPlugins": {
+      "name": "内置插件"
     },
     "pluginMarketplace": {
       "name": "插件市场",

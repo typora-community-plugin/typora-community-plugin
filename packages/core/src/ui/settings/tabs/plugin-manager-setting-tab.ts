@@ -7,7 +7,7 @@ import { debounce, format } from "src/utils"
 import * as versions from "src/utils/versions"
 
 
-export class PluginsManagerSettingTab extends SettingTab {
+export class PluginManagerSettingTab extends SettingTab {
 
   get name() {
     return this.i18n.t.settingTabs.plugins.name

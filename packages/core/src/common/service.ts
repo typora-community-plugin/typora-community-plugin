@@ -10,6 +10,7 @@ import type { MetadataManager } from "src/metadata/metadata-manager"
 import type { InputBox, QuickPick } from "src/ui/components/quick-open"
 import * as Locale from 'src/locales/lang.en.json'
 import type { GithubAPI } from "src/net/github"
+import type { InternalPluginManager } from "src/plugin-internal/internal-plugin-manager"
 import type { PluginManager } from "src/plugin/plugin-manager"
 import type { PluginMarketplace } from "src/plugin/plugin-marketplace"
 import type { Settings } from "src/settings/settings"
@@ -39,6 +40,7 @@ type ServiceMap = {
   'i18n'(): I18n<typeof Locale>
   'logger'(scope?: string): ILogger
   'metadata-manager'(): MetadataManager
+  'internal-plugin-manager'(): InternalPluginManager
   'plugin-manager'(): PluginManager
   'plugin-marketplace'(): PluginMarketplace
   'settings'(): Settings<AppSettings>

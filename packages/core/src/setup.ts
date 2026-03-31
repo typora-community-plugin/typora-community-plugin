@@ -31,6 +31,7 @@ import { WorkspaceSplit } from "./ui/layout/split"
 import { WorkspaceTabs } from "./ui/layout/tabs"
 import { MetadataManager } from "./metadata/metadata-manager"
 import { registerDefaultMetadataProviders } from "./metadata/metadata-providers"
+import { InternalPluginManager } from "./plugin-internal/internal-plugin-manager"
 
 
 
@@ -81,6 +82,7 @@ registerService('settings', memorize(() => {
   return settings
 }))
 
+registerService('internal-plugin-manager', memorize(() => new InternalPluginManager()))
 registerService('plugin-manager', memorize(() => new PluginManager()))
 registerService('plugin-marketplace', memorize(() => new PluginMarketplace()))
 

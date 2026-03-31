@@ -6,8 +6,9 @@ import type { SettingTab } from './setting-tab'
 import { HotkeySettingTab } from "./tabs/hotkey-setting-tab"
 import { FileLinkSettingTab } from './tabs/file-link-setting-tab'
 import { AppearanceSettingTab } from "./tabs/appearance-setting-tab"
+import { InternalPluginsManagerSettingTab } from './tabs/internal-plugin-manager-setting-tab'
 import { PluginMarketplaceSettingTab } from './tabs/plugin-marketplace-setting-tab'
-import { PluginsManagerSettingTab } from "./tabs/plugin-manager-setting-tab"
+import { PluginManagerSettingTab } from "./tabs/plugin-manager-setting-tab"
 import { AboutTab } from './tabs/about-tab'
 import { Component } from 'src/common/component'
 
@@ -92,8 +93,9 @@ export class SettingsModal extends Component {
     this.addTab(new FileLinkSettingTab())
     this.addTab(new AppearanceSettingTab())
     this.addTab(new HotkeySettingTab())
+    this.addTab(new InternalPluginsManagerSettingTab())
     this.addTab(new PluginMarketplaceSettingTab())
-    this.addTab(new PluginsManagerSettingTab())
+    this.addTab(new PluginManagerSettingTab())
     this.addTab(new AboutTab())
 
     this.addGroupTitle(t.groupPlugins)

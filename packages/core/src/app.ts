@@ -15,6 +15,7 @@ import type { I18n } from 'src/locales/i18n'
 import * as Locale from 'src/locales/lang.en.json'
 import type { MetadataManager } from './metadata/metadata-manager'
 import type { PluginManager } from "src/plugin/plugin-manager"
+import type { InternalPluginManager, InternalPluginSettings } from './plugin-internal/internal-plugin-manager'
 import type { Settings } from 'src/settings/settings'
 import type { FileLinkSettings } from 'src/ui/settings/tabs/file-link-setting-tab'
 import type { AppearanceSettings } from 'src/ui/settings/tabs/appearance-setting-tab'
@@ -49,6 +50,7 @@ export type AppSettings =
   & PluginMarketplaceSettings
   & CoreSettings
   & RibbonSettings
+  & InternalPluginSettings
 
 export type AppPlugin = (app: App) => void
 
@@ -87,6 +89,7 @@ export class App extends Events<AppEvents> {
   github: GithubAPI
   hotkeyManager: HotkeyManager = useService('hotkey-manager')
   commands: CommandManager
+  internalPlugins: InternalPluginManager
   plugins: PluginManager
   viewManager: ViewManager
   workspace: Workspace
@@ -117,6 +120,7 @@ export class App extends Events<AppEvents> {
       this.i18n = useService('i18n')
       this.github = useService('github')
       this.commands = useService('command-manager')
+      this.internalPlugins = useService('internal-plugin-manager')
       this.plugins = useService('plugin-manager')
       this.viewManager = useService('view-manager')
       this.workspace = useService('workspace')
@@ -130,6 +134,7 @@ export class App extends Events<AppEvents> {
       this._isReady = true
     })
     this.config.on('switch', () => {
+      this.internalPlugins.unloadPlugins()
       this.plugins.unloadPlugins()
       this.settings.load()
       this.start()
@@ -141,9 +146,8 @@ export class App extends Events<AppEvents> {
   async start() {
     if (!this._isReady) return
 
+    await this.internalPlugins.loadPlugins()
     await this.plugins.loadFromVault()
-    this.metadata.clear()
-    this.metadata.index()
 
     this.emit('load')
   }

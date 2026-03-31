@@ -21,6 +21,9 @@
       }
     },
     "showFileTabs": false,
-    "useWorkspace": true
+    "useWorkspace": true,
+    "internalPlugin.enabledPlugins": {
+      "internal.metadata": false
+    }
   }
 }
