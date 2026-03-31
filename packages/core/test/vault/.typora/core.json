@@ -23,7 +23,7 @@
     "showFileTabs": false,
     "useWorkspace": true,
     "internalPlugin.enabledPlugins": {
-      "internal.metadata": false
+      "internal.metadata": true
     }
   }
 }

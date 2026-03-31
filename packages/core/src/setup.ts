@@ -31,7 +31,7 @@ import { WorkspaceSplit } from "./ui/layout/split"
 import { WorkspaceTabs } from "./ui/layout/tabs"
 import { MetadataManager } from "./metadata/metadata-manager"
 import { registerDefaultMetadataProviders } from "./metadata/metadata-providers"
-import { InternalPluginManager } from "./plugin-internal/internal-plugin-manager"
+import { DEFAULT_INTERNAL_PLUGIN_SETTINGS, InternalPluginManager } from "./plugin-internal/internal-plugin-manager"
 
 
 
@@ -76,6 +76,7 @@ registerService('settings', memorize(() => {
 
   settings.setDefault(DEFAULT_FILE_LINK_SETTINGS)
   settings.setDefault(DEFAULT_APPEARANCE_SETTINGS)
+  settings.setDefault(DEFAULT_INTERNAL_PLUGIN_SETTINGS)
   settings.setDefault(DEFAULT_PLUGIN_MARKETPLACE_SETTINGS)
   settings.setDefault(DEFAULT_RIBBON_SETTINGS)
 

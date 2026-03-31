@@ -22,7 +22,10 @@ export class InternalPluginManager {
   manifests: Record<string, InternalPluginManifest> = {}
   instances: Record<string, InternalPlugin> = {}
 
-  constructor(private settings = useService('settings')) {
+  constructor(
+    private settings = useService('settings'),
+    private logger = useService('logger', ['InternalPluginManager']),
+  ) {
     const metadata = new MetadataPlugin()
 
     this.instances = {
@@ -33,8 +36,7 @@ export class InternalPluginManager {
       [PLUGIN_METADATA_ID]: metadata.manifest,
     }
 
-    this.enabledPlugins = settings.get(KEY_OF_ENABLED_PLUGINS)
-      ?? DEFAULT_INTERNAL_PLUGIN_SETTINGS[KEY_OF_ENABLED_PLUGINS]
+    setTimeout(() => this.enabledPlugins = settings.get(KEY_OF_ENABLED_PLUGINS))
   }
 
   loadPlugins() {
@@ -52,16 +54,22 @@ export class InternalPluginManager {
   }
 
   enablePlugin(id: string) {
-    if (this.enabledPlugins[id]) return
-    this.enabledPlugins[id] = true
-    this.instances[id].load()
-    this.settings.set(KEY_OF_ENABLED_PLUGINS, { ...this.enabledPlugins })
+    try {
+      this.enabledPlugins[id] = true
+      this.instances[id].load()
+      this.settings.set(KEY_OF_ENABLED_PLUGINS, { ...this.enabledPlugins })
+    } catch (error) {
+      this.logger.error(error)
+    }
   }
 
   disablePlugin(id: string) {
-    if (!this.enabledPlugins[id]) return
-    this.enabledPlugins[id] = false
-    this.instances[id].unload()
-    this.settings.set(KEY_OF_ENABLED_PLUGINS, { ...this.enabledPlugins })
+    try {
+      this.enabledPlugins[id] = false
+      this.instances[id].unload()
+      this.settings.set(KEY_OF_ENABLED_PLUGINS, { ...this.enabledPlugins })
+    } catch (error) {
+      this.logger.error(error)
+    }
   }
 }
