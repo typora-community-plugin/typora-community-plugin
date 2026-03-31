@@ -16,7 +16,7 @@
   "internalPlugins": {
     "metadata": {
       "name": "元数据",
-      "description": "索引笔记目录中所有文件的元数据"
+      "description": "索引笔记目录中所有文件的元数据。用于其他插件（如 标签插件 `tag`）。"
     }
   },
   "pluginManager": {

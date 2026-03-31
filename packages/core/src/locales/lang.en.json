@@ -16,7 +16,7 @@
   "internalPlugins": {
     "metadata": {
       "name": "Metadata",
-      "description": "Index metadata of all files in the vault."
+      "description": "Index metadata of all files in the vault. Used by other plugins (like `tag`)."
     }
   },
   "pluginManager": {
