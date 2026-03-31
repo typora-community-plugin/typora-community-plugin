@@ -55,7 +55,7 @@ export abstract class FileAdapter {
       const isDirectory = await this.isDirectory(filePath)
       if (isDirectory) {
         if (recursive) {
-          const subFiles = await this.listFiles(filePath)
+          const subFiles = await this.listFiles(filePath, options)
           files.push(...subFiles)
         }
       } else {
