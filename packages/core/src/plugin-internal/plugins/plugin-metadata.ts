@@ -8,6 +8,8 @@ export class MetadataPlugin extends InternalPlugin {
 
   declare manifest: InternalPluginManifest
 
+  private progressEl: HTMLElement
+
   constructor(i18n = useService('i18n')) {
     super(PLUGIN_METADATA_ID)
 
@@ -20,23 +22,28 @@ export class MetadataPlugin extends InternalPlugin {
   }
 
   onload() {
-    const el = this.addStatusBarItem({ position: 'right', type: 'item' })
     const { metadata } = this.app
+    this.progressEl = this.addStatusBarItem({ position: 'right', type: 'item' })
     let $indexedCount: JQuery = null
 
-    metadata.on('index:all-count', allCount =>
-      $(el)
-        .append('<span>Indexing: </span>')
-        .append($indexedCount = $(`<span>0</span>`))
-        .append(`<span>/${allCount}</span>`))
+    this.register(
+      metadata.on('index:all-count', allCount =>
+        $(this.progressEl)
+          .append('<span>Indexing: </span>')
+          .append($indexedCount = $(`<span>0</span>`))
+          .append(`<span>/${allCount}</span>`)))
 
-    metadata.on('index:one', index => $indexedCount.text(index + 1))
-    metadata.on('index:all-completed', () => el.remove())
+    this.register(
+      metadata.on('index:one', index => $indexedCount.text(index + 1)))
+
+    this.register(
+      metadata.on('index:all-completed', () => this.progressEl.remove()))
 
     metadata.index()
   }
 
   onunload() {
+    this.progressEl.remove()
     this.app.metadata.clear()
   }
 }
