@@ -35,11 +35,11 @@ export class InternalPluginManager {
     this.manifests = {
       [PLUGIN_METADATA_ID]: metadata.manifest,
     }
-
-    setTimeout(() => this.enabledPlugins = settings.get(KEY_OF_ENABLED_PLUGINS))
   }
 
   loadPlugins() {
+    this.enabledPlugins = this.settings.get(KEY_OF_ENABLED_PLUGINS)
+
     return Promise.all(
       Object.keys(this.manifests)
         .filter(id => this.enabledPlugins[id])
