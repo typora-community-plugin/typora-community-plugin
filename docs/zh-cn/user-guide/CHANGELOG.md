@@ -1,5 +1,19 @@
 # 更新日志
 
+## v2.7.1
+
+- feat(core/inertnal-plugin): 添加 **内置插件**
+- feat(core/metadata): 添加 **Metadata API**，开发者可以通过 `app.metadata` 访问。
+- fix(core/ui/siderbar): 不能使用 `workspace.getViewByType()` 查找 `GlobalSearchView` 实例，导致 tag 插件无法搜索标签 ([typora-plugin-tag#3](https://github.com/typora-community-plugin/typora-plugin-tag/issues/3))
+- refactor(core/ui/settings/appearance): 隐藏废弃选项 `显示文件标签页`
+
+- **插件更新**
+  - [note-refactor][]
+    - feat: 支持提取笔记时重命名
+  - [note-snippets][]
+    - fix: 不支持使用 CRLF 作为换行符的笔记片段
+    - fix: 不能从使用 CRLF 作为换行符的笔记片段中解析触发词名称
+
 ## v2.5.54
 
 - **工作区**

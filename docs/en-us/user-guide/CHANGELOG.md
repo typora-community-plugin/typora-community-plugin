@@ -1,5 +1,19 @@
 # Changelog
 
+## v2.7.1
+
+- feat(core/inertnal-plugin): Add **Internal Plugin**
+- feat(core/metadata): Add **Metadata API**. Developers can access `app.metadata`.
+- fix(core/ui/siderbar): cannot search tag because it cannot use `workspace.getViewByType()` to find the `GlobalSearchView` ([typora-plugin-tag#3](https://github.com/typora-community-plugin/typora-plugin-tag/issues/3))
+- refactor(core/ui/settings/appearance): hide the setting of `Show File Tabs (Deprecated)`
+
+- **Plugin Update**
+  - [note-refactor][]
+    - feat: extract note with manual renaming
+  - [note-snippets][]
+    - fix: not support snippets with CRLF
+    - fix: can not parse snippet's name in the file with CRLF
+
 ## v2.5.54
 
 - **Workspace**
@@ -606,6 +620,8 @@
 [image-viewer]: https://github.com/typora-community-plugin/typora-plugin-image-viewer
 
 [markmap]: https://github.com/typora-community-plugin/typora-plugin-markmap
+
+[note-refactor]: https://github.com/typora-community-plugin/typora-plugin-note-refactor
 
 [note-snippets]: https://github.com/typora-community-plugin/typora-plugin-note-snippets
 
