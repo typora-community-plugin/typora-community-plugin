@@ -101,24 +101,26 @@ export class AppearanceSettingTab extends SettingTab {
         checkbox.checked = settings.get('useWorkspace')
         checkbox.onclick = () => {
           settings.set('useWorkspace', checkbox.checked)
+          settings.set('showFileTabs', false)
         }
       })
     })
-    this.addSetting(setting => {
-      setting.addName(t.fileTabs)
-      setting.addDescription(t.fileTabsDesc)
-      setting.addCheckbox(checkbox => {
-        checkbox.disabled = settings.get('useWorkspace')
-        checkbox.checked = settings.get('showFileTabs')
-        checkbox.onclick = () => {
-          settings.set('showFileTabs', checkbox.checked)
-        }
-        settings.onChange('useWorkspace', (_, isEnabled) => {
-          checkbox.disabled = isEnabled
-          if (isEnabled) checkbox.checked = false
-        })
-      })
-    })
+    /* TODO: REMOVE **********************************************/
+    // this.addSetting(setting => {
+    //   setting.addName(t.fileTabs)
+    //   setting.addDescription(t.fileTabsDesc)
+    //   setting.addCheckbox(checkbox => {
+    //     checkbox.disabled = settings.get('useWorkspace')
+    //     checkbox.checked = settings.get('showFileTabs')
+    //     checkbox.onclick = () => {
+    //       settings.set('showFileTabs', checkbox.checked)
+    //     }
+    //     settings.onChange('useWorkspace', (_, isEnabled) => {
+    //       checkbox.disabled = isEnabled
+    //       if (isEnabled) checkbox.checked = false
+    //     })
+    //   })
+    // })
     this.addSetting(setting => {
       setting.addName(t.hideExtensionInFileTab)
       setting.addDescription(t.hideExtensionInFileTabDesc)
