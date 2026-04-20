@@ -42,14 +42,25 @@ export class EditorSuggestManager {
 
   register(suggest: EditorSuggest<any>): DisposeFunc {
     const sameTriggerSuggest = this._suggests.find(s => s.triggerText === suggest.triggerText)
+
     if (sameTriggerSuggest) {
-      const merged = new MergedSuggest(suggest.triggerText)
-      this.unregister(sameTriggerSuggest)
-      merged.add(sameTriggerSuggest)
-      merged.add(suggest)
-      suggest = merged
+      let mergedSuggest: MergedSuggest<any>
+
+      if (sameTriggerSuggest instanceof MergedSuggest) {
+        mergedSuggest = sameTriggerSuggest
+      }
+      else {
+        mergedSuggest = new MergedSuggest(suggest.triggerText)
+        this.unregister(sameTriggerSuggest)
+        this._suggests.push(mergedSuggest)
+        mergedSuggest.add(sameTriggerSuggest)
+      }
+      mergedSuggest.add(suggest)
     }
-    this._suggests.push(suggest)
+    else {
+      this._suggests.push(suggest)
+    }
+
     return () => this.unregister(suggest)
   }
 
