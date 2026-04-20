@@ -1,6 +1,6 @@
 import fs from 'src/io/fs/filesystem'
 import path from 'src/path'
-import { Events } from 'src/common/events'
+import { StickyEvents } from 'src/common/events'
 import { useService } from 'src/common/service'
 import { MiniDexie } from 'src/utils/indexed-db'
 
@@ -14,12 +14,12 @@ class IndexAbortedError extends Error {
 
 export type MetadataEvents = {
   // initial
-  'index:all-count'(count: number): void
-  'index:one'(index: number): void
-  'index:all-completed'(): void
+  'index:start'(total: number): void
+  'index:progress'(current: number): void
+  'index:done'(): void
 
   // update
-  'index:one-updated'(): void
+  'index:update'(filePath: string): void
 }
 
 class MetadataProviderContext {
@@ -51,7 +51,7 @@ const DB_SCHEMA = {
   files: 'path, metadata'
 }
 
-export class MetadataManager extends Events<MetadataEvents> {
+export class MetadataManager extends StickyEvents<MetadataEvents> {
 
   private providers: { [ext: string]: MetadataProvider[] } = {}
   cache: Cache = {}
@@ -71,9 +71,14 @@ export class MetadataManager extends Events<MetadataEvents> {
     super('metadata')
     this.concurrencyLimit = options.concurrency ?? 10
 
+    this.setSticky('index:done')
+
     workspace.on('file:will-save', (file) => {
       this.processFile(this.cache, this.vault.path, file, editor.getMarkdown())
-        .then(() => this.emit('index:one-updated'))
+        .then(() => {
+          const relativePath = path.relative(this.vault.path, file)
+          this.emit('index:update', relativePath)
+        })
         .catch(() => { })
     })
   }
@@ -104,7 +109,7 @@ export class MetadataManager extends Events<MetadataEvents> {
 
       const vaultPath = this.vault.path
       const allFiles = await fs.listFiles(vaultPath, { recursive: true, signal })
-      this.emit('index:all-count', allFiles.length)
+      this.emit('index:start', allFiles.length)
 
       signal.throwIfAborted()
       const vaultId = this.vault.id
@@ -114,7 +119,7 @@ export class MetadataManager extends Events<MetadataEvents> {
       await this.processQueue(indexingCache, vaultPath, allFiles, signal)
 
       this.cache = indexingCache
-      this.emit('index:all-completed')
+      this.emit('index:done')
       this.saveToIndexedDb(vaultId, indexingCache)
 
     } catch (error) {
@@ -126,7 +131,7 @@ export class MetadataManager extends Events<MetadataEvents> {
       }
     } finally {
       this.isIndexing = false
-    console.log('[Metadata] Indexing completed.')
+      console.log('[Metadata] Indexing completed.')
     }
   }
 
@@ -138,7 +143,7 @@ export class MetadataManager extends Events<MetadataEvents> {
         const filePath = filePaths.pop()
         if (filePath) {
           await this.processFile(indexingCache, vaultPath, filePath, null, signal)
-          this.emit('index:one', allCount - filePaths.length - 1)
+          this.emit('index:progress', allCount - filePaths.length - 1)
         }
       }
     }

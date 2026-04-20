@@ -27,17 +27,17 @@ export class MetadataPlugin extends InternalPlugin {
     let $indexedCount: JQuery = null
 
     this.register(
-      metadata.on('index:all-count', allCount =>
+      metadata.on('index:start', allCount =>
         $(this.progressEl)
           .append('<span>Indexing: </span>')
           .append($indexedCount = $(`<span>0</span>`))
           .append(`<span>/${allCount}</span>`)))
 
     this.register(
-      metadata.on('index:one', index => $indexedCount.text(index + 1)))
+      metadata.on('index:progress', index => $indexedCount.text(index + 1)))
 
     this.register(
-      metadata.on('index:all-completed', () => this.progressEl.remove()))
+      metadata.on('index:done', () => this.progressEl.remove()))
 
     metadata.index()
   }
