@@ -1,5 +1,6 @@
 import { isDebug } from "./constants"
 import { useService } from "./service"
+import { noop } from "src/utils"
 import type { DisposeFunc } from "src/utils/types"
 
 
@@ -11,12 +12,13 @@ type EventMap = Record<string, EventListener[]>
 
 const scopedListeners: Record<string, EventMap> = {}
 
+
 export class Events<E extends EventDefination> {
 
   protected _listeners: Record<keyof E, EventListener[]> = {} as any
 
   constructor(
-    private scope?: string,
+    protected scope?: string,
     protected logger = useService('logger', ['Events'])
   ) {
     if (scope) {
@@ -80,6 +82,60 @@ export class Events<E extends EventDefination> {
     return Object.keys(this._listeners)
   }
 }
+
+
+export class StickyEvents<E extends EventDefination> extends Events<E> {
+  protected _stickyEvents: Record<keyof E, boolean> = {} as any
+  protected _lastArgs: Record<keyof E, any[]> = {} as any
+
+  prependListener<K extends keyof E>(event: K, listener: E[K]): DisposeFunc {
+    if (this._shouldEmitStickyEvent(event)) {
+      this._invokeStickyListener(event, listener)
+    }
+    return super.prependListener(event, listener)
+  }
+
+  on<K extends keyof E>(event: K, listener: E[K]): DisposeFunc {
+    if (this._shouldEmitStickyEvent(event)) {
+      this._invokeStickyListener(event, listener)
+    }
+    return super.on(event, listener)
+  }
+
+  once<K extends keyof E>(event: K, listener: E[K]): DisposeFunc {
+    if (this._shouldEmitStickyEvent(event)) {
+      this._invokeStickyListener(event, listener)
+      return noop
+    }
+    return super.once(event, listener)
+  }
+
+  private _shouldEmitStickyEvent<K extends keyof E>(event: K) {
+    return this._stickyEvents[event] && this._lastArgs[event] !== undefined
+  }
+
+  private _invokeStickyListener<K extends keyof E>(event: K, listener: E[K]) {
+    const args = this._lastArgs[event]
+    if (isDebug()) {
+      this.logger.debug(`${this.scope} @${event as string} (Sticky)\n`, ...args)
+    }
+    try {
+      listener(...args)
+    } catch (error) {
+      this.logger.error(`${this.scope} @${event as string} (Sticky)\n`, error)
+    }
+  }
+
+  protected emit<K extends keyof E>(event: K, ...args: Parameters<E[K]>) {
+    this._lastArgs[event] = args
+    super.emit(event, ...args)
+  }
+
+  protected setSticky<K extends keyof E>(event: K) {
+    this._stickyEvents[event] = true
+  }
+}
+
 
 export class PublicEvents<E extends EventDefination> extends Events<E> {
 
