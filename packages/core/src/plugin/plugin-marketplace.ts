@@ -72,11 +72,11 @@ export class PluginMarketplace {
           })
       })
       .then(() => {
-        new Notice(format(t.installSuccessful, info))
+        Notice.success(format(t.installSuccessful, info))
       })
       .catch(error => {
         this.logger.error(error)
-        new Notice(error.message)
+        Notice.error(error.message)
         throw error
       })
   }

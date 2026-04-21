@@ -69,6 +69,19 @@ interface NoticeOptions {
 
 export class Notice extends View {
 
+  static info(message: string, duration?: number): Notice {
+    return new Notice(message, duration)
+  }
+  static success(message: string, duration?: number): Notice {
+    return new Notice(message, { type: 'success', duration })
+  }
+  static warning(message: string, duration?: number): Notice {
+    return new Notice(message, { type: 'warning', duration })
+  }
+  static error(message: string, duration?: number): Notice {
+    return new Notice(message, { type: 'error', duration })
+  }
+
   /**
    * @param duration Hide notice after `duration` ms. `duration = 0` will not be hidden.
    */
@@ -77,8 +90,8 @@ export class Notice extends View {
   constructor(message: string, options?: number | NoticeOptions) {
     super()
 
-    const duration = (typeof options === 'number' ? options : options.duration) ?? 5000
-    const type = (<any>options).type ?? 'info'
+    const duration = (typeof options === 'number' ? options : options?.duration) ?? 5000
+    const type = (<any>options)?.type ?? 'info'
 
     this.containerEl = $(`<div class="typ-notice ${type}"></div>`)
       .append(`<div class="typ-notice__content">${message}</div>`)

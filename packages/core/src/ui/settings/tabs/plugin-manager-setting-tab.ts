@@ -64,7 +64,7 @@ export class PluginManagerSettingTab extends SettingTab {
     const { manifests, marketplace } = this.plugins
     const ids = Object.keys(manifests)
     const text = this.i18n.t.settingTabs.plugins.checkingForUpdate
-    const notice = new Notice(format(text, [0, ids.length]), 0)
+    const notice = Notice.info(format(text, [0, ids.length]), 0)
 
     if (!marketplace.isLoaded) {
       await marketplace.loadCommunityPlugins()

@@ -78,7 +78,7 @@ export class GithubAPI {
 
       if (!uri) {
         // to wait css loaded
-        setTimeout(() => new Notice(i18n.t.githubAPI.proxyNotFound), 5e3)
+        setTimeout(() => Notice.error(i18n.t.githubAPI.proxyNotFound), 5e3)
         settings.set('githubProxy', 'github')
         return github
       }

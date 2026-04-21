@@ -24,10 +24,10 @@ export class EditaleTableTestTab extends SettingTab {
           ])
           .setData(state)
           .onRowChange(row => {
-            new Notice(`Edited: ${JSON.stringify(row)}`)
+            Notice.info(`Edited: ${JSON.stringify(row)}`)
           })
           .onRowRemove(row => {
-            new Notice(`Deleted: ${JSON.stringify(row)}`)
+            Notice.info(`Deleted: ${JSON.stringify(row)}`)
           })
       })
     })

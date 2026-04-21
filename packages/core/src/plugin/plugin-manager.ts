@@ -144,7 +144,7 @@ export class PluginManager {
       this.disablePlugin(id)
 
       const msg = format(this.i18n.t.pluginManager.needNewerCoreVersion, this.manifests[id])
-      new Notice(msg)
+      Notice.info(msg)
       return
     }
 
@@ -187,7 +187,7 @@ export class PluginManager {
     const version = await marketplace.getPluginNewestVersion(info)
 
     if (versions.compare(manifest.version, version) >= 0) {
-      new Notice(format(t.upToDate, manifest))
+      Notice.info(format(t.upToDate, manifest))
       return
     }
 
@@ -197,7 +197,7 @@ export class PluginManager {
 
     return marketplace.installPlugin(info, manifest.postion)
       .then(() => isEnabled && this.enablePlugin(id))
-      .then(() => { new Notice(format(t.updateSuccessful, manifest)) })
+      .then(() => { Notice.success(format(t.updateSuccessful, manifest)) })
   }
 
   uninstallPlugin(id: string) {

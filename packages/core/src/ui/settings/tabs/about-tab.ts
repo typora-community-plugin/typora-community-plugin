@@ -103,12 +103,12 @@ export class AboutTab extends SettingTab {
           return this.installCore(url)
         }
         else {
-          new Notice(t.coreUpToDate)
+          Notice.info(t.coreUpToDate)
         }
       })
       .catch(error => {
         this.logger.error(error)
-        new Notice(error.message, 0)
+        Notice.error(error.message, 0)
       })
   }
 
@@ -121,7 +121,7 @@ export class AboutTab extends SettingTab {
       })
       .then(() => {
         const t = this.i18n.t.settingTabs.about
-        new Notice(t.coreUpdateSuccessful)
+        Notice.success(t.coreUpdateSuccessful)
       })
   }
 }
