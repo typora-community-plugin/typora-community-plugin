@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.7.7
+
+- feat(core/ui/components/notice): add a new command `Clear all notices`
+
+- **Developer**
+  - feat(core/metadata): `index:done` support StickyEvents
+  - feat(core/ui/components/notice): add an option `type: info|suceess|warning|error` 
+  - feat(core/ui/components/notice): support using `Notice.info|suceess|warning|error` to create `Notice`
+  - refactor(core/ui/editor/suggestion): flatten merged suggests when registering suggests with the same trigger text.
+
+- **BREAKING CHANGE**
+  - refactor(core/metadata): rename event's names
+
 ## v2.7.1
 
 - feat(core/inertnal-plugin): Add **Internal Plugin**

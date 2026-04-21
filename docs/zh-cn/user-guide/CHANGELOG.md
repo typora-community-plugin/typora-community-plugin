@@ -1,5 +1,18 @@
 # 更新日志
 
+## v2.7.7
+
+- feat(core/ui/components/notice): 添加新命令 `关闭所有提示信息`
+
+- **Developer**
+  - feat(core/metadata): `index:done` 支持粘性事件
+  - feat(core/ui/components/notice): 添加一个配置项 `type: info|suceess|warning|error`
+  - feat(core/ui/components/notice): 支持使用静态方法 `Notice.info|suceess|warning|error` 创建 `Notice`
+  - refactor(core/ui/editor/suggestion): 注册相同触发词的输入建议（自动完成）时，扁平化合并的输入建议
+
+- **BREAKING CHANGE**
+  - refactor(core/metadata): 重命名事件名
+
 ## v2.7.1
 
 - feat(core/inertnal-plugin): 添加 **内置插件**
