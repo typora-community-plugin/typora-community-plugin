@@ -19,6 +19,9 @@
       "description": "Index metadata of all files in the vault. Used by other plugins (like `tag`)."
     }
   },
+  "notice": {
+    "clearAll": "Notice: Clear all notices"
+  },
   "pluginManager": {
     "needNewerCoreVersion": "Plugin \"{name}\" need higher version Typora Community Plugin. Please check for update.",
     "upToDate": "Plugin \"{name}\" is up to date.",

@@ -19,6 +19,9 @@
       "description": "索引笔记目录中所有文件的元数据。用于其他插件（如 标签插件 `tag`）。"
     }
   },
+  "notice": {
+    "clearAll": "Notice: 关闭所有提示信息"
+  },
   "pluginManager": {
     "needNewerCoreVersion": "插件 \"{name}\" 需要更高版本的 Typora Community Plugin。请检查更新。",
     "upToDate": "插件 \"{name}\" 已是最新版本。",
