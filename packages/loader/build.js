@@ -5,6 +5,7 @@ await esbuild.build({
   entryPoints: ['index.ts'],
   outfile: 'index.js',
   bundle: true,
+  format: 'esm',
   minify: true,
   define: {
     'process.env.CORE_NS': `"typora-plugin-core@v2"`,
