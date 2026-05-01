@@ -15,7 +15,7 @@ import { File, _options, bridge, reqnode } from 'typora'
 
   const pluginCore = env.PLUGIN_CORE_PATH
     ? env.PLUGIN_CORE_PATH.replace(/\{VAULT\}/, mountFolder)
-    : `./${loaderConfig.coreVersion}/core.js`
+    : new URL(`./${loaderConfig.coreVersion}/core.js`, import.meta.url).href
 
   // @ts-ignore
   window[Symbol.for(`${process.env.CORE_NS}:env`)] = {
