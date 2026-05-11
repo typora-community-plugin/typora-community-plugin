@@ -518,6 +518,13 @@ interface TFile {
 
 
 interface FileSearchView {
+  caseSensitive: boolean
+  wholeWord: boolean
+  /**
+   * @since Typora v1.4.x
+   */
+  useRegexp: boolean
+
   clearSearch(): void
   clearContentHighlight(): void
   hide(): void
