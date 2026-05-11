@@ -38,7 +38,7 @@ export class GlobalSearch {
 
     // Execute search and stream results
     this._searchService.execute(query, (result) => {
-      view.renderResult(result)
+      view.renderer.renderResult(result)
     })
   }
 
