@@ -6,7 +6,7 @@ import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
 import { html, noop } from 'src/utils'
 import { useService } from 'src/common/service'
 import { InternalSidebarPanel } from '../sidebar-panel'
-import type { SearchResult } from './global-search'
+import type { SearchResult } from './ripgrep-search-service'
 
 
 const SELECTOR_QUERY_INPUT = '#file-library-search-input'
@@ -52,8 +52,6 @@ export class GlobalSearchView extends InternalSidebarPanel {
   onshow() {
     editor.library.fileSearch.show()
     this._keepSearchResult.showSearchPanel()
-    this._registerOptionButtons()
-    this._registerKeyboardNav()
   }
 
   onhide() {
@@ -142,181 +140,6 @@ export class GlobalSearchView extends InternalSidebarPanel {
 
   // ── Private helpers ───────────────────────────────────────────────────
 
-  private _registerOptionButtons() {
-    const caseBtn = document.querySelector('#filesearch-case-option-btn') as HTMLElement | null
-    if (caseBtn) {
-      caseBtn.addEventListener('mousedown', (e) => {
-        this._caseSensitive = !this._caseSensitive
-        caseBtn.classList.toggle('select', this._caseSensitive)
-        useService('settings').put('fileSearchCaseSensitive', this._caseSensitive)
-        e.preventDefault()
-        e.stopPropagation()
-      })
-      if (this._caseSensitive) {
-        caseBtn.classList.add('select')
-      }
-    }
-
-    const wordBtn = document.querySelector('#filesearch-word-option-btn') as HTMLElement | null
-    if (wordBtn) {
-      wordBtn.addEventListener('mousedown', (e) => {
-        this._wholeWord = !this._wholeWord
-        wordBtn.classList.toggle('select', this._wholeWord)
-        useService('settings').put('fileSearchWholeWord', this._wholeWord)
-        e.preventDefault()
-        e.stopPropagation()
-      })
-      if (this._wholeWord) {
-        wordBtn.classList.add('select')
-      }
-    }
-  }
-
-  private _registerKeyboardNav() {
-    const input = document.querySelector(SELECTOR_QUERY_INPUT) as HTMLInputElement | null
-    if (!input) return
-
-    input.addEventListener('keydown', (e: KeyboardEvent) => {
-      console.log('[GlobalSearchView] keydown', { key: e.key })
-      const key = e.key
-
-      // Escape: hide search
-      if (key === 'Escape') {
-        editor.library.fileSearch.hide()
-        e.stopPropagation()
-        return
-      }
-
-      // Enter: trigger search or navigate to selected result
-      if (key === 'Enter') {
-        const query = this.getQuery().trim()
-        console.log('[GlobalSearchView] Enter pressed', { query, hasSelection: !!document.querySelector(`${SELECTOR_RESULTS} .select`) })
-        if (!query) return
-
-        // If there's a selected result, open it at the matched line
-        const selected = document.querySelector(`${SELECTOR_RESULTS} .select`) as HTMLElement | null
-        if (selected) {
-          console.log('[GlobalSearchView] Enter - opening selected result')
-          selected.click()
-          e.preventDefault()
-          return
-        }
-
-        // Otherwise trigger search
-        this.startSearch()
-        return
-      }
-
-      // ArrowDown: move selection down
-      if (key === 'ArrowDown') {
-        const resultsEl = document.querySelector(SELECTOR_RESULTS) as HTMLElement | null
-        console.log('[GlobalSearchView] ArrowDown', { hasResults: !!resultsEl })
-        if (!resultsEl) return
-
-        const currentSelect = resultsEl.querySelector('.select') as HTMLElement | null
-        let next: Element | null = null
-
-        if (currentSelect) {
-          // Try next sibling first, then next .ty-search-item-line within same item
-          next = currentSelect.nextElementSibling
-          if (!next || !next.classList.contains('ty-search-item-line')) {
-            const parentItem = currentSelect.closest('.ty-search-item')
-            if (parentItem) {
-              // Check for expand button first, then next line
-              const expandBtn = parentItem.querySelector('.ty-search-item-line-expand') as HTMLElement | null
-              if (expandBtn && !parentItem.classList.contains('ty-search-item-expand')) {
-                console.log('[GlobalSearchView] ArrowDown - expanding item')
-                expandBtn.click()
-                return
-              }
-              next = parentItem.nextElementSibling
-            }
-          }
-        } else {
-          // No selection yet, select first result
-          const firstLine = resultsEl.querySelector('.ty-search-item-line') as HTMLElement | null
-          if (firstLine) {
-            console.log('[GlobalSearchView] ArrowDown - selecting first line')
-            next = firstLine
-          } else {
-            const firstItem = resultsEl.querySelector('.ty-search-item') as HTMLElement | null
-            if (firstItem) {
-              next = firstItem.querySelector('.ty-search-item-line') ?? firstItem
-            }
-          }
-        }
-
-        if (next) {
-          console.log('[GlobalSearchView] ArrowDown - selecting', next.className)
-          currentSelect?.classList.remove('select')
-          next.classList.add('select')
-          this._scrollIntoView(next, resultsEl)
-        }
-        e.preventDefault()
-        return
-      }
-
-      // ArrowUp: move selection up
-      if (key === 'ArrowUp') {
-        const resultsEl = document.querySelector(SELECTOR_RESULTS) as HTMLElement | null
-        console.log('[GlobalSearchView] ArrowUp', { hasResults: !!resultsEl })
-        if (!resultsEl) return
-
-        const currentSelect = resultsEl.querySelector('.select') as HTMLElement | null
-        if (!currentSelect) return
-
-        let prev: Element | null = null
-        // Check if we're at the last line of an expanded item - go to previous item's last line
-        const currentItem = currentSelect.closest('.ty-search-item') as HTMLElement | null
-
-        if (currentItem && currentSelect === currentItem.querySelector(':scope > .ty-search-item-line:last-child')) {
-          prev = currentItem.previousElementSibling
-          if (prev) {
-            // Select the last visible line of previous item
-            const expandBtn = prev.querySelector('.ty-search-item-line-expand') as HTMLElement | null
-            if (expandBtn && !prev.classList.contains('ty-search-item-expand')) {
-              // Collapse this item first, then select its last line
-              console.log('[GlobalSearchView] ArrowUp - collapsing previous item')
-              expandBtn.click()
-              setTimeout(() => {
-                const lines = prev?.querySelectorAll('.ty-search-item-line')
-                const lastLine = lines?.[lines.length - 1] as HTMLElement | null
-                if (lastLine) {
-                  currentSelect.classList.remove('select')
-                  lastLine.classList.add('select')
-                }
-              }, 50)
-            } else {
-              const lines = prev.querySelectorAll('.ty-search-item-line')
-              prev = lines[lines.length - 1] ?? prev
-            }
-          }
-        } else {
-          prev = currentSelect.previousElementSibling
-        }
-
-        if (prev && prev.classList.contains('ty-search-item-line')) {
-          console.log('[GlobalSearchView] ArrowUp - selecting', prev.className)
-          currentSelect.classList.remove('select')
-          prev.classList.add('select')
-          this._scrollIntoView(prev, resultsEl)
-        }
-        e.preventDefault()
-      }
-    })
-  }
-
-  private _scrollIntoView(el: Element, container: HTMLElement): void {
-    const rect = el.getBoundingClientRect()
-    const containerRect = container.getBoundingClientRect()
-
-    if (rect.top < containerRect.top) {
-      container.scrollTop -= (containerRect.top - rect.top) + 2
-    } else if (rect.bottom > containerRect.bottom) {
-      container.scrollTop += (rect.bottom - containerRect.bottom) - 2
-    }
-  }
-
   /** Append a file result item to the results list. */
   private _appendFileItem(resultsEl: HTMLElement, result: SearchResult): void {
     console.log('[GlobalSearchView] _appendFileItem', { filePath: result.filePath, matchCount: result.matches.length })
@@ -382,9 +205,6 @@ export class GlobalSearchView extends InternalSidebarPanel {
     itemEl.appendChild(countEl)
     itemEl.appendChild(matchesContainer)
 
-    // Click handlers
-    this._attachClickHandlers(itemEl, result.filePath)
-
     resultsEl.appendChild(itemEl)
 
     // Auto-expand if more than 3 matches
@@ -425,31 +245,6 @@ export class GlobalSearchView extends InternalSidebarPanel {
     this._renderLineText(lineEl, match.lineText, match.matchedText)
 
     container.appendChild(lineEl)
-
-    // Click handler for opening file at specific line
-    lineEl.addEventListener('click', (e: MouseEvent) => {
-      console.log('[GlobalSearchView] line click', { filePath: itemEl.dataset.path, line: match.lineNumber })
-      e.stopPropagation()
-      e.preventDefault()
-
-      const filePath = itemEl.dataset.path
-      if (!filePath) return
-
-      // Open file and navigate to line
-      editor.library.openFile(filePath, () => {
-        console.log('[GlobalSearchView] openFile callback', { filePath, matchText: match.matchedText })
-        // After file opens, highlight the match in the editor
-        if (match.matchedText && match.lineNumber > 0) {
-          this._gotoLineInEditor(match.lineNumber - 1, match.matchedText, match.lineText)
-        }
-
-        lineEl.classList.add('active')
-        for (const el of itemEl.querySelectorAll('.select')) {
-          el.classList.remove('select')
-        }
-        lineEl.classList.add('select')
-      })
-    })
 
     // Update count display
     const countEl = itemEl.querySelector('.file-list-item-count') as HTMLElement | null
@@ -525,92 +320,6 @@ export class GlobalSearchView extends InternalSidebarPanel {
     if (afterText) {
       container.appendChild(document.createTextNode(afterText))
     }
-  }
-
-  /** Attach file open handlers to a search item. */
-  private _attachClickHandlers(itemEl: HTMLElement, filePath: string): void {
-    // Click on summary area opens file at first match
-    const summary = itemEl.querySelector('.ty-search-item-summary') as HTMLElement | null
-    if (summary) {
-      summary.addEventListener('click', (e: MouseEvent) => {
-        this._openFileAtPath(filePath, e.ctrlKey || e.metaKey)
-      })
-    }
-
-    // Click on file name row opens file
-    const nameRow = itemEl.querySelector('.file-list-item-name') as HTMLElement | null
-    if (nameRow) {
-      nameRow.addEventListener('click', (e: MouseEvent) => {
-        this._openFileAtPath(filePath, e.ctrlKey || e.metaKey)
-      })
-    }
-
-    // Click on parent location opens file
-    const locEl = itemEl.querySelector('.file-list-item-parent-loc') as HTMLElement | null
-    if (locEl) {
-      locEl.addEventListener('click', (e: MouseEvent) => {
-        this._openFileAtPath(filePath, e.ctrlKey || e.metaKey)
-      })
-    }
-  }
-
-  private _openFileAtPath(filePath: string, withCtrl: boolean): void {
-    console.log('[GlobalSearchView] _openFileAtPath', { filePath, withCtrl })
-    if (withCtrl) {
-      editor.library.openWithCtrl?.(filePath)
-    } else {
-      window._hasSwitchCallback = true
-      editor.library.openFile(filePath)
-    }
-  }
-
-  private _gotoLineInEditor(line: number, matchText: string, lineText: string): void {
-    console.log('[GlobalSearchView] _gotoLineInEditor', { line, matchText })
-
-    // Use Typora's internal search panel to highlight matches
-    editor.sourceView.cm?.scrollTo(null, (line - 1) * 12)
-
-    // Highlight the match text in the editor
-    const cm = editor.sourceView.cm
-    if (!cm) {
-      console.warn('[GlobalSearchView] _gotoLineInEditor - no CM instance')
-      return
-    }
-
-    // Find and select the match
-    let pos = line
-    let offset = 0
-    try {
-      offset = lineText.indexOf(matchText)
-    } catch { /* ignore */ }
-
-    const startPos = cm.posFromIndex(cm.indexFromPos({ line: pos, ch: 0 }) + Math.max(0, offset))
-
-    // Use search panel to highlight
-    console.log('[GlobalSearchView] _gotoLineInEditor - calling doSearch')
-    try {
-      editor.searchPanel?.doSearch(matchText, {
-        caseSensitive: false,
-        wholeWord: false,
-        noSelect: true,
-        delay: 0,
-      })
-    } catch (err) { /* ignore */ }
-
-    // Scroll to position
-    setTimeout(() => {
-      const markElem = editor.getMarkElem?.() ?? $('#write')
-      if (markElem) {
-        console.log('[GlobalSearchView] _gotoLineInEditor - highlighting .md-search-hit')
-        markElem.find('.md-search-hit').first().addClass('md-search-select')
-        markElem.addClass('md-focus')
-      }
-
-      // Scroll adjustment
-      setTimeout(() => {
-        editor.selection?.scrollAdjust?.($('#write'), 60, undefined, true)
-      }, 10)
-    }, 10)
   }
 
   /** Escape special characters for use in data-path attribute selector. */
