@@ -27,22 +27,13 @@ export class GlobalSearchView extends InternalSidebarPanel {
 
   private _keepSearchResult = new KeepSearchResult()
   private _showSearchResultFullPath = new ShowSearchResultFullPath()
-  /** Whether case-sensitive search is enabled */
-  private _caseSensitive = false
-  /** Whether whole-word search is enabled */
-  private _wholeWord = false
 
   constructor(
     i18n = useService('i18n'),
-    settings = useService('settings'),
   ) {
     super()
 
     this.containerEl = document.getElementById('file-library-search') as HTMLElement
-
-    // Load saved options
-    this._caseSensitive = settings.get('fileSearchCaseSensitive') ?? false
-    this._wholeWord = settings.get('fileSearchWholeWord') ?? false
 
     this.addRibbonButton({
       [BUILT_IN]: true,
@@ -67,23 +58,6 @@ export class GlobalSearchView extends InternalSidebarPanel {
 
   setQuery(query: string) {
     $(SELECTOR_QUERY_INPUT).val(query)
-  }
-
-  /** Get current case-sensitive setting */
-  getCaseSensitive(): boolean {
-    return this._caseSensitive
-  }
-
-  /** Get current whole-word setting */
-  getWholeWord(): boolean {
-    return this._wholeWord
-  }
-
-  startSearch() {
-    // Note: GlobalSearch now handles custom search via _startCustomSearch().
-    // This method is kept for backward compatibility but results are rendered
-    // by the custom service, not by Typora's native implementation.
-    editor.library.fileSearch.search(this.getQuery())
   }
 
   /**

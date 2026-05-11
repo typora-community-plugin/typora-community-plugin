@@ -1,3 +1,4 @@
+import { editor } from "typora"
 import { useService } from "src/common/service"
 import { GlobalSearchView } from "./global-search-view"
 import { RipgrepSearchService } from "./ripgrep-search-service"
@@ -26,8 +27,8 @@ export class GlobalSearch {
     // Cancel any previous search
     this._searchService?.cancel()
 
-    const caseSensitive = view.getCaseSensitive() ?? false
-    const wholeWord = view.getWholeWord() ?? false
+    const caseSensitive = editor.library.fileSearch.caseSensitive ?? false
+    const wholeWord = editor.library.fileSearch.wholeWord ?? false
 
     this._searchService = new RipgrepSearchService(
       vault.path,
