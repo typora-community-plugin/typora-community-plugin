@@ -6,7 +6,7 @@ import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
 import { html, noop } from 'src/utils'
 import { useService } from 'src/common/service'
 import { InternalSidebarPanel } from '../sidebar-panel'
-import type { SearchResult } from './ripgrep-search-service'
+import type { SearchResult } from './search-service'
 
 
 const SELECTOR_QUERY_INPUT = '#file-library-search-input'

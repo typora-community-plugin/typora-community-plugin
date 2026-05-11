@@ -1,7 +1,7 @@
 import { editor } from "typora"
 import { useService } from "src/common/service"
 import { GlobalSearchView } from "./global-search-view"
-import { RipgrepSearchService } from "./ripgrep-search-service"
+import { RipgrepSearchService } from "./search-service"
 
 
 export class GlobalSearch {
