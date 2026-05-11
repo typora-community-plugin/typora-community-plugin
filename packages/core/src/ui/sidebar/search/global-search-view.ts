@@ -22,6 +22,9 @@ export class GlobalSearchView extends InternalSidebarPanel {
     return 'core.search' as const
   }
 
+  /** Cached parsed template DOM, initialized once on first use */
+  private _templateDom: HTMLElement | null = null
+
   private _keepSearchResult = new KeepSearchResult()
   private _showSearchResultFullPath = new ShowSearchResultFullPath()
   /** Whether case-sensitive search is enabled */
@@ -164,46 +167,36 @@ export class GlobalSearchView extends InternalSidebarPanel {
     const extension = fileExtIdx > 0 ? fileName.substring(fileExtIdx) : ''
     const parentFolder = lastSlash > 0 ? relativePath.substring(0, lastSlash) : ''
 
-    // Create DOM structure matching Typora's template
-    const itemEl = document.createElement('div')
-    itemEl.className = 'ty-search-item file-list-item'
+    // Clone from cached template DOM (parsed once, reused via cloneNode)
+    const itemEl = this._getTemplateDom()?.cloneNode(true) as HTMLElement | null
+    if (!itemEl) return
+
+    // Set data-path for identification
     itemEl.dataset.path = result.filePath
 
-    // File name + extension row
-    const nameRow = document.createElement('div')
-    nameRow.className = 'file-list-item-name'
+    // Fill filename parts (with highlight on name part)
+    const namePartEl = itemEl.querySelector('.file-list-item-file-name-part') as HTMLElement | null
+    if (namePartEl) {
+      this._highlightMatch(namePartEl, displayName, result.matches[0]?.matchedText ?? '')
+    }
 
-    const namePart = document.createElement('span')
-    namePart.className = 'file-list-item-file-name-part'
-    this._highlightMatch(namePart, displayName, result.matches[0]?.matchedText ?? '')
+    // Fill extension
+    const extPartEl = itemEl.querySelector('.file-list-item-file-ext-part') as HTMLElement | null
+    if (extPartEl) {
+      extPartEl.textContent = extension
+    }
 
-    const extPart = document.createElement('span')
-    extPart.className = 'file-list-item-file-ext-part'
-    extPart.textContent = extension
-
-    nameRow.appendChild(namePart)
-    nameRow.appendChild(extPart)
-
-    // Parent folder path row
-    const locEl = document.createElement('div')
-    locEl.className = 'file-list-item-parent-loc'
-    if (parentFolder) {
+    // Fill parent folder path
+    const locEl = itemEl.querySelector('.file-list-item-parent-loc') as HTMLElement | null
+    if (locEl && parentFolder) {
       locEl.textContent = parentFolder.split(sep).join(PATH_SEP)
     }
 
-    // Match count badge
-    const countEl = document.createElement('span')
-    countEl.className = 'file-list-item-count'
-    countEl.textContent = result.matches.length > 0 ? String(result.matches.length) : ''
-
-    // Matches container (for content matches)
-    const matchesContainer = document.createElement('div')
-    matchesContainer.className = 'ty-search-item-matches'
-
-    itemEl.appendChild(nameRow)
-    itemEl.appendChild(locEl)
-    itemEl.appendChild(countEl)
-    itemEl.appendChild(matchesContainer)
+    // Set match count
+    const countEl = itemEl.querySelector('.file-list-item-count') as HTMLElement | null
+    if (countEl) {
+      countEl.textContent = result.matches.length > 0 ? String(result.matches.length) : ''
+    }
 
     resultsEl.appendChild(itemEl)
 
@@ -213,8 +206,9 @@ export class GlobalSearchView extends InternalSidebarPanel {
     }
 
     // Render line matches
+    const matchesContainer = itemEl.querySelector('.ty-search-item-matches') as HTMLElement | null
     for (const match of result.matches) {
-      this._appendLineToContainer(matchesContainer, itemEl, match)
+      this._appendLineToContainer(matchesContainer!, itemEl, match)
     }
   }
 
@@ -325,6 +319,34 @@ export class GlobalSearchView extends InternalSidebarPanel {
   /** Escape special characters for use in data-path attribute selector. */
   private _escapeSelector(str: string): string {
     return str.replace(/([^\w\-./])/g, '\\$1')
+  }
+
+  /**
+   * Get the parsed template DOM node, cached after first call.
+   *
+   * Reads from `<script id="file-search-item-template" type="text/x-template">`
+   * (or a native `<template>` element), parses innerHTML into real DOM nodes,
+   * and caches the result so subsequent calls use `cloneNode()` only.
+   */
+  private _getTemplateDom(): HTMLElement | null {
+    if (this._templateDom) return this._templateDom
+
+    const raw = document.getElementById('file-search-item-template')
+    if (!raw) {
+      console.warn('[GlobalSearchView] file-search-item-template not found in DOM')
+      return null
+    }
+
+    // Handle native <template> vs <script type="text/x-template">
+    if (raw.tagName === 'TEMPLATE' && raw.content) {
+      this._templateDom = raw.content.querySelector('.ty-search-item') as HTMLElement | null
+    } else {
+      const container = document.createElement('div')
+      container.innerHTML = raw.innerHTML.trim()
+      this._templateDom = container.firstElementChild as HTMLElement | null
+    }
+
+    return this._templateDom
   }
 }
 
