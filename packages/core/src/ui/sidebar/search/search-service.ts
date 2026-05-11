@@ -1,3 +1,4 @@
+import { bridge } from "typora"
 import type { ChildProcess } from "node:child_process"
 import { platform } from "src/common/constants"
 
@@ -101,7 +102,7 @@ export class RipgrepSearchService {
     // macOS: use bridge.callHandler("library.search", ...) which invokes native ripgrep
     const nfdQuery = this._normalizeNFD(query)
 
-    ;(window.bridge as any)?.callHandler("library.search", {
+    bridge.callHandler("library.search", {
       text: query,
       caseSensitive: this.caseSensitive || false,
       wholeWord: this.wholeWord || false,
@@ -138,9 +139,7 @@ export class RipgrepSearchService {
 
     let task1HasResults = false
     task1.stdout.on("data", (chunk: string) => {
-      this._parseJsonLines(chunk, false, () => {
-        // Accumulated into _resultsByPath; flushed on close
-      })
+      this._parseJsonLines(chunk, false)
     })
     task1.on("close", () => {
       this._rpTask1 = null
@@ -168,7 +167,7 @@ export class RipgrepSearchService {
 
     task2.stdout.on("data", (chunk: string) => {
       // pathMatch=true: accumulated into _resultsByPath; flushed on close
-      this._parseJsonLines(chunk, true, () => {})
+      this._parseJsonLines(chunk, true)
     })
     task2.on("close", () => {
       this._rpTask2 = null
@@ -222,7 +221,6 @@ export class RipgrepSearchService {
   private _parseJsonLines(
     chunk: string,
     pathMatch: boolean,
-    onResult: (result: SearchResult) => void,
   ): void {
     // Accumulate buffer to handle partial JSON lines across chunks
     const buf = pathMatch ? this._pathPrevBuffer : this._prevBuffer
@@ -252,14 +250,13 @@ export class RipgrepSearchService {
 
       if (parsed.type !== "match" || !parsed.data) continue
 
-      this._processMatch(parsed.data as Record<string, unknown>, pathMatch, onResult)
+      this._processMatch(parsed.data as Record<string, unknown>, pathMatch)
     }
   }
 
   private _processMatch(
     data: Record<string, unknown>,
     pathMatch: boolean,
-    onResult: (result: SearchResult) => void,
   ): void {
     const pathData = data.path as Record<string, unknown> | undefined
     if (!pathData?.text) return
