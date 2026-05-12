@@ -1,4 +1,5 @@
 import { useService } from 'src/common/service'
+import path from 'src/path'
 import type { SearchResult } from './search-service'
 
 
@@ -34,7 +35,7 @@ export class SearchResultRenderer {
     }
 
     // Check if this file already has a DOM entry
-    const existingItem = resultsEl.querySelector(`[data-path="${this._escapeSelector(result.filePath)}"]`) as HTMLElement | null
+    const existingItem = resultsEl.querySelector(`[data-path="${this._escapeSelector(result.filePath.split(/[\\/]/).join(path.sep))}"]`) as HTMLElement | null
 
     // For filename-only matches (no content), create/update the item
     if (result.matches.length === 0) {
@@ -86,8 +87,8 @@ export class SearchResultRenderer {
     const itemEl = this._getTemplateDom()?.cloneNode(true) as HTMLElement | null
     if (!itemEl) return
 
-    // Set data-path for identification
-    itemEl.dataset.path = result.filePath
+    // Set data-path for identification (normalize to OS-specific path separators)
+    itemEl.dataset.path = result.filePath.split(/[\\/]/).join(path.sep)
 
     // Fill filename parts (with highlight on name part)
     const namePartEl = itemEl.querySelector('.file-list-item-file-name-part') as HTMLElement | null

@@ -1,5 +1,6 @@
 import { bridge } from "typora"
 import type { ChildProcess } from "node:child_process"
+import path from "src/path"
 import { platform } from "src/common/constants"
 
 /**
@@ -190,9 +191,13 @@ export class RipgrepSearchService {
       const lines = chunk.split(/\r?\n/g)
       for (const line of lines) {
         if (!line || line.length > 10000) continue
+        // Ripgrep outputs relative paths; make absolute
+        const absPath = path.isAbsolute(line)
+          ? line
+          : path.join(this.mountFolder, line)
         // Accumulate filename-only result; flushed on close
-        this._resultsByPath.set(line, {
-          filePath: line,
+        this._resultsByPath.set(absPath, {
+          filePath: absPath,
           matches: [],
           totalMatches: 0,
         })
@@ -258,6 +263,11 @@ export class RipgrepSearchService {
 
     const filePath = pathData.text as string
 
+    // Ripgrep outputs paths relative to cwd (mountFolder); make absolute
+    const absPath = path.isAbsolute(filePath)
+      ? filePath
+      : path.join(this.mountFolder, filePath)
+
     // For content matches (pathMatch=false), extract line info and submatches
     if (!pathMatch) {
       const span = data.span as Record<string, unknown> | undefined
@@ -282,19 +292,19 @@ export class RipgrepSearchService {
 
       // Accumulate into per-file result instead of emitting one-per-match.
       // This mirrors Typora's native begin→match×N→end accumulator pattern.
-      let entry = this._resultsByPath.get(filePath)
+      let entry = this._resultsByPath.get(absPath)
       if (!entry) {
-        entry = { filePath, matches: [], totalMatches: 0 }
-        this._resultsByPath.set(filePath, entry)
+        entry = { filePath: absPath, matches: [], totalMatches: 0 }
+        this._resultsByPath.set(absPath, entry)
       }
       entry.matches.push({ lineNumber, lineText, matchedText })
 
     } else {
       // Filename-only match (pathMatch=true): accumulate into per-file result.
       // Only create an entry if we don't already have one from Task 1 content matches.
-      if (!this._resultsByPath.has(filePath)) {
-        this._resultsByPath.set(filePath, {
-          filePath,
+      if (!this._resultsByPath.has(absPath)) {
+        this._resultsByPath.set(absPath, {
+          filePath: absPath,
           matches: [],
           totalMatches: 0,
         })
