@@ -1,4 +1,3 @@
-import path from 'src/path'
 import { useService } from 'src/common/service'
 import type { SearchResult } from './search-service'
 
@@ -46,11 +45,12 @@ export class SearchResultRenderer {
     }
 
     // For content matches, append all lines to existing item or create new one.
-    // With batched SearchResult (one per file), this handles the case where a
-    // filename-only entry from Task 3 already exists and we now have content matches.
     if (existingItem) {
       for (const match of result.matches) {
-        this._appendLineMatch(existingItem, match)
+        const matchesContainer = existingItem.querySelector('.ty-search-item-matches') as HTMLElement | null
+        if (matchesContainer) {
+          this._appendLineToContainer(matchesContainer, existingItem, match)
+        }
       }
     } else {
       this._appendFileItem(resultsEl, result)
@@ -66,25 +66,21 @@ export class SearchResultRenderer {
 
   /** Append a file result item to the results list. */
   private _appendFileItem(resultsEl: HTMLElement, result: SearchResult): void {
-    const mountFolder = useService('vault').path
-    const sep = path.sep
+    const mountPath = useService('vault').path
 
-    // Get relative path from mount folder
-    let relativePath = result.filePath
-    if (result.filePath.startsWith(mountFolder)) {
-      relativePath = result.filePath.slice(mountFolder.length)
-      if (relativePath.startsWith(sep) || relativePath.startsWith('/')) {
-        relativePath = relativePath.slice(1)
-      }
-    }
+    // Get relative path from mount folder (normalize slashes)
+    const relPath = result.filePath.startsWith(mountPath)
+      ? result.filePath.slice(mountPath.length).replace(/^[/\\]/, '')
+      : result.filePath
 
-    // Parse path into folder, name, extension
-    const lastSlash = relativePath.replace(/\\/g, '/').replace(/\/$/, '').lastIndexOf('/')
-    const fileName = relativePath.substring(lastSlash + 1) || relativePath
-    const fileExtIdx = fileName.lastIndexOf('.')
-    const displayName = fileExtIdx > 0 ? fileName.substring(0, fileExtIdx) : fileName
-    const extension = fileExtIdx > 0 ? fileName.substring(fileExtIdx) : ''
-    const parentFolder = lastSlash > 0 ? relativePath.substring(0, lastSlash) : ''
+    // Parse path into components (normalize to forward slashes for consistent parsing)
+    const normalized = relPath.replace(/\\/g, '/')
+    const lastSlash = normalized.endsWith('/') ? normalized.lastIndexOf('/', normalized.length - 2) : normalized.lastIndexOf('/')
+    const fileName = normalized.substring(lastSlash + 1) || normalized
+    const dotIdx = fileName.indexOf('.')
+    const displayName = dotIdx > 0 ? fileName.substring(0, dotIdx) : fileName
+    const extension = dotIdx > 0 ? fileName.substring(dotIdx) : ''
+    const parentFolder = lastSlash > 0 ? normalized.substring(0, lastSlash) : ''
 
     // Clone from cached template DOM (parsed once, reused via cloneNode)
     const itemEl = this._getTemplateDom()?.cloneNode(true) as HTMLElement | null
@@ -108,7 +104,7 @@ export class SearchResultRenderer {
     // Fill parent folder path
     const locEl = itemEl.querySelector('.file-list-item-parent-loc') as HTMLElement | null
     if (locEl && parentFolder) {
-      locEl.textContent = parentFolder.split(sep).join(PATH_SEP)
+      locEl.textContent = parentFolder.split('/').join(PATH_SEP)
     }
 
     // Set match count
@@ -131,13 +127,6 @@ export class SearchResultRenderer {
     }
   }
 
-  /** Append a single line match to an existing file item. */
-  private _appendLineMatch(itemEl: HTMLElement, match: NonNullable<SearchResult['matches']>[number]): void {
-    const matchesContainer = itemEl.querySelector('.ty-search-item-matches') as HTMLElement | null
-    if (!matchesContainer) return
-
-    this._appendLineToContainer(matchesContainer, itemEl, match)
-  }
 
   private _appendLineToContainer(
     container: HTMLElement,
@@ -173,6 +162,23 @@ export class SearchResultRenderer {
     }
   }
 
+  /** Append highlighted text to container: before + mark(span) + after. */
+  private _appendHighlightedText(container: HTMLElement, fullText: string, matchStart: number, matchLength: number): void {
+    if (matchStart > 0) {
+      container.appendChild(document.createTextNode(fullText.substring(0, matchStart)))
+    }
+
+    const markEl = document.createElement('span')
+    markEl.className = 'ty-file-search-match-text'
+    markEl.textContent = fullText.substring(matchStart, matchStart + matchLength)
+    container.appendChild(markEl)
+
+    const afterText = fullText.substring(matchStart + matchLength)
+    if (afterText) {
+      container.appendChild(document.createTextNode(afterText))
+    }
+  }
+
   /** Highlight a match within file name text. */
   private _highlightMatch(container: HTMLElement, fileName: string, matchText: string): void {
     if (!matchText || !fileName) {
@@ -180,28 +186,16 @@ export class SearchResultRenderer {
       return
     }
 
-    const idx = fileName.toLowerCase().indexOf(matchText.toLowerCase())
+    // Case-insensitive search for filename highlighting
+    const lowerFull = fileName.toLowerCase()
+    const lowerMatch = matchText.toLowerCase()
+    const idx = lowerFull.indexOf(lowerMatch)
     if (idx < 0) {
       container.textContent = fileName
       return
     }
 
-    // Text before match
-    if (idx > 0) {
-      container.appendChild(document.createTextNode(fileName.substring(0, idx)))
-    }
-
-    // Matched text (highlighted)
-    const markEl = document.createElement('span')
-    markEl.className = 'ty-file-search-match-text'
-    markEl.textContent = fileName.substring(idx, idx + matchText.length)
-    container.appendChild(markEl)
-
-    // Text after match
-    const afterText = fileName.substring(idx + matchText.length)
-    if (afterText) {
-      container.appendChild(document.createTextNode(afterText))
-    }
+    this._appendHighlightedText(container, fileName, idx, matchText.length)
   }
 
   /** Render a line of text with the matched portion highlighted. */
@@ -217,22 +211,7 @@ export class SearchResultRenderer {
       return
     }
 
-    // Text before match
-    if (idx > 0) {
-      container.appendChild(document.createTextNode(lineText.substring(0, idx)))
-    }
-
-    // Matched text (highlighted)
-    const markEl = document.createElement('span')
-    markEl.className = 'ty-file-search-match-text'
-    markEl.textContent = matchText
-    container.appendChild(markEl)
-
-    // Text after match
-    const afterText = lineText.substring(idx + matchText.length)
-    if (afterText) {
-      container.appendChild(document.createTextNode(afterText))
-    }
+    this._appendHighlightedText(container, lineText, idx, matchText.length)
   }
 
   /** Escape special characters for use in data-path attribute selector. */

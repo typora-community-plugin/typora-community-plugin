@@ -137,7 +137,6 @@ export class RipgrepSearchService {
     const task1 = spawnRg(task1Args)
     this._rpTask1 = task1
 
-    let task1HasResults = false
     task1.stdout.on("data", (chunk: string) => {
       this._parseJsonLines(chunk, false)
     })
@@ -205,10 +204,6 @@ export class RipgrepSearchService {
       this._flushResults(onResult)
     })
 
-    // Store reference for cancel
-    if (!task1HasResults && !task3HasResults) {
-      // No results yet, processes are running
-    }
   }
 
   /**
@@ -232,15 +227,15 @@ export class RipgrepSearchService {
 
     // Save potentially incomplete last line back to buffer
     if (pathMatch) {
-      this._pathPrevBuffer = lines[lines.length - 1] ?? ""
+      this._pathPrevBuffer = lines.at(-1) ?? ""
     } else {
-      this._prevBuffer = lines[lines.length - 1] ?? ""
+      this._prevBuffer = lines.at(-1) ?? ""
     }
 
     for (const line of completeLines) {
       if (!line.trim()) continue
 
-      let parsed: { type: string; data?: Record<string, unknown> }
+      let parsed: { type: string; data?: Record<string, unknown> | undefined }
       try {
         parsed = JSON.parse(line)
       } catch {
@@ -354,7 +349,7 @@ export class RipgrepSearchService {
 
   /** Build ripgrep arguments for content search. */
   private _buildRpArgs(query: string, nfdQuery: string): string[] {
-    const args = [
+    const args: string[] = [
       "--json",
       "-F",           // fixed string match (no regex)
       "--no-multiline",
@@ -371,7 +366,10 @@ export class RipgrepSearchService {
       args.splice(args.indexOf("-F") + 1, 0, "-i")
     }
     if (this.wholeWord) {
-      args.splice(args.indexOf("--"), 0, "-w")
+      const dashIdx = args.indexOf("--")
+      if (dashIdx >= 0) {
+        args.splice(dashIdx, 0, "-w")
+      }
     }
 
     return args
