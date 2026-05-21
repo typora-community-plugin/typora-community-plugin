@@ -17,8 +17,12 @@ export class GlobalSearch {
   openGlobalSearch(query: string) {
     const { workspace, vault } = this
 
-    // Open the search panel
-    workspace.ribbon.clickButton(GlobalSearchView.id)
+    const isActive = $('#typora-sidebar').hasClass('ty-show-search')
+    if (!isActive) {
+      // Open the search panel
+      workspace.ribbon.clickButton(GlobalSearchView.id)
+    }
+
     const view = workspace.getViewByType(GlobalSearchView) as GlobalSearchView
 
     // Set query and start custom search
