@@ -6,12 +6,16 @@ import { RipgrepSearchService } from "./search-service"
 
 export class GlobalSearch {
 
-  private _searchService: RipgrepSearchService | null = null
+  private _searchService!: RipgrepSearchService
 
   constructor(
     private workspace = useService('workspace'),
     private vault = useService('vault'),
   ) {
+    this._searchService = new RipgrepSearchService(vault.path)
+    vault.on('change', (vaultPath) => {
+      this._searchService = new RipgrepSearchService(vaultPath)
+    })
   }
 
   openGlobalSearch(query: string) {
@@ -25,23 +29,13 @@ export class GlobalSearch {
 
     const view = workspace.getViewByType(GlobalSearchView) as GlobalSearchView
 
-    // Set query and start custom search
     view.setQuery(query)
-
-    // Cancel any previous search
-    this._searchService?.cancel()
 
     const caseSensitive = editor.library.fileSearch.caseSensitive ?? false
     const wholeWord = editor.library.fileSearch.wholeWord ?? false
 
-    this._searchService = new RipgrepSearchService(
-      vault.path,
-      caseSensitive,
-      wholeWord,
-    )
-
-    // Execute search and stream results
-    this._searchService.execute(query, (result) => {
+    this._searchService?.cancel()
+    this._searchService.execute(query, { caseSensitive, wholeWord }, (result) => {
       view.renderer.renderResult(result)
     })
   }

@@ -2,6 +2,7 @@ import { bridge } from "typora"
 import type { ChildProcess } from "node:child_process"
 import path from "src/path"
 import { platform } from "src/common/constants"
+import { noop } from "src/utils"
 
 /**
  * Result of a single line match from ripgrep.
@@ -69,8 +70,6 @@ export class RipgrepSearchService {
 
   constructor(
     private mountFolder: string,
-    private caseSensitive: boolean,
-    private wholeWord: boolean,
   ) {}
 
   /** Kill all running ripgrep processes. Call before starting a new search. */
@@ -89,32 +88,52 @@ export class RipgrepSearchService {
    * Execute global search. On Windows/Linux, spawns 3 parallel ripgrep processes.
    * On macOS, delegates to native bridge handler.
    */
-  execute(query: string, onResult: (result: SearchResult) => void): void {
+  execute(
+    query: string,
+    options?: { caseSensitive?: boolean; wholeWord?: boolean },
+    onResult?: (result: SearchResult) => void,
+  ): void {
     this.cancel()
 
-    if (platform() === 'drawin') {
-      this._executeOnMac(query, onResult)
+    const caseSensitive = options?.caseSensitive ?? false
+    const wholeWord = options?.wholeWord ?? false
+
+    if (platform() === 'darwin') {
+      this._executeOnMac(query, caseSensitive, wholeWord, onResult)
     } else {
-      this._executeOnNode(query, onResult)
+      this._executeOnNode(query, caseSensitive, wholeWord, onResult)
     }
   }
 
-  private _executeOnMac(query: string, onResult: (result: SearchResult) => void): void {
+  /**
+   * Execute global search on macOS.
+   */
+  private _executeOnMac(
+    query: string,
+    caseSensitive: boolean,
+    wholeWord: boolean,
+    onResult?: (result: SearchResult) => void,
+  ): void {
     // macOS: use bridge.callHandler("library.search", ...) which invokes native ripgrep
     const nfdQuery = this._normalizeNFD(query)
 
     bridge.callHandler("library.search", {
       text: query,
-      caseSensitive: this.caseSensitive || false,
-      wholeWord: this.wholeWord || false,
-      args: this._buildRpArgs(query, nfdQuery),
+      caseSensitive: caseSensitive || false,
+      wholeWord: wholeWord || false,
+      args: this._buildRpArgs(query, nfdQuery, caseSensitive, wholeWord),
     }, () => {
       // Callback fires when search completes; results are streamed via
       // bridge.registerHandler("globalSearch.onSearchUpdate", ...) in Typora's frame.js
     })
   }
 
-  private _executeOnNode(query: string, onResult: (result: SearchResult) => void): void {
+  private _executeOnNode(
+    query: string,
+    caseSensitive: boolean,
+    wholeWord: boolean,
+    onResult: (result: SearchResult) => void = noop,
+  ): void {
     const rg = this._getRipgrepPath()
     if (!rg) return
 
@@ -134,18 +153,18 @@ export class RipgrepSearchService {
 
     // ── Task 1: Content match (file content search) ──────────────────────
     // rg --json -F -n -m 10 --max-filesize 2M -g "!.*" [--iglob/-i] [--w] <query>
-    const task1Args = this._buildRpArgs(query, this._normalizeNFD(query))
+    const task1Args = this._buildRpArgs(query, this._normalizeNFD(query), caseSensitive, wholeWord)
     const task1 = spawnRg(task1Args)
     this._rpTask1 = task1
 
-    task1.stdout.on("data", (chunk: string) => {
+    task1.stdout?.on("data", (chunk: string) => {
       this._parseJsonLines(chunk, false)
     })
     task1.on("close", () => {
       this._rpTask1 = null
       this._flushResults(onResult)
     })
-    task1.stderr.on("data", () => {
+    task1.stderr?.on("data", () => {
       // Silently ignore stderr (ripgrep warnings about permission denied, etc.)
     })
 
@@ -159,13 +178,13 @@ export class RipgrepSearchService {
       "-H", "-U",
       "--json",
       "--no-messages",
-      this.caseSensitive ? "-g" : "--iglob",
+      caseSensitive ? "-g" : "--iglob",
       `*${escapedQuery}*`,
     ]
     const task2 = spawnRg(task2Args)
     this._rpTask2 = task2
 
-    task2.stdout.on("data", (chunk: string) => {
+    task2.stdout?.on("data", (chunk: string) => {
       // pathMatch=true: accumulated into _resultsByPath; flushed on close
       this._parseJsonLines(chunk, true)
     })
@@ -180,14 +199,14 @@ export class RipgrepSearchService {
       "--max-filesize", "0K",
       "--files",
       "--no-messages",
-      this.caseSensitive ? "-g" : "--iglob",
+      caseSensitive ? "-g" : "--iglob",
       `*${escapedQuery}*`,
     ]
     const task3 = spawnRg(task3Args)
     this._rpTask3 = task3
 
     let task3HasResults = false
-    task3.stdout.on("data", (chunk: string) => {
+    task3.stdout?.on("data", (chunk: string) => {
       const lines = chunk.split(/\r?\n/g)
       for (const line of lines) {
         if (!line || line.length > 10000) continue
@@ -358,7 +377,12 @@ export class RipgrepSearchService {
   }
 
   /** Build ripgrep arguments for content search. */
-  private _buildRpArgs(query: string, nfdQuery: string): string[] {
+  private _buildRpArgs(
+    query: string,
+    nfdQuery: string,
+    caseSensitive: boolean,
+    wholeWord: boolean,
+  ): string[] {
     const args: string[] = [
       "--json",
       "-F",           // fixed string match (no regex)
@@ -372,10 +396,10 @@ export class RipgrepSearchService {
       query,          // search term at the end
     ]
 
-    if (!this.caseSensitive) {
+    if (!caseSensitive) {
       args.splice(args.indexOf("-F") + 1, 0, "-i")
     }
-    if (this.wholeWord) {
+    if (wholeWord) {
       const dashIdx = args.indexOf("--")
       if (dashIdx >= 0) {
         args.splice(dashIdx, 0, "-w")
