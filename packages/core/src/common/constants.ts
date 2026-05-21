@@ -3,7 +3,7 @@ import path from "src/path"
 import { constant } from "src/utils"
 
 
-export const coreVersion = constant(process.env.CORE_VERSION)
+export const coreVersion = constant(process.env.CORE_VERSION!)
 
 export const globalRootDir = constant(
   process.env.IS_PROD
@@ -24,7 +24,7 @@ export const globalConfigDir = constant(
 )
 
 export const platform = constant(
-  (globalThis?.process?.platform as 'win32' | 'linux') ?? 'darwin'
+  ((globalThis?.process?.platform) ?? 'darwin') as 'win32' | 'linux' | 'darwin'
 )
 
 export const isDebug = constant(

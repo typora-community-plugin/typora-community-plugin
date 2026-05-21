@@ -1,3 +1,4 @@
+import './global-search.scss'
 import decorate from '@plylrnsdy/decorate.js'
 import { editor } from "typora"
 import { Component } from 'src/common/component'
@@ -6,6 +7,7 @@ import { html, noop } from 'src/utils'
 import { useService } from 'src/common/service'
 import { InternalSidebarPanel } from '../sidebar-panel'
 import { SearchResultRenderer } from './search-result-renderer'
+import { GlobalSearchProgressbar } from './global-search-progressbar'
 
 
 const SELECTOR_QUERY_INPUT = '#file-library-search-input'
@@ -21,6 +23,8 @@ export class GlobalSearchView extends InternalSidebarPanel {
 
   private _keepSearchResult = new KeepSearchResult()
   private _showSearchResultFullPath = new ShowSearchResultFullPath()
+
+  progressBar = new GlobalSearchProgressbar()
 
   constructor(
     i18n = useService('i18n'),
@@ -40,10 +44,12 @@ export class GlobalSearchView extends InternalSidebarPanel {
   onshow() {
     editor.library.fileSearch.show()
     this._keepSearchResult.showSearchPanel()
+    this.progressBar.load()
   }
 
   onhide() {
     $('#typora-sidebar').removeClass('ty-show-search ty-on-search')
+    this.progressBar.unload()
   }
 
   getQuery() {
