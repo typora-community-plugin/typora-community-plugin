@@ -110,8 +110,8 @@ export class RipgrepSearchService {
    */
   private _executeOnMac(
     query: string,
-    caseSensitive: boolean,
-    wholeWord: boolean,
+    caseSensitive = false,
+    wholeWord = false,
     onResult?: (result: SearchResult) => void,
   ): void {
     // macOS: use bridge.callHandler("library.search", ...) which invokes native ripgrep
@@ -119,9 +119,9 @@ export class RipgrepSearchService {
 
     bridge.callHandler("library.search", {
       text: query,
-      caseSensitive: caseSensitive || false,
-      wholeWord: wholeWord || false,
-      args: this._buildRpArgs(query, nfdQuery, caseSensitive, wholeWord),
+      caseSensitive,
+      wholeWord,
+      args: this._buildRpArgs(nfdQuery, caseSensitive, wholeWord),
     }, () => {
       // Callback fires when search completes; results are streamed via
       // bridge.registerHandler("globalSearch.onSearchUpdate", ...) in Typora's frame.js
@@ -153,7 +153,7 @@ export class RipgrepSearchService {
 
     // ── Task 1: Content match (file content search) ──────────────────────
     // rg --json -F -n -m 10 --max-filesize 2M -g "!.*" [--iglob/-i] [--w] <query>
-    const task1Args = this._buildRpArgs(query, this._normalizeNFD(query), caseSensitive, wholeWord)
+    const task1Args = this._buildRpArgs(query, caseSensitive, wholeWord)
     const task1 = spawnRg(task1Args)
     this._rpTask1 = task1
 
@@ -379,7 +379,6 @@ export class RipgrepSearchService {
   /** Build ripgrep arguments for content search. */
   private _buildRpArgs(
     query: string,
-    nfdQuery: string,
     caseSensitive: boolean,
     wholeWord: boolean,
   ): string[] {
