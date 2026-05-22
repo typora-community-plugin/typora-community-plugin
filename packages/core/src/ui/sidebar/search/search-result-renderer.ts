@@ -28,7 +28,7 @@ export class SearchResultRenderer {
    * Uses Typora's existing template structure (#file-search-item-template)
    * to maintain visual consistency with the native search UI.
    */
-  renderResult(result: SearchResult, resultsEl: HTMLElement = document.querySelector(SELECTOR_RESULTS)): void {
+  renderResult(result: SearchResult, resultsEl: HTMLElement = document.querySelector(SELECTOR_RESULTS)!): void {
     // Skip empty file paths (can happen from task3 file list)
     if (!result.filePath || !result.filePath.trim()) {
       return
@@ -59,7 +59,7 @@ export class SearchResultRenderer {
   }
 
   /** Clear all search results from the DOM. */
-  clearResults(resultsEl: HTMLElement = document.querySelector(SELECTOR_RESULTS)): void {
+  clearResults(resultsEl: HTMLElement = document.querySelector(SELECTOR_RESULTS)!): void {
     resultsEl.innerHTML = ''
   }
 

@@ -122,10 +122,7 @@ export class RipgrepSearchService {
       caseSensitive,
       wholeWord,
       args: this._buildRpArgs(nfdQuery, caseSensitive, wholeWord),
-    }, () => {
-      // Callback fires when search completes; results are streamed via
-      // bridge.registerHandler("globalSearch.onSearchUpdate", ...) in Typora's frame.js
-    })
+    }, noop)
   }
 
   private _executeOnNode(
@@ -310,7 +307,6 @@ export class RipgrepSearchService {
       }
 
       // Accumulate into per-file result instead of emitting one-per-match.
-      // This mirrors Typora's native begin→match×N→end accumulator pattern.
       let entry = this._resultsByPath.get(absPath)
       if (!entry) {
         entry = { filePath: absPath, matches: [], totalMatches: 0 }
@@ -331,11 +327,6 @@ export class RipgrepSearchService {
     }
   }
 
-  /** Flush all accumulated results and emit them via onResult.
-   * Only emits after ALL 3 tasks have closed, so that a file appearing in
-   * multiple tasks (e.g., Task 1 content + Task 2 filename-only) gets merged
-   * into ONE complete SearchResult instead of duplicate DOM entries.
-   */
   private _flushResults(onResult: (result: SearchResult) => void): void {
     this._tasksClosedCount++
     if (this._tasksClosedCount < 3) {
