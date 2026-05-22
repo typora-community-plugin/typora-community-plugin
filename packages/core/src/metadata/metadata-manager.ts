@@ -122,7 +122,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
       this.emit('index:done')
       this.saveToIndexedDb(vaultId, indexingCache)
 
-    } catch (error) {
+    } catch (error: any) {
       if (error.name === 'AbortError') {
         console.log('[Metadata] Indexing stopped, temporary cache discarded')
       } else {
@@ -142,7 +142,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
         signal.throwIfAborted()
         const filePath = filePaths.pop()
         if (filePath) {
-          await this.processFile(indexingCache, vaultPath, filePath, null, signal)
+          await this.processFile(indexingCache, vaultPath, filePath, undefined, signal)
           this.emit('index:progress', allCount - filePaths.length - 1)
         }
       }
@@ -204,6 +204,13 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
   }
 
   /**
+   * Get metadata for a file by relative path.
+   */
+  get(relativePath: string): CacheEntry | undefined {
+    return this.cache[relativePath]
+  }
+
+  /**
    * Clear all cache
    */
   clear(): void {
@@ -211,21 +218,24 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
   }
 
   async loadFromIndexedDb(vaultId: string): Promise<Cache> {
+    const loadedCache: Cache = {}
+
     try {
       const db = new MiniDexie(`metadata:${vaultId}`)
         .version(1).stores(DB_SCHEMA)
 
       const records = await db.files.toArray()
-      const loadedCache: Cache = {}
       for (const record of records) {
         const { path, metadata } = record
         loadedCache[path] = metadata as CacheEntry
       }
 
       console.log(`[Metadata] Loaded ${records.length} items from IndexedDB.`)
-      return loadedCache
     } catch (e) {
       console.error('[Metadata] Failed to load IndexedDB:', e)
+    }
+    finally {
+      return loadedCache
     }
   }
 

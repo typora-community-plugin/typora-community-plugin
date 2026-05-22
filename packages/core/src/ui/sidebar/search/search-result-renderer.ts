@@ -1,6 +1,6 @@
 import { useService } from 'src/common/service'
 import path from 'src/path'
-import type { SearchResult } from './search-service'
+import type { SearchResult } from './services/text-search-service'
 
 
 export const SELECTOR_RESULTS = '#file-library-search-result'

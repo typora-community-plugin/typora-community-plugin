@@ -14,7 +14,12 @@ export interface SearchMatch {
   lineText: string
   /** The matched substring within the line */
   matchedText: string
+  /** Where this match was found: 'body' (正文) or a field like 'tag', 'title' */
+  source?: MatchSource
 }
+
+/** Match source type for enriched search results. */
+export type MatchSource = 'body' | `field:${string}`
 
 /**
  * A file found by global search, with its matches.

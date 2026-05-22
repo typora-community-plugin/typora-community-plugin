@@ -1,6 +1,6 @@
 ---
 author: plylrnsdy
-tag:
+tags:
 - A
 - B
 - C
