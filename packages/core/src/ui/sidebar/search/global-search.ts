@@ -35,6 +35,9 @@ export class GlobalSearch {
 
     view.setQuery(query)
 
+    // Clear previous search results before starting a new search
+    view.renderer.clearResults()
+
     const caseSensitive = editor.library.fileSearch.caseSensitive ?? false
     const wholeWord = editor.library.fileSearch.wholeWord ?? false
 
