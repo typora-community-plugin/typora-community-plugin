@@ -1,6 +1,6 @@
 import { editor } from "typora"
 import { useService } from "src/common/service"
-import { GlobalSearchView } from "./global-search-view"
+import { GlobalSearchView } from "./views/global-search-view"
 import { RipgrepSearchService } from "./services/text-search-service"
 import { HybridSearchService } from "./services/hybrid-search-service"
 
@@ -22,6 +22,20 @@ export class GlobalSearch {
     })
   }
 
+  /**
+   * Open the global search panel and execute a search with the given query.
+   *
+   * Behavior:
+   * 1. Activate the search sidebar if it isn't already visible.
+   * 2. Set the query string on the GlobalSearchView.
+   * 3. Clear any previous results, then dispatch the search to the appropriate engine:
+   *    - Structured queries (e.g. `tag:foo`, `title:"bar"`, quoted phrases) → HybridSearchService
+   *    - Plain text queries → RipgrepSearchService directly
+   *
+   * @param query - The search string entered by the user. May contain field prefixes
+   *                (`tag:`, `title:`, `filename:`) or double-quoted substrings to trigger
+   *                hybrid (structured + full-text) search routing.
+   */
   openGlobalSearch(query: string) {
     const { workspace, vault } = this
 

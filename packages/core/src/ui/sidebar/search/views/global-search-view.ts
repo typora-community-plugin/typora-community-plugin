@@ -1,12 +1,12 @@
-import './global-search.scss'
+import './global-search-view.scss'
 import decorate from '@plylrnsdy/decorate.js'
 import { editor } from "typora"
 import { Component } from 'src/common/component'
 import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
 import { html, noop } from 'src/utils'
 import { useService } from 'src/common/service'
-import { InternalSidebarPanel } from '../sidebar-panel'
-import { SearchResultRenderer } from './search-result-renderer'
+import { InternalSidebarPanel } from '../../sidebar-panel'
+import { SearchResultRenderer } from '../search-result-renderer'
 import { GlobalSearchProgressbar } from './global-search-progressbar'
 
 
