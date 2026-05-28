@@ -8,6 +8,7 @@ import { useService } from 'src/common/service'
 import { InternalSidebarPanel } from '../../sidebar-panel'
 import { SearchResultRenderer } from '../search-result-renderer'
 import { GlobalSearchProgressbar } from './global-search-progressbar'
+import { AdvancedSearchMode } from './advanced-search-mode'
 
 
 const SELECTOR_QUERY_INPUT = '#file-library-search-input'
@@ -23,6 +24,7 @@ export class GlobalSearchView extends InternalSidebarPanel {
 
   private _keepSearchResult = new KeepSearchResult()
   private _showSearchResultFullPath = new ShowSearchResultFullPath()
+  private _advancedSearchMode = new AdvancedSearchMode()
 
   progressBar = new GlobalSearchProgressbar()
 

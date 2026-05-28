@@ -16,3 +16,32 @@
   from { transform: translateX(-100%); }
   to   { transform: translateX(200%); }
 }
+
+/* Advanced Search Mode toggle button */
+.ty-plugin-advanced-search-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  color: #999;
+  font-size: 12px;
+  line-height: 1.4;
+  border-radius: 3px;
+  transition: color 0.15s ease, background-color 0.15s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+  }
+
+  &.ty-active {
+    color: var(--primary-color, #09b);
+    font-weight: 600;
+  }
+}
+
+/* Reposition Typora built-in search option buttons to align with input field */
+#filesearch-case-option-btn,
+#filesearch-word-option-btn,
+#filesearch-regexp-option-btn {
+  top: 34px;
+}

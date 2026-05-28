@@ -6,6 +6,7 @@ export type AppearanceSettings = {
   showNotSupportedFile: boolean
   keepSearchResult: boolean
   showSearchResultFullPath: boolean
+  advancedSearchMode: boolean
   showRibbon: boolean
   useWorkspace: boolean
   /** @deprecated */
@@ -18,6 +19,7 @@ export const DEFAULT_APPEARANCE_SETTINGS: AppearanceSettings = {
   showNotSupportedFile: false,
   keepSearchResult: false,
   showSearchResultFullPath: false,
+  advancedSearchMode: false,
   showRibbon: true,
   useWorkspace: true,
   showFileTabs: false,
@@ -79,6 +81,16 @@ export class AppearanceSettingTab extends SettingTab {
         checkbox.checked = settings.get('showSearchResultFullPath')
         checkbox.onclick = () => {
           settings.set('showSearchResultFullPath', checkbox.checked)
+        }
+      })
+    })
+    this.addSetting(setting => {
+      setting.addName(t.advancedSearchMode)
+      setting.addDescription(t.advancedSearchModeDesc)
+      setting.addCheckbox(checkbox => {
+        checkbox.checked = settings.get('advancedSearchMode')
+        checkbox.onclick = () => {
+          settings.set('advancedSearchMode', checkbox.checked)
         }
       })
     })
