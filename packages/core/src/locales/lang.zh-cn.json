@@ -62,6 +62,8 @@
       "keepSearchResultDesc": "当您切换到另一个面板（例如“文件管理”）然后再切换回搜索面板时，将不会丢失最近的搜索结果。",
       "searchResultFullPath": "显示搜索结果完整路径",
       "searchResultFullPathDesc": "将光标悬停于搜索结果的路径上，将会显示完整路径。",
+      "advancedSearchMode": "高级搜索模式",
+      "advancedSearchModeDesc": "使用自定义 ripgrep 引擎替换原生文件搜索，支持正则表达式。启用后搜索栏的正则按钮右侧会出现切换按钮。",
       "advanced": "高级选项",
       "ribbon": "显示活动栏",
       "ribbonDesc": "同时会启用自定义侧边面板。",

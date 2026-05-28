@@ -25,6 +25,7 @@ export class AdvancedSearchMode extends Component {
   private headerRow!: HTMLElement
 
   constructor(
+    private i18n = useService('i18n'),
     settings = useService('settings'),
   ) {
     super()
@@ -78,7 +79,7 @@ export class AdvancedSearchMode extends Component {
     if (!inputEl?.parentElement) return
 
     // Create header row: "Search" on left, toggle button on right
-    this.btnEl = html`<button class="ty-plugin-advanced-search-btn" title="">Advanced Search</button>` as HTMLButtonElement
+    this.btnEl = html`<button class="ty-plugin-advanced-search-btn">✨</button>` as HTMLButtonElement
 
     this.btnEl.addEventListener('click', (e) => {
       e.preventDefault()
@@ -109,10 +110,10 @@ export class AdvancedSearchMode extends Component {
     const enabled = this._isEnabled()
     this.btnEl.classList.toggle('ty-active', enabled)
 
-    // Update tooltip (i18n resolved at call time via settings service)
-    const i18n = useService('i18n')
+    // Update tooltip (i18n resolved at call time for live language support)
+    const t = this.i18n.t.settingTabs.appearance
     this.btnEl.title = enabled
-      ? i18n.t.settingTabs.appearance.advancedSearchMode + ' ✓'
-      : i18n.t.settingTabs.appearance.advancedSearchMode
+      ? `${t.advancedSearchMode} ✓`
+      : t.advancedSearchMode
   }
 }

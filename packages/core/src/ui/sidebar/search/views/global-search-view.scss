@@ -23,18 +23,20 @@
   border: none;
   cursor: pointer;
   padding: 4px 8px;
-  color: #999;
   font-size: 12px;
   line-height: 1.4;
   border-radius: 3px;
-  transition: color 0.15s ease, background-color 0.15s ease;
+  transition: filter 0.15s ease, background-color 0.15s ease;
+
+  /* Emoji doesn't respect `color`, use grayscale + brightness for gray state */
+  filter: grayscale(1) brightness(1.5);
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.06);
   }
 
   &.ty-active {
-    color: var(--primary-color, #09b);
+    filter: none;
     font-weight: 600;
   }
 }
