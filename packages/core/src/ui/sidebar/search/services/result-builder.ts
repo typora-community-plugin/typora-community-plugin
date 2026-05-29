@@ -1,5 +1,6 @@
 import type { ParsedAST, FieldNode, TermNode, AndNode, OrNode, NotNode, ASTNode } from './query-parser'
 import type { SearchResult, SearchMatch, MatchSource } from './text-search-service'
+import type { TagObject } from 'src/utils'
 
 /**
  * Build an enriched SearchResult by evaluating the AST against text matches + metadata.
@@ -9,6 +10,7 @@ export function buildSearchResult(
   textResult: SearchResult,
   frontmatter: Record<string, any>,
   ast: ParsedAST,
+  tags?: TagObject[],
 ): SearchResult | null {
 
   // Collect all tokens from body matches (for bare word verification)
@@ -26,7 +28,7 @@ export function buildSearchResult(
   }))
 
   // Add field matches from frontmatter that satisfy the query
-  const fieldMatches = collectFieldMatches(ast, frontmatter)
+  const fieldMatches = collectFieldMatches(ast, frontmatter, tags)
   enrichedMatches.push(...fieldMatches)
 
   return {
@@ -54,7 +56,11 @@ function tokenizeLine(text: string): string[] {
 }
 
 /** Collect field matches from frontmatter that satisfy the query. */
-export function collectFieldMatches(ast: ParsedAST, frontmatter: Record<string, any>): SearchMatch[] {
+export function collectFieldMatches(
+  ast: ParsedAST,
+  frontmatter: Record<string, any>,
+  tags?: TagObject[],
+): SearchMatch[] {
   const matches: SearchMatch[] = []
 
   const visit = (node: ASTNode) => {
@@ -66,14 +72,47 @@ export function collectFieldMatches(ast: ParsedAST, frontmatter: Record<string, 
       // Negated fields don't produce matches, skip
     } else if (node.type === 'field') {
       const fieldNode = node as FieldNode
-      const value = getFieldFromFrontmatter(frontmatter, fieldNode.field)
-      if (value && value.includes(fieldNode.pattern)) {
-        matches.push({
-          lineNumber: 0, // frontmatter match has no specific line in body
-          lineText: `${fieldNode.field}: ${value}`,
-          matchedText: fieldNode.pattern,
-          source: `field:${fieldNode.field}` as MatchSource,
-        })
+
+      // For tag fields, find ALL matching tags with their individual line numbers
+      if (fieldNode.field === 'tag') {
+        const tagsList = frontmatter.tags
+        if (Array.isArray(tagsList)) {
+          for (let i = 0; i < tagsList.length; i++) {
+            if (tagsList[i].includes(fieldNode.pattern)) {
+              let lineNumber = 0
+              if (tags) {
+                lineNumber = tags[i]?.lineNumber ?? 0
+              }
+              matches.push({
+                lineNumber, // real line number for this specific tag
+                lineText: `tag: ${tagsList[i]}`,
+                matchedText: tagsList[i],
+                source: 'field:tag' as MatchSource,
+              })
+            }
+          }
+        } else if (typeof tagsList === 'string') {
+          // Single string tag — no per-item positions available
+          if (tagsList.includes(fieldNode.pattern)) {
+            matches.push({
+              lineNumber: 0,
+              lineText: `tag: ${tagsList}`,
+              matchedText: fieldNode.pattern,
+              source: 'field:tag' as MatchSource,
+            })
+          }
+        }
+      } else {
+        // Non-tag fields (title, filename) — single value match
+        const value = getFieldFromFrontmatter(frontmatter, fieldNode.field)
+        if (value && value.includes(fieldNode.pattern)) {
+          matches.push({
+            lineNumber: 0, // title/filename don't have per-item positions
+            lineText: `${fieldNode.field}: ${value}`,
+            matchedText: fieldNode.pattern,
+            source: `field:${fieldNode.field}` as MatchSource,
+          })
+        }
       }
     } else if (node.type === 'term') {
       // Body terms are already in textResult.matches

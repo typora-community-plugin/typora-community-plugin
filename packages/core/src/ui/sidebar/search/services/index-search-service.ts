@@ -1,4 +1,5 @@
 import { useService } from 'src/common/service'
+import path from 'src/path'
 import type { ParsedAST } from './query-parser'
 import { tryParse } from './query-parser'
 import { evaluateAST, collectFieldMatches, buildSearchResult } from './result-builder'
@@ -15,6 +16,7 @@ import type { SearchResult } from './text-search-service'
 export class IndexSearchService {
 
   private _metadata = useService('metadata-manager')
+  private _vault = useService('vault')
   private _astCache = new Map<string, ParsedAST>()
 
   /** Parse and cache a query into an AST. Returns null if no structured tokens found. */
@@ -62,7 +64,7 @@ export class IndexSearchService {
   ): void {
     const entries = Object.entries(this._metadata.cache)
 
-    for (const [filePath, entry] of entries) {
+    for (const [relPath, entry] of entries) {
       const frontmatter = entry.metadata?.frontmatter ?? {}
 
       // Evaluate AST against frontmatter only
@@ -70,13 +72,15 @@ export class IndexSearchService {
         continue
       }
 
-      // Collect field matches from frontmatter
-      const fieldMatches = collectFieldMatches(ast, frontmatter)
+      // Collect field matches from frontmatter (with yaml positions for line numbers)
+      const fieldMatches = collectFieldMatches(ast, frontmatter, entry.metadata?.tags)
 
       if (fieldMatches.length > 0 && onResult) {
-        console.log('[IndexSearch] Index-only match:', filePath, 'matches:', fieldMatches.length)
+        // Convert relative cache key to absolute path so Typora can open the file
+        const absPath = path.isAbsolute(relPath) ? relPath : path.join(this._vault.path, relPath)
+        console.log('[IndexSearch] Index-only match:', absPath, 'matches:', fieldMatches.length)
         onResult({
-          filePath,
+          filePath: absPath,
           matches: fieldMatches,
           totalMatches: fieldMatches.length,
         })
@@ -91,13 +95,19 @@ export class IndexSearchService {
     textResult: SearchResult,
     ast: ParsedAST,
   ): SearchResult | null {
-    const entry = this._metadata.get(textResult.filePath)
+    // Metadata cache is keyed by relative path; convert absolute filePath back to relative for lookup
+    const relPath = path.isAbsolute(textResult.filePath)
+      ? path.relative(this._vault.path, textResult.filePath)
+      : textResult.filePath
+
+    const entry = this._metadata.get(relPath)
     if (!entry) return null
 
     const finalResult = buildSearchResult(
       textResult,
       entry.metadata?.frontmatter ?? {},
       ast,
+      entry.metadata?.tags,
     )
 
     return finalResult

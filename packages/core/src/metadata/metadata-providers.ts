@@ -1,6 +1,5 @@
 import type { MetadataManager, MetadataProvider } from "./metadata-manager"
-import { parseMarkdown, parseSimplifiedYAML } from "src/utils"
-
+import { parseMarkdown, parseSimplifiedYAML, parseTagsWithPositionsFromYAML } from "src/utils"
 
 export function registerDefaultMetadataProviders(metadata: MetadataManager) {
   metadata.register('md', markdown)
@@ -8,7 +7,10 @@ export function registerDefaultMetadataProviders(metadata: MetadataManager) {
 
 export const markdown: MetadataProvider = async (ctx) => {
   const md = await ctx.text()
-  const { frontMatter } = parseMarkdown(md)
+  const { frontMatter, startLine } = parseMarkdown(md)
+
   const frontmatter = parseSimplifiedYAML(frontMatter)
-  return { frontmatter }
+  const tags = parseTagsWithPositionsFromYAML(frontMatter, startLine)
+
+  return { frontmatter, tags }
 }

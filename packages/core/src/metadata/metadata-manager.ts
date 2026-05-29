@@ -3,6 +3,7 @@ import path from 'src/path'
 import { StickyEvents } from 'src/common/events'
 import { useService } from 'src/common/service'
 import { MiniDexie } from 'src/utils/indexed-db'
+import { TagObject } from 'src/utils'
 
 
 class IndexAbortedError extends Error {
@@ -43,8 +44,10 @@ interface Cache {
 
 interface CacheEntry {
   mtime: number // Last modification timestamp
-  metadata: Record<string, any>
-  [prop: string]: any
+  metadata: Record<string, any> & {
+    frontmatter: Record<string, any>
+    tags: TagObject[]
+  }
 }
 
 const DB_SCHEMA = {
@@ -103,10 +106,11 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
     this.isIndexing = true
     console.log('[Metadata] Start indexing...')
 
-    try {
-      const { abort, signal } = new AbortController()
-      this.vault.on('change', () => abort())
+    const abortController = new AbortController()
+    const dispose = this.vault.on('change', () => abortController.abort())
 
+    try {
+      const { signal } = abortController
       const vaultPath = this.vault.path
       const allFiles = await fs.listFiles(vaultPath, { recursive: true, signal })
       this.emit('index:start', allFiles.length)
@@ -131,6 +135,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
       }
     } finally {
       this.isIndexing = false
+      dispose()
       console.log('[Metadata] Indexing completed.')
     }
   }
@@ -195,7 +200,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
       const mergedMetadata = results.reduce((acc, curr) => ({ ...acc, ...curr }), {})
       indexingCache[relativePath] = {
         mtime,
-        metadata: mergedMetadata
+        metadata: mergedMetadata as any,
       }
     } catch (error) {
       if (error instanceof IndexAbortedError) throw error
