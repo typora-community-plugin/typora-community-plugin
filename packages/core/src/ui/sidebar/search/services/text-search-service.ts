@@ -299,9 +299,8 @@ export class RipgrepSearchService {
       let lineText = ""
       let matchedText = ""
 
-      if (span) {
-        lineNumber = (span.line as number) ?? 0
-      }
+      // ripgrep --json outputs line_number at data top-level, NOT inside span
+      lineNumber = (data.line_number as number) ?? (span?.line as number) ?? 0
       if (linesData?.text?.length) {
         lineText = linesData.text.replace(/[\r\n]/g, "")
       }
