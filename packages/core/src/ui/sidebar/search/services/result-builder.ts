@@ -16,8 +16,11 @@ export function buildSearchResult(
   // Collect all tokens from body matches (for bare word verification)
   const bodyTokens = collectBodyTokens(textResult.matches)
 
-  // Evaluate AST against body tokens + frontmatter
-  if (!evaluateAST(ast, bodyTokens, frontmatter)) {
+  // Collect inline tag names from matched lines (#word patterns)
+  const inlineTags = collectInlineTagPatterns(textResult.matches)
+
+  // Evaluate AST against body tokens + frontmatter + inline tags
+  if (!evaluateAST(ast, bodyTokens, frontmatter, inlineTags)) {
     return null
   }
 
@@ -47,6 +50,22 @@ function collectBodyTokens(matches: SearchMatch[]): Set<string> {
     lineTokens.forEach(t => tokens.add(t.toLowerCase()))
   }
   return tokens
+}
+
+/** Collect inline tag names from search matches — words preceded by #. */
+export function collectInlineTagPatterns(matches: SearchMatch[]): Set<string> {
+  const tags = new Set<string>()
+  for (const match of matches) {
+    // Match #word patterns where word is alphanumeric/underscore/hyphen
+    const inlineTags = match.lineText.match(/#([a-zA-Z\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af][a-zA-Z\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af0-9_-]*)/g)
+    if (inlineTags) {
+      for (const tag of inlineTags) {
+        // Strip the leading # and store lowercase
+        tags.add(tag.slice(1).toLowerCase())
+      }
+    }
+  }
+  return tags
 }
 
 /** Simple tokenizer: split by whitespace and punctuation, keep alphanumeric sequences. */
@@ -148,21 +167,22 @@ export function evaluateAST(
   ast: ParsedAST,
   bodyTokens: Set<string>,
   frontmatter: Record<string, any>,
+  inlineTags?: Set<string>,
 ): boolean {
   switch (ast.type) {
     case 'and': {
       const node = ast as AndNode
-      return node.children.every(child => evaluateAST(child, bodyTokens, frontmatter))
+      return node.children.every(child => evaluateAST(child, bodyTokens, frontmatter, inlineTags))
     }
 
     case 'or': {
       const node = ast as OrNode
-      return node.children.some(child => evaluateAST(child, bodyTokens, frontmatter))
+      return node.children.some(child => evaluateAST(child, bodyTokens, frontmatter, inlineTags))
     }
 
     case 'not': {
       const node = ast as NotNode
-      return !evaluateAST(node.child, bodyTokens, frontmatter)
+      return !evaluateAST(node.child, bodyTokens, frontmatter, inlineTags)
     }
 
     case 'term': {
@@ -182,12 +202,17 @@ export function evaluateAST(
       const node = ast as FieldNode
       switch (node.field) {
         case 'tag': {
-          const tags = frontmatter.tags
-          if (Array.isArray(tags)) {
-            return tags.some((t: string) => t.includes(node.pattern))
+          // Check frontmatter tags first
+          const fmTags = frontmatter.tags
+          if (Array.isArray(fmTags)) {
+            if (fmTags.some((t: string) => t.includes(node.pattern))) return true
           }
-          if (typeof tags === 'string') {
-            return tags.includes(node.pattern)
+          if (typeof fmTags === 'string') {
+            if (fmTags.includes(node.pattern)) return true
+          }
+          // Also check inline tags from body text (#word patterns)
+          if (inlineTags && inlineTags.has(node.pattern.toLowerCase())) {
+            return true
           }
           return false
         }

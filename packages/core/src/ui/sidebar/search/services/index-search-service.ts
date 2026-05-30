@@ -44,7 +44,11 @@ export class IndexSearchService {
         // Negated fields don't contribute search tokens to ripgrep
         // (they're handled by AST evaluation in Phase 3)
       } else if (node.type === 'field') {
-        // Field tokens (tag:, title:) are frontmatter-only, skip for ripgrep
+        // Tag fields also match inline tags in body text (#A), emit #pattern for ripgrep
+        if (node.field === 'tag') {
+          tokens.push(`#${node.pattern}`)
+        }
+        // title/filename are frontmatter-only, skip for ripgrep
       } else if (node.type === 'term') {
         // Bare words and quoted phrases go to ripgrep
         tokens.push(node.pattern)
