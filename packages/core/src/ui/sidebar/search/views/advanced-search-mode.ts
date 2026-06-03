@@ -18,11 +18,9 @@ export class AdvancedSearchMode extends Component {
 
   private SETTING_KEY = 'advancedSearchMode' as const
 
-  /** Reference to the injected toggle button element */
-  private btnEl!: HTMLButtonElement
-
-  /** Reference to the header row container */
   private headerRow!: HTMLElement
+  private labelEl!: HTMLElement
+  private btnEl!: HTMLElement
 
   constructor(
     private i18n = useService('i18n'),
@@ -30,8 +28,6 @@ export class AdvancedSearchMode extends Component {
   ) {
     super()
 
-    // Always load: inject the button and decorate search.
-    // The button visibility is managed independently of the setting.
     this.load()
 
     settings.onChange(this.SETTING_KEY, () => {
@@ -42,10 +38,8 @@ export class AdvancedSearchMode extends Component {
   onload() {
     const _globalSearch = useService('app').features.globalSearch
 
-    // Inject toggle button into the search toolbar (once)
     this._injectButton()
 
-    // Decorate fileSearch.search() to route through our custom engine
     this.register(
       decorate(editor.library.fileSearch, 'search', fn => (query: string) => {
         if (!this._isEnabled()) return fn(query)
@@ -53,7 +47,6 @@ export class AdvancedSearchMode extends Component {
       })
     )
 
-    // Update button visual state to match current setting
     this._updateButtonState()
   }
 
@@ -61,7 +54,6 @@ export class AdvancedSearchMode extends Component {
     this.headerRow.remove()
   }
 
-  /** Toggle the mode on/off */
   toggle = () => {
     const settings = useService('settings')
     const currentValue = settings.get(this.SETTING_KEY)
@@ -73,13 +65,12 @@ export class AdvancedSearchMode extends Component {
     return useService('settings').get(this.SETTING_KEY)
   }
 
-  /** Inject a toggle button into the search toolbar */
   private _injectButton() {
-    const inputEl = document.querySelector('#file-library-search-input') as HTMLElement | null
+    const inputEl = document.querySelector('#file-library-search-input')
     if (!inputEl?.parentElement) return
 
     // Create header row: "Search" on left, toggle button on right
-    this.btnEl = html`<button class="ty-plugin-advanced-search-btn">✨</button>` as HTMLButtonElement
+    this.btnEl = html`<button class="ty-plugin-advanced-search-btn">✨</button>`
 
     this.btnEl.addEventListener('click', (e) => {
       e.preventDefault()
@@ -89,34 +80,30 @@ export class AdvancedSearchMode extends Component {
 
     this.headerRow = document.createElement('div')
     this.headerRow.className = 'ty-plugin-search-header'
-    this.headerRow.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;'
 
-    const label = document.createElement('span')
-    label.textContent = 'Search'
-    label.style.cssText = 'font-size: 12px; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;'
+    this.labelEl = document.createElement('span')
+    this.labelEl.textContent = 'Search'
 
-    this.headerRow.appendChild(label)
+    this.headerRow.appendChild(this.labelEl)
     this.headerRow.appendChild(this.btnEl)
 
     // Insert above the search input
-    const panel = document.getElementById('file-library-search-panel') as HTMLElement | null
+    const panel = document.getElementById('file-library-search-panel')
     if (panel && inputEl) {
       panel.insertBefore(this.headerRow, inputEl)
     }
   }
 
-  /** Update button visual state based on current setting value */
   private _updateButtonState() {
     const enabled = this._isEnabled()
 
     document.body.classList.toggle('ty-advanced-search-active', enabled)
 
+    this.labelEl.textContent = (enabled ? 'Advanced ' : '') + 'Search'
+
     this.btnEl.classList.toggle('ty-active', enabled)
 
-    // Update tooltip (i18n resolved at call time for live language support)
     const t = this.i18n.t.settingTabs.appearance
-    this.btnEl.title = enabled
-      ? `${t.advancedSearchMode} ✓`
-      : t.advancedSearchMode
+    this.btnEl.title = t.advancedSearchMode
   }
 }
