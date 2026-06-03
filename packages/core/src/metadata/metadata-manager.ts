@@ -176,7 +176,11 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
       const relativePath = path.relative(vaultPath, filePath)
 
       const cached = this.cache[relativePath]
-      if (cached && cached.mtime === mtime) {
+      // When content is provided (from file:will-save with editor content),
+      // skip the mtime check — the file hasn't been written to disk yet so
+      // mtime is still old. Without this, the provider never processes the
+      // new content and the cache stays stale.
+      if (!content && cached && cached.mtime === mtime) {
         indexingCache[relativePath] = cached
         return
       }
