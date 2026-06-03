@@ -1,7 +1,7 @@
 import { useService } from 'src/common/service'
 import path from 'src/path'
-import type { ParsedAST } from './query-parser'
-import { tryParse } from './query-parser'
+import { tryParse, getHandler } from './query-parser'
+import type { ParsedAST, FieldNode, EvalContext } from './query-parser'
 import { evaluateAST, collectFieldMatches, buildSearchResult } from './result-builder'
 import type { SearchResult } from './text-search-service'
 
@@ -44,11 +44,12 @@ export class IndexSearchService {
         // Negated fields don't contribute search tokens to ripgrep
         // (they're handled by AST evaluation in Phase 3)
       } else if (node.type === 'field') {
-        // Tag fields also match inline tags in body text (#A), emit #pattern for ripgrep
-        if (node.field === 'tag') {
-          tokens.push(`#${node.pattern}`)
+        // Dispatch to the registered handler for text extraction
+        const handler = getHandler(node.field)
+        if (handler) {
+          const text = handler.extractSearchText(node as FieldNode)
+          if (text !== null) tokens.push(text)
         }
-        // title/filename are frontmatter-only, skip for ripgrep
       } else if (node.type === 'term') {
         // Bare words and quoted phrases go to ripgrep
         tokens.push(node.pattern)
@@ -71,13 +72,20 @@ export class IndexSearchService {
     for (const [relPath, entry] of entries) {
       const frontmatter = entry.metadata?.frontmatter ?? {}
 
+      // Build eval context with frontmatter only (no body tokens in index-only mode)
+      const context: EvalContext = {
+        bodyTokens: new Set(),
+        frontmatter,
+        tags: entry.metadata?.tags,
+      }
+
       // Evaluate AST against frontmatter only
-      if (!evaluateAST(ast, new Set(), frontmatter)) {
+      if (!evaluateAST(ast, context)) {
         continue
       }
 
       // Collect field matches from frontmatter (with yaml positions for line numbers)
-      const fieldMatches = collectFieldMatches(ast, frontmatter, entry.metadata?.tags)
+      const fieldMatches = collectFieldMatches(ast, context)
 
       if (fieldMatches.length > 0 && onResult) {
         // Convert relative cache key to absolute path so Typora can open the file

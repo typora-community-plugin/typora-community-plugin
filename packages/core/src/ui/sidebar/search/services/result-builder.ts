@@ -1,5 +1,6 @@
-import type { ParsedAST, FieldNode, TermNode, AndNode, OrNode, NotNode, ASTNode } from './query-parser'
-import type { SearchResult, SearchMatch, MatchSource } from './text-search-service'
+import { getHandler, evaluateTerm } from './query-parser'
+import type { ParsedAST, FieldNode, AndNode, OrNode, NotNode, EvalContext, TermNode } from './query-parser'
+import type { SearchResult, SearchMatch } from './text-search-service'
 import type { TagObject } from 'src/utils'
 
 /**
@@ -19,8 +20,11 @@ export function buildSearchResult(
   // Collect inline tag names from matched lines (#word patterns)
   const inlineTags = collectInlineTagPatterns(textResult.matches)
 
+  // Build eval context shared across all evaluation phases
+  const context: EvalContext = { bodyTokens, frontmatter, tags, inlineTags }
+
   // Evaluate AST against body tokens + frontmatter + inline tags
-  if (!evaluateAST(ast, bodyTokens, frontmatter, inlineTags)) {
+  if (!evaluateAST(ast, context)) {
     return null
   }
 
@@ -31,7 +35,7 @@ export function buildSearchResult(
   }))
 
   // Add field matches from frontmatter that satisfy the query
-  const fieldMatches = collectFieldMatches(ast, frontmatter, tags)
+  const fieldMatches = collectFieldMatches(ast, context)
   enrichedMatches.push(...fieldMatches)
 
   return {
@@ -77,159 +81,62 @@ function tokenizeLine(text: string): string[] {
 /** Collect field matches from frontmatter that satisfy the query. */
 export function collectFieldMatches(
   ast: ParsedAST,
-  frontmatter: Record<string, any>,
-  tags?: TagObject[],
+  context: EvalContext,
 ): SearchMatch[] {
   const matches: SearchMatch[] = []
 
-  const visit = (node: ASTNode) => {
+  const visit = (node: ParsedAST) => {
     if (node.type === 'and' || node.type === 'or') {
-      for (const child of (node as typeof node & { children: ParsedAST[] }).children) {
+      for (const child of (node as AndNode | OrNode).children) {
         visit(child)
       }
     } else if (node.type === 'not') {
       // Negated fields don't produce matches, skip
     } else if (node.type === 'field') {
       const fieldNode = node as FieldNode
-
-      // For tag fields, find ALL matching tags with their individual line numbers
-      if (fieldNode.field === 'tag') {
-        const tagsList = frontmatter.tags
-        if (Array.isArray(tagsList)) {
-          for (let i = 0; i < tagsList.length; i++) {
-            if (tagsList[i].includes(fieldNode.pattern)) {
-              let lineNumber = 0
-              if (tags) {
-                lineNumber = tags[i]?.lineNumber ?? 0
-              }
-              matches.push({
-                lineNumber, // real line number for this specific tag
-                lineText: `tag: ${tagsList[i]}`,
-                matchedText: tagsList[i],
-                source: 'field:tag' as MatchSource,
-              })
-            }
-          }
-        } else if (typeof tagsList === 'string') {
-          // Single string tag — no per-item positions available
-          if (tagsList.includes(fieldNode.pattern)) {
-            matches.push({
-              lineNumber: 0,
-              lineText: `tag: ${tagsList}`,
-              matchedText: fieldNode.pattern,
-              source: 'field:tag' as MatchSource,
-            })
-          }
-        }
-      } else {
-        // Non-tag fields (title, filename) — single value match
-        const value = getFieldFromFrontmatter(frontmatter, fieldNode.field)
-        if (value && value.includes(fieldNode.pattern)) {
-          matches.push({
-            lineNumber: 0, // title/filename don't have per-item positions
-            lineText: `${fieldNode.field}: ${value}`,
-            matchedText: fieldNode.pattern,
-            source: `field:${fieldNode.field}` as MatchSource,
-          })
-        }
+      const handler = getHandler(fieldNode.field)
+      if (handler) {
+        const fieldMatches = handler.collectFieldMatches(fieldNode, context)
+        matches.push(...fieldMatches)
       }
-    } else if (node.type === 'term') {
-      // Body terms are already in textResult.matches
     }
+    // term nodes: body matches already in textResult.matches
   }
 
   visit(ast)
   return matches
 }
 
-/** Extract a field value from frontmatter. */
-function getFieldFromFrontmatter(frontmatter: Record<string, any>, field: string): string | null {
-  switch (field) {
-    case 'tag': {
-      const tags = frontmatter.tags
-      if (Array.isArray(tags)) {
-        return tags.join(', ')
-      }
-      if (typeof tags === 'string') {
-        return tags.includes(field) ? tags : null
-      }
-      return null
-    }
-    case 'title':
-      return String(frontmatter.title ?? '')
-    default:
-      return null
-  }
-}
-
-/** Evaluate the AST against body tokens and frontmatter. */
+/** Evaluate the AST against body tokens + frontmatter + inline tags. */
 export function evaluateAST(
   ast: ParsedAST,
-  bodyTokens: Set<string>,
-  frontmatter: Record<string, any>,
-  inlineTags?: Set<string>,
+  context: EvalContext,
 ): boolean {
   switch (ast.type) {
     case 'and': {
       const node = ast as AndNode
-      return node.children.every(child => evaluateAST(child, bodyTokens, frontmatter, inlineTags))
+      return node.children.every(child => evaluateAST(child, context))
     }
 
     case 'or': {
       const node = ast as OrNode
-      return node.children.some(child => evaluateAST(child, bodyTokens, frontmatter, inlineTags))
+      return node.children.some(child => evaluateAST(child, context))
     }
 
     case 'not': {
       const node = ast as NotNode
-      return !evaluateAST(node.child, bodyTokens, frontmatter, inlineTags)
+      return !evaluateAST(node.child, context)
     }
 
     case 'term': {
-      const node = ast as TermNode
-      if (node.isQuoted) {
-        // Quoted phrase: check if the exact text appears in any match line
-        for (const token of bodyTokens) {
-          if (token.includes(node.pattern.toLowerCase())) return true
-        }
-        return false
-      }
-      // Bare word: ripgrep already confirmed it's in the body, just verify
-      return bodyTokens.has(node.pattern.toLowerCase())
+      return evaluateTerm(ast as TermNode, context)
     }
 
     case 'field': {
       const node = ast as FieldNode
-      switch (node.field) {
-        case 'tag': {
-          // Check frontmatter tags first
-          const fmTags = frontmatter.tags
-          if (Array.isArray(fmTags)) {
-            if (fmTags.some((t: string) => t.includes(node.pattern))) return true
-          }
-          if (typeof fmTags === 'string') {
-            if (fmTags.includes(node.pattern)) return true
-          }
-          // Also check inline tags from body text (#word patterns)
-          if (inlineTags && inlineTags.has(node.pattern.toLowerCase())) {
-            return true
-          }
-          return false
-        }
-
-        case 'title': {
-          const title = String(frontmatter.title ?? '')
-          return title.includes(node.pattern)
-        }
-
-        case 'filename': {
-          // Filename is handled by ripgrep Task 2/3, always pass through
-          return true
-        }
-
-        default:
-          return false
-      }
+      const handler = getHandler(node.field)
+      if (handler) return handler.evaluate(node, context)
+      return false
     }
   }
 
