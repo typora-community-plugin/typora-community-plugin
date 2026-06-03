@@ -1,7 +1,7 @@
 import { getHandler, evaluateTerm } from './query-parser'
 import type { ParsedAST, FieldNode, AndNode, OrNode, NotNode, EvalContext, TermNode } from './query-parser'
 import type { SearchResult, SearchMatch } from './text-search-service'
-import type { TagObject } from 'src/utils'
+import type { TagObject, TitleObject } from 'src/utils'
 
 /**
  * Build an enriched SearchResult by evaluating the AST against text matches + metadata.
@@ -12,6 +12,7 @@ export function buildSearchResult(
   frontmatter: Record<string, any>,
   ast: ParsedAST,
   tags?: TagObject[],
+  titles?: TitleObject[],
 ): SearchResult | null {
 
   // Collect all tokens from body matches (for bare word verification)
@@ -21,7 +22,7 @@ export function buildSearchResult(
   const inlineTags = collectInlineTagPatterns(textResult.matches)
 
   // Build eval context shared across all evaluation phases
-  const context: EvalContext = { bodyTokens, frontmatter, tags, inlineTags }
+  const context: EvalContext = { bodyTokens, frontmatter, tags, titles, inlineTags }
 
   // Evaluate AST against body tokens + frontmatter + inline tags
   if (!evaluateAST(ast, context)) {

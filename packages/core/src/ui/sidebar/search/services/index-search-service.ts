@@ -77,6 +77,7 @@ export class IndexSearchService {
         bodyTokens: new Set(),
         frontmatter,
         tags: entry.metadata?.tags,
+        titles: entry.metadata?.titles,
       }
 
       // Evaluate AST against frontmatter only
@@ -120,6 +121,7 @@ export class IndexSearchService {
       entry.metadata?.frontmatter ?? {},
       ast,
       entry.metadata?.tags,
+      entry.metadata?.titles,
     )
 
     return finalResult

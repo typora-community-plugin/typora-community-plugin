@@ -10,7 +10,7 @@
  *   NOT       := '-'
  */
 
-import type { TagObject } from 'src/utils'
+import type { TagObject, TitleObject } from 'src/utils'
 import type { SearchMatch, MatchSource } from '../text-search-service'
 
 // ── AST Node Types ─────────────────────────────────────────────────────
@@ -72,6 +72,8 @@ export interface EvalContext {
   frontmatter: Record<string, any>
   /** Frontmatter tags with positional info (from YAML parser) */
   tags?: TagObject[]
+  /** Markdown headings with positional info (from metadata provider) */
+  titles?: TitleObject[]
   /** Inline #tag patterns extracted from body text */
   inlineTags?: Set<string>
 }
