@@ -94,6 +94,20 @@ export function parseTagsWithPositionsFromYAML(metaString: string, startLine: nu
     return results;
   }
 
+  // Case 1b: Simple value on the same line, e.g. `tags: meeting`
+  // The value is a single non-empty string that isn't an inline array.
+  if (valuePart) {
+    // Only treat as simple value if it doesn't look like a list item (bare word value).
+    // This catches `tags: foo` which is common in frontmatter but not handled by
+    // the list loop below (no `-` prefix on subsequent lines).
+    results.push({
+      name: stripQuotes(valuePart),
+      lineText: keyLine.trim(),
+      lineNumber: tagsKeyIndex + startLine + 1,
+    });
+    return results;
+  }
+
   // Case 2: List-style (multi-line) — items are indented under the `tags` key
   for (let i = tagsKeyIndex + 1; i < lines.length; i++) {
     const line = lines[i];

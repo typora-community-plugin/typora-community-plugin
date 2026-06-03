@@ -64,9 +64,15 @@ export const TagSyntaxHandler: SyntaxHandler = {
       }
     } else if (typeof tagsList === 'string') {
       if (tagsList.includes(node.pattern)) {
+        let lineNumber = 0
+        let lineText = `tag: ${tagsList}`
+        if (context.tags?.length) {
+          lineNumber = context.tags[0].lineNumber
+          lineText = context.tags[0].lineText
+        }
         matches.push({
-          lineNumber: 0,
-          lineText: `tag: ${tagsList}`,
+          lineNumber,
+          lineText,
           matchedText: node.pattern,
           source: 'field:tag' as MatchSource,
         })
