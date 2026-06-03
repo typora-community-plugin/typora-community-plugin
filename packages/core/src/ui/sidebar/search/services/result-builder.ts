@@ -1,4 +1,4 @@
-import { getHandler, evaluateTerm } from './query-parser'
+import { getHandler, evaluateTerm, astHasField } from './query-parser'
 import type { ParsedAST, FieldNode, AndNode, OrNode, NotNode, EvalContext, TermNode } from './query-parser'
 import type { SearchResult, SearchMatch } from './text-search-service'
 import type { TagObject, TitleObject } from 'src/utils'
@@ -31,7 +31,7 @@ export function buildSearchResult(
 
   // Check if the query involves a tag: field — only then apply #-position validation
   // on body matches (prevents url#anchor being treated as #tag).
-  const hasTagField = _astHasField(ast, 'tag')
+  const hasTagField = astHasField(ast, 'tag')
 
   // Enrich each match with source information, filtering out false positive
   // #tag matches where # is not at a valid position (line start or after whitespace)
@@ -100,16 +100,6 @@ function _isInlineTagAtValidPosition(lineText: string, matchedText: string): boo
     if (idx === 0 || /\s/.test(lineText[idx - 1])) return true
     idx += matchedText.length
   }
-  return false
-}
-
-/** Recursively check if the AST contains a field node with the given name. */
-function _astHasField(ast: ParsedAST, fieldName: string): boolean {
-  if (ast.type === 'field' && (ast as FieldNode).field === fieldName) return true
-  if (ast.type === 'and' || ast.type === 'or') {
-    return (ast as AndNode | OrNode).children.some(child => _astHasField(child, fieldName))
-  }
-  if (ast.type === 'not') return _astHasField((ast as NotNode).child, fieldName)
   return false
 }
 

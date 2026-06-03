@@ -153,6 +153,32 @@ export function parse(query: string): ParsedAST {
     : { type: 'and', children }
 }
 
+// ── AST Inspection Helpers ─────────────────────────────────────────────
+
+/**
+ * Check if the AST contains any field nodes (tag:, title:, filename:, etc.).
+ */
+export function astHasFieldNodes(ast: ParsedAST): boolean {
+  if (ast.type === 'field') return true
+  if (ast.type === 'and' || ast.type === 'or') {
+    return ast.children.some(child => astHasFieldNodes(child))
+  }
+  if (ast.type === 'not') return astHasFieldNodes((ast as NotNode).child)
+  return false
+}
+
+/**
+ * Recursively check if the AST contains a field node with the given name.
+ */
+export function astHasField(ast: ParsedAST, fieldName: string): boolean {
+  if (ast.type === 'field' && (ast as FieldNode).field === fieldName) return true
+  if (ast.type === 'and' || ast.type === 'or') {
+    return (ast as AndNode | OrNode).children.some(child => astHasField(child, fieldName))
+  }
+  if (ast.type === 'not') return astHasField((ast as NotNode).child, fieldName)
+  return false
+}
+
 // ── Internal ───────────────────────────────────────────────────────────
 
 /**

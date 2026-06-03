@@ -1,6 +1,6 @@
 import type { RipgrepSearchService, SearchResult } from './text-search-service'
 import { IndexSearchService } from './index-search-service'
-import type { ParsedAST } from './query-parser'
+import { astHasFieldNodes } from './query-parser'
 
 /**
  * Hybrid search service — combines ripgrep text search with IndexedDB metadata lookup.
@@ -42,7 +42,7 @@ export class HybridSearchService {
 
     // Structured query: ripgrep + IndexedDB enrichment
     const ripgrepQuery = this._indexSearcher.extractTextTokens(ast)
-    const hasFieldNodes = this._astHasFieldNodes(ast)
+    const hasFieldNodes = astHasFieldNodes(ast)
 
     if (!ripgrepQuery.trim()) {
       // No text tokens — index-only search, scan metadata cache directly
@@ -77,13 +77,4 @@ export class HybridSearchService {
     this._textSearcher.cancel()
   }
 
-  /** Recursively check if AST contains any field nodes (tag:, title:, filename:). */
-  private _astHasFieldNodes(ast: ParsedAST): boolean {
-    if (ast.type === 'field') return true
-    if (ast.type === 'and' || ast.type === 'or') {
-      return ast.children.some(child => this._astHasFieldNodes(child))
-    }
-    if (ast.type === 'not') return this._astHasFieldNodes(ast.child)
-    return false
-  }
 }
