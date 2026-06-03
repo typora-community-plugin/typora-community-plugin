@@ -29,11 +29,23 @@ export function buildSearchResult(
     return null
   }
 
-  // Enrich each match with source information
-  const enrichedMatches: SearchMatch[] = textResult.matches.map(match => ({
-    ...match,
-    source: 'body' as const,
-  }))
+  // Check if the query involves a tag: field — only then apply #-position validation
+  // on body matches (prevents url#anchor being treated as #tag).
+  const hasTagField = _astHasField(ast, 'tag')
+
+  // Enrich each match with source information, filtering out false positive
+  // #tag matches where # is not at a valid position (line start or after whitespace)
+  const enrichedMatches: SearchMatch[] = textResult.matches
+    .filter(match => {
+      if (hasTagField && match.matchedText.startsWith('#')) {
+        return _isInlineTagAtValidPosition(match.lineText, match.matchedText)
+      }
+      return true
+    })
+    .map(match => ({
+      ...match,
+      source: 'body' as const,
+    }))
 
   // Add field matches from frontmatter that satisfy the query
   const fieldMatches = collectFieldMatches(ast, context)
@@ -61,12 +73,12 @@ function collectBodyTokens(matches: SearchMatch[]): Set<string> {
 export function collectInlineTagPatterns(matches: SearchMatch[]): Set<string> {
   const tags = new Set<string>()
   for (const match of matches) {
-    // Match #word patterns where word is alphanumeric/underscore/hyphen
-    const inlineTags = match.lineText.match(/#([a-zA-Z\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af][a-zA-Z\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af0-9_-]*)/g)
+    // #tag must be at line start or preceded by whitespace (not url#tag, C#, etc.)
+    const inlineTags = match.lineText.match(/(?:^|\s)(#[a-zA-Z\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af][a-zA-Z\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af0-9_-]*)/g)
     if (inlineTags) {
       for (const tag of inlineTags) {
-        // Strip the leading # and store lowercase
-        tags.add(tag.slice(1).toLowerCase())
+        // Strip leading whitespace + # and store lowercase
+        tags.add(tag.trim().slice(1).toLowerCase())
       }
     }
   }
@@ -77,6 +89,28 @@ export function collectInlineTagPatterns(matches: SearchMatch[]): Set<string> {
 function tokenizeLine(text: string): string[] {
   const matches = text.match(/[a-zA-Z\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af]+/g)
   return matches ? matches.map(m => m.toLowerCase()) : []
+}
+
+/** Check whether the #tag matchedText appears at a valid position in the line. */
+function _isInlineTagAtValidPosition(lineText: string, matchedText: string): boolean {
+  let idx = 0
+  while (idx < lineText.length) {
+    idx = lineText.indexOf(matchedText, idx)
+    if (idx === -1) return false
+    if (idx === 0 || /\s/.test(lineText[idx - 1])) return true
+    idx += matchedText.length
+  }
+  return false
+}
+
+/** Recursively check if the AST contains a field node with the given name. */
+function _astHasField(ast: ParsedAST, fieldName: string): boolean {
+  if (ast.type === 'field' && (ast as FieldNode).field === fieldName) return true
+  if (ast.type === 'and' || ast.type === 'or') {
+    return (ast as AndNode | OrNode).children.some(child => _astHasField(child, fieldName))
+  }
+  if (ast.type === 'not') return _astHasField((ast as NotNode).child, fieldName)
+  return false
 }
 
 /** Collect field matches from frontmatter that satisfy the query. */
