@@ -49,12 +49,14 @@ export const TagSyntaxHandler: SyntaxHandler = {
       for (let i = 0; i < tagsList.length; i++) {
         if (tagsList[i].includes(node.pattern)) {
           let lineNumber = 0
+          let lineText = `tag: ${tagsList[i]}`
           if (context.tags) {
             lineNumber = context.tags[i]?.lineNumber ?? 0
+            lineText = context.tags[i]?.lineText ?? lineText
           }
           matches.push({
             lineNumber,
-            lineText: `tag: ${tagsList[i]}`,
+            lineText,
             matchedText: tagsList[i],
             source: 'field:tag' as MatchSource,
           })
