@@ -95,7 +95,6 @@ export function parseTagsWithPositionsFromYAML(metaString: string, startLine: nu
   }
 
   // Case 2: List-style (multi-line) — items are indented under the `tags` key
-  const expectedIndent = tagsKeyIndent + 2; // standard YAML indent
   for (let i = tagsKeyIndex + 1; i < lines.length; i++) {
     const line = lines[i];
 
@@ -103,8 +102,10 @@ export function parseTagsWithPositionsFromYAML(metaString: string, startLine: nu
     if (line.trim() === "" || commentRegex.test(line)) continue;
 
     const actualIndent = line.search(/\S/);
-    // If indentation is less than expected, we've left the tags block
-    if (actualIndent < expectedIndent) break;
+    // Indentation less than the key's level → left the tags block
+    if (actualIndent < tagsKeyIndent) break;
+    // Same indent as the key → only a list item (starting with `-`/`+`) continues the block
+    if (actualIndent === tagsKeyIndent && !/^[\s]*[-+]\s/.test(line)) break;
 
     // Match list items: `- tag` or `  - tag`
     const listMatch = /^[\s]*[-+]\s+(.*)/.exec(line);
