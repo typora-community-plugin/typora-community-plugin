@@ -129,6 +129,12 @@
     "globalSettingOfPlugin": "Open Plugin Settings (Global)",
     "vaultSettingOfPlugin": "Open Plugin Settings (Vault)"
   },
+  "sidebar": {
+    "search": {
+      "commonMode": "Search",
+      "advancedMode": "Advanced Search"
+    }
+  },
   "tabview": {
     "close": "Close",
     "closeOthers": "Close other tabs",

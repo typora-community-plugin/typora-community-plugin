@@ -129,6 +129,12 @@
     "globalSettingOfPlugin": "打开插件设置 (全局)",
     "vaultSettingOfPlugin": "打开插件设置 (本地)"
   },
+  "sidebar": {
+    "search": {
+      "commonMode": "搜索",
+      "advancedMode": "高级搜索"
+    }
+  },
   "tabview": {
     "close": "关闭标签",
     "closeOthers": "关闭其他标签",

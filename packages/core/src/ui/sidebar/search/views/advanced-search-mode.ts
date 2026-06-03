@@ -96,14 +96,13 @@ export class AdvancedSearchMode extends Component {
 
   private _updateButtonState() {
     const enabled = this._isEnabled()
+    const t = this.i18n.t.sidebar.search
 
     document.body.classList.toggle('ty-advanced-search-active', enabled)
 
-    this.labelEl.textContent = (enabled ? 'Advanced ' : '') + 'Search'
+    this.labelEl.textContent = enabled ? t.advancedMode : t.commonMode
 
     this.btnEl.classList.toggle('ty-active', enabled)
-
-    const t = this.i18n.t.settingTabs.appearance
-    this.btnEl.title = t.advancedSearchMode
+    this.btnEl.title = t.advancedMode
   }
 }
