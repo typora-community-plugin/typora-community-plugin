@@ -1,4 +1,4 @@
-import './global-search-view.scss'
+import './advanced-search-mode.scss'
 import decorate from '@plylrnsdy/decorate.js'
 import { Component } from 'src/common/component'
 import { html } from 'src/utils'

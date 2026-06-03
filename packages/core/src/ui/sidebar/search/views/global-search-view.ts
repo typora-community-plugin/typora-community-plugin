@@ -1,4 +1,3 @@
-import './global-search-view.scss'
 import decorate from '@plylrnsdy/decorate.js'
 import { editor } from "typora"
 import { Component } from 'src/common/component'

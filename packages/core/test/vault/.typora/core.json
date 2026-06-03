@@ -24,6 +24,7 @@
     "useWorkspace": true,
     "internalPlugin.enabledPlugins": {
       "internal.metadata": true
-    }
+    },
+    "advancedSearchMode": true
   }
 }
