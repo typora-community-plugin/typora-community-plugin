@@ -76,6 +76,8 @@ export interface EvalContext {
   titles?: TitleObject[]
   /** Inline #tag patterns extracted from body text */
   inlineTags?: Set<string>
+  /** File path (relative for index-only, absolute for ripgrep path) for filename matching */
+  filePath?: string
 }
 
 // ── SyntaxHandler interface ────────────────────────────────────────────

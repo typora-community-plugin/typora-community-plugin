@@ -48,6 +48,7 @@ export class SearchResultRenderer {
     // For content matches, append all lines to existing item or create new one.
     if (existingItem) {
       for (const match of result.matches) {
+        if (match.source === 'field:filename') continue
         const matchesContainer = existingItem.querySelector('.ty-search-item-matches') as HTMLElement | null
         if (matchesContainer) {
           this._appendLineToContainer(matchesContainer, existingItem, match)
@@ -108,22 +109,24 @@ export class SearchResultRenderer {
       locEl.textContent = parentFolder.split('/').join(PATH_SEP)
     }
 
-    // Set match count
+    // Set match count (exclude field:filename — used only for filename highlighting)
+    const visibleMatches = result.matches.filter(m => m.source !== 'field:filename')
     const countEl = itemEl.querySelector('.file-list-item-count') as HTMLElement | null
     if (countEl) {
-      countEl.textContent = result.matches.length > 0 ? String(result.matches.length) : ''
+      countEl.textContent = visibleMatches.length > 0 ? String(visibleMatches.length) : ''
     }
 
     resultsEl.appendChild(itemEl)
 
-    // Auto-expand if more than 3 matches
-    if (result.matches.length > 3) {
+    // Auto-expand if more than 3 visible matches
+    if (visibleMatches.length > 3) {
       itemEl.classList.add('ty-search-item-expand')
     }
 
-    // Render line matches
+    // Render line matches (skip field:filename — used only for filename highlighting)
     const matchesContainer = itemEl.querySelector('.ty-search-item-matches') as HTMLElement | null
     for (const match of result.matches) {
+      if (match.source === 'field:filename') continue
       this._appendLineToContainer(matchesContainer!, itemEl, match)
     }
   }

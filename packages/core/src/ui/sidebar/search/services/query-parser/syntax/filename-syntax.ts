@@ -1,14 +1,15 @@
 /**
  * filename: syntax handler
  *
- * Matches file names via ripgrep Task 2/3 (filename fuzzy + file list).
- * This handler is a pass-through: ripgrep handles filename matching,
- * the AST evaluator always returns true for filename nodes.
+ * Matches file names by checking the file path from EvalContext.
+ * Supports both index-only search (metadata cache scan) and
+ * ripgrep-enriched search.
  *
  * Query example:
- *   filename:test  → find files whose name contains "test"
+ *   filename:doc  → find files whose name contains "doc"
  */
 
+import path from 'src/path'
 import type { FieldNode, SyntaxHandler, EvalContext } from '../types'
 import type { SearchMatch } from '../../text-search-service'
 
@@ -20,18 +21,24 @@ export const FilenameSyntaxHandler: SyntaxHandler = {
   },
 
   extractSearchText(): string | null {
-    // filename is handled by ripgrep Task2/3, not body text search
+    // filename is handled by evaluate() against the file path, not body text search
     return null
   },
 
-  evaluate(): boolean {
-    // Filename matching is delegated to ripgrep Task 2/3 via the original query text.
-    // The AST evaluator doesn't need to re-check — if ripgrep found the file, it matches.
-    return true
+  evaluate(node: FieldNode, context: EvalContext): boolean {
+    if (!context.filePath) return false
+    const fileName = path.basename(context.filePath)
+    return fileName.toLowerCase().includes(node.pattern.toLowerCase())
   },
 
-  collectFieldMatches(): SearchMatch[] {
-    // filename matches are already in textResult.matches from ripgrep
-    return []
+  collectFieldMatches(node: FieldNode, context: EvalContext): SearchMatch[] {
+    if (!context.filePath) return []
+    const fileName = path.basename(context.filePath)
+    return [{
+      lineNumber: 0,
+      lineText: `filename: ${fileName}`,
+      matchedText: node.pattern,
+      source: 'field:filename' as any,
+    }]
   },
 }

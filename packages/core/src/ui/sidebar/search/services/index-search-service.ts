@@ -78,17 +78,18 @@ export class IndexSearchService {
         frontmatter,
         tags: entry.metadata?.tags,
         titles: entry.metadata?.titles,
+        filePath: relPath,
       }
 
-      // Evaluate AST against frontmatter only
+      // Evaluate AST against frontmatter + file path
       if (!evaluateAST(ast, context)) {
         continue
       }
 
-      // Collect field matches from frontmatter (with yaml positions for line numbers)
+      // Collect field matches from frontmatter + file path
       const fieldMatches = collectFieldMatches(ast, context)
 
-      if (fieldMatches.length > 0 && onResult) {
+      if (onResult) {
         // Convert relative cache key to absolute path so Typora can open the file
         const absPath = path.isAbsolute(relPath) ? relPath : path.join(this._vault.path, relPath)
         console.log('[IndexSearch] Index-only match:', absPath, 'matches:', fieldMatches.length)
