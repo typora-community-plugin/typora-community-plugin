@@ -13,19 +13,24 @@
 }
 
 @keyframes typ-global-search-progressbar-indeterminate {
-  from { transform: translateX(-100%); }
-  to   { transform: translateX(200%); }
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(200%);
+  }
 }
 
 /* Advanced Search Mode toggle button */
 .ty-plugin-advanced-search-btn {
-  background: transparent;
   border: none;
-  cursor: pointer;
   padding: 4px 8px;
   font-size: 12px;
   line-height: 1.4;
   border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
   transition: filter 0.15s ease, background-color 0.15s ease;
 
   /* Emoji doesn't respect `color`, use grayscale + brightness for gray state */
@@ -41,9 +46,16 @@
   }
 }
 
-/* Reposition Typora built-in search option buttons to align with input field */
-#filesearch-case-option-btn,
-#filesearch-word-option-btn,
-#filesearch-regexp-option-btn {
+.ty-advanced-search-active {
+  #file-library-search-input {
+    padding-right: unset;
+  }
+}
+
+#typora-sidebar .searchpanel-search-option-btn {
   top: 34px;
+
+  .ty-advanced-search-active & {
+    right: -100px;
+  }
 }

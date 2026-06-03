@@ -108,6 +108,9 @@ export class AdvancedSearchMode extends Component {
   /** Update button visual state based on current setting value */
   private _updateButtonState() {
     const enabled = this._isEnabled()
+
+    document.body.classList.toggle('ty-advanced-search-active', enabled)
+
     this.btnEl.classList.toggle('ty-active', enabled)
 
     // Update tooltip (i18n resolved at call time for live language support)

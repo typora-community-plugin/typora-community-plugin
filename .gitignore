@@ -1,5 +1,10 @@
 references/
 
+# agent
+.omo
+.opencode
+.sisyphus
+
 # vscode
 .vscode
 
