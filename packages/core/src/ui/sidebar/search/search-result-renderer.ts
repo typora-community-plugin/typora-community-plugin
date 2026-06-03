@@ -48,7 +48,9 @@ export class SearchResultRenderer {
     // For content matches, append all lines to existing item or create new one.
     if (existingItem) {
       for (const match of result.matches) {
-        if (match.source === 'field:filename') continue
+        // Field matches (tag:, title:, filename:) are already rendered by the
+        // initial indexOnlySearch call — skip them to avoid duplication.
+        if (match.source?.startsWith('field:')) continue
         const matchesContainer = existingItem.querySelector('.ty-search-item-matches') as HTMLElement | null
         if (matchesContainer) {
           this._appendLineToContainer(matchesContainer, existingItem, match)
