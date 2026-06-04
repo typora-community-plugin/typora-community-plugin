@@ -22,7 +22,8 @@ export function buildSearchResult(
   const inlineTags = collectInlineTagPatterns(textResult.matches)
 
   // Build eval context shared across all evaluation phases
-  const context: EvalContext = { bodyTokens, frontmatter, tags, titles, inlineTags, filePath: textResult.filePath }
+  const rawLines = textResult.matches.map(m => m.lineText.toLowerCase())
+  const context: EvalContext = { bodyTokens, rawLines, frontmatter, tags, titles, inlineTags, filePath: textResult.filePath }
 
   // Evaluate AST against body tokens + frontmatter + inline tags
   if (!evaluateAST(ast, context)) {

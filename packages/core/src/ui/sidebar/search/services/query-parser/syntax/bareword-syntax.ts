@@ -26,17 +26,26 @@ export function tryParseBareword(value: string, isQuoted: boolean): TermNode {
 /**
  * Evaluate a TermNode against body tokens.
  * Bare words: ripgrep already confirmed presence, just verify in token set.
- * Quoted phrases: check if any token contains the full phrase.
+ * Quoted phrases: check body tokens first (fast path), then raw line text
+ * (handles punctuation/colons stripped by tokenizeLine).
  */
 export function evaluateTerm(node: TermNode, context: EvalContext): boolean {
+  const pattern = node.pattern.toLowerCase()
+
   if (node.isQuoted) {
-    // Quoted phrase: check if the exact text appears in any match line
+    // Fast path: check if any body token contains the phrase
     for (const token of context.bodyTokens) {
-      if (token.includes(node.pattern.toLowerCase())) return true
+      if (token.includes(pattern)) return true
+    }
+    // Fallback: check raw line text (preserves colons, punctuation, etc.)
+    if (context.rawLines) {
+      for (const line of context.rawLines) {
+        if (line.includes(pattern)) return true
+      }
     }
     return false
   }
 
   // Bare word: ripgrep already confirmed it's in the body, just verify
-  return context.bodyTokens.has(node.pattern.toLowerCase())
+  return context.bodyTokens.has(pattern)
 }

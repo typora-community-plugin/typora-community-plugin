@@ -70,6 +70,8 @@ export function isFieldPrefix(str: string): str is FieldKind {
 export interface EvalContext {
   /** Tokens from ripgrep-matched lines (used for bareword verification) */
   bodyTokens: Set<string>
+  /** Raw line texts from ripgrep matches (used for quoted phrase verification with punctuation) */
+  rawLines?: string[]
   /** Parsed YAML frontmatter */
   frontmatter: Record<string, any>
   /** Frontmatter tags with positional info (from YAML parser) */
