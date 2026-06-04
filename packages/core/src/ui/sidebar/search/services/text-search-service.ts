@@ -4,6 +4,15 @@ import path from "src/path"
 import { platform } from "src/common/constants"
 import { noop } from "src/utils"
 
+
+/** Options for {@link RipgrepSearchService.execute}. */
+export interface SearchOptions {
+  caseSensitive?: boolean
+  wholeWord?: boolean
+  onResult?: (result: SearchResult) => void
+  onComplete?: () => void
+}
+
 /**
  * Result of a single line match from ripgrep.
  */
@@ -98,14 +107,13 @@ export class RipgrepSearchService {
    */
   execute(
     query: string | string[],
-    options?: { caseSensitive?: boolean; wholeWord?: boolean },
-    onResult?: (result: SearchResult) => void,
-    onComplete?: () => void,
+    options?: SearchOptions,
   ): void {
     this.cancel()
 
     const caseSensitive = options?.caseSensitive ?? false
     const wholeWord = options?.wholeWord ?? false
+    const { onResult, onComplete } = options ?? {}
 
     if (platform() === 'darwin') {
       this._executeOnMac(query, caseSensitive, wholeWord, onResult)

@@ -2,6 +2,7 @@ import { editor } from "typora"
 import { useService } from "src/common/service"
 import { GlobalSearchView } from "./views/global-search-view"
 import { RipgrepSearchService } from "./services/text-search-service"
+import type { SearchOptions, SearchResult } from "./services/text-search-service"
 import { HybridSearchService } from "./services/hybrid-search-service"
 
 
@@ -58,19 +59,19 @@ export class GlobalSearch {
 
     this._searchService?.cancel()
 
-    const onComplete = () => view.renderer.onDrain(() => view.progressBar.hide())
-
     // Route: structured query → hybrid search, pure text → ripgrep directly
     const hasStructuredTokens = this._hasStructuredTokens(query)
+    const searchOptions: SearchOptions = {
+      caseSensitive,
+      wholeWord,
+      onResult: (result) => view.renderer.renderResult(result),
+      onComplete: () => view.renderer.onDrain(() => view.progressBar.hide()),
+    }
 
     if (hasStructuredTokens) {
-      this._hybridSearch.execute(query, { caseSensitive, wholeWord }, (result) => {
-        view.renderer.renderResult(result)
-      }, onComplete)
+      this._hybridSearch.execute(query, searchOptions)
     } else {
-      this._searchService?.execute(query, { caseSensitive, wholeWord }, (result) => {
-        view.renderer.renderResult(result)
-      }, onComplete)
+      this._searchService?.execute(query, searchOptions)
     }
   }
 

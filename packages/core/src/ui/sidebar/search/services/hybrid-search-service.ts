@@ -1,4 +1,4 @@
-import type { RipgrepSearchService, SearchResult } from './text-search-service'
+import type { RipgrepSearchService, SearchOptions, SearchResult } from './text-search-service'
 import { IndexSearchService } from './index-search-service'
 import { astHasFieldNodes } from './query-parser'
 
@@ -28,16 +28,16 @@ export class HybridSearchService {
    */
   execute(
     query: string,
-    options?: { caseSensitive?: boolean; wholeWord?: boolean },
-    onResult?: (result: SearchResult) => void,
-    onComplete?: () => void,
+    options?: SearchOptions,
   ): void {
+
+    const { onResult, onComplete } = options ?? {}
 
     // Parse AST once per query
     const ast = this._indexSearcher.getAST(query)
     if (!ast) {
       // No structured tokens — pure text search, delegate to ripgrep directly
-      this._textSearcher.execute(query, options, onResult, onComplete)
+      this._textSearcher.execute(query, options)
       return
     }
 
@@ -68,12 +68,15 @@ export class HybridSearchService {
     // The AST evaluation in buildResult then enforces AND semantics.
     // Files already emitted by indexOnlySearch above get their body match
     // lines appended by the renderer's existing-item path.
-    this._textSearcher.execute(textTokens, options, (textResult) => {
-      const finalResult = this._indexSearcher.buildResult(textResult, ast)
-      if (finalResult && onResult) {
-        onResult(finalResult)
-      }
-    }, onComplete)
+    this._textSearcher.execute(textTokens, {
+      ...options,
+      onResult: (textResult) => {
+        const finalResult = this._indexSearcher.buildResult(textResult, ast)
+        if (finalResult && onResult) {
+          onResult(finalResult)
+        }
+      },
+    })
   }
 
   /** Cancel any running search. */
