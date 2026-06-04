@@ -4,7 +4,10 @@ import { Component } from 'src/common/component'
 import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
 import { html, noop } from 'src/utils'
 import { useService } from 'src/common/service'
-import { InternalSidebarPanel } from '../sidebar-panel'
+import { InternalSidebarPanel } from '../../sidebar-panel'
+import { SearchResultRenderer } from '../search-result-renderer'
+import { GlobalSearchProgressbar } from './global-search-progressbar'
+import { AdvancedSearchMode } from './advanced-search-mode'
 
 
 const SELECTOR_QUERY_INPUT = '#file-library-search-input'
@@ -15,8 +18,14 @@ export class GlobalSearchView extends InternalSidebarPanel {
     return 'core.search' as const
   }
 
+  /** @private */
+  renderer = new SearchResultRenderer()
+
   private _keepSearchResult = new KeepSearchResult()
   private _showSearchResultFullPath = new ShowSearchResultFullPath()
+  private _advancedSearchMode = new AdvancedSearchMode()
+
+  progressBar = new GlobalSearchProgressbar()
 
   constructor(
     i18n = useService('i18n'),
@@ -36,10 +45,12 @@ export class GlobalSearchView extends InternalSidebarPanel {
   onshow() {
     editor.library.fileSearch.show()
     this._keepSearchResult.showSearchPanel()
+    this.progressBar.load()
   }
 
   onhide() {
     $('#typora-sidebar').removeClass('ty-show-search ty-on-search')
+    this.progressBar.unload()
   }
 
   getQuery() {
@@ -49,11 +60,8 @@ export class GlobalSearchView extends InternalSidebarPanel {
   setQuery(query: string) {
     $(SELECTOR_QUERY_INPUT).val(query)
   }
-
-  startSearch() {
-    editor.library.fileSearch.search(this.getQuery())
-  }
 }
+
 
 class KeepSearchResult extends Component {
 
@@ -88,9 +96,10 @@ class KeepSearchResult extends Component {
   }
 }
 
+
 class ShowSearchResultFullPath extends Component {
 
-  private observer = new MutationObserver(this.appendTitle)
+  private observer = new MutationObserver(_ => this.appendTitle(_))
 
   constructor(
     settings = useService('settings'),
@@ -108,11 +117,12 @@ class ShowSearchResultFullPath extends Component {
     })
   }
 
-  private appendTitle(mutationsList: MutationRecord[]) {
+  private appendTitle = (mutationsList: MutationRecord[]) => {
     mutationsList.forEach(mutation => {
       if (mutation.type !== 'childList') return
-      mutation.addedNodes.forEach((el: HTMLElement) => {
-        const loc = el.querySelector('.file-list-item-parent-loc') as HTMLElement | null
+      mutation.addedNodes.forEach((node: unknown) => {
+        if (!(node instanceof HTMLElement)) return
+        const loc = node.querySelector('.file-list-item-parent-loc') as HTMLElement | null
 
         // NOTE: Files in root not has `loc` element
         if (!loc) return
@@ -123,7 +133,8 @@ class ShowSearchResultFullPath extends Component {
   }
 
   onload() {
-    const resultsEl = $('#file-library-search-result').get(0)!
+    const resultsEl = $('#file-library-search-result').get(0) as HTMLElement | null
+    if (!resultsEl) return
     this.observer.observe(resultsEl, {
       attributes: false,
       childList: true,

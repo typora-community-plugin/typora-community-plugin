@@ -3,6 +3,7 @@ import path from 'src/path'
 import { StickyEvents } from 'src/common/events'
 import { useService } from 'src/common/service'
 import { MiniDexie } from 'src/utils/indexed-db'
+import { TagObject } from 'src/utils'
 
 
 class IndexAbortedError extends Error {
@@ -43,8 +44,10 @@ interface Cache {
 
 interface CacheEntry {
   mtime: number // Last modification timestamp
-  metadata: Record<string, any>
-  [prop: string]: any
+  metadata: Record<string, any> & {
+    frontmatter: Record<string, any>
+    tags: TagObject[]
+  }
 }
 
 const DB_SCHEMA = {
@@ -103,10 +106,11 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
     this.isIndexing = true
     console.log('[Metadata] Start indexing...')
 
-    try {
-      const { abort, signal } = new AbortController()
-      this.vault.on('change', () => abort())
+    const abortController = new AbortController()
+    const dispose = this.vault.on('change', () => abortController.abort())
 
+    try {
+      const { signal } = abortController
       const vaultPath = this.vault.path
       const allFiles = await fs.listFiles(vaultPath, { recursive: true, signal })
       this.emit('index:start', allFiles.length)
@@ -122,7 +126,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
       this.emit('index:done')
       this.saveToIndexedDb(vaultId, indexingCache)
 
-    } catch (error) {
+    } catch (error: any) {
       if (error.name === 'AbortError') {
         console.log('[Metadata] Indexing stopped, temporary cache discarded')
       } else {
@@ -131,6 +135,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
       }
     } finally {
       this.isIndexing = false
+      dispose()
       console.log('[Metadata] Indexing completed.')
     }
   }
@@ -142,7 +147,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
         signal.throwIfAborted()
         const filePath = filePaths.pop()
         if (filePath) {
-          await this.processFile(indexingCache, vaultPath, filePath, null, signal)
+          await this.processFile(indexingCache, vaultPath, filePath, undefined, signal)
           this.emit('index:progress', allCount - filePaths.length - 1)
         }
       }
@@ -171,7 +176,11 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
       const relativePath = path.relative(vaultPath, filePath)
 
       const cached = this.cache[relativePath]
-      if (cached && cached.mtime === mtime) {
+      // When content is provided (from file:will-save with editor content),
+      // skip the mtime check — the file hasn't been written to disk yet so
+      // mtime is still old. Without this, the provider never processes the
+      // new content and the cache stays stale.
+      if (!content && cached && cached.mtime === mtime) {
         indexingCache[relativePath] = cached
         return
       }
@@ -195,12 +204,19 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
       const mergedMetadata = results.reduce((acc, curr) => ({ ...acc, ...curr }), {})
       indexingCache[relativePath] = {
         mtime,
-        metadata: mergedMetadata
+        metadata: mergedMetadata as any,
       }
     } catch (error) {
       if (error instanceof IndexAbortedError) throw error
       console.error(`Failed to process ${filePath}:`, error)
     }
+  }
+
+  /**
+   * Get metadata for a file by relative path.
+   */
+  get(relativePath: string): CacheEntry | undefined {
+    return this.cache[relativePath]
   }
 
   /**
@@ -211,21 +227,24 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
   }
 
   async loadFromIndexedDb(vaultId: string): Promise<Cache> {
+    const loadedCache: Cache = {}
+
     try {
       const db = new MiniDexie(`metadata:${vaultId}`)
         .version(1).stores(DB_SCHEMA)
 
       const records = await db.files.toArray()
-      const loadedCache: Cache = {}
       for (const record of records) {
         const { path, metadata } = record
         loadedCache[path] = metadata as CacheEntry
       }
 
       console.log(`[Metadata] Loaded ${records.length} items from IndexedDB.`)
-      return loadedCache
     } catch (e) {
       console.error('[Metadata] Failed to load IndexedDB:', e)
+    }
+    finally {
+      return loadedCache
     }
   }
 

@@ -51,7 +51,7 @@ export interface RibbonItemButton {
  */
 export class WorkspaceRibbon extends Component {
 
-  private ribbonView?: RibbonView
+  private ribbonView!: RibbonView
   private buttons = [] as RibbonItemButton[]
 
   constructor(
@@ -289,7 +289,7 @@ class RibbonView extends View {
         button.group === 'top'
           ? e => {
             this.activeButton(button.id)
-            button.onclick(e)
+            button.onclick?.(e)
           }
           : button.onclick
       )

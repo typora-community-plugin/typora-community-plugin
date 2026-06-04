@@ -16,7 +16,7 @@ interface IPath {
   relative(from: string, to: string): string
 }
 
-class MacPath implements IPath {
+class BrowserPath implements IPath {
 
   readonly sep = File.isWin ? '\\' : '/'
 
@@ -32,14 +32,21 @@ class MacPath implements IPath {
   }
 
   extname(filepath: string): string {
-    const segments = this.basename(filepath).split(/\b(?=[.])/)
-    return segments.length > 1 ? segments.pop() : ''
+    const base = this.basename(filepath)
+    if (!base) return ''
+    // Match Node.js behavior: extension starts from the last '.',
+    // but a leading '.' on a dotfile (e.g. '.gitignore') is NOT an extension
+    const idx = base.lastIndexOf('.')
+    if (idx <= 0) return '' // no dot, or dot only at position 0
+    return base.slice(idx)
   }
 
   dirname(filepath: string): string {
     const segments = filepath.split(/[\\\/]+/)
     if (!segments[segments.length - 1]) segments.pop()
-    return segments.slice(0, -1).join(this.sep)
+    const result = segments.slice(0, -1).join(this.sep)
+    // Root directory: dirname('/') should return '/' (not '')
+    return result || this.sep
   }
 
   join(...paths: string[]): string {
@@ -72,7 +79,12 @@ class MacPath implements IPath {
       const s1 = segments1[i]
       const s2 = segments2[i]
       if (s1 === s2) continue
-      if (s1 != null) res.push('..')
+      // Only push '..' when we still have a current directory to exit
+      if (s1 != null && s2 != null) res.push('..')
+      else if (s1 == null && s2 != null) {
+        // 'from' is an ancestor of 'to', no more '..' needed
+        break
+      }
       if (s2 != null) res.push(s2)
     }
 
@@ -82,6 +94,6 @@ class MacPath implements IPath {
 
 const path: IPath = File.isNode
   ? reqnode('path') as typeof import('path')
-  : new MacPath()
+  : new BrowserPath()
 
 export default path

@@ -4,6 +4,12 @@ interface MetaObject {
   [key: string]: MetaValue;
 }
 
+export interface TagObject {
+  name: string
+  lineText: string
+  lineNumber: number
+}
+
 const keyValRegex = /^\s*([^\s\[\{:]+)\s*:\s*(.*)$/;
 const quotedKeyRegex = /^\s*(\"([^"]+)\"|\'([^']+)\')\s*:\s*(.*)/;
 const commentRegex = /^\s*#/;
@@ -32,6 +38,109 @@ export function parseSimplifiedYAML(metaString: string): MetaObject {
   // Clean up internal state key
   delete parsedData[""];
   return parsedData as MetaObject;
+}
+
+/**
+ * Parse the YAML frontmatter string and extract each tag under the `tags` key
+ * along with its 1-based line number in the original file.
+ *
+ * Supports both list-style (`- tag`) and inline array (`[tag1, tag2]`) formats.
+ *
+ * @param metaString The raw YAML frontmatter content (without `---` delimiters).
+ * @param startLine  0-based line index where the YAML body starts in the original file
+ *                   (i.e., the line right after the opening `---`).
+ * @returns Array of tag entries with name, line text, and 1-based line number.
+ */
+export function parseTagsWithPositionsFromYAML(metaString: string, startLine: number): TagObject[] {
+  if (!metaString || typeof metaString !== "string") return [];
+
+  const lines = metaString.split(/\r|\n|\r\n/g);
+  const results: TagObject[] = [];
+
+  let tagsKeyIndex: number | null = null;
+  let tagsKeyIndent = 0;
+
+  // First pass: locate the `tags` key line
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (commentRegex.test(line)) continue;
+
+    const match = keyValRegex.exec(line) || quotedKeyRegex.exec(line);
+    if (match && (match[1] === "tags" || match[2] === "tags" || match[3] === "tags")) {
+      tagsKeyIndex = i;
+      tagsKeyIndent = line.search(/\S/);
+      break;
+    }
+  }
+
+  if (tagsKeyIndex === null) return [];
+
+  const keyLine = lines[tagsKeyIndex];
+  const valuePart = keyValRegex.exec(keyLine)?.[2]?.trim() || quotedKeyRegex.exec(keyLine)?.[4]?.trim() || "";
+
+  // Case 1: Inline array on the same line, e.g. `tags: [tag1, tag2]`
+  if (valuePart.startsWith("[")) {
+    const inlineMatch = valuePart.match(/^\[(.*)\]/s);
+    if (inlineMatch) {
+      const items = inlineMatch[1].split(",").map((s: string) => s.trim()).filter(Boolean);
+      for (const item of items) {
+        results.push({
+          name: stripQuotes(item),
+          lineText: keyLine.trim(),
+          lineNumber: tagsKeyIndex + startLine + 1, // convert to 1-based
+        });
+      }
+    }
+    return results;
+  }
+
+  // Case 1b: Simple value on the same line, e.g. `tags: meeting`
+  // The value is a single non-empty string that isn't an inline array.
+  if (valuePart) {
+    // Only treat as simple value if it doesn't look like a list item (bare word value).
+    // This catches `tags: foo` which is common in frontmatter but not handled by
+    // the list loop below (no `-` prefix on subsequent lines).
+    results.push({
+      name: stripQuotes(valuePart),
+      lineText: keyLine.trim(),
+      lineNumber: tagsKeyIndex + startLine + 1,
+    });
+    return results;
+  }
+
+  // Case 2: List-style (multi-line) — items are indented under the `tags` key
+  for (let i = tagsKeyIndex + 1; i < lines.length; i++) {
+    const line = lines[i];
+
+    // Skip empty lines and comments
+    if (line.trim() === "" || commentRegex.test(line)) continue;
+
+    const actualIndent = line.search(/\S/);
+    // Indentation less than the key's level → left the tags block
+    if (actualIndent < tagsKeyIndent) break;
+    // Same indent as the key → only a list item (starting with `-`/`+`) continues the block
+    if (actualIndent === tagsKeyIndent && !/^[\s]*[-+]\s/.test(line)) break;
+
+    // Match list items: `- tag` or `  - tag`
+    const listMatch = /^[\s]*[-+]\s+(.*)/.exec(line);
+    if (listMatch) {
+      results.push({
+        name: stripQuotes(listMatch[1].trim()),
+        lineText: line.trim(),
+        lineNumber: i + startLine + 1, // convert to 1-based
+      });
+    }
+  }
+
+  return results;
+}
+
+/** Remove surrounding quotes from a string value. */
+function stripQuotes(value: string): string {
+  if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+    return value.slice(1, -1);
+  }
+  return value;
 }
 
 /**

@@ -62,6 +62,8 @@
       "keepSearchResultDesc": "When you switch to another panel (such as \"Files\") and then switch back to the search panel, you will not lose the recent search results.",
       "searchResultFullPath": "Show search result full path",
       "searchResultFullPathDesc": "Hover your cursor over the path and it will show full path in a tooltip.",
+      "advancedSearchMode": "Advanced Search Mode",
+      "advancedSearchModeDesc": "Replace native file search with custom ripgrep-based engine that supports regex patterns. A toggle button appears next to the regex button in the search bar.",
       "advanced": "Advanced",
       "ribbon": "Show Ribbon",
       "ribbonDesc": "Also enable Custom Sidebar Panel",
@@ -126,6 +128,13 @@
     "settingOfApp": "Open App Settings",
     "globalSettingOfPlugin": "Open Plugin Settings (Global)",
     "vaultSettingOfPlugin": "Open Plugin Settings (Vault)"
+  },
+  "sidebar": {
+    "search": {
+      "commonMode": "Search",
+      "advancedMode": "Advanced Search",
+      "advancedModeDesc": "Syntax:\n  space        = AND\n  OR           = OR\n  -term       = NOT (exclude)\n  (group)      = grouping\n  tag:/title:/filename:value = field search\n  \"exact phrase\" = exact match"
+    }
   },
   "tabview": {
     "close": "Close",

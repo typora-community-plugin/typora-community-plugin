@@ -21,7 +21,7 @@ export class Sidebar extends Component {
 
   container = new SidebarContainer()
 
-  private activePanel: SidebarPanel
+  private activePanel!: SidebarPanel
   private internalPanels: SidebarPanel[] = []
   private panels: SidebarPanel[] = []
 
@@ -125,7 +125,7 @@ class SidebarContainer extends View {
     super()
 
     this.containerEl = document.getElementById('sidebar-content')!
-    this.wrapperEl = this.containerEl.parentElement
+    this.wrapperEl = this.containerEl.parentElement!
   }
 
   addPanel(panel: SidebarPanel) {

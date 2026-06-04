@@ -1,0 +1,51 @@
+.ty-plugin-advanced-search-btn {
+  border: none;
+  padding: 4px 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+  transition: filter 0.15s ease, background-color 0.15s ease;
+
+  /* Emoji doesn't respect `color`, use grayscale + brightness for gray state */
+  filter: grayscale(1) brightness(1.5);
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+  }
+
+  &.ty-active {
+    filter: none;
+    font-weight: 600;
+  }
+}
+
+.ty-plugin-search-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+
+  & > span {
+    font-size: 12px;
+    color: #888;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.ty-advanced-search-active {
+  #file-library-search-input {
+    padding-right: unset;
+  }
+}
+
+#typora-sidebar .searchpanel-search-option-btn {
+  top: 34px;
+
+  .ty-advanced-search-active & {
+    right: -100px;
+  }
+}

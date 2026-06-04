@@ -518,6 +518,13 @@ interface TFile {
 
 
 interface FileSearchView {
+  caseSensitive: boolean
+  wholeWord: boolean
+  /**
+   * @since Typora v1.4.x
+   */
+  useRegexp: boolean
+
   clearSearch(): void
   clearContentHighlight(): void
   hide(): void
@@ -529,6 +536,13 @@ interface FileSearchView {
   buildRpArgs(query: string): string[]
   show(): void
   showSearch(param0?: boolean): void
+
+  endCount: 0 | 1 | 2
+  curError: string
+
+  onSearchUpdate(p0: string, p1?: any, p2?: any): void
+  onSearchUpdate(jsonLines: string, p1: undefined, p2: undefined): void
+  onSearchUpdate(file: string, isOnlySearchFileName: boolean, result: any): void
 }
 interface LocalSettingBridge {
   loadExportOption(opt: ExportOption): ExportSetting
