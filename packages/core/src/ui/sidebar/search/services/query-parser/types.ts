@@ -5,10 +5,10 @@
  *   query     := or_expr
  *   or_expr   := and_expr ('OR' and_expr)*
  *   and_expr  := term+
- *   term      := NOT? (field | quoted | bareword)
+ *   term      := NOT? (field | quoted | bareword | '(' or_expr ')')
  *   field     := PREFIX ':' value    (prefix registered via SyntaxHandler)
  *   quoted    := '"' .* '"'
- *   bareword  := [^\s-]+
+ *   bareword  := [^\s-()]+
  *   NOT       := '-'
  */
 

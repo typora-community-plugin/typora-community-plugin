@@ -96,6 +96,8 @@ export function getHandler(field: string): SyntaxHandler | undefined {
  *  - Single bare word → TermNode
  *  - Multiple bare words → implicit AND of TermNodes
  *  - `foo OR bar` → OR of AND groups (uppercase OR, not quoted/negated)
+ *  - `(foo OR bar) baz` → parenthesized groups for explicit precedence
+ *  - `-(foo OR bar)` → negation applied to parenthesized group
  *  - Any field prefix or quoted phrase → structured AST
  */
 export function tryParse(query: string): ParsedAST | null {
@@ -105,41 +107,65 @@ export function tryParse(query: string): ParsedAST | null {
   const rawTokens = tokenize(trimmed)
   if (rawTokens.length === 0) return null
 
-  // Convert raw tokens to AST nodes, splitting at OR operators
-  const segments: ParsedAST[][] = [[]]
-  let hasOR = false
+  const { nodes } = _parseSequence(rawTokens, 0)
+  if (nodes.length === 0) return null
 
-  for (const raw of rawTokens) {
-    // Detect OR operator: bare word "OR" (uppercase, not quoted/field/negated)
-    if (!raw.isQuoted && !raw.isField && !raw.isNegated && raw.value === 'OR') {
-      hasOR = true
-      segments.push([])
+  return nodes.length === 1 ? nodes[0] : { type: 'or', children: nodes } as OrNode
+}
+
+/**
+ * Recursively parse a sequence of raw tokens into OR-of-ANDs AST nodes.
+ * Processes tokens from `start` until end-of-tokens or a closing paren.
+ * Returns the parsed nodes and the end position (past any consumed `)`).
+ */
+function _parseSequence(tokens: RawToken[], start: number): { nodes: ParsedAST[]; end: number } {
+  const segments: ParsedAST[][] = [[]]
+  let i = start
+
+  while (i < tokens.length) {
+    const raw = tokens[i]
+
+    // Closing paren ends this sequence
+    if (raw.value === ')') {
+      i++
+      break
+    }
+
+    // Opening paren: recursively parse inner group
+    if (raw.value === '(') {
+      const negated = raw.isNegated
+      i++
+      const { nodes: inner, end } = _parseSequence(tokens, i)
+      i = end
+      if (inner.length > 0) {
+        let group: ParsedAST = inner.length === 1 ? inner[0] : { type: 'and', children: inner } as AndNode
+        if (negated) group = { type: 'not', child: group } as NotNode
+        segments[segments.length - 1].push(group)
+      }
       continue
     }
 
+    // OR operator: uppercase bare word, not quoted/field/negated
+    if (!raw.isQuoted && !raw.isField && !raw.isNegated && raw.value === 'OR') {
+      segments.push([])
+      i++
+      continue
+    }
+
+    // Regular token
     const node = _parseRawToken(raw)
     if (node) {
       segments[segments.length - 1].push(node)
     }
+    i++
   }
 
-  // Build OR-of-ANDs if OR operator was used
-  if (hasOR) {
-    const children = segments
-      .filter(seg => seg.length > 0)
-      .map(seg => seg.length === 1 ? seg[0] : { type: 'and', children: seg } as AndNode)
-    return children.length === 1 ? children[0] : { type: 'or', children } as OrNode
-  }
+  // Flatten: each non-empty segment → single node or AND
+  const nodes: ParsedAST[] = segments
+    .filter(seg => seg.length > 0)
+    .map(seg => seg.length === 1 ? seg[0] : { type: 'and', children: seg } as AndNode)
 
-  const astNodes = segments[0]
-
-  // Single term → return directly (not wrapped in AND)
-  if (astNodes.length === 1) {
-    return astNodes[0]
-  }
-
-  // Multiple terms → implicit AND
-  return { type: 'and', children: astNodes } as AndNode
+  return { nodes, end: i }
 }
 
 /**

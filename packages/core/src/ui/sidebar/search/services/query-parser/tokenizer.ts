@@ -61,6 +61,13 @@ export function tokenize(query: string): RawToken[] {
       i++
     }
 
+    // Parentheses as group delimiters (may be negated: -(foo OR bar))
+    if (query[i] === '(' || query[i] === ')') {
+      tokens.push({ value: query[i], isField: false, isQuoted: false, isNegated: negated })
+      i++
+      continue
+    }
+
     // Field prefix: tag:, title:, filename:
     // (known prefixes are checked here; custom prefixes from registered
     //  handlers are detected later by the parser via colon-splitting)
@@ -79,7 +86,7 @@ export function tokenize(query: string): RawToken[] {
 
     // Bare word (may be preceded by -)
     const rest = query.slice(i)
-    const bareOffset = rest.search(/[\s"]/i)
+    const bareOffset = rest.search(/[\s"()]/)
     const bareEnd = bareOffset < 0 ? -1 : i + bareOffset
     const bareWord = bareEnd < 0
       ? query.slice(i).trim()
