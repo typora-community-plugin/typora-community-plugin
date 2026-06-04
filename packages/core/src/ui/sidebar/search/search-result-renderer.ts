@@ -8,34 +8,112 @@ export const SELECTOR_RESULTS = '#file-library-search-result'
 /** Separator character for path parts in parent-loc display */
 const PATH_SEP = " / "
 
+/** Number of results to render per rAF batch */
+const BATCH_SIZE = 20
+
 /**
  * Pure DOM renderer for global search results.
  *
  * Extracted from `GlobalSearchView` to keep the view component thin
  * and give the renderer a single, testable responsibility: turning
  * `SearchResult` objects into Typora DOM nodes.
+ *
+ * Render results are batched via requestAnimationFrame (20 per frame)
+ * to avoid blocking the UI thread when processing thousands of results.
+ * Dedup lookup uses a Map cache instead of DOM querySelector.
  */
 export class SearchResultRenderer {
 
   /** Cached parsed template DOM node, initialized once on first use */
   private _templateDom: HTMLElement | null = null
 
+  /** Map: normalized file path → DOM element (O(1) dedup, no querySelector) */
+  private _pathElMap = new Map<string, HTMLElement>()
+
+  /** Render queue for rAF-batched DOM insertion */
+  private _queue: Array<{ result: SearchResult; resultsEl: HTMLElement }> = []
+
+  /** Current rAF id, null when idle */
+  private _rafId: number | null = null
+
+  /** Called when the render queue has fully drained */
+  private _onDrain: (() => void) | null = null
+
   // ── Public API ────────────────────────────────────────────────────────
 
   /**
-   * Render a single search result into the DOM.
-   *
-   * Uses Typora's existing template structure (#file-search-item-template)
-   * to maintain visual consistency with the native search UI.
+   * Enqueue a search result for batched rendering.
+   * Results are inserted into the DOM in batches via requestAnimationFrame,
+   * yielding to the UI thread between batches.
    */
-  renderResult(result: SearchResult, resultsEl: HTMLElement = document.querySelector(SELECTOR_RESULTS)!): void {
+  renderResult(result: SearchResult, resultsEl?: HTMLElement): void {
     // Skip empty file paths (can happen from task3 file list)
-    if (!result.filePath || !result.filePath.trim()) {
-      return
+    if (!result.filePath || !result.filePath.trim()) return
+
+    this._queue.push({
+      result,
+      resultsEl: resultsEl ?? document.querySelector(SELECTOR_RESULTS)!,
+    })
+    this._scheduleFlush()
+  }
+
+  /** Clear all search results from the DOM. */
+  clearResults(resultsEl: HTMLElement = document.querySelector(SELECTOR_RESULTS)!): void {
+    this._cancelFlush()
+    this._queue.length = 0
+    this._pathElMap.clear()
+    resultsEl.innerHTML = ''
+  }
+
+  /**
+   * Register a callback that fires when all queued results have been rendered.
+   * If the queue is already empty, the callback fires immediately.
+   */
+  onDrain(callback: () => void): void {
+    if (this._queue.length === 0 && this._rafId === null) {
+      callback()
+    } else {
+      this._onDrain = callback
+    }
+  }
+
+  // ── Batch scheduling ─────────────────────────────────────────────────
+
+  private _scheduleFlush(): void {
+    if (this._rafId !== null) return
+    this._rafId = requestAnimationFrame(() => this._flushBatch())
+  }
+
+  private _cancelFlush(): void {
+    if (this._rafId !== null) {
+      cancelAnimationFrame(this._rafId)
+      this._rafId = null
+    }
+  }
+
+  private _flushBatch(): void {
+    this._rafId = null
+
+    const batch = this._queue.splice(0, BATCH_SIZE)
+    for (const { result, resultsEl } of batch) {
+      this._renderOne(result, resultsEl)
     }
 
-    // Check if this file already has a DOM entry
-    const existingItem = resultsEl.querySelector(`[data-path="${this._escapeSelector(result.filePath.split(/[\\/]/).join(path.sep))}"]`) as HTMLElement | null
+    if (this._queue.length > 0) {
+      this._scheduleFlush()
+    } else {
+      const cb = this._onDrain
+      this._onDrain = null
+      cb?.()
+    }
+  }
+
+  // ── Core rendering ──────────────────────────────────────────────────
+
+  /** Render a single result (called from batch flush). */
+  private _renderOne(result: SearchResult, resultsEl: HTMLElement): void {
+    const normalizedPath = result.filePath.split(/[\\/]/).join(path.sep)
+    const existingItem = this._pathElMap.get(normalizedPath)
 
     // For filename-only matches (no content), create/update the item
     if (result.matches.length === 0) {
@@ -59,11 +137,6 @@ export class SearchResultRenderer {
     } else {
       this._appendFileItem(resultsEl, result)
     }
-  }
-
-  /** Clear all search results from the DOM. */
-  clearResults(resultsEl: HTMLElement = document.querySelector(SELECTOR_RESULTS)!): void {
-    resultsEl.innerHTML = ''
   }
 
   // ── Private helpers ───────────────────────────────────────────────────
@@ -92,6 +165,9 @@ export class SearchResultRenderer {
 
     // Set data-path for identification (normalize to OS-specific path separators)
     itemEl.dataset.path = result.filePath.split(/[\\/]/).join(path.sep)
+
+    // Cache in Map for O(1) dedup lookup
+    this._pathElMap.set(itemEl.dataset.path, itemEl)
 
     // Fill filename parts (with highlight on name part)
     const namePartEl = itemEl.querySelector('.file-list-item-file-name-part') as HTMLElement | null
@@ -218,11 +294,6 @@ export class SearchResultRenderer {
     }
 
     this._appendHighlightedText(container, lineText, idx, matchText.length)
-  }
-
-  /** Escape special characters for use in data-path attribute selector. */
-  private _escapeSelector(str: string): string {
-    return str.replace(/([^\w\-./])/g, '\\$1')
   }
 
   /**

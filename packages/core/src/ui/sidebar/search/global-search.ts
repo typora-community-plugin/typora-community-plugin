@@ -58,7 +58,7 @@ export class GlobalSearch {
 
     this._searchService?.cancel()
 
-    const onComplete = () => view.progressBar.hide()
+    const onComplete = () => view.renderer.onDrain(() => view.progressBar.hide())
 
     // Route: structured query → hybrid search, pure text → ripgrep directly
     const hasStructuredTokens = this._hasStructuredTokens(query)
