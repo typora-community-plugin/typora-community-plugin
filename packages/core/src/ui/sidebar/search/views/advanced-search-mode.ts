@@ -101,6 +101,7 @@ export class AdvancedSearchMode extends Component {
     document.body.classList.toggle('ty-advanced-search-active', enabled)
 
     this.labelEl.textContent = enabled ? t.advancedMode : t.commonMode
+    this.labelEl.title = enabled ? t.advancedModeDesc : ''
 
     this.btnEl.classList.toggle('ty-active', enabled)
     this.btnEl.title = t.advancedMode

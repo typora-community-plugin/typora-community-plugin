@@ -132,7 +132,8 @@
   "sidebar": {
     "search": {
       "commonMode": "Search",
-      "advancedMode": "Advanced Search"
+      "advancedMode": "Advanced Search",
+      "advancedModeDesc": "Syntax:\n  space        = AND\n  OR           = OR\n  -term       = NOT (exclude)\n  (group)      = grouping\n  tag:/title:/filename:value = field search\n  \"exact phrase\" = exact match"
     }
   },
   "tabview": {

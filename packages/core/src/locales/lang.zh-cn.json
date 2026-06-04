@@ -132,7 +132,8 @@
   "sidebar": {
     "search": {
       "commonMode": "搜索",
-      "advancedMode": "高级搜索"
+      "advancedMode": "高级搜索",
+      "advancedModeDesc": "搜索语法:\n  空格        = AND\n  OR          = OR\n  -词         = NOT (排除)\n  (分组)      = 优先级分组\n  tag:/title:/filename:值 = 字段搜索\n  \"精确短语\"  = 精确匹配"
     }
   },
   "tabview": {
