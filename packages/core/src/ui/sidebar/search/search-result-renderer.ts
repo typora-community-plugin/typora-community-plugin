@@ -313,8 +313,8 @@ export class SearchResultRenderer {
     }
 
     // Handle native <template> vs <script type="text/x-template">
-    if (raw.tagName === 'TEMPLATE' && raw.content) {
-      this._templateDom = raw.content.querySelector('.ty-search-item') as HTMLElement | null
+    if (raw.tagName === 'TEMPLATE' && (raw as HTMLTemplateElement).content) {
+      this._templateDom = (raw as HTMLTemplateElement).content.querySelector('.ty-search-item') as HTMLElement | null
     } else {
       const container = document.createElement('div')
       container.innerHTML = raw.innerHTML.trim()
