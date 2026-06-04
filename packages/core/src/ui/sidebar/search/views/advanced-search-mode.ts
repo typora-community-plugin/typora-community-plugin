@@ -8,11 +8,11 @@ import { useService } from 'src/common/service'
 
 /**
  * Advanced Search Mode — replaces Typora's native file search with the custom
- * ripgrep-based engine (GlobalSearch.openGlobalSearch).
+ * ripgrep-based engine (GlobalSearch.openAdvancedSearch).
  *
  * When enabled:
  * 1. A toggle button is injected into the search toolbar (next to the regex button)
- * 2. `editor.library.fileSearch.search()` is decorated to call `openGlobalSearch()` instead
+ * 2. `editor.library.fileSearch.search()` is decorated to call `openAdvancedSearch()` instead
  */
 export class AdvancedSearchMode extends Component {
 
@@ -43,7 +43,7 @@ export class AdvancedSearchMode extends Component {
     this.register(
       decorate(editor.library.fileSearch, 'search', fn => (query: string) => {
         if (!this._isEnabled()) return fn(query)
-        _globalSearch.openGlobalSearch(query)
+        _globalSearch.openAdvancedSearch(query)
       })
     )
 

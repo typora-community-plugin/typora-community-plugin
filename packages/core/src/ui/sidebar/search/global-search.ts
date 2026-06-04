@@ -22,6 +22,15 @@ export class GlobalSearch {
     })
   }
 
+  openGlobalSearch(query: string) {
+    const { workspace } = this
+    workspace.ribbon.clickButton(GlobalSearchView.id)
+
+    const view = workspace.getViewByType(GlobalSearchView)!
+    view.setQuery(query)
+    editor.library.fileSearch.search(query)
+  }
+
   /**
    * Open the global search panel and execute a search with the given query.
    *
@@ -33,8 +42,8 @@ export class GlobalSearch {
    * @param query - The search string entered by the user. May contain field
    *                prefixes (`tag:`, `title:`, `filename:`) and/or bare words.
    */
-  openGlobalSearch(query: string) {
-    const { workspace, vault } = this
+  openAdvancedSearch(query: string) {
+    const { workspace } = this
 
     const isActive = $('#typora-sidebar').hasClass('ty-show-search')
     if (!isActive) {
@@ -42,7 +51,7 @@ export class GlobalSearch {
       workspace.ribbon.clickButton(GlobalSearchView.id)
     }
 
-    const view = workspace.getViewByType(GlobalSearchView) as GlobalSearchView
+    const view = workspace.getViewByType(GlobalSearchView)!
 
     view.setQuery(query)
 
@@ -53,7 +62,7 @@ export class GlobalSearch {
     const caseSensitive = editor.library.fileSearch.caseSensitive ?? false
     const wholeWord = editor.library.fileSearch.wholeWord ?? false
 
-    this._searchService?.cancel()
+    this._searchService.cancel()
 
     this._hybridSearch.execute(query, {
       caseSensitive,
