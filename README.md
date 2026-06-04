@@ -24,7 +24,7 @@ To be on the safe side, install an open source plugin that can review the source
 
 | Tested |                  |                  |                     |
 | :----: | ---------------- | ---------------- | ------------------- |
-| Typora | v1.1.x - v1.12.x | v1.5.x - v1.12.x | v1.4.8 - v1.12.x    |
+| Typora | v1.1.x - v1.13.x | v1.5.x - v1.12.x | v1.4.8 - v1.12.x    |
 | OS     | Windows 10       | Ubuntu 22        | macOS 10.13, 14, 15 |
 
 
@@ -36,12 +36,13 @@ To be on the safe side, install an open source plugin that can review the source
   - [x] Enable/Disable plugin
 - New UI components
   - [x] Ribbon
-  - [x] Workspace <sup>`New`</sup>
+  - [x] Workspace
     - [x] (Virtual) Multi File Tabs
-    - [x] Split View <sup>`New`</sup>
+    - [x] Split View
 - [x] Custom command hotkey
 - [x] I18n: follow system or manual configure, now support English and Chinese
 - [x] Compatible with macOS
+- [x] Advanced Search <sup>`New`</sup>: support expressions like `(book film) OR tag:game`
 
 
 

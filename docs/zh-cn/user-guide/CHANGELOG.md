@@ -1,5 +1,9 @@
 # 更新日志
 
+## v2.8.1
+- feat(core/ui/sidebar/search): 添加 **高级搜索**，支持如 `(书籍 电影) OR tag:游戏` 的表达式
+- feat(core/ui/sidebar/search): 添加搜索进度条
+
 ## v2.7.7
 
 - feat(core/ui/components/notice): 添加新命令 `关闭所有提示信息`

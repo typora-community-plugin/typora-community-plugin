@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.8.1
+
+- feat(core/ui/sidebar/search): Add **Advanced Search**, support expressions like `(book film) OR tag:game`
+- feat(core/ui/sidebar/search): Add progressbar for searching
+
 ## v2.7.7
 
 - feat(core/ui/components/notice): add a new command `Clear all notices`
