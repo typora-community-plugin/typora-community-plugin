@@ -47,5 +47,14 @@ export function evaluateTerm(node: TermNode, context: EvalContext): boolean {
   }
 
   // Bare word: ripgrep already confirmed it's in the body, just verify
-  return context.bodyTokens.has(pattern)
+  if (context.bodyTokens.has(pattern)) return true
+
+  // Fallback for patterns with non-alpha chars (like #, :, etc.) that
+  // tokenizeLine strips — check raw line text directly.
+  if (context.rawLines) {
+    for (const line of context.rawLines) {
+      if (line.includes(pattern)) return true
+    }
+  }
+  return false
 }
