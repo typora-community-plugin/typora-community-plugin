@@ -2,7 +2,9 @@
  * Core AST types + SyntaxHandler contract for extensible query parsing.
  *
  * Grammar:
- *   query     := term (WHITESPACE term)*
+ *   query     := or_expr
+ *   or_expr   := and_expr ('OR' and_expr)*
+ *   and_expr  := term+
  *   term      := NOT? (field | quoted | bareword)
  *   field     := PREFIX ':' value    (prefix registered via SyntaxHandler)
  *   quoted    := '"' .* '"'

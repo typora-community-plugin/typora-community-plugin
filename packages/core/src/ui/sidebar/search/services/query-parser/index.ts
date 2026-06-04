@@ -95,6 +95,7 @@ export function getHandler(field: string): SyntaxHandler | undefined {
  * Behavior:
  *  - Single bare word → TermNode
  *  - Multiple bare words → implicit AND of TermNodes
+ *  - `foo OR bar` → OR of AND groups (uppercase OR, not quoted/negated)
  *  - Any field prefix or quoted phrase → structured AST
  */
 export function tryParse(query: string): ParsedAST | null {
@@ -104,15 +105,33 @@ export function tryParse(query: string): ParsedAST | null {
   const rawTokens = tokenize(trimmed)
   if (rawTokens.length === 0) return null
 
-  // Convert raw tokens to AST nodes
-  const astNodes: ParsedAST[] = []
+  // Convert raw tokens to AST nodes, splitting at OR operators
+  const segments: ParsedAST[][] = [[]]
+  let hasOR = false
 
   for (const raw of rawTokens) {
+    // Detect OR operator: bare word "OR" (uppercase, not quoted/field/negated)
+    if (!raw.isQuoted && !raw.isField && !raw.isNegated && raw.value === 'OR') {
+      hasOR = true
+      segments.push([])
+      continue
+    }
+
     const node = _parseRawToken(raw)
     if (node) {
-      astNodes.push(node)
+      segments[segments.length - 1].push(node)
     }
   }
+
+  // Build OR-of-ANDs if OR operator was used
+  if (hasOR) {
+    const children = segments
+      .filter(seg => seg.length > 0)
+      .map(seg => seg.length === 1 ? seg[0] : { type: 'and', children: seg } as AndNode)
+    return children.length === 1 ? children[0] : { type: 'or', children } as OrNode
+  }
+
+  const astNodes = segments[0]
 
   // Single term → return directly (not wrapped in AND)
   if (astNodes.length === 1) {
