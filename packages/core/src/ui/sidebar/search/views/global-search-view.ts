@@ -43,8 +43,13 @@ export class GlobalSearchView extends InternalSidebarPanel {
   }
 
   onshow() {
+    // Add `ty-on-search` unconditionally so Typora's sidebar CSS correctly
+    // hides the file-explorer panel and shows the search-result panel.
+    // This is independent of the `keepSearchResult` setting — that setting
+    // only controls whether results persist across switches (via disabling
+    // clearSearch()), not which panel is visible.
+    $('#typora-sidebar').addClass('ty-on-search')
     editor.library.fileSearch.show()
-    this._keepSearchResult.showSearchPanel()
     this.progressBar.load()
   }
 
