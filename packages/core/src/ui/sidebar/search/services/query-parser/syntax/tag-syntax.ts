@@ -5,7 +5,7 @@
  *
  * Query examples:
  *   tag:#foo      → find files tagged with #foo (frontmatter or inline)
- *   tag:project   → find files whose tags contain "project"
+ *   tag:project   → exact match for "project" (not "my-project")
  */
 
 import type { FieldNode, SyntaxHandler, EvalContext } from '../types'
@@ -24,18 +24,19 @@ export const TagSyntaxHandler: SyntaxHandler = {
   },
 
   evaluate(node: FieldNode, context: EvalContext): boolean {
-    // 1. Check frontmatter tags
+    // 1. Check frontmatter tags (exact match only)
     const fmTags = context.frontmatter.tags
     if (Array.isArray(fmTags)) {
-      if (fmTags.some((t: string) => t.includes(node.pattern))) return true
+      if (fmTags.some((t: string) => t === node.pattern)) return true
     }
     if (typeof fmTags === 'string') {
-      if (fmTags.includes(node.pattern)) return true
+      if (fmTags === node.pattern) return true
     }
 
-    // 2. Check inline tags from body text (#word patterns)
-    if (context.inlineTags?.has(node.pattern.toLowerCase())) {
-      return true
+    // 2. Check inline tags from body text (#word patterns) - case-insensitive exact match
+    const patternLower = node.pattern.toLowerCase()
+    for (const tag of context.inlineTags ?? []) {
+      if (tag === patternLower) return true
     }
 
     return false
@@ -47,7 +48,7 @@ export const TagSyntaxHandler: SyntaxHandler = {
 
     if (Array.isArray(tagsList)) {
       for (let i = 0; i < tagsList.length; i++) {
-        if (tagsList[i].includes(node.pattern)) {
+        if (tagsList[i] === node.pattern) {
           let lineNumber = 0
           let lineText = `tag: ${tagsList[i]}`
           if (context.tags) {
@@ -63,7 +64,7 @@ export const TagSyntaxHandler: SyntaxHandler = {
         }
       }
     } else if (typeof tagsList === 'string') {
-      if (tagsList.includes(node.pattern)) {
+      if (tagsList === node.pattern) {
         let lineNumber = 0
         let lineText = `tag: ${tagsList}`
         if (context.tags?.length) {

@@ -233,6 +233,50 @@ describe('TagSyntaxHandler', () => {
     const node = TagSyntaxHandler.tryParse('foo')!
     const ctx = { bodyTokens: new Set(), frontmatter: {}, inlineTags: new Set(['foo']) } as any
     expect(TagSyntaxHandler.evaluate(node, ctx)).toBe(true)
+
+    // Case-insensitive exact match for inline tags
+    const ctxCase = { bodyTokens: new Set(), frontmatter: {}, inlineTags: new Set(['FOO']) } as any
+    expect(TagSyntaxHandler.evaluate(node, ctxCase)).toBe(true)
+  })
+
+  it('evaluate requires exact match — rejects substring', () => {
+    const node = TagSyntaxHandler.tryParse('foo')!
+
+    // Should NOT match 'foo1' or 'my-foo' (substring)
+    const ctxArray = { bodyTokens: new Set(), frontmatter: { tags: ['foo1', 'bar'] } } as any
+    expect(TagSyntaxHandler.evaluate(node, ctxArray)).toBe(false)
+
+    const ctxString = { bodyTokens: new Set(), frontmatter: { tags: 'my-foo' } } as any
+    expect(TagSyntaxHandler.evaluate(node, ctxString)).toBe(false)
+
+    // Should NOT match inline tag with extra chars (substring rejection for inline)
+    const ctxInline = { bodyTokens: new Set(), frontmatter: {}, inlineTags: new Set(['foobar', 'baz']) } as any
+    expect(TagSyntaxHandler.evaluate(node, ctxInline)).toBe(false)
+  })
+
+  it('evaluate supports hierarchical tags with / (exact match)', () => {
+    const node = TagSyntaxHandler.tryParse('project/sub-tag')!
+
+    // Should match exact hierarchical tag in array
+    const ctxArray = { bodyTokens: new Set(), frontmatter: { tags: ['other', 'project/sub-tag'] } } as any
+    expect(TagSyntaxHandler.evaluate(node, ctxArray)).toBe(true)
+
+    // Should NOT match partial hierarchy
+    const ctxPartial = { bodyTokens: new Set(), frontmatter: { tags: ['project/sub-tags', 'my-project/sub-tag'] } } as any
+    expect(TagSyntaxHandler.evaluate(node, ctxPartial)).toBe(false)
+
+    // Should match exact hierarchical string tag
+    const ctxString = { bodyTokens: new Set(), frontmatter: { tags: 'project/sub-tag' } } as any
+    expect(TagSyntaxHandler.evaluate(node, ctxString)).toBe(true)
+
+    // Nested hierarchy with multiple slashes
+    const nodeDeep = TagSyntaxHandler.tryParse('a/b/c/d')!
+    const ctxDeep = { bodyTokens: new Set(), frontmatter: { tags: ['a/b/c/d'] } } as any
+    expect(TagSyntaxHandler.evaluate(nodeDeep, ctxDeep)).toBe(true)
+
+    // Should NOT match nested hierarchy if one segment differs
+    const ctxDeepMiss = { bodyTokens: new Set(), frontmatter: { tags: ['a/b/c-e'] } } as any
+    expect(TagSyntaxHandler.evaluate(nodeDeep, ctxDeepMiss)).toBe(false)
   })
 
   it('evaluate returns false when nothing matches', () => {
