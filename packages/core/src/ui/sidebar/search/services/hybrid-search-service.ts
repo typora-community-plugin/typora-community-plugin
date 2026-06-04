@@ -41,10 +41,10 @@ export class HybridSearchService {
     }
 
     // Structured query: ripgrep + IndexedDB enrichment
-    const ripgrepQuery = this._indexSearcher.extractTextTokens(ast)
+    const textTokens = this._indexSearcher.extractTextTokenList(ast)
     const hasFieldNodes = astHasFieldNodes(ast)
 
-    if (!ripgrepQuery.trim()) {
+    if (textTokens.length === 0) {
       // No text tokens — index-only search, scan metadata cache directly
       console.log('[HybridSearch] Index-only search (no text tokens), scanning metadata cache')
       this._indexSearcher.indexOnlySearch(ast, onResult)
@@ -61,10 +61,12 @@ export class HybridSearchService {
     }
 
     // ── Text search via ripgrep + metadata enrichment ────────────────────
-    // For each file found by ripgrep, enrich with field matches from metadata.
+    // Each text token is searched independently by ripgrep (OR semantics),
+    // so a file with #foo on line 3 and Title on line 10 is still found.
+    // The AST evaluation in buildResult then enforces AND semantics.
     // Files already emitted by indexOnlySearch above get their body match
     // lines appended by the renderer's existing-item path.
-    this._textSearcher.execute(ripgrepQuery, options, (textResult) => {
+    this._textSearcher.execute(textTokens, options, (textResult) => {
       const finalResult = this._indexSearcher.buildResult(textResult, ast)
       if (finalResult && onResult) {
         onResult(finalResult)

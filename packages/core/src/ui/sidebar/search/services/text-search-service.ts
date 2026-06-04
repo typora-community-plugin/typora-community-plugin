@@ -92,9 +92,12 @@ export class RipgrepSearchService {
   /**
    * Execute global search. On Windows/Linux, spawns 3 parallel ripgrep processes.
    * On macOS, delegates to native bridge handler.
+   *
+   * @param query - Single string (searched as-is) or string[] (each token passed
+   *                as separate `-e` flag, OR semantics — AST evaluates AND later).
    */
   execute(
-    query: string,
+    query: string | string[],
     options?: { caseSensitive?: boolean; wholeWord?: boolean },
     onResult?: (result: SearchResult) => void,
   ): void {
@@ -111,27 +114,35 @@ export class RipgrepSearchService {
   }
 
   /**
+   * Normalize query to a string array for internal use.
+   */
+  private _normalizeQuery(query: string | string[]): string[] {
+    return typeof query === 'string' ? [query] : query
+  }
+
+  /**
    * Execute global search on macOS.
    */
   private _executeOnMac(
-    query: string,
+    query: string | string[],
     caseSensitive = false,
     wholeWord = false,
     onResult?: (result: SearchResult) => void,
   ): void {
     // macOS: use bridge.callHandler("library.search", ...) which invokes native ripgrep
-    const nfdQuery = this._normalizeNFD(query)
+    const queryStr = typeof query === 'string' ? query : query.join(' ')
+    const nfdQuery = this._normalizeNFD(queryStr)
 
     bridge.callHandler("library.search", {
-      text: query,
+      text: queryStr,
       caseSensitive,
       wholeWord,
-      args: this._buildRpArgs(nfdQuery, caseSensitive, wholeWord),
+      args: this._buildRpArgs(query, caseSensitive, wholeWord),
     }, noop)
   }
 
   private _executeOnNode(
-    query: string,
+    query: string | string[],
     caseSensitive: boolean,
     wholeWord: boolean,
     onResult: (result: SearchResult) => void = noop,
@@ -154,7 +165,8 @@ export class RipgrepSearchService {
     }
 
     // ── Task 1: Content match (file content search) ──────────────────────
-    // rg --json -F -n -m 10 --max-filesize 2M -g "!.*" [--iglob/-i] [--w] <query>
+    // Each pattern is passed as separate -e flag (OR semantics). The AST
+    // evaluation in buildResult later enforces AND across all conditions.
     const task1Args = this._buildRpArgs(query, caseSensitive, wholeWord)
     const task1 = spawnRg(task1Args)
     this._rpTask1 = task1
@@ -172,7 +184,9 @@ export class RipgrepSearchService {
 
     // ── Task 2: Filename fuzzy match (top 2 files by filename) ───────────
     // rg -m 2 --max-filesize 2M ".*" -H -U --json --no-messages [--iglob/-i] <query>
-    const escapedQuery = this._escapeRegExp(query)
+    // Task 2 & 3 use query as a glob pattern — always a single string.
+    const queryStr = typeof query === 'string' ? query : query.join(' ')
+    const escapedQuery = this._escapeRegExp(queryStr)
     const task2Args: string[] = [
       "-m", "2",
       "--max-filesize", "2M",
@@ -373,10 +387,12 @@ export class RipgrepSearchService {
 
   /** Build ripgrep arguments for content search. */
   private _buildRpArgs(
-    query: string,
+    query: string | string[],
     caseSensitive: boolean,
     wholeWord: boolean,
   ): string[] {
+    const patterns = typeof query === 'string' ? [query] : query
+
     const args: string[] = [
       "--json",
       "-F",           // fixed string match (no regex)
@@ -386,17 +402,23 @@ export class RipgrepSearchService {
       "--max-filesize", "2M",
       "-g", "!.*",    // respect .gitignore (match all files)
       "--no-messages",
-      "--",
-      query,          // search term at the end
     ]
 
+    // Each pattern gets its own -e flag (OR semantics at the ripgrep level).
+    // The AST evaluation in buildResult enforces AND later.
+    for (const p of patterns) {
+      args.push("-e", p)
+    }
+
+    // Insert case-insensitive flag after -F
     if (!caseSensitive) {
       args.splice(args.indexOf("-F") + 1, 0, "-i")
     }
+    // Insert whole-word flag before the -e patterns
     if (wholeWord) {
-      const dashIdx = args.indexOf("--")
-      if (dashIdx >= 0) {
-        args.splice(dashIdx, 0, "-w")
+      const firstPatternIdx = args.indexOf("-e")
+      if (firstPatternIdx >= 0) {
+        args.splice(firstPatternIdx, 0, "-w")
       }
     }
 

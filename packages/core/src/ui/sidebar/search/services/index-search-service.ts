@@ -31,8 +31,20 @@ export class IndexSearchService {
     return ast
   }
 
-  /** Extract body keywords from AST for ripgrep search. */
+  /** Collect text tokens from AST for ripgrep search. */
   extractTextTokens(ast: ParsedAST): string {
+    return this.extractTextTokenList(ast).join(' ')
+  }
+
+  /**
+   * Extract individual text tokens from AST.
+   * Unlike extractTextTokens (which joins everything), this returns the raw
+   * array so ripgrep can search each token independently with -e flags.
+   * This is critical for AND queries like `tag:foo Title` — without it,
+   * ripgrep treats "#foo Title" as a single literal phrase, missing files
+   * where #foo and Title are on different lines.
+   */
+  extractTextTokenList(ast: ParsedAST): string[] {
     const tokens: string[] = []
 
     const visit = (node: ParsedAST) => {
@@ -44,20 +56,18 @@ export class IndexSearchService {
         // Negated fields don't contribute search tokens to ripgrep
         // (they're handled by AST evaluation in Phase 3)
       } else if (node.type === 'field') {
-        // Dispatch to the registered handler for text extraction
         const handler = getHandler(node.field)
         if (handler) {
           const text = handler.extractSearchText(node as FieldNode)
           if (text !== null) tokens.push(text)
         }
       } else if (node.type === 'term') {
-        // Bare words and quoted phrases go to ripgrep
         tokens.push(node.pattern)
       }
     }
 
     visit(ast)
-    return tokens.join(' ')
+    return tokens
   }
 
   /**
