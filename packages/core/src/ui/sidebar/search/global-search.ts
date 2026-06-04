@@ -2,7 +2,6 @@ import { editor } from "typora"
 import { useService } from "src/common/service"
 import { GlobalSearchView } from "./views/global-search-view"
 import { RipgrepSearchService } from "./services/text-search-service"
-import type { SearchOptions, SearchResult } from "./services/text-search-service"
 import { HybridSearchService } from "./services/hybrid-search-service"
 
 
@@ -26,16 +25,13 @@ export class GlobalSearch {
   /**
    * Open the global search panel and execute a search with the given query.
    *
-   * Behavior:
-   * 1. Activate the search sidebar if it isn't already visible.
-   * 2. Set the query string on the GlobalSearchView.
-   * 3. Clear any previous results, then dispatch the search to the appropriate engine:
-   *    - Structured queries (e.g. `tag:foo`, `title:"bar"`, quoted phrases) → HybridSearchService
-   *    - Plain text queries → RipgrepSearchService directly
+   * The query is always dispatched through HybridSearchService, which parses
+   * it into an AST. Structured tokens (tag:/title:/filename:) and multiple
+   * bare words produce an AND tree; pure single-word queries fall through to
+   * ripgrep directly.
    *
-   * @param query - The search string entered by the user. May contain field prefixes
-   *                (`tag:`, `title:`, `filename:`) or double-quoted substrings to trigger
-   *                hybrid (structured + full-text) search routing.
+   * @param query - The search string entered by the user. May contain field
+   *                prefixes (`tag:`, `title:`, `filename:`) and/or bare words.
    */
   openGlobalSearch(query: string) {
     const { workspace, vault } = this
@@ -59,40 +55,16 @@ export class GlobalSearch {
 
     this._searchService?.cancel()
 
-    // Route: structured query → hybrid search, pure text → ripgrep directly
-    const hasStructuredTokens = this._hasStructuredTokens(query)
-    const searchOptions: SearchOptions = {
+    this._hybridSearch.execute(query, {
       caseSensitive,
       wholeWord,
       onResult: (result) => view.renderer.renderResult(result),
       onComplete: () => view.renderer.onDrain(() => view.progressBar.hide()),
-    }
-
-    if (hasStructuredTokens) {
-      this._hybridSearch.execute(query, searchOptions)
-    } else {
-      this._searchService?.execute(query, searchOptions)
-    }
+    })
   }
 
   getGlobalSearchQuery() {
     const view = this.workspace.getViewByType(GlobalSearchView) as GlobalSearchView | undefined
     return view?.getQuery() ?? ""
-  }
-
-  private _hasStructuredTokens(query: string): boolean {
-    // Check for field prefixes or quoted phrases
-    const trimmed = query.trim()
-    if (!trimmed) return false
-
-    // Match tag:/title:/filename: prefixes, optionally negated (case-insensitive)
-    // e.g. "tag:foo", "-tag:foo", "hello -tag:foo"
-    if (/^-?(tag|title|filename):/i.test(trimmed)) return true
-    if (/\s-?(tag|title|filename):/i.test(trimmed)) return true
-
-    // Check for quoted phrases
-    if (trimmed.includes('"')) return true
-
-    return false
   }
 }

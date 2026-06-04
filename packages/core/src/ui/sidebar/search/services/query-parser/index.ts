@@ -90,11 +90,11 @@ export function getHandler(field: string): SyntaxHandler | undefined {
 
 /**
  * Try to parse a query string into an AST.
- * Returns null if the query has no structured tokens (pure text search).
+ * Returns null only for empty/whitespace-only queries.
  *
- * Behavior mirrors the original monolithic parser exactly:
- *  - Single bare word → null (pure text)
- *  - Multiple bare words without quotes → null (pure text)
+ * Behavior:
+ *  - Single bare word → TermNode
+ *  - Multiple bare words → implicit AND of TermNodes
  *  - Any field prefix or quoted phrase → structured AST
  */
 export function tryParse(query: string): ParsedAST | null {
@@ -106,22 +106,12 @@ export function tryParse(query: string): ParsedAST | null {
 
   // Convert raw tokens to AST nodes
   const astNodes: ParsedAST[] = []
-  let hasStructured = false
 
   for (const raw of rawTokens) {
     const node = _parseRawToken(raw)
     if (node) {
       astNodes.push(node)
-      // Quoted phrases and field tokens are considered "structured"
-      if (raw.isQuoted || raw.isField) {
-        hasStructured = true
-      }
     }
-  }
-
-  // If no structured tokens exist → pure text search (no AST)
-  if (!hasStructured && astNodes.length > 1) {
-    return null
   }
 
   // Single term → return directly (not wrapped in AND)
@@ -135,7 +125,7 @@ export function tryParse(query: string): ParsedAST | null {
 
 /**
  * Parse a query into an AST, always returning a tree.
- * Falls back to AND-of-all-barewords for pure text queries.
+ * Falls back to AND-of-all-barewords for empty/whitespace-only queries.
  */
 export function parse(query: string): ParsedAST {
   const result = tryParse(query)
