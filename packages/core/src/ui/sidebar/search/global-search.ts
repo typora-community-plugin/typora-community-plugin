@@ -81,9 +81,10 @@ export class GlobalSearch {
     const trimmed = query.trim()
     if (!trimmed) return false
 
-    // Match tag:/title:/filename: prefixes (case-insensitive)
-    if (/^(tag|title|filename):/i.test(trimmed)) return true
-    if (/\s(tag|title|filename):/i.test(trimmed)) return true
+    // Match tag:/title:/filename: prefixes, optionally negated (case-insensitive)
+    // e.g. "tag:foo", "-tag:foo", "hello -tag:foo"
+    if (/^-?(tag|title|filename):/i.test(trimmed)) return true
+    if (/\s-?(tag|title|filename):/i.test(trimmed)) return true
 
     // Check for quoted phrases
     if (trimmed.includes('"')) return true
