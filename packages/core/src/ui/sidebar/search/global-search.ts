@@ -5,6 +5,9 @@ import { RipgrepSearchService } from "./services/text-search-service"
 import { HybridSearchService } from "./services/hybrid-search-service"
 
 
+const ORIGINAL_KEY = Symbol.for('search$original')
+
+
 export class GlobalSearch {
 
   private _searchService!: RipgrepSearchService
@@ -28,7 +31,11 @@ export class GlobalSearch {
 
     const view = workspace.getViewByType(GlobalSearchView)!
     view.setQuery(query)
-    editor.library.fileSearch.search(query)
+
+    // Bypass AdvancedSearchMode's decoration on fileSearch.search so this
+    // method always invokes Typora's native search regardless of the setting.
+    const originalSearch = (editor.library.fileSearch as any)[ORIGINAL_KEY] ?? editor.library.fileSearch.search
+    originalSearch.call(editor.library.fileSearch, query)
   }
 
   /**

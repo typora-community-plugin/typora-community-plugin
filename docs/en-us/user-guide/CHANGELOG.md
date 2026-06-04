@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.8.2
+
+- **Developer**
+  - refactor(core/ui/sidebar/search): Restore `GlobalSearch.openGlobalSearch()` to its original behavior, with advanced search as a separate new method `GlobalSearch.openAdvancedSearch()`.
+
 ## v2.8.1
 
 - feat(core/ui/sidebar/search): Add **Advanced Search**, support expressions like `(book film) OR tag:game`

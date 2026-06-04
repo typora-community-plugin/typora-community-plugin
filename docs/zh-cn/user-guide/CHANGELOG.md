@@ -1,6 +1,12 @@
 # 更新日志
 
+## v2.8.2
+
+- **开发者**
+  - refactor(core/ui/sidebar/search): 恢复 `GlobalSearch.openGlobalSearch()` 为原行为，高级搜索作为单独的新方法 `GlobalSearch.openAdvancedSearch()`
+
 ## v2.8.1
+
 - feat(core/ui/sidebar/search): 添加 **高级搜索**，支持如 `(书籍 电影) OR tag:游戏` 的表达式
 - feat(core/ui/sidebar/search): 添加搜索进度条
 
@@ -8,7 +14,7 @@
 
 - feat(core/ui/components/notice): 添加新命令 `关闭所有提示信息`
 
-- **Developer**
+- **开发者**
   - feat(core/metadata): `index:done` 支持粘性事件
   - feat(core/ui/components/notice): 添加一个配置项 `type: info|suceess|warning|error`
   - feat(core/ui/components/notice): 支持使用静态方法 `Notice.info|suceess|warning|error` 创建 `Notice`
