@@ -20,10 +20,11 @@ export interface RawToken {
 /**
  * Tokenize a query string into RawToken array.
  *
- * Handles:
+ * Handles (in order):
  *  - Whitespace separation
+ *  - Negation prefix (-)  — before quoted/paren/field so "-" applies to each
  *  - Double-quoted phrases ("...")
- *  - Negation prefix (-)
+ *  - Parentheses ( )
  *  - Field prefix detection (tag:/title:/filename:)
  *  - Bare words
  */
@@ -38,27 +39,28 @@ export function tokenize(query: string): RawToken[] {
       continue
     }
 
+    // Check for negation prefix on next token
+    // Must come before quoted/paren/field handlers so `-"Title"` negates correctly.
+    let negated = false
+    if (query[i] === '-') {
+      negated = true
+      i++
+    }
+
     // Quoted phrase: "..."
     if (query[i] === '"') {
       const end = query.indexOf('"', i + 1)
       if (end < 0) {
         // Unterminated quote — treat as bare word
-        tokens.push({ value: query.slice(i + 1), isField: false, isQuoted: false, isNegated: false })
+        tokens.push({ value: query.slice(i + 1), isField: false, isQuoted: false, isNegated: negated })
         break
       }
       const quoted = query.slice(i + 1, end).trim()
       if (quoted) {
-        tokens.push({ value: quoted, isField: false, isQuoted: true, isNegated: false })
+        tokens.push({ value: quoted, isField: false, isQuoted: true, isNegated: negated })
       }
       i = end + 1
       continue
-    }
-
-    // Check for negation prefix on next token
-    let negated = false
-    if (query[i] === '-') {
-      negated = true
-      i++
     }
 
     // Parentheses as group delimiters (may be negated: -(foo OR bar))
