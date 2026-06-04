@@ -100,6 +100,7 @@ export class RipgrepSearchService {
     query: string | string[],
     options?: { caseSensitive?: boolean; wholeWord?: boolean },
     onResult?: (result: SearchResult) => void,
+    onComplete?: () => void,
   ): void {
     this.cancel()
 
@@ -108,8 +109,9 @@ export class RipgrepSearchService {
 
     if (platform() === 'darwin') {
       this._executeOnMac(query, caseSensitive, wholeWord, onResult)
+      onComplete?.()
     } else {
-      this._executeOnNode(query, caseSensitive, wholeWord, onResult)
+      this._executeOnNode(query, caseSensitive, wholeWord, onResult, onComplete)
     }
   }
 
@@ -128,6 +130,7 @@ export class RipgrepSearchService {
     caseSensitive = false,
     wholeWord = false,
     onResult?: (result: SearchResult) => void,
+    onComplete?: () => void,
   ): void {
     // macOS: use bridge.callHandler("library.search", ...) which invokes native ripgrep
     const queryStr = typeof query === 'string' ? query : query.join(' ')
@@ -146,9 +149,13 @@ export class RipgrepSearchService {
     caseSensitive: boolean,
     wholeWord: boolean,
     onResult: (result: SearchResult) => void = noop,
+    onComplete?: () => void,
   ): void {
     const rg = this._getRipgrepPath()
-    if (!rg) return
+    if (!rg) {
+      onComplete?.()
+      return
+    }
 
     const child_process = this._reqChildProcess()
     const cwd = this.mountFolder
@@ -176,7 +183,7 @@ export class RipgrepSearchService {
     })
     task1.on("close", () => {
       this._rpTask1 = null
-      this._flushResults(onResult)
+      this._flushResults(onResult, onComplete)
     })
     task1.stderr?.on("data", () => {
       // Silently ignore stderr (ripgrep warnings about permission denied, etc.)
@@ -206,7 +213,7 @@ export class RipgrepSearchService {
     })
     task2.on("close", () => {
       this._rpTask2 = null
-      this._flushResults(onResult)
+      this._flushResults(onResult, onComplete)
     })
 
     // ── Task 3: File list (all files matching query in name) ─────────────
@@ -241,7 +248,7 @@ export class RipgrepSearchService {
     })
     task3.on("close", () => {
       this._rpTask3 = null
-      this._flushResults(onResult)
+      this._flushResults(onResult, onComplete)
     })
 
   }
@@ -345,7 +352,7 @@ export class RipgrepSearchService {
     }
   }
 
-  private _flushResults(onResult: (result: SearchResult) => void): void {
+  private _flushResults(onResult: (result: SearchResult) => void, onComplete?: () => void): void {
     this._tasksClosedCount++
     if (this._tasksClosedCount < 3) {
       return
@@ -356,6 +363,7 @@ export class RipgrepSearchService {
     }
     this._resultsByPath.clear()
     this._tasksClosedCount = 0
+    onComplete?.()
   }
 
   /** Kill a child process and clean up references. */

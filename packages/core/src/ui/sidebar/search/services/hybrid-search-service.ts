@@ -30,13 +30,14 @@ export class HybridSearchService {
     query: string,
     options?: { caseSensitive?: boolean; wholeWord?: boolean },
     onResult?: (result: SearchResult) => void,
+    onComplete?: () => void,
   ): void {
 
     // Parse AST once per query
     const ast = this._indexSearcher.getAST(query)
     if (!ast) {
       // No structured tokens — pure text search, delegate to ripgrep directly
-      this._textSearcher.execute(query, options, onResult)
+      this._textSearcher.execute(query, options, onResult, onComplete)
       return
     }
 
@@ -48,6 +49,7 @@ export class HybridSearchService {
       // No text tokens — index-only search, scan metadata cache directly
       console.log('[HybridSearch] Index-only search (no text tokens), scanning metadata cache')
       this._indexSearcher.indexOnlySearch(ast, onResult)
+      onComplete?.()
       return
     }
 
@@ -71,7 +73,7 @@ export class HybridSearchService {
       if (finalResult && onResult) {
         onResult(finalResult)
       }
-    })
+    }, onComplete)
   }
 
   /** Cancel any running search. */

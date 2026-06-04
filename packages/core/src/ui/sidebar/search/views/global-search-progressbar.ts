@@ -22,8 +22,8 @@ export class GlobalSearchProgressbar extends Component {
 
   onload() {
     this.el = html`
-      <div class="global-search-progressbar" style="display: none;">
-        <div class="global-search-progressbar-inner"></div>
+      <div class="typ-global-search-progressbar" style="display: none;">
+        <div class="typ-global-search-progressbar-inner"></div>
       </div>
     ` as HTMLElement
 

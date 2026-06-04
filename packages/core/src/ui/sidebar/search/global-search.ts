@@ -51,11 +51,14 @@ export class GlobalSearch {
 
     // Clear previous search results before starting a new search
     view.renderer.clearResults()
+    view.progressBar.show()
 
     const caseSensitive = editor.library.fileSearch.caseSensitive ?? false
     const wholeWord = editor.library.fileSearch.wholeWord ?? false
 
     this._searchService?.cancel()
+
+    const onComplete = () => view.progressBar.hide()
 
     // Route: structured query → hybrid search, pure text → ripgrep directly
     const hasStructuredTokens = this._hasStructuredTokens(query)
@@ -63,11 +66,11 @@ export class GlobalSearch {
     if (hasStructuredTokens) {
       this._hybridSearch.execute(query, { caseSensitive, wholeWord }, (result) => {
         view.renderer.renderResult(result)
-      })
+      }, onComplete)
     } else {
       this._searchService?.execute(query, { caseSensitive, wholeWord }, (result) => {
         view.renderer.renderResult(result)
-      })
+      }, onComplete)
     }
   }
 
