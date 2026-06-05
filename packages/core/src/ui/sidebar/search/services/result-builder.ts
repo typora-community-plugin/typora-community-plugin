@@ -75,7 +75,7 @@ export function collectInlineTagPatterns(matches: SearchMatch[]): Set<string> {
   const tags = new Set<string>()
   for (const match of matches) {
     // #tag must be at line start or preceded by whitespace (not url#tag, C#, etc.)
-    const inlineTags = match.lineText.match(/(?:^|\s)(#[a-zA-Z\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af][a-zA-Z\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af0-9_-]*)/g)
+    const inlineTags = match.lineText.match(/(?:^|\s)(#[a-zA-Z\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af][a-zA-Z\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af0-9_/-]*)/g)
     if (inlineTags) {
       for (const tag of inlineTags) {
         // Strip leading whitespace + # and store lowercase
