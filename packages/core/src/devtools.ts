@@ -9,6 +9,7 @@ import { useEventBus } from './common/eventbus'
 import { SettingsModal } from './ui/settings/settings-modal'
 import { EditaleTableTestTab } from './ui/components/editable-table-test'
 import { SettingItemTestTab } from './ui/settings/setting-item-test'
+import { TEST_STATS } from './ui/statusbar/statistics-test'
 
 
 export function devtools(
@@ -32,6 +33,7 @@ export function devtools(
     })
 
     registerTestTab()
+    registerTestStatistic()
   })
 
   if (File.isNode) {
@@ -59,5 +61,9 @@ export function devtools(
     const modal = app.workspace.getViewByType(SettingsModal)!
     modal.addTab(new SettingItemTestTab())
     modal.addTab(new EditaleTableTestTab())
+  }
+
+  function registerTestStatistic(app = useService('app')) {
+    app.features.statistics.registerStatistic(TEST_STATS)
   }
 }

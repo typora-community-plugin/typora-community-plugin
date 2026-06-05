@@ -27,6 +27,7 @@ import type { MarkdownEditor } from './ui/editor/markdown-editor'
 import { MarkdownRenderer } from './ui/editor/markdown-renderer'
 import type { RibbonSettings } from 'src/ui/ribbon/workspace-ribbon'
 import { GlobalSearch } from './ui/sidebar/search/global-search'
+import { Statistics } from './ui/statusbar/statistics'
 import { isMarkdownUrl } from 'src/utils'
 import type { FileURL } from 'src/utils/types'
 import { ConfigRepository } from './io/config-repository'
@@ -100,6 +101,7 @@ export class App extends Events<AppEvents> {
     globalSearch: GlobalSearch,
     markdownEditor: MarkdownEditor,
     markdownRenderer: MarkdownRenderer,
+    statistics: Statistics,
   }
 
   constructor() {
@@ -130,6 +132,7 @@ export class App extends Events<AppEvents> {
         globalSearch: new GlobalSearch(),
         markdownEditor: useService('markdown-editor'),
         markdownRenderer: useService('markdown-renderer'),
+        statistics: new Statistics(),
       }
       this._isReady = true
     })
@@ -145,6 +148,8 @@ export class App extends Events<AppEvents> {
 
   async start() {
     if (!this._isReady) return
+
+    this.features.statistics.load()
 
     await this.internalPlugins.loadPlugins()
     await this.plugins.loadFromVault()

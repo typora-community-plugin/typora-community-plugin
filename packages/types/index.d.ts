@@ -719,6 +719,7 @@ interface TUserOp {
 interface WordCount {
   quickUpdate(param0: any, param1: any, param2: any): void
   update(markdown: string): void
+  updateLabel(selCount: number, totalCount: number): void
 }
 
 interface MegaMenu {
