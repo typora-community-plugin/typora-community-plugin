@@ -2,6 +2,7 @@ import { editor } from 'typora'
 import { Component } from 'src/common/component'
 import type { DisposeFunc } from 'src/utils/types'
 import decorate from '@plylrnsdy/decorate.js'
+import { throttle } from 'src/utils'
 
 
 const TBODY_SEL = 'li.ty-footer-word-count-all table tbody'
@@ -109,10 +110,10 @@ export class Statistics extends Component {
     this._removeInjectedRows()
   }
 
-  private _updateAllStats(): void {
+  private _updateAllStats = throttle(() => {
     if (!document.body.classList.contains('ty-show-word-count')) return
     this._stats.forEach(s => this._updateStat(s))
-  }
+  }, 167)
 
   private _updateStat(stat: WordCountStatistic): void {
     const $cell = $(`#typ-wc-${stat.id}`)
