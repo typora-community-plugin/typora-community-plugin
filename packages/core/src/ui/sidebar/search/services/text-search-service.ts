@@ -416,7 +416,7 @@ export class RipgrepSearchService {
       "-n",           // show line numbers
       "-m", "10",     // max 10 matches per file
       "--max-filesize", "2M",
-      "-g", "!.*",    // respect .gitignore (match all files)
+      "-g", "!.*",
       "--no-messages",
     ]
 
