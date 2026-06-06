@@ -67,6 +67,7 @@ You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from
 | [markmap][p11]                   | Support Markmap in codeblock.                             |
 | [note-refactor][p7]              | Extract selection to new file.                            |
 | [note-snippets][p8]              | Use slash command to autocomplete note snippets.          |
+| [statistics][p22] <sup>`New`</sup> | Display document statistics.                              |
 | [styled-text][p21]               | Decorate the text matching RegExp.                        |
 | [tag][p9]                        | Support tag like `#tag`.                                  |
 | [templater][p19]                 | Create notes from templates.                              |
@@ -132,3 +133,4 @@ If you have any problem or suggestion please open an issue [here](https://github
 [p19]: https://github.com/typora-community-plugin/typora-plugin-templater
 [p20]: https://github.com/typora-community-plugin/typora-plugin-trigger
 [p21]: https://github.com/typora-community-plugin/typora-plugin-styled-text
+[p22]: https://github.com/typora-community-plugin/typora-plugin-statistics
