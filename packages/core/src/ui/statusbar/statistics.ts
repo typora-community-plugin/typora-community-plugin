@@ -8,9 +8,38 @@ import { throttle } from 'src/utils'
 const TBODY_SEL = 'li.ty-footer-word-count-all table tbody'
 
 /**
+ * Evaluation context passed to {@link StatisticHandler.eval}. Provides lazy-cached access
+ * to the current document's markdown content and cross-stat value sharing.
+ */
+export class StatisticContext {
+
+  private _markdown: string | undefined
+  private readonly _values: Record<string, string | null> = {}
+
+  /** Lazily reads the current document's markdown once; subsequent accesses return the cached value. */
+  get markdown(): string {
+    return this._markdown ??= editor.getMarkdown()
+  }
+
+  set markdown(value: string) {
+    this._markdown = value
+  }
+
+  /** Get a stat's result by its `id`. Returns `null` if not yet computed or was hidden — works for both other stats and the current context. */
+  get(id: string): string | null {
+    return this._values[id] ?? null
+  }
+
+  /** Set a value under any stat's id (including the current one) so it can be read via {@link get}. Use `null` to indicate hidden/skipped. Call from within {@link StatisticHandler.eval} — pass your own id or another stat's id. */
+  set(id: string, value: string | null) {
+    this._values[id] = value
+  }
+}
+
+/**
  * A registered statistic item displayed as a row in the word-count footer panel.
  */
-export type WordCountStatistic = {
+export type StatisticHandler = {
   /** Unique identifier across all registered statistics. Used as DOM `id` prefix (`typ-wc-{id}`). Must not collide with other registrations. */
   id: string
 
@@ -20,18 +49,18 @@ export type WordCountStatistic = {
   /**
    * Compute the value for this statistic.
    *
-   * @returns     A display string, or `null` to hide the row (useful when the
-   *              statistic is conditionally applicable).
+   * @param context Provides lazy-cached markdown via `context.markdown`, cross-stat values via `context.get(otherId)`, and result storage via `context.set(id, value)`.
    */
-  eval(): string | null
+  eval(context: StatisticContext): string | null
 }
+
 
 /**
  * Only compatible with Windows/Linux
  */
 export class Statistics extends Component {
 
-  private _stats: WordCountStatistic[] = []
+  private _stats: StatisticHandler[] = []
   private _observer: MutationObserver | null = null
 
   onload(): void {
@@ -59,13 +88,13 @@ export class Statistics extends Component {
    * immediately.  Returns a dispose function that unregisters the statistic
    * and removes its DOM row.
    */
-  registerStatistic(stat: WordCountStatistic): DisposeFunc {
+  registerStatistic(stat: StatisticHandler): DisposeFunc {
     if (this._stats.some(s => s.id === stat.id)) throw new Error(`[WordCountStatistics] Duplicate statistic id: "${stat.id}"`)
 
     this._stats.push(stat)
     if (document.body.classList.contains('ty-show-word-count')) {
       this._injectRow(stat)
-      this._updateStat(stat)
+      this._updateStat(stat, new StatisticContext())
     }
 
     return () => {
@@ -112,14 +141,16 @@ export class Statistics extends Component {
 
   private _updateAllStats = throttle(() => {
     if (!document.body.classList.contains('ty-show-word-count')) return
-    this._stats.forEach(s => this._updateStat(s))
+    const context = new StatisticContext()
+    this._stats.forEach(s => this._updateStat(s, context))
   }, 167)
 
-  private _updateStat(stat: WordCountStatistic): void {
+  private _updateStat(stat: StatisticHandler, context: StatisticContext): void {
     const $cell = $(`#typ-wc-${stat.id}`)
     if (!$cell.length) return
 
-    const val = stat.eval()
+    const val = stat.eval(context)
+    context.set(stat.id, val)
     val === null
       ? $cell.closest('tr').hide()
       : ($cell.closest('tr').show(), $cell.text(val))
@@ -128,7 +159,7 @@ export class Statistics extends Component {
 
   /* ─── inject all rows ────────────────────────────────── */
 
-  private _injectRow(stat: WordCountStatistic): void {
+  private _injectRow(stat: StatisticHandler): void {
     const $tbody = $(TBODY_SEL)
     if ($tbody.length) {
       $tbody.append(`<tr><td id="typ-wc-${stat.id.replace(/#/g, '\\#')}">-</td><td>${stat.name}</td><td></td></tr>`)

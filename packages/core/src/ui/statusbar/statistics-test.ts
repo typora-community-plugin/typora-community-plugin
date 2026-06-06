@@ -1,4 +1,4 @@
-import { WordCountStatistic } from "./statistics"
+import { StatisticHandler } from "./statistics"
 
 
 const countUp = (() => {
@@ -6,10 +6,10 @@ const countUp = (() => {
   return () => ++counter
 })()
 
-export const TEST_STATS: WordCountStatistic = {
+export const TEST_STATS: StatisticHandler = {
   id: 'count-up',
   name: 'counted times',
-  eval(md) {
+  eval() {
     return String(countUp())
   },
 }
