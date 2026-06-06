@@ -13,6 +13,14 @@ const TBODY_SEL = 'li.ty-footer-word-count-all table tbody'
  */
 export class StatisticContext {
 
+  /** Maps built-in Typora footer stat IDs to their corresponding DOM element selectors. */
+  private static readonly _DOM_STAT_IDS: Record<string, string> = {
+    'reading-time': '#footer-read-time-count-td',
+    'lines': '#footer-line-count-td',
+    'words': '#footer-word-count-td',
+    'characters': '#footer-char-count-td',
+  }
+
   private _markdown: string | undefined
   private readonly _values: Record<string, string | null> = {}
 
@@ -25,9 +33,24 @@ export class StatisticContext {
     this._markdown = value
   }
 
-  /** Get a stat's result by its `id`. Returns `null` if not yet computed or was hidden — works for both other stats and the current context. */
+  /**
+   * Get a stat's result by its `id`. Returns `null` if not yet computed or was hidden.
+   *
+   * For the built-in Typora footer stats (`reading-time`, `lines`, `words`, `characters`),
+   * falls back to lazily reading from the raw DOM when no previously computed value exists.
+   */
   get(id: string): string | null {
-    return this._values[id] ?? null
+    return this._values[id] ?? this._lazyFromDOM(id)
+  }
+
+  /** Lazy-load a built-in stat value from the Typora footer DOM. */
+  private _lazyFromDOM(id: string): string | null {
+    const selector = StatisticContext._DOM_STAT_IDS[id]
+    if (!selector) return null
+    const el = document.querySelector<HTMLElement>(selector)
+    const val = el?.textContent?.trim() ?? null
+    this._values[id] = val
+    return val
   }
 
   /** Set a value under any stat's id (including the current one) so it can be read via {@link get}. Use `null` to indicate hidden/skipped. Call from within {@link StatisticHandler.eval} — pass your own id or another stat's id. */
