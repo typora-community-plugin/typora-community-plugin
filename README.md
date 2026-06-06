@@ -35,14 +35,14 @@ To be on the safe side, install an open source plugin that can review the source
   - [x] Install/Uninstall/Update plugin
   - [x] Enable/Disable plugin
 - New UI components
-  - [x] Ribbon
-  - [x] Workspace
+  - [x] [Ribbon](./docs/en-us/user-guide/4b-ribbon.md)
+  - [x] [Workspace](./docs/en-us/user-guide/4a-workspace.md)
     - [x] (Virtual) Multi File Tabs
     - [x] Split View
 - [x] Custom command hotkey
 - [x] I18n: follow system or manual configure, now support English and Chinese
 - [x] Compatible with macOS
-- [x] Advanced Search <sup>`New`</sup>: support expressions like `(book film) OR tag:game`
+- [x] [Advanced Search](./docs/en-us/user-guide/4c-advanced-search.md) <sup>`New`</sup>: support expressions like `(book film) OR tag:game`
 
 
 

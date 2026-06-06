@@ -35,14 +35,14 @@
   - [x] 安装/卸载/更新 插件
   - [x] 启用/禁用 插件
 - 新的 UI 组件
-  - [x] Ribbon
-  - [x] 工作区
+  - [x] [Ribbon](./docs/zh-cn/user-guide/4b-ribbon.md)
+  - [x] [工作区](./docs/zh-cn/user-guide/4a-workspace.md)
     - [x] (模拟的) 多文件标签页
     - [x] 分屏视图
 - [x] 自定义命令的快捷键
 - [x] I18n: 跟随系统或手动配置，现在支持英语和中文
 - [x] 兼容 macOS
-- [x] 高级搜索 <sup>`新`</sup>: 支持如 `(书籍 电影) OR tag:游戏` 的表达式
+- [x] [高级搜索](./docs/zh-cn/user-guide/4c-advanced-search.md) <sup>`新`</sup>: 支持如 `(书籍 电影) OR tag:游戏` 的表达式
 
 
 
