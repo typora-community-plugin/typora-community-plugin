@@ -1,5 +1,37 @@
 # Changelog
 
+## v2.9.0
+
+- feat(core/ui/statusbar): add **Statistics component** with extensible word-count row registry, cross-stat evaluation via `StatisticContext`, and DOM fallback for built-in stat values
+- docs(user-guide): add [Advanced Search](./4c-advanced-search.md) documentation
+- docs(user-guide): rewrite and restructure Ribbon (Activity Bar) guide
+
+- **fix(core/ui/sidebar/search)**
+  - support hierarchical inline tags like `#foo/sub` in body text
+  - use exact match for tag query instead of substring
+  - always add `ty-on-search` in onshow to prevent file-explorer overlay
+  - bypass AdvancedSearchMode decoration in openGlobalSearch
+  - apply negation prefix to quoted phrases
+  - match bare words with non-alpha prefix via raw line text
+  - support parenthesized groups in query syntax
+  - match quoted phrases with punctuation via raw line text
+  - support OR operator in query syntax
+  - treat multiple bare words as AND query instead of literal phrase
+  - batch render search results via rAF to prevent UI freezes
+  - prevent progress bar from being compressed by flex layout
+  - make global search progress bar work in both modes
+  - route negated field queries to hybrid search
+  - pass text tokens as separate `-e` flags to ripgrep
+  - correct lineNumber for simple-value frontmatter tags
+  - show actual frontmatter line text for tag field matches
+  - restrict inline `#tag` matching to valid positions
+  - deduplicate field matches when appending to existing result item
+  - tag query also scans metadata index for frontmatter-only matches
+- **fix(core/metadata)**: processFile skips stale mtime check when content is provided
+- **fix(core/ui/statusbar)**: prevent double eval() on panel open and add throttle utility
+- **docs(dev-guide)**: add [Statistics API](./dev-guide/3-statistics.md) developer guide
+- **docs**: reorganize documentation structure, sync en-us with zh-cn
+
 ## v2.8.2
 
 - **Developer**

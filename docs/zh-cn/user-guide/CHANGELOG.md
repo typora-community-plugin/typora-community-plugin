@@ -1,5 +1,37 @@
 # 更新日志
 
+## v2.9.0
+
+- feat(core/ui/statusbar): 新增 **统计组件（Statistics）**，支持可扩展的词数行注册、通过 `StatisticContext` 进行跨统计项评估，以及内置统计值的 DOM 回退方案
+- docs: 新增 [高级搜索](./4c-advanced-search.md) 文档
+- docs: 重写并重构 Ribbon（活动栏）指南
+
+- **fix(core/ui/sidebar/search)**
+  - 支持正文中的层级内联标签如 `#foo/sub`
+  - tag 查询改用精确匹配而非子串匹配
+  - onshow 中始终添加 `ty-on-search`，防止文件资源管理器遮挡
+  - 在 openGlobalSearch 中绕过 AdvancedSearchMode 装饰
+  - 对引号短语应用否定前缀
+  - 通过原始行文本匹配带非字母前缀的裸词
+  - 支持查询语法中的括号分组
+  - 通过原始行文本匹配含标点的引号短语
+  - 支持查询语法中的 OR 运算符
+  - 将多个裸词视为 AND 查询而非字面短语
+  - 通过 rAF 批量渲染搜索结果，防止 UI 冻结
+  - 防止进度条被 Flex 布局压缩
+  - 使全局搜索进度条在两种模式下均可工作
+  - 路由否定字段查询到混合搜索
+  - 向 ripgrep 传递文本令牌作为独立的 `-e` 参数
+  - 修正简单值 frontmatter tag 的 lineNumber
+  - 显示 tag 字段匹配的实际 frontmatter 行文本
+  - 限制内联 `#tag` 匹配仅在有效位置生效
+  - 追加到已有结果项时去重字段匹配
+  - tag 查询还扫描元数据索引以匹配仅含 frontmatter 的文件
+- **fix(core/metadata)**: processFile 在提供 content 时跳过过时的 mtime 检查
+- **fix(core/ui/statusbar)**: 防止面板打开时双重 eval()，并添加节流工具函数
+- **docs(dev-guide)**: 新增 [Statistics API](./dev-guide/3-statistics.md) 开发文档
+- **docs**: 重组文档结构，en-us 与 zh-cn 同步
+
 ## v2.8.2
 
 - **开发者**
