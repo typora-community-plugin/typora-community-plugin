@@ -32,10 +32,16 @@
 - **docs(dev-guide)**: 新增 [Statistics API](./dev-guide/3-statistics.md) 开发文档
 - **docs**: 重组文档结构，en-us 与 zh-cn 同步
 
+- **新增插件**
+  - [statistics][]: 显示文档统计信息。
+
 ## v2.8.2
 
 - **开发者**
   - refactor(core/ui/sidebar/search): 恢复 `GlobalSearch.openGlobalSearch()` 为原行为，高级搜索作为单独的新方法 `GlobalSearch.openAdvancedSearch()`
+
+- **插件更新**
+  - [tag][]: 支持高级搜索
 
 ## v2.8.1
 
@@ -214,7 +220,7 @@
   - fix(core/ui/editor/renderer): 修复预览视图不能显示空行的问题
   - fix(core/ui/layout/root): 修复点击工作区中的网络链接导致 Typora 闪退的问题
 
-- **Plugin Update**
+- **插件更新**
   - [collapsible-section][]: 兼容工作区API
 
 ## v2.5.13
@@ -679,6 +685,8 @@
 [markmap]: https://github.com/typora-community-plugin/typora-plugin-markmap
 
 [note-snippets]: https://github.com/typora-community-plugin/typora-plugin-note-snippets
+
+[statistics]: https://github.com/typora-community-plugin/typora-plugin-statistics
 
 [styled-text]: https://github.com/typora-community-plugin/typora-plugin-styled-text
 

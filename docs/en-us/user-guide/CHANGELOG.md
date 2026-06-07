@@ -32,10 +32,16 @@
 - **docs(dev-guide)**: add [Statistics API](./dev-guide/3-statistics.md) developer guide
 - **docs**: reorganize documentation structure, sync en-us with zh-cn
 
+- **New Plugin**
+  - [statistics][]:  Display document statistics.
+
 ## v2.8.2
 
 - **Developer**
   - refactor(core/ui/sidebar/search): Restore `GlobalSearch.openGlobalSearch()` to its original behavior, with advanced search as a separate new method `GlobalSearch.openAdvancedSearch()`.
+
+- **Plugin Update**
+  - [tag][]: support Advanced Search
 
 ## v2.8.1
 
@@ -679,6 +685,8 @@
 [note-refactor]: https://github.com/typora-community-plugin/typora-plugin-note-refactor
 
 [note-snippets]: https://github.com/typora-community-plugin/typora-plugin-note-snippets
+
+[statistics]: https://github.com/typora-community-plugin/typora-plugin-statistics
 
 [styled-text]: https://github.com/typora-community-plugin/typora-plugin-styled-text
 
