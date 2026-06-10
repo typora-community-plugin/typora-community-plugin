@@ -1,5 +1,13 @@
 # Changelog
 
+## Next Version
+
+- **Plugin Update**
+  - [collapsible-section][]
+    - feat: add granular enable/disable controls
+    - feat: add per-feature glob pattern filtering for file path targeting
+    - feat: add frontmatter-based uncollapsableSections / collapsableSections permission filter
+
 ## v2.9.0
 
 - feat(core/ui/statusbar): add **Statistics component** with extensible word-count row registry, cross-stat evaluation via `StatisticContext`, and DOM fallback for built-in stat values

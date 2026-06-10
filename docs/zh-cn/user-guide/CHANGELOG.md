@@ -1,5 +1,13 @@
 # 更新日志
 
+## Next Version
+
+- **插件更新**
+  - [collapsible-section][]
+    - feat: add granular enable/disable controls
+    - feat: add per-feature glob pattern filtering for file path targeting
+    - feat: add frontmatter-based uncollapsableSections / collapsableSections permission filter
+
 ## v2.9.0
 
 - feat(core/ui/statusbar): 新增 **统计组件（Statistics）**，支持可扩展的词数行注册、通过 `StatisticContext` 进行跨统计项评估，以及内置统计值的 DOM 回退方案
