@@ -84,19 +84,19 @@ export class App extends Events<AppEvents> {
 
   vault: Vault = useService('vault')
   config: ConfigRepository = useService('config-repository')
-  settings: Settings<AppSettings>
-  i18n: I18n<typeof Locale>
+  settings!: Settings<AppSettings>
+  i18n!: I18n<typeof Locale>
   env: EnvironmentVairables = useService('env')
-  github: GithubAPI
+  github!: GithubAPI
   hotkeyManager: HotkeyManager = useService('hotkey-manager')
-  commands: CommandManager
-  internalPlugins: InternalPluginManager
-  plugins: PluginManager
-  viewManager: ViewManager
-  workspace: Workspace
-  metadata: MetadataManager
+  commands!: CommandManager
+  internalPlugins!: InternalPluginManager
+  plugins!: PluginManager
+  viewManager!: ViewManager
+  workspace!: Workspace
+  metadata!: MetadataManager
 
-  features: {
+  features!: {
     exporter: ExportManager,
     globalSearch: GlobalSearch,
     markdownEditor: MarkdownEditor,
@@ -109,8 +109,8 @@ export class App extends Events<AppEvents> {
 
     // @ts-ignore
     window[Symbol.for(process.env.CORE_NS)] = {
-      app: this,
       ...Core,
+      app: this,
     }
     if (process.env.IS_DEV) {
       // @ts-ignore

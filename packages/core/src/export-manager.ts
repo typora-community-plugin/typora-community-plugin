@@ -50,7 +50,7 @@ interface ExportContext extends Record<string, any> {
 
 export class ExportProcessor {
 
-  type: ExportContext['type']
+  type!: ExportContext['type']
 
   process(context: ExportContext): void { }
 
@@ -81,7 +81,7 @@ export class HtmlExportProcessor extends ExportProcessor {
 
 
 export class CodeblockExportProcessor extends HtmlExportProcessor {
-  lang: string[]
+  lang!: string[]
 
   process({ doc }: HtmlExportContext): void {
     const selectors = this.lang.map(l => `pre[lang="${l}"]`)

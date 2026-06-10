@@ -8,8 +8,8 @@ import fs from 'src/io/fs/filesystem'
 
 export class QuickOpenPanel extends Component {
 
-  private _ignoreFile: IgnoreFile
-  private _quickOpenInCurrentWin: QuickOpenInCurrentWin
+  private _ignoreFile!: IgnoreFile
+  private _quickOpenInCurrentWin!: QuickOpenInCurrentWin
 
   constructor() {
     super()

@@ -27,8 +27,8 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
 
   suggestion = new EditorSuggestManager()
 
-  private _openLinkInCurrentWin: OpenLinkInCurrentWin
-  private _markdownLinkWitoutExtension: MarkdownLinkWitoutExtension
+  private _openLinkInCurrentWin!: OpenLinkInCurrentWin
+  private _markdownLinkWitoutExtension!: MarkdownLinkWitoutExtension
 
   constructor() {
     super('markdown-editor')
@@ -67,7 +67,7 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
     editor.library.openFile(url.pathname)
 
     if (url.hash) {
-      setTimeout(() => editor.tryOpenUrl(url.hash), 500)
+      setTimeout(() => editor.tryOpenUrl(url.hash!), 500)
     }
   }
 
