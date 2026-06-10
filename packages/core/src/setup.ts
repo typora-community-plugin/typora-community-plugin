@@ -25,7 +25,6 @@ import { PluginMarketplace } from "./plugin/plugin-marketplace"
 import { InputBox, QuickPick } from "./ui/components/quick-open"
 import { Notice } from "./ui/components/notice"
 import { FileExplorer } from "./ui/sidebar/file-explorer"
-import { TabsView } from "./ui/tabs/tabs-view"
 import { ExportManager } from "./export-manager"
 import { WorkspaceSplit } from "./ui/layout/split"
 import { WorkspaceTabs } from "./ui/layout/tabs"
@@ -93,7 +92,6 @@ registerService('plugin-marketplace', memorize(() => new PluginMarketplace()))
 
 registerService('view-manager', memorize(() => new ViewManager()))
 registerService('workspace', memorize(() => new Workspace()))
-registerService('file-tabs', memorize(() => new TabsView()))
 registerService('markdown-editor', memorize(() => new MarkdownEditor()))
 registerService('markdown-renderer', memorize(() => new MarkdownRenderer()))
 registerService('ribbon', memorize(() => new WorkspaceRibbon()))

@@ -9,7 +9,6 @@ import { Sidebar } from './sidebar/sidebar'
 import { GlobalSearchView } from './sidebar/search/views/global-search-view'
 import type { FileExplorerEvents } from './sidebar/file-explorer'
 import { Outline } from './sidebar/outline'
-import { TabsView } from './tabs/tabs-view'
 import { SettingsModal } from './settings/settings-modal'
 import { CommandModal } from './commands/command-modal'
 import { QuickOpenPanel } from './quick-open-panel'
@@ -79,7 +78,6 @@ export class Workspace extends Events<WorkspaceEvents> {
       useService('file-explorer'),
       new Outline(),
     ]))
-    this._children.push(new TabsView())
     this._children.push(new CommandModal())
     this._children.push(useService('input-box'))
     this._children.push(useService('quick-pick'))
