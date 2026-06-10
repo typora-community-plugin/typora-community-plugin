@@ -8,9 +8,9 @@ import { memorize } from "src/utils"
  * @example const [getActiveLeaf, setActiveLeaf] = useActiveLeaf()
  */
 const useActiveLeaf = memorize(function () {
-  let _activeLeaf: WorkspaceLeaf
+  let _activeLeaf: WorkspaceLeaf | null
 
-  function getActiveLeaf(rootSplit = useService('workspace-root')): WorkspaceLeaf {
+  function getActiveLeaf(rootSplit = useService('workspace-root')): WorkspaceLeaf | null {
     if (!_activeLeaf?.parent) {
       setActiveLeaf((rootSplit.children[0] as WorkspaceParent)?.children[0] as WorkspaceLeaf)
     }
@@ -18,7 +18,7 @@ const useActiveLeaf = memorize(function () {
   }
 
   function setActiveLeaf(
-    leaf: WorkspaceLeaf,
+    leaf: WorkspaceLeaf | null,
     rootSplit = useEventBus('workspace-root'),
     workspace = useEventBus('workspace'),
   ) {

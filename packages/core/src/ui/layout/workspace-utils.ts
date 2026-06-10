@@ -31,7 +31,7 @@ export function createTabs(path?: string) {
 
 export function openFileInActiveTabs(file: string) {
   const workspace = useService('workspace')
-  const activeTabs = workspace.activeLeaf.parent as WorkspaceTabs
+  const activeTabs = workspace.activeLeaf?.parent as WorkspaceTabs
   if (activeTabs.findLeaf(leaf => leaf.state.path === file)) {
     activeTabs.toggleTab(file)
     return
@@ -87,8 +87,8 @@ export function splitDown(path?: string) {
  */
 function split(direction: Direction, path?: string) {
   const workspace = useService('workspace')
-  const previousTabs = workspace.activeLeaf.closest('tabs')
-  const parentSplit = previousTabs.closest('split') as WorkspaceSplit
+  const previousTabs = workspace.activeLeaf?.closest('tabs')
+  const parentSplit = previousTabs?.closest('split') as WorkspaceSplit
   if (parentSplit.direction === direction)
     parentSplit.appendChild(createTabs(path))
   else {

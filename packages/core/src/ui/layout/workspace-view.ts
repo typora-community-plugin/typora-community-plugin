@@ -7,7 +7,7 @@ import type { WorkspaceLeaf } from "./workspace-leaf"
 
 export abstract class WorkspaceView extends Component implements Closeable {
 
-  containerEl: HTMLElement
+  containerEl!: HTMLElement
 
   icon = 'fa-file-text-o'
 

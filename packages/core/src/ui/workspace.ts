@@ -43,11 +43,11 @@ export class Workspace extends Events<WorkspaceEvents> {
   sidebar: Sidebar
   rootSplit: WorkspaceRoot = new WorkspaceRoot(this)
 
-  get activeLeaf(): WorkspaceLeaf {
+  get activeLeaf(): WorkspaceLeaf | null {
     const [getActiveLeaf] = useActiveLeaf()
     return getActiveLeaf()
   }
-  set activeLeaf(leaf: WorkspaceLeaf) {
+  set activeLeaf(leaf: WorkspaceLeaf | null) {
     const [, setActiveLeaf] = useActiveLeaf()
     setActiveLeaf(leaf)
   }
@@ -132,6 +132,7 @@ export class Workspace extends Events<WorkspaceEvents> {
       this.emit('file:will-open', file)
     })
 
+    // @ts-ignore
     const onFileOpened = File.loadInitData
       ? 'loadInitData'
       : 'loadFile'

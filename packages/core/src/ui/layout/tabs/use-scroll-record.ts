@@ -15,7 +15,7 @@ export function useScrollRecord(registry: Component, workspace = useService('wor
       if (!leaf) return
 
       leaf.state.scrollTop = (leaf.view as MarkdownView).isEidtor()
-        ? editor.writingArea.parentElement.scrollTop
+        ? editor.writingArea.parentElement!.scrollTop
         : leaf.view.containerEl.scrollTop
     }))
 
@@ -30,7 +30,7 @@ export function useScrollRecord(registry: Component, workspace = useService('wor
       const savedScrollTop = leaf.state.scrollTop
       until(() => leafEl.scrollTop !== savedScrollTop).then(() => {
         if ((leaf.view as MarkdownView).isEidtor())
-          editor.writingArea.parentElement.scrollTop = savedScrollTop
+          editor.writingArea.parentElement!.scrollTop = savedScrollTop
         else
           leafEl.scrollTop = savedScrollTop
       })

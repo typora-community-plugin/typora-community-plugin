@@ -51,14 +51,14 @@ export class WorkspaceRoot extends WorkspaceSplit {
         const LeafEl = (e.target as HTMLElement).closest('.typ-workspace-leaf')
         if (LeafEl) workspace.activeLeaf = this.findLeaf(leaf => leaf.containerEl === LeafEl)
 
-        const $anchorEl = $(e.target).closest('a')
+        const $anchorEl = $(e.target!).closest('a')
         if ($anchorEl.length) {
           const url = $anchorEl.attr('href')
           if (url) {
             // fix: clicking on the link out of `div#wirte` will close Typora unexpectly
             e.preventDefault()
             e.stopPropagation()
-            app.openLink($anchorEl.attr('href'))
+            app.openLink($anchorEl.attr('href')!)
           }
           else {
             editor.tryOpenLink($anchorEl)
@@ -111,7 +111,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
 
       this.registry.register(
         vault.on('file:rename', (oldPath, newPath) => {
-          const tabs = this.findLeaf(leaf => leaf.state.path === oldPath).parent as WorkspaceTabs
+          const tabs = this.findLeaf(leaf => leaf.state.path === oldPath)?.parent as WorkspaceTabs
           tabs.renameTab(oldPath, newPath)
         }))
 
@@ -189,8 +189,8 @@ export class WorkspaceRoot extends WorkspaceSplit {
     this.registry.onunload = () => {
       // Removing the current tabs in reverse order causes the left tab to keep reopening, resulting in two tabs remaining after resetting the workspace.
       // So it is necessary to handle the current Tabs separately.
-      const activeTabs = workspace.activeLeaf.parent as WorkspaceTabs
-      activeTabs.removeOthers(workspace.activeLeaf.state.path)
+      const activeTabs = workspace.activeLeaf?.parent as WorkspaceTabs
+      activeTabs.removeOthers(workspace.activeLeaf?.state.path)
 
       // Elements need to be deleted in reverse order
       this.eachLeaves(leaf => leaf.detach())
@@ -198,7 +198,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
 
       this.containerEl.remove()
       workspace.activeLeaf = null
-      editor.writingArea.parentElement.setAttribute('class', '')
+      editor.writingArea.parentElement!.setAttribute('class', '')
       MarkdownView.parent = null
     }
 

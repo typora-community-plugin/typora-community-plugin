@@ -17,12 +17,12 @@ export class MarkdownView extends WorkspaceView {
   /**
    * Typora editor's tabs
    */
-  static parent: WorkspaceTabs
+  static parent: WorkspaceTabs | null = null
 
   containerEl = $('<div class="typ-markdown-view"></div>')[0]
 
-  currentMode: Mode
-  mdPreviewer?: MarkdownPreviewer
+  currentMode!: Mode
+  mdPreviewer: MarkdownPreviewer | null = null
 
   constructor(
     public leaf: WorkspaceLeaf,
@@ -58,7 +58,7 @@ export class MarkdownView extends WorkspaceView {
   onOpen() {
     this.autoSetMode()
     if (this.isEidtor()) {
-      editor.writingArea.parentElement.classList.remove('typ-deactive')
+      editor.writingArea.parentElement!.classList.remove('typ-deactive')
       editor.library.openFile(this.filePath)
     }
   }
@@ -66,9 +66,9 @@ export class MarkdownView extends WorkspaceView {
   onClose() {
     if (this.isEidtor()) {
       if (this.workspace.activeFile === this.filePath)
-        editor.writingArea.parentElement.classList.add('typ-deactive')
+        editor.writingArea.parentElement!.classList.add('typ-deactive')
       // fix: can not close preview when dragging the only one Typora editor tab from Tabs A to Tabs B (which contains preview)
-      if (MarkdownView.parent.children.length === 1) {
+      if (MarkdownView.parent?.children.length === 1) {
         MarkdownView.parent = null
 
         // fix: will not open typora editor after the only one closed
@@ -106,7 +106,7 @@ export class MarkdownView extends WorkspaceView {
     InternalEditor.instance.active(containerEl, this)
   }
 
-  private switchToPreviewerMode(filePath?: string) {
+  private switchToPreviewerMode(filePath: string) {
     const { containerEl } = this
     containerEl.classList.remove('mode-typora')
     if (MarkdownView.parent === this.leaf.parent) {
@@ -121,7 +121,7 @@ export class MarkdownView extends WorkspaceView {
 
   getCodeMirrorInstance(cid: string): CodeMirror.Editor {
     return this.isEidtor()
-      ? editor.fences.getCm(cid)
+      ? editor.fences.getCm(cid)!
       : this.mdRenderer.getCodeMirrorInstance(cid)
   }
 }
@@ -134,9 +134,9 @@ class InternalEditor {
     return this._instance ??= new InternalEditor()
   }
 
-  contentEl = editor.writingArea.parentElement
-  handleSettingActiveLeaf: (this: HTMLElement, ev: MouseEvent) => any
-  handleLayoutChanged: DisposeFunc
+  contentEl = editor.writingArea.parentElement!
+  handleSettingActiveLeaf: ((this: HTMLElement, ev: MouseEvent) => any) | null = null
+  handleLayoutChanged: DisposeFunc | null = null
 
   private constructor(private workspace = useService('workspace')) { }
 
