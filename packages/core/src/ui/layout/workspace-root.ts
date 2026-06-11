@@ -107,8 +107,6 @@ export class WorkspaceRoot extends WorkspaceSplit {
             setTimeout(() => openFileInActiveTabs(file))
         }))
 
-      this.registry.register(workspace.on('file:open', openFileInActiveTabs))
-
       this.registry.register(
         vault.on('file:rename', (oldPath, newPath) => {
           const tabs = this.findLeaf(leaf => leaf.state.path === oldPath)?.parent as WorkspaceTabs

@@ -10,6 +10,8 @@ import type { DisposeFunc } from 'src/utils/types'
 
 enum Mode { Typora, Previewer }
 
+const KEY_OPENFILE = Symbol.for('openFile$original')
+
 export class MarkdownView extends WorkspaceView {
 
   static type = 'core.markdown'
@@ -40,6 +42,24 @@ export class MarkdownView extends WorkspaceView {
     setTimeout(() => this.autoSetMode())
     this.register(
       this.leaf.getRoot().on('layout-changed', () => this.autoSetMode()))
+
+    // Click on Previewer content area → swap: old editor → Previewer, clicked → Editor
+    this.registerDomEvent(this.containerEl, 'click', e => {
+      if (this.isEidtor()) return
+      if ((e.target as HTMLElement).closest('a')) return
+
+      // Find the current editor and switch it to Previewer first
+      const editorLeaf = this.leaf.getRoot().filterLeaves(leaf =>
+        leaf.viewType === MarkdownView.type &&
+        (leaf.view as MarkdownView).isEidtor()
+      ).shift()
+      if (editorLeaf) {
+        (editorLeaf.view as MarkdownView).setMode(Mode.Previewer)
+      }
+
+      // Then switch clicked Previewer to Editor
+      this._activateEditor()
+    })
   }
 
   isEidtor() {
@@ -56,11 +76,22 @@ export class MarkdownView extends WorkspaceView {
   }
 
   onOpen() {
-    this.autoSetMode()
     if (this.isEidtor()) {
+      // Already the editor — just switch file
       editor.writingArea.parentElement!.classList.remove('typ-deactive')
-      editor.library.openFile(this.filePath)
+      // @ts-ignore
+      editor.library[KEY_OPENFILE](this.filePath)
+    } else {
+      this._activateEditor()
     }
+  }
+
+  private _activateEditor() {
+    this.setMode(Mode.Typora)
+
+    editor.writingArea.parentElement!.classList.remove('typ-deactive')
+    // @ts-ignore
+    editor.library[KEY_OPENFILE](this.filePath)
   }
 
   onClose() {
@@ -176,8 +207,8 @@ class InternalEditor {
   }
 
   private unregisterObserver(el: HTMLElement) {
-    const objectEl = el.children[0] as HTMLObjectElement
-    if (objectEl.contentWindow) objectEl.contentWindow.onresize = null
+    const objectEl = el.children[0] as HTMLObjectElement | undefined
+    if (objectEl?.contentWindow) objectEl.contentWindow.onresize = null
   }
 
   private syncSize() {
