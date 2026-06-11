@@ -127,6 +127,7 @@ export class MarkdownView extends WorkspaceView {
       // @ts-ignore
       InternalEditor.instance.syncSize()
       writeEl.style.display = ''
+      editor.writingArea.focus()
     }, 1000)
   }
 
