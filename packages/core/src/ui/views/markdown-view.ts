@@ -1,5 +1,5 @@
 import './markdown-view.scss'
-import { CodeMirror, editor } from "typora"
+import { editor } from "typora"
 import { useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
 import { WorkspaceView } from '../layout/workspace-view'
@@ -82,16 +82,44 @@ export class MarkdownView extends WorkspaceView {
       // @ts-ignore
       editor.library[KEY_OPENFILE](this.filePath)
     } else {
-      this._activateEditor()
+      this._activateEditorImmediate()
     }
   }
 
-  private _activateEditor() {
+  /**
+   * Immediate activation for tab-open path.
+   * _activateEditor (with 1s delay) is used for click-to-switch only.
+   */
+  private _activateEditorImmediate() {
     this.setMode(Mode.Typora)
 
     editor.writingArea.parentElement!.classList.remove('typ-deactive')
     // @ts-ignore
     editor.library[KEY_OPENFILE](this.filePath)
+  }
+
+  private _activateEditor() {
+    // 1. Hide #write so the user doesn't see the editor loading
+    const writeEl = editor.writingArea.parentElement!
+    writeEl.style.display = 'none'
+    writeEl.classList.remove('typ-deactive')
+
+    // Update MarkdownView.parent NOW before opening file,
+    // so autoSetMode triggered by layout-changed sees the correct parent
+    MarkdownView.parent = this.leaf.parent as WorkspaceTabs
+
+    // 2. Open file in editor (populates #write in background)
+    // @ts-ignore
+    editor.library[KEY_OPENFILE](this.filePath)
+
+    // 3. Wait for the editor to render, then swap DOM
+    setTimeout(() => {
+      this.setMode(Mode.Typora)
+      // Sync position synchronously before showing #write, so CSS vars are correct
+      // @ts-ignore
+      InternalEditor.instance.syncSize()
+      writeEl.style.display = ''
+    }, 1000)
   }
 
   onClose() {
