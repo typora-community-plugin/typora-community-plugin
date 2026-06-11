@@ -21,6 +21,11 @@ export class MarkdownView extends WorkspaceView {
    */
   static parent: WorkspaceTabs | null = null
 
+  /**
+   * Set during Previewer↔Editor mode swap to suppress file:open side-effects.
+   */
+  static swappingLeaf: WorkspaceLeaf | null = null
+
   containerEl = $('<div class="typ-markdown-view"></div>')[0]
 
   currentMode!: Mode
@@ -57,8 +62,11 @@ export class MarkdownView extends WorkspaceView {
         (editorLeaf.view as MarkdownView).setMode(Mode.Previewer)
       }
 
+      // Flag suppresses file:open side-effects during mode swap
+      MarkdownView.swappingLeaf = this.leaf
       // Then switch clicked Previewer to Editor
       this._activateEditor()
+      MarkdownView.swappingLeaf = null
     })
   }
 

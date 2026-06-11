@@ -107,6 +107,15 @@ export class WorkspaceRoot extends WorkspaceSplit {
             setTimeout(() => openFileInActiveTabs(file))
         }))
 
+      this.registry.register(workspace.on('file:open', (file) => {
+        // Skip during Previewer↔Editor mode swap — the click handler handles everything
+        if (MarkdownView.swappingLeaf?.state.path === file) return
+        // Skip when the file is already the active leaf — redundant (e.g. right-side tab open,
+        // tab activation). Only process explicit file opens (file tree, quick open, etc.)
+        if (workspace.activeLeaf?.state.path === file) return
+        openFileInActiveTabs(file)
+      }))
+
       this.registry.register(
         vault.on('file:rename', (oldPath, newPath) => {
           const tabs = this.findLeaf(leaf => leaf.state.path === oldPath)?.parent as WorkspaceTabs
