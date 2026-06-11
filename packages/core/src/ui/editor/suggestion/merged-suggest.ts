@@ -41,15 +41,19 @@ export class MergedSuggest<T> extends EditorSuggest<MergedSuggestion<T>> {
 
   findQuery(textBefore: string, textAfter: string, range: TRange) {
     let isMatched = false
-    this._suggests.forEach(s => {
+    let firstQuery = ''
+    for (const s of this._suggests) {
       const res = s.findQuery(textBefore, textAfter, range)
       if (res.isMatched) {
         // @ts-ignore
         s._query = res.query
-        isMatched = true
+        if (!isMatched) {
+          isMatched = true
+          firstQuery = res.query!
+        }
       }
-    })
-    return { isMatched, query: '[Merged Query] Use `suggest._query` instead.' }
+    }
+    return isMatched ? { isMatched: true, query: firstQuery } : { isMatched: false }
   }
 
   lengthOfTextBeforeToBeReplaced(query: string) {
