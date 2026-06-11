@@ -7,6 +7,8 @@
     - feat: add granular enable/disable controls
     - feat: add per-feature glob pattern filtering for file path targeting
     - feat: add frontmatter-based uncollapsableSections / collapsableSections permission filter
+  - [footnotes][]
+    -  fix(reindex): can not reindex
 
 ## v2.9.0
 
