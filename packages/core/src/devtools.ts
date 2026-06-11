@@ -10,6 +10,7 @@ import { SettingsModal } from './ui/settings/settings-modal'
 import { EditaleTableTestTab } from './ui/components/editable-table-test'
 import { SettingItemTestTab } from './ui/settings/setting-item-test'
 import { TEST_STATS } from './ui/statusbar/statistics-test'
+import { FooSlashSuggest, BarSlashSuggest } from './ui/editor/suggestion/suggest-test'
 
 
 export function devtools(
@@ -34,6 +35,7 @@ export function devtools(
 
     registerTestTab()
     registerTestStatistic()
+    registerTestSuggest()
   })
 
   if (File.isNode) {
@@ -65,5 +67,10 @@ export function devtools(
 
   function registerTestStatistic(app = useService('app')) {
     app.features.statistics.registerStatistic(TEST_STATS)
+  }
+
+  function registerTestSuggest(app = useService('app')) {
+    app.features.markdownEditor.suggestion.register(new FooSlashSuggest())
+    app.features.markdownEditor.suggestion.register(new BarSlashSuggest())
   }
 }
