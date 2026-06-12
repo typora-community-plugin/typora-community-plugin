@@ -49,6 +49,22 @@ export class MarkdownView extends WorkspaceView {
       this.leaf.getRoot().on('layout-changed', () => this.autoSetMode()))
 
     // Click on Previewer content area → swap: old editor → Previewer, clicked → Editor
+    //
+    // Save the current editor's cursor on mousedown (fires before browser moves focus).
+    // This is critical because in the click handler the selection is no longer in #write.
+    this.registerDomEvent(this.containerEl, 'mousedown', e => {
+      if (this.isEidtor()) return
+      if ((e.target as HTMLElement).closest('a')) return
+
+      const editorLeaf = this.leaf.getRoot().filterLeaves(leaf =>
+        leaf.viewType === MarkdownView.type &&
+        (leaf.view as MarkdownView).isEidtor()
+      ).shift()
+      if (editorLeaf) {
+        ;(editorLeaf.view as MarkdownView).saveEditorStateToLeaf()
+      }
+    })
+
     this.registerDomEvent(this.containerEl, 'click', e => {
       if (this.isEidtor()) return
       if ((e.target as HTMLElement).closest('a')) return
@@ -60,6 +76,12 @@ export class MarkdownView extends WorkspaceView {
       ).shift()
       if (editorLeaf) {
         (editorLeaf.view as MarkdownView).setMode(Mode.Previewer)
+        // Only transfer cursor state when both leaves show the same file.
+        // When files differ, each leaf uses its own saved state (saved when it last
+        // switched from Editor → Previewer).
+        if (editorLeaf.state.path === this.leaf.state.path) {
+          this.leaf.state.cursorTextOffset = editorLeaf.state.cursorTextOffset
+        }
       }
 
       // Flag suppresses file:open side-effects during mode swap
@@ -123,11 +145,14 @@ export class MarkdownView extends WorkspaceView {
     // 3. Wait for the editor to render, then swap DOM
     setTimeout(() => {
       this.setMode(Mode.Typora)
+
       // Sync position synchronously before showing #write, so CSS vars are correct
       // @ts-ignore
       InternalEditor.instance.syncSize()
       writeEl.style.display = ''
-      editor.writingArea.focus()
+
+      // Restore editor scroll/cursor state saved from the previous Editor leaf
+      this.restoreEditorStateFromLeaf()
     }, 1000)
   }
 
@@ -155,12 +180,121 @@ export class MarkdownView extends WorkspaceView {
   }
 
   private setMode(mode: Mode) {
+    const tag = '[MarkdownView setMode]'
+    // Save editor scroll/cursor state before switching to Previewer
+    if (mode === Mode.Previewer && this.currentMode === Mode.Typora) {
+      this.saveEditorStateToLeaf()
+    }
+
     this.currentMode = mode
     if (mode === Mode.Typora) {
       this.switchToTyporaMode()
     } else {
       this.switchToPreviewerMode(this.filePath)
     }
+  }
+
+  private saveEditorStateToLeaf() {
+    const tag = '[MarkdownView saveEditorStateToLeaf]'
+
+    try {
+      const sel = window.getSelection()
+      if (!sel || !sel.rangeCount) return
+
+      const container = editor.writingArea
+      const focusNode = sel.focusNode
+      const focusOffset = sel.focusOffset
+      if (!container || !focusNode) return
+
+      // Cursor may be outside #write (CodeMirror code fences, search bar, menu…)
+      if (!container.contains(focusNode)) return
+
+      // Compute character offset from the start of #write's text content
+      // (Typora's restoreEdge approach — DOM-structure-independent)
+      const treeWalker = document.createTreeWalker(
+        container,
+        NodeFilter.SHOW_TEXT,
+        null
+      )
+      let textOffset = 0
+      let node: Node | null
+      while (node = treeWalker.nextNode()) {
+        if (node === focusNode) {
+          textOffset += focusOffset
+          break
+        }
+        textOffset += node.textContent?.length ?? 0
+      }
+
+      this.leaf.state.cursorTextOffset = textOffset
+    } catch (e) {
+      console.error(tag, `exception:`, e)
+    }
+  }
+
+  private restoreEditorStateFromLeaf() {
+    const tag = '[MarkdownView restoreEditorStateFromLeaf]'
+
+    if (this.leaf.state.cursorTextOffset == null) return
+
+    const doRestore = (run: string) => {
+      if (this.leaf.state.cursorTextOffset != null) {
+        try {
+          const container = editor.writingArea
+          if (!container) return
+
+          const targetOffset = this.leaf.state.cursorTextOffset as number
+
+          // restoreEdge-style traversal: walk text nodes, accumulate lengths,
+          // find the text node containing the target offset
+          const treeWalker = document.createTreeWalker(
+            container,
+            NodeFilter.SHOW_TEXT,
+            null
+          )
+          let accumulated = 0
+          let textNode: Node | null
+          let found = false
+
+          while (textNode = treeWalker.nextNode()) {
+            const len = textNode.textContent?.length ?? 0
+
+            if (accumulated + len >= targetOffset) {
+              // Offset falls within this text node
+              const nodeOffset = targetOffset - accumulated
+
+              const range = document.createRange()
+              range.setStart(textNode, nodeOffset)
+              range.collapse(true)
+
+              const sel = window.getSelection()
+              sel.removeAllRanges()
+              sel.addRange(range)
+              found = true
+              break
+            }
+            accumulated += len
+          }
+
+          if (!found) {
+            // targetOffset at or past the end of all text — cursor at end of container
+            const range = document.createRange()
+            range.selectNodeContents(container)
+            range.collapse(false)
+            const sel = window.getSelection()
+            sel.removeAllRanges()
+            sel.addRange(range)
+          }
+        } catch (e) {
+          console.error(tag, `exception during restore:`, e)
+        }
+      }
+    }
+
+    // Immediate restore
+    doRestore('immediate')
+    // Deferred re-apply to overcome useScrollRecord's file:open → until() restore cycle
+    setTimeout(() => doRestore('deferred'), 0)
   }
 
   private switchToTyporaMode() {
