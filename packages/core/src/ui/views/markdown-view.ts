@@ -56,32 +56,21 @@ export class MarkdownView extends WorkspaceView {
       if (this.isEidtor()) return
       if ((e.target as HTMLElement).closest('a')) return
 
-      const editorLeaf = this.leaf.getRoot().filterLeaves(leaf =>
+      const editorLeaf = MarkdownView.parent?.filterLeaves(leaf =>
         leaf.viewType === MarkdownView.type &&
         (leaf.view as MarkdownView).isEidtor()
       ).shift()
-      if (editorLeaf) {
-        (editorLeaf.view as MarkdownView).saveEditorStateToLeaf()
-      }
-    })
 
-    this.registerDomEvent(this.containerEl, 'click', e => {
-      if (this.isEidtor()) return
-      if ((e.target as HTMLElement).closest('a')) return
+      if (!editorLeaf) return
 
-      // Find the current editor and switch it to Previewer first
-      const editorLeaf = this.leaf.getRoot().filterLeaves(leaf =>
-        leaf.viewType === MarkdownView.type &&
-        (leaf.view as MarkdownView).isEidtor()
-      ).shift()
-      if (editorLeaf) {
-        (editorLeaf.view as MarkdownView).setMode(Mode.Previewer)
-        // Only transfer cursor state when both leaves show the same file.
-        // When files differ, each leaf uses its own saved state (saved when it last
-        // switched from Editor → Previewer).
-        if (editorLeaf.state.path === this.leaf.state.path) {
-          this.leaf.state.cursorTextOffset = editorLeaf.state.cursorTextOffset
-        }
+      (editorLeaf.view as MarkdownView).saveEditorStateToLeaf();
+
+      (editorLeaf.view as MarkdownView).setMode(Mode.Previewer)
+      // Only transfer cursor state when both leaves show the same file.
+      // When files differ, each leaf uses its own saved state (saved when it last
+      // switched from Editor → Previewer).
+      if (editorLeaf.state.path === this.leaf.state.path) {
+        this.leaf.state.cursorTextOffset = editorLeaf.state.cursorTextOffset
       }
 
       // Flag suppresses file:open side-effects during mode swap
@@ -121,28 +110,21 @@ export class MarkdownView extends WorkspaceView {
   }
 
   onOpen() {
+    this.autoSetMode()
+
     if (this.isEidtor()) {
       // Already the editor — just switch file
       editor.writingArea.parentElement!.classList.remove('typ-deactive')
       // @ts-ignore
       editor.library[KEY_OPENFILE](this.filePath)
     } else {
-      this._activateEditorImmediate()
+      this.switchToPreviewerMode(this.filePath)
     }
   }
 
   /**
-   * Immediate activation for tab-open path.
    * _activateEditor (with 1s delay) is used for click-to-switch only.
    */
-  private _activateEditorImmediate() {
-    this.setMode(Mode.Typora)
-
-    editor.writingArea.parentElement!.classList.remove('typ-deactive')
-    // @ts-ignore
-    editor.library[KEY_OPENFILE](this.filePath)
-  }
-
   private _activateEditor() {
     // 1. Hide #write so the user doesn't see the editor loading
     const writeEl = editor.writingArea.parentElement!
