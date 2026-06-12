@@ -21,6 +21,7 @@ export type WorkspaceRootEvents = {
   'leaf:open'(leaf: WorkspaceLeaf): void
   'leaf:active'(leaf: WorkspaceLeaf): void
   'leaf:will-deactive'(leaf: WorkspaceLeaf): void
+  // 'leaf:will-close'(leaf: WorkspaceLeaf): void
   // 'leaf:close'(leaf: WorkspaceLeaf): void
 }
 
