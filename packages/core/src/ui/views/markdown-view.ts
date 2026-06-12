@@ -2,6 +2,7 @@ import './markdown-view.scss'
 import { editor } from "typora"
 import { useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
+import { EditorSelection } from '../editor/selection'
 import { ScrollState, WorkspaceView } from '../layout/workspace-view'
 import type { WorkspaceTabs } from '../layout/tabs'
 import type { WorkspaceLeaf } from '../layout/workspace-leaf'
@@ -34,6 +35,7 @@ export class MarkdownView extends WorkspaceView {
   constructor(
     public leaf: WorkspaceLeaf,
     private workspace = useService('workspace'),
+    private mdEditor = useService('markdown-editor'),
     private mdRenderer = useService('markdown-renderer'),
   ) {
     super(leaf)
@@ -191,106 +193,23 @@ export class MarkdownView extends WorkspaceView {
   }
 
   private saveEditorStateToLeaf() {
-    const tag = '[MarkdownView saveEditorStateToLeaf]'
-
-    try {
-      const sel = window.getSelection()
-      if (!sel || !sel.rangeCount) return
-
-      const container = editor.writingArea
-      const focusNode = sel.focusNode
-      const focusOffset = sel.focusOffset
-      if (!container || !focusNode) return
-
-      // Cursor may be outside #write (CodeMirror code fences, search bar, menu…)
-      if (!container.contains(focusNode)) return
-
-      // Compute character offset from the start of #write's text content
-      // (Typora's restoreEdge approach — DOM-structure-independent)
-      const treeWalker = document.createTreeWalker(
-        container,
-        NodeFilter.SHOW_TEXT,
-        null
-      )
-      let textOffset = 0
-      let node: Node | null
-      while (node = treeWalker.nextNode()) {
-        if (node === focusNode) {
-          textOffset += focusOffset
-          break
-        }
-        textOffset += node.textContent?.length ?? 0
-      }
-
-      this.leaf.state.cursorTextOffset = textOffset
-    } catch (e) {
-      console.error(tag, `exception:`, e)
+    const offset = this.mdEditor.selection.getCursor()
+    if (offset != null) {
+      this.leaf.state.cursorTextOffset = offset
     }
   }
 
   private restoreEditorStateFromLeaf() {
-    const tag = '[MarkdownView restoreEditorStateFromLeaf]'
-
     if (this.leaf.state.cursorTextOffset == null) return
 
-    const doRestore = (run: string) => {
-      if (this.leaf.state.cursorTextOffset != null) {
-        try {
-          const container = editor.writingArea
-          if (!container) return
-
-          const targetOffset = this.leaf.state.cursorTextOffset as number
-
-          // restoreEdge-style traversal: walk text nodes, accumulate lengths,
-          // find the text node containing the target offset
-          const treeWalker = document.createTreeWalker(
-            container,
-            NodeFilter.SHOW_TEXT,
-            null
-          )
-          let accumulated = 0
-          let textNode: Node | null
-          let found = false
-
-          while (textNode = treeWalker.nextNode()) {
-            const len = textNode.textContent?.length ?? 0
-
-            if (accumulated + len >= targetOffset) {
-              // Offset falls within this text node
-              const nodeOffset = targetOffset - accumulated
-
-              const range = document.createRange()
-              range.setStart(textNode, nodeOffset)
-              range.collapse(true)
-
-              const sel = window.getSelection()
-              sel.removeAllRanges()
-              sel.addRange(range)
-              found = true
-              break
-            }
-            accumulated += len
-          }
-
-          if (!found) {
-            // targetOffset at or past the end of all text — cursor at end of container
-            const range = document.createRange()
-            range.selectNodeContents(container)
-            range.collapse(false)
-            const sel = window.getSelection()
-            sel.removeAllRanges()
-            sel.addRange(range)
-          }
-        } catch (e) {
-          console.error(tag, `exception during restore:`, e)
-        }
-      }
+    const doRestore = () => {
+      this.mdEditor.selection.setCursor(this.leaf.state.cursorTextOffset as number)
     }
 
     // Immediate restore
-    doRestore('immediate')
+    doRestore()
     // Deferred re-apply to overcome useScrollRecord's file:open → until() restore cycle
-    setTimeout(() => doRestore('deferred'), 0)
+    setTimeout(() => doRestore(), 0)
   }
 
   private switchToTyporaMode() {
