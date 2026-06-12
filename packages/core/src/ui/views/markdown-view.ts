@@ -2,7 +2,7 @@ import './markdown-view.scss'
 import { editor } from "typora"
 import { useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
-import { WorkspaceView } from '../layout/workspace-view'
+import { ScrollState, WorkspaceView } from '../layout/workspace-view'
 import type { WorkspaceTabs } from '../layout/tabs'
 import type { WorkspaceLeaf } from '../layout/workspace-leaf'
 import type { DisposeFunc } from 'src/utils/types'
@@ -61,7 +61,7 @@ export class MarkdownView extends WorkspaceView {
         (leaf.view as MarkdownView).isEidtor()
       ).shift()
       if (editorLeaf) {
-        ;(editorLeaf.view as MarkdownView).saveEditorStateToLeaf()
+        (editorLeaf.view as MarkdownView).saveEditorStateToLeaf()
       }
     })
 
@@ -94,6 +94,21 @@ export class MarkdownView extends WorkspaceView {
 
   isEidtor() {
     return this.currentMode === Mode.Typora
+  }
+
+  getScroll(): ScrollState {
+    if (this.isEidtor()) {
+      return { scrollTop: editor.writingArea.parentElement!.scrollTop }
+    }
+    return { scrollTop: this.containerEl.scrollTop }
+  }
+
+  applyScroll(state: ScrollState): void {
+    if (this.isEidtor()) {
+      editor.writingArea.parentElement!.scrollTop = state.scrollTop
+    } else {
+      this.containerEl.scrollTop = state.scrollTop
+    }
   }
 
   autoSetMode() {
@@ -180,7 +195,6 @@ export class MarkdownView extends WorkspaceView {
   }
 
   private setMode(mode: Mode) {
-    const tag = '[MarkdownView setMode]'
     // Save editor scroll/cursor state before switching to Previewer
     if (mode === Mode.Previewer && this.currentMode === Mode.Typora) {
       this.saveEditorStateToLeaf()

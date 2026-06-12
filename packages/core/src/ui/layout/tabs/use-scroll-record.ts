@@ -1,39 +1,26 @@
-import { editor } from "typora"
 import type { Component } from "src/common/component"
-import { useService } from "src/common/service"
+import { useEventBus } from "src/common/eventbus"
 import type { MarkdownView } from "src/ui/views/markdown-view"
-import { until } from "src/utils"
+import type { ScrollState } from "../workspace-view"
 
 
-export function useScrollRecord(registry: Component, workspace = useService('workspace')) {
+export function useScrollRecord(registry: Component) {
 
   registry.register(
-    workspace.on('file:will-open', (file) => {
-      if (!file.endsWith('.md')) return
+    useEventBus('workspace-root').on('leaf:will-close', leaf => {
+      if (!leaf.state.path.endsWith('.md')) return
 
-      const leaf = workspace.activeLeaf
-      if (!leaf) return
-
-      leaf.state.scrollTop = (leaf.view as MarkdownView).isEidtor()
-        ? editor.writingArea.parentElement!.scrollTop
-        : leaf.view.containerEl.scrollTop
+      const view = leaf.view as MarkdownView
+      leaf.state.scroll = view.getScroll()
     }))
 
   registry.register(
-    workspace.on('file:open', (file) => {
-      if (!file.endsWith('.md')) return
+    useEventBus('workspace-root').on('leaf:active', leaf => {
+      if (!leaf.state.path.endsWith('.md')) return
+      if (leaf.state.scroll == null) return
 
-      const leaf = workspace.rootSplit.findLeaf(l => l.state.path === file)
-      if (!leaf?.state?.scrollTop) return
-
-      const leafEl = leaf.view.containerEl
-      const savedScrollTop = leaf.state.scrollTop
-      until(() => leafEl.scrollTop !== savedScrollTop).then(() => {
-        if ((leaf.view as MarkdownView).isEidtor())
-          editor.writingArea.parentElement!.scrollTop = savedScrollTop
-        else
-          leafEl.scrollTop = savedScrollTop
+      setTimeout(() => {
+        leaf.view.applyScroll(leaf.state as ScrollState)
       })
     }))
-
 }
