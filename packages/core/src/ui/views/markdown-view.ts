@@ -316,9 +316,8 @@ export class MarkdownPreviewer {
   constructor(private mdRenderer = useService('markdown-renderer')) { }
 
   active(containerEl: HTMLElement, path: string) {
-    let md = fs.readTextSync(path)
-
-    this.mdRenderer.renderTo(md, containerEl)
+    fs.readText(path).then(md =>
+      this.mdRenderer.renderTo(md, containerEl))
   }
 
   deactive(containerEl: HTMLElement) {
