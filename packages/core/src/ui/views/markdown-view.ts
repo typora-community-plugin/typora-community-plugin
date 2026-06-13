@@ -67,17 +67,11 @@ export class MarkdownView extends WorkspaceView {
       (editorLeaf.view as MarkdownView).saveEditorStateToLeaf();
 
       (editorLeaf.view as MarkdownView).setMode(Mode.Previewer)
-      // Only transfer cursor state when both leaves show the same file.
-      // When files differ, each leaf uses its own saved state (saved when it last
-      // switched from Editor → Previewer).
-      const isSwappingSameFile = editorLeaf.state.path === this.leaf.state.path
-      if (isSwappingSameFile) {
-        this.leaf.state.cursorTextOffset = editorLeaf.state.cursorTextOffset
-      }
 
       // Flag suppresses file:open side-effects during mode swap
       MarkdownView.swappingLeaf = this.leaf
       // Then switch clicked Previewer to Editor
+      const isSwappingSameFile = editorLeaf.state.path === this.leaf.state.path
       this._activateEditor(isSwappingSameFile)
       MarkdownView.swappingLeaf = null
     })
