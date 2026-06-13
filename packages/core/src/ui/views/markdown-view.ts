@@ -70,14 +70,15 @@ export class MarkdownView extends WorkspaceView {
       // Only transfer cursor state when both leaves show the same file.
       // When files differ, each leaf uses its own saved state (saved when it last
       // switched from Editor → Previewer).
-      if (editorLeaf.state.path === this.leaf.state.path) {
+      const isSwappingSameFile = editorLeaf.state.path === this.leaf.state.path
+      if (isSwappingSameFile) {
         this.leaf.state.cursorTextOffset = editorLeaf.state.cursorTextOffset
       }
 
       // Flag suppresses file:open side-effects during mode swap
       MarkdownView.swappingLeaf = this.leaf
       // Then switch clicked Previewer to Editor
-      this._activateEditor()
+      this._activateEditor(isSwappingSameFile)
       MarkdownView.swappingLeaf = null
     })
   }
@@ -126,7 +127,7 @@ export class MarkdownView extends WorkspaceView {
   /**
    * _activateEditor is used for click-to-switch only.
    */
-  private _activateEditor() {
+  private _activateEditor(isSwappingSameFile: boolean) {
     // 1. Hide #write so the user doesn't see the editor loading
     const writeEl = editor.writingArea.parentElement!
     writeEl.style.display = 'none'
@@ -141,7 +142,7 @@ export class MarkdownView extends WorkspaceView {
     editor.library[KEY_OPENFILE](this.filePath)
 
     // 3. Wait for editor to finish rendering, then swap
-    this.workspace.once('file:open', () => {
+    const doSwap = () => {
       this.setMode(Mode.Typora)
 
       // Sync position synchronously before showing #write, so CSS vars are correct
@@ -151,7 +152,11 @@ export class MarkdownView extends WorkspaceView {
 
       // Restore editor scroll/cursor state saved from the previous Editor leaf
       this.restoreEditorStateFromLeaf()
-    })
+    }
+    if (isSwappingSameFile)
+      doSwap()
+    else
+      this.workspace.once('file:open', doSwap)
   }
 
   onClose() {
