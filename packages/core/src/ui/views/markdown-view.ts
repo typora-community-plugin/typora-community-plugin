@@ -199,14 +199,7 @@ export class MarkdownView extends WorkspaceView {
   private restoreEditorStateFromLeaf() {
     if (this.leaf.state.cursorTextOffset == null) return
 
-    const doRestore = () => {
-      this.mdEditor.selection.setCursor(this.leaf.state.cursorTextOffset as number)
-    }
-
-    // Immediate restore
-    doRestore()
-    // Deferred re-apply to overcome useScrollRecord's file:open → until() restore cycle
-    setTimeout(() => doRestore(), 0)
+    this.mdEditor.selection.setCursor(this.leaf.state.cursorTextOffset as number)
   }
 
   private switchToTyporaMode() {
