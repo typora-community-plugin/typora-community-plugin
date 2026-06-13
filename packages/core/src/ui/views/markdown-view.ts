@@ -2,11 +2,11 @@ import './markdown-view.scss'
 import { editor } from "typora"
 import { useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
-import { EditorSelection } from '../editor/selection'
 import { ScrollState, WorkspaceView } from '../layout/workspace-view'
 import type { WorkspaceTabs } from '../layout/tabs'
 import type { WorkspaceLeaf } from '../layout/workspace-leaf'
 import type { DisposeFunc } from 'src/utils/types'
+import { whenContentChanged } from 'src/utils'
 
 
 enum Mode { Typora, Previewer }
@@ -125,7 +125,7 @@ export class MarkdownView extends WorkspaceView {
   }
 
   /**
-   * _activateEditor (with 1s delay) is used for click-to-switch only.
+   * _activateEditor is used for click-to-switch only.
    */
   private _activateEditor() {
     // 1. Hide #write so the user doesn't see the editor loading
@@ -141,8 +141,9 @@ export class MarkdownView extends WorkspaceView {
     // @ts-ignore
     editor.library[KEY_OPENFILE](this.filePath)
 
-    // 3. Wait for the editor to render, then swap DOM
-    setTimeout(() => {
+    // 3. Wait for editor to finish rendering via DOM observation, then swap
+    const snapshot = writeEl.innerHTML
+    whenContentChanged(writeEl, snapshot).then(() => {
       this.setMode(Mode.Typora)
 
       // Sync position synchronously before showing #write, so CSS vars are correct
@@ -152,7 +153,7 @@ export class MarkdownView extends WorkspaceView {
 
       // Restore editor scroll/cursor state saved from the previous Editor leaf
       this.restoreEditorStateFromLeaf()
-    }, 1000)
+    })
   }
 
   onClose() {
