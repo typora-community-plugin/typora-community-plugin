@@ -56,12 +56,12 @@ export class WorkspaceTabs extends WorkspaceParent {
 
   private _activeLeaf: WorkspaceLeaf
 
-  get activedLeaf() {
+  get activeLeaf() {
     return this._activeLeaf ?? this.children[0] as WorkspaceLeaf
   }
 
   toggleTab(path: string, tabEl?: HTMLElement): void {
-    this.activedLeaf.view.close()
+    this.activeLeaf.view.close()
     this.tabContentEl.querySelector('.mod-active')?.classList.remove('mod-active')
 
     tabEl ??= this.tabHeader.getTabById(path)

@@ -87,7 +87,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
             file === workspace.activeFile &&
             // handle: do not re-execute after `openFileInActiveTabs` has be called once.
             //         [Call Chain] 'file:will-open' → openFileInActiveTabs() → MarkdownView#onOpen() → editor.library.openFile() → 'file:will-open'
-            file !== MarkdownView.parent?.activedLeaf.state.path
+            file !== MarkdownView.parent?.activeLeaf.state.path
           ) {
             openFileInActiveTabs(file)
           }
@@ -101,7 +101,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
             // handle: click file tree → open file in ActivedTabs
             MarkdownView.parent === activeTabs ||
             // handle: (drag ActivedTab → close ActivedTab → open SiblingTab → open file in Non-ActivedTabs) in the Tabs with MarkdownEditorView (mode: Typora)
-            MarkdownView.parent.activedLeaf.state.path === file
+            MarkdownView.parent.activeLeaf.state.path === file
           )
             fn(file, callback)
           else

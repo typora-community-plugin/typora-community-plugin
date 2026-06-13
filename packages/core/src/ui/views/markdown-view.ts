@@ -6,7 +6,6 @@ import { ScrollState, WorkspaceView } from '../layout/workspace-view'
 import type { WorkspaceTabs } from '../layout/tabs'
 import type { WorkspaceLeaf } from '../layout/workspace-leaf'
 import type { DisposeFunc } from 'src/utils/types'
-import { whenContentChanged } from 'src/utils'
 
 
 enum Mode { Typora, Previewer }
@@ -55,13 +54,13 @@ export class MarkdownView extends WorkspaceView {
     // Save the current editor's cursor on mousedown (fires before browser moves focus).
     // This is critical because in the click handler the selection is no longer in #write.
     this.registerDomEvent(this.containerEl, 'mousedown', e => {
-      if (this.isEidtor()) return
+      if (this.isEditor()) return
       if ((e.target as HTMLElement).closest('a')) return
 
-      const editorLeaf = MarkdownView.parent?.filterLeaves(leaf =>
+      const editorLeaf = MarkdownView.parent?.findLeaf(leaf =>
         leaf.viewType === MarkdownView.type &&
-        (leaf.view as MarkdownView).isEidtor()
-      ).shift()
+        (leaf.view as MarkdownView).isEditor()
+      )
 
       if (!editorLeaf) return
 
@@ -83,19 +82,19 @@ export class MarkdownView extends WorkspaceView {
     })
   }
 
-  isEidtor() {
+  isEditor() {
     return this.currentMode === Mode.Typora
   }
 
   getScroll(): ScrollState {
-    if (this.isEidtor()) {
+    if (this.isEditor()) {
       return { scrollTop: editor.writingArea.parentElement!.scrollTop }
     }
     return { scrollTop: this.containerEl.scrollTop }
   }
 
   applyScroll(state: ScrollState): void {
-    if (this.isEidtor()) {
+    if (this.isEditor()) {
       editor.writingArea.parentElement!.scrollTop = state.scrollTop
     } else {
       this.containerEl.scrollTop = state.scrollTop
@@ -114,7 +113,7 @@ export class MarkdownView extends WorkspaceView {
   onOpen() {
     this.autoSetMode()
 
-    if (this.isEidtor()) {
+    if (this.isEditor()) {
       // Already the editor — just switch file
       editor.writingArea.parentElement!.classList.remove('typ-deactive')
       // @ts-ignore
@@ -156,7 +155,7 @@ export class MarkdownView extends WorkspaceView {
   }
 
   onClose() {
-    if (this.isEidtor()) {
+    if (this.isEditor()) {
       if (this.workspace.activeFile === this.filePath)
         editor.writingArea.parentElement!.classList.add('typ-deactive')
       // fix: can not close preview when dragging the only one Typora editor tab from Tabs A to Tabs B (which contains preview)
@@ -165,10 +164,8 @@ export class MarkdownView extends WorkspaceView {
 
         // fix: will not open typora editor after the only one closed
         const nextMdLeaf = this.leaf.getRoot()
-          .filterLeaves(leaf => leaf.viewType === MarkdownView.type)
-          .filter(leaf => leaf !== this.leaf)
-          .shift()
-        if (nextMdLeaf) (nextMdLeaf.parent as WorkspaceTabs).activedLeaf.view.onOpen()
+          .findLeaf(leaf => leaf.viewType === MarkdownView.type && leaf !== this.leaf)
+        if (nextMdLeaf) (nextMdLeaf.parent as WorkspaceTabs).activeLeaf.view.onOpen()
       }
     }
     else {
@@ -237,7 +234,7 @@ export class MarkdownView extends WorkspaceView {
   }
 
   getCodeMirrorInstance(cid: string): CodeMirror.Editor {
-    return this.isEidtor()
+    return this.isEditor()
       ? editor.fences.getCm(cid)!
       : this.mdRenderer.getCodeMirrorInstance(cid)
   }

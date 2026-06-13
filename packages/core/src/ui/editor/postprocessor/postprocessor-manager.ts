@@ -73,7 +73,7 @@ export function bindPostProcessorToEditor(mdEditor: MarkdownEditor) {
 
   setTimeout(() => {
     useEventBus('workspace-root').on('leaf:open', leaf => {
-      if (leaf.type === MarkdownView.type && (leaf.view as MarkdownView).isEidtor())
+      if (leaf.type === MarkdownView.type && (leaf.view as MarkdownView).isEditor())
         postProcessor.processAll()
     })
   })
