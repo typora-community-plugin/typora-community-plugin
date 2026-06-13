@@ -141,9 +141,8 @@ export class MarkdownView extends WorkspaceView {
     // @ts-ignore
     editor.library[KEY_OPENFILE](this.filePath)
 
-    // 3. Wait for editor to finish rendering via DOM observation, then swap
-    const snapshot = writeEl.innerHTML
-    whenContentChanged(writeEl, snapshot).then(() => {
+    // 3. Wait for editor to finish rendering, then swap
+    this.workspace.once('file:open', () => {
       this.setMode(Mode.Typora)
 
       // Sync position synchronously before showing #write, so CSS vars are correct

@@ -7,7 +7,6 @@ export * from './function/noop'
 
 export * from './schedule/debounce'
 export * from './schedule/throttle'
-export * from './schedule/when-content-changed'
 
 export * from './string/capitalize'
 export * from './string/format'
