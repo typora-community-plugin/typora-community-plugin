@@ -1,11 +1,11 @@
-import './markdown-view.scss'
+import './index.scss'
 import { editor } from "typora"
 import { useService } from 'src/common/service'
-import fs from 'src/io/fs/filesystem'
-import { ScrollState, WorkspaceView } from '../layout/workspace-view'
-import type { WorkspaceTabs } from '../layout/tabs'
-import type { WorkspaceLeaf } from '../layout/workspace-leaf'
-import type { DisposeFunc } from 'src/utils/types'
+import type { WorkspaceTabs } from 'src/ui/layout/tabs'
+import type { WorkspaceLeaf } from 'src/ui/layout/workspace-leaf'
+import { ScrollState, WorkspaceView } from 'src/ui/layout/workspace-view'
+import { MdEditorController } from './md-editor-controller'
+import { MdPreviewerController } from './md-previewer-controller'
 
 
 enum Mode { Typora, Previewer }
@@ -29,7 +29,8 @@ export class MarkdownView extends WorkspaceView {
   containerEl = $('<div class="typ-markdown-view"></div>')[0]
 
   currentMode!: Mode
-  mdPreviewer: MarkdownPreviewer | null = null
+  mdEditorController = new MdEditorController()
+  mdPreviewerController: MdPreviewerController | null = null
 
   constructor(
     public leaf: WorkspaceLeaf,
@@ -140,8 +141,7 @@ export class MarkdownView extends WorkspaceView {
       this.setMode(Mode.Typora)
 
       // Sync position synchronously before showing #write, so CSS vars are correct
-      // @ts-ignore
-      InternalEditor.instance.syncSize()
+      this.mdEditorController.syncSize()
       writeEl.style.display = ''
 
       // Restore editor scroll/cursor state saved from the previous Editor leaf
@@ -169,8 +169,8 @@ export class MarkdownView extends WorkspaceView {
     }
     else {
       // fix: can not close preview tab when dragging it from Tabs B to Tabs A (which contains preview)
-      this.mdPreviewer?.deactive(this.containerEl)
-      this.mdPreviewer = null
+      this.mdPreviewerController?.deactive(this.containerEl)
+      this.mdPreviewerController = null
     }
   }
 
@@ -204,24 +204,25 @@ export class MarkdownView extends WorkspaceView {
   private switchToTyporaMode() {
     const { containerEl } = this
     containerEl.classList.remove('mode-previewer')
-    this.mdPreviewer?.deactive(containerEl)
-    this.mdPreviewer = null
+    this.mdPreviewerController?.deactive(containerEl)
+    this.mdPreviewerController = null
     this.setIcon('fa-file-text-o')
 
+    MarkdownView.parent = this.leaf.parent as WorkspaceTabs
     containerEl.classList.add('mode-typora')
-    InternalEditor.instance.active(containerEl, this)
+    this.mdEditorController.active(containerEl, this)
   }
 
   private switchToPreviewerMode(filePath: string) {
     const { containerEl } = this
     containerEl.classList.remove('mode-typora')
     if (MarkdownView.parent === this.leaf.parent) {
-      InternalEditor.instance.deactive(containerEl)
+      this.mdEditorController.deactive(containerEl)
     }
 
     containerEl.classList.add('mode-previewer')
-    this.mdPreviewer = new MarkdownPreviewer()
-    this.mdPreviewer.active(containerEl, filePath);
+    this.mdPreviewerController = new MdPreviewerController()
+    this.mdPreviewerController.active(containerEl, filePath);
     this.setIcon('fa-file-text')
   }
 
@@ -229,86 +230,5 @@ export class MarkdownView extends WorkspaceView {
     return this.isEditor()
       ? editor.fences.getCm(cid)!
       : this.mdRenderer.getCodeMirrorInstance(cid)
-  }
-}
-
-class InternalEditor {
-
-  private static _instance: InternalEditor
-
-  static get instance() {
-    return this._instance ??= new InternalEditor()
-  }
-
-  contentEl = editor.writingArea.parentElement!
-  handleSettingActiveLeaf: ((this: HTMLElement, ev: MouseEvent) => any) | null = null
-  handleLayoutChanged: DisposeFunc | null = null
-
-  private constructor(private workspace = useService('workspace')) { }
-
-  active(containerEl: HTMLElement, view: MarkdownView) {
-    /**
-     * Placeholder
-     */
-    containerEl.innerHTML = '<object type="text/html" data="about:blank"></object>'
-
-    this.contentEl.classList.add('typ-workspace-binding')
-    this.contentEl.addEventListener('mousedown', this.handleSettingActiveLeaf = () => {
-      this.workspace.activeLeaf = view.leaf
-    })
-
-    MarkdownView.parent = view.leaf.parent as WorkspaceTabs
-    setTimeout(() => {
-      this.syncSize()
-      this.registerObserver(containerEl)
-      this.handleLayoutChanged = view.leaf.getRoot()
-        .on('layout-changed', () => this.registerObserver(containerEl))
-    })
-  }
-
-  deactive(containerEl: HTMLElement) {
-    containerEl.innerHTML = ''
-
-    this.contentEl.classList.remove('typ-workspace-binding')
-    this.contentEl.removeEventListener('mousedown', this.handleSettingActiveLeaf!)
-    this.unregisterObserver(containerEl)
-    this.handleLayoutChanged?.()
-    this.handleLayoutChanged = null
-  }
-
-  private registerObserver(el: HTMLElement) {
-    const objectEl = el.children[0] as HTMLObjectElement
-    if (objectEl?.contentWindow) objectEl.contentWindow.onresize = this.syncSize
-  }
-
-  private unregisterObserver(el: HTMLElement) {
-    const objectEl = el.children[0] as HTMLObjectElement | undefined
-    if (objectEl?.contentWindow) objectEl.contentWindow.onresize = null
-  }
-
-  private syncSize() {
-    if (!MarkdownView.parent) return
-
-    const { style } = document.body
-    const targetEl = MarkdownView.parent.tabContentEl
-    const rect = targetEl.getBoundingClientRect()
-    style.setProperty('--typ-editor-top', rect.top + 'px')
-    style.setProperty('--typ-editor-left', rect.left + 'px')
-    style.setProperty('--typ-editor-width', rect.width + 'px')
-    style.setProperty('--typ-editor-height', rect.height + 'px')
-  }
-}
-
-export class MarkdownPreviewer {
-
-  constructor(private mdRenderer = useService('markdown-renderer')) { }
-
-  active(containerEl: HTMLElement, path: string) {
-    fs.readText(path).then(md =>
-      this.mdRenderer.renderTo(md, containerEl))
-  }
-
-  deactive(containerEl: HTMLElement) {
-    containerEl.innerHTML = ''
   }
 }
