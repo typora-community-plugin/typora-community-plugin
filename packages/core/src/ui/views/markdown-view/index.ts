@@ -4,7 +4,6 @@ import { useService } from 'src/common/service'
 import type { WorkspaceTabs } from 'src/ui/layout/tabs'
 import type { WorkspaceLeaf } from 'src/ui/layout/workspace-leaf'
 import { ScrollState, WorkspaceView } from 'src/ui/layout/workspace-view'
-import type { MarkdownViewMediator } from './markdown-view-mediator'
 import { MdEditorMode } from './md-editor-mode'
 import { MdPreviewerMode } from './md-previewer-mode'
 import type { ModeContext, ModeController } from './mode-controller'
@@ -27,7 +26,7 @@ export class MarkdownView extends WorkspaceView {
     private workspace = useService('workspace'),
     private mdEditor = useService('markdown-editor'),
     private mdRenderer = useService('markdown-renderer'),
-    private mediator = useService('markdown-view-mediator'),
+    private store = useService('markdown-view-store'),
   ) {
     super(leaf)
   }
@@ -57,7 +56,7 @@ export class MarkdownView extends WorkspaceView {
       if (this.isEditor()) return
       if ((e.target as HTMLElement).closest('a')) return
 
-      const editorLeaf = this.mediator.parentTabs?.findLeaf(leaf =>
+      const editorLeaf = this.store.parentTabs?.findLeaf(leaf =>
         leaf.viewType === MarkdownView.type &&
         (leaf.view as MarkdownView).isEditor()
       )
@@ -69,17 +68,17 @@ export class MarkdownView extends WorkspaceView {
       (editorLeaf.view as MarkdownView).setMode('previewer')
 
       // Flag suppresses file:open side-effects during mode swap
-      this.mediator.swappingLeaf = this.leaf
+      this.store.beginSwap(this.filePath)
       // Then switch clicked Previewer to Editor
       const isSwappingSameFile = editorLeaf.state.path === this.leaf.state.path
-      const cmd = new ActivateEditorCommand(this, this.mediator, this.workspace, () => {
+      const cmd = new ActivateEditorCommand(this, this.store, this.workspace, () => {
           const mode = this._modeState
           if (mode instanceof MdEditorMode) {
             mode.syncSize()
           }
         })
       cmd.execute(isSwappingSameFile)
-      this.mediator.swappingLeaf = null
+      this.store.endSwap()
     })
   }
 
@@ -96,7 +95,7 @@ export class MarkdownView extends WorkspaceView {
   }
 
   autoSetMode() {
-    if (!this.mediator.parentTabs || this.mediator.parentTabs === this.leaf.parent) {
+    if (!this.store.parentTabs || this.store.isActiveTabs(this.leaf.parent as WorkspaceTabs)) {
       this.setMode('typora')
     }
     else {
@@ -118,15 +117,18 @@ export class MarkdownView extends WorkspaceView {
     if (this.isEditor()) {
       if (this.workspace.activeFile === this.filePath)
         editor.writingArea.parentElement!.classList.add('typ-deactive')
-      if (this.mediator.parentTabs?.children.length === 1) {
-        this.mediator.parentTabs = null
+      // fix: can not close preview when dragging the only one Typora editor tab from Tabs A to Tabs B (which contains preview)
+      if (this.store.getEditorTabsHasSingleChild()) {
+        this.store.setParentTabs(null)
 
+        // fix: will not open typora editor after the only one closed
         const nextMdLeaf = this.leaf.getRoot()
           .findLeaf(leaf => leaf.viewType === MarkdownView.type && leaf !== this.leaf)
         if (nextMdLeaf) (nextMdLeaf.parent as WorkspaceTabs).activeLeaf.view.onOpen()
       }
     }
     else {
+      // fix: can not close preview tab when dragging it from Tabs B to Tabs A (which contains preview)
       this._modeState?.exit(this._modeCtx)
       this._modeState = null
     }
@@ -140,7 +142,7 @@ export class MarkdownView extends WorkspaceView {
     this._modeState?.exit(this._modeCtx)
 
     this._modeState = mode === 'typora'
-      ? new MdEditorMode(this.mediator)
+      ? new MdEditorMode(this.store)
       : new MdPreviewerMode()
 
     this._modeState.enter(this._modeCtx)

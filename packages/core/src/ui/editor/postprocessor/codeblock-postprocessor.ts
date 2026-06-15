@@ -4,7 +4,6 @@ import { useService } from "src/common/service"
 import { HtmlPostProcessor } from "./html-postprocessor"
 import type { ButtonOptions, PostProcessorContext } from "./postprocessor"
 import { MarkdownView } from "src/ui/views/markdown-view"
-import { MarkdownViewMediator } from "src/ui/views/markdown-view/markdown-view-mediator"
 import { debounce } from "src/utils"
 
 
@@ -35,7 +34,7 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
 
   constructor(
     private workspace = useService('workspace'),
-    private mediator = useService('markdown-view-mediator'),
+    private store = useService('markdown-view-store'),
   ) {
     super()
   }
@@ -103,7 +102,7 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
   private getValueOfCodeblock(codeblock: HTMLElement) {
     const rootEl = codeblock.closest('#write') ?? codeblock.closest('.typ-markdown-view')!
     const leaf = $(rootEl).is('#write')
-      ? this.mediator.parentTabs.activeLeaf
+      ? this.store.parentTabs!.activeLeaf
       : this.workspace.rootSplit.findLeaf(leaf => leaf.view.containerEl === rootEl)
     const mdView = leaf.view as MarkdownView
     return mdView.getCodeMirrorInstance(codeblock.getAttribute('cid')!).getValue()

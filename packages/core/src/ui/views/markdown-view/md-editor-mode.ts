@@ -3,7 +3,6 @@ import { useService } from 'src/common/service'
 import type { WorkspaceTabs } from 'src/ui/layout/tabs'
 import type { DisposeFunc } from 'src/utils/types'
 import type { ModeController, ModeContext } from './mode-controller'
-import type { MarkdownViewMediator } from './markdown-view-mediator'
 import type { ScrollState } from 'src/ui/layout/workspace-view'
 
 
@@ -16,7 +15,7 @@ export class MdEditorMode implements ModeController {
   private _parentTabs: WorkspaceTabs | null = null
 
   constructor(
-    private mediator: MarkdownViewMediator,
+    private store = useService('markdown-view-store'),
     private workspace = useService('workspace'),
   ) { }
 
@@ -25,7 +24,7 @@ export class MdEditorMode implements ModeController {
     containerEl.classList.add('mode-typora')
     containerEl.innerHTML = '<object type="text/html" data="about:blank"></object>'
 
-    this.mediator.parentTabs = ctx.leaf.parent as WorkspaceTabs
+    this.store.setParentTabs(ctx.leaf.parent as WorkspaceTabs)
 
     this.contentEl.classList.add('typ-workspace-binding')
     this.contentEl.addEventListener('mousedown', this.handleSettingActiveLeaf = () => {

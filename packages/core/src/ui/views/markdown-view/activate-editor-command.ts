@@ -2,7 +2,6 @@ import { editor } from 'typora'
 import type { Workspace } from 'src/ui/workspace'
 import type { WorkspaceLeaf } from 'src/ui/layout/workspace-leaf'
 import type { WorkspaceTabs } from 'src/ui/layout/tabs'
-import type { MarkdownViewMediator } from './markdown-view-mediator'
 
 
 const KEY_OPENFILE = Symbol.for('openFile$original')
@@ -18,7 +17,7 @@ export class ActivateEditorCommand {
 
   constructor(
     private target: ActivateEditorTarget,
-    private mediator: MarkdownViewMediator,
+    private store: MarkdownViewStore,
     private workspace: Workspace,
     private syncEditorSize: () => void,
   ) {}
@@ -50,7 +49,7 @@ export class ActivateEditorCommand {
   }
 
   private _setParent() {
-    this.mediator.parentTabs = this.target.leaf.parent as WorkspaceTabs
+    this.store.setParentTabs(this.target.leaf.parent as WorkspaceTabs)
   }
 
   private _openFile() {
