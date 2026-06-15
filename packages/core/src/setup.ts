@@ -31,6 +31,7 @@ import { WorkspaceTabs } from "./ui/layout/tabs"
 import { MetadataManager } from "./metadata/metadata-manager"
 import { registerDefaultMetadataProviders } from "./metadata/metadata-providers"
 import { DEFAULT_INTERNAL_PLUGIN_SETTINGS, InternalPluginManager } from "./plugin-internal/internal-plugin-manager"
+import { MarkdownViewMediator } from "./ui/views/markdown-view/markdown-view-mediator"
 
 
 
@@ -102,6 +103,8 @@ registerService('notice', ([message, delay]) => new Notice(message, delay))
 registerService('workspace-root', memorize(() => useService('workspace').rootSplit))
 registerService('workspace-split', ([direction]) => new WorkspaceSplit(direction))
 registerService('workspace-tabs', () => new WorkspaceTabs())
+
+registerService('markdown-view-mediator', memorize(() => new MarkdownViewMediator()))
 
 registerService('metadata-manager', memorize(() => {
   const metadata = new MetadataManager()

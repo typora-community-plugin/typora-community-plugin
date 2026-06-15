@@ -2,10 +2,11 @@ import { editor } from 'typora'
 import { useService } from 'src/common/service'
 import type { WorkspaceTabs } from 'src/ui/layout/tabs'
 import type { DisposeFunc } from 'src/utils/types'
-import type { MarkdownView } from '.'
+import type { ModeController, ModeContext } from './mode-controller'
+import type { ScrollState } from 'src/ui/layout/workspace-view'
 
 
-export class MdEditorController {
+export class MdEditorController implements ModeController {
 
   contentEl = editor.writingArea.parentElement!
   handleSettingActiveLeaf: ((this: HTMLElement, ev: MouseEvent) => any) | null = null
@@ -15,24 +16,26 @@ export class MdEditorController {
 
   constructor(private workspace = useService('workspace')) { }
 
-  active(containerEl: HTMLElement, view: MarkdownView) {
+  activate(ctx: ModeContext) {
+    const { containerEl, leaf } = ctx
     containerEl.innerHTML = '<object type="text/html" data="about:blank"></object>'
 
     this.contentEl.classList.add('typ-workspace-binding')
     this.contentEl.addEventListener('mousedown', this.handleSettingActiveLeaf = () => {
-      this.workspace.activeLeaf = view.leaf
+      this.workspace.activeLeaf = leaf
     })
 
-    this._parentTabs = view.leaf.parent as WorkspaceTabs
+    this._parentTabs = leaf.parent as WorkspaceTabs
     setTimeout(() => {
       this.syncSize()
       this.registerObserver(containerEl)
-      this.handleLayoutChanged = view.leaf.getRoot()
+      this.handleLayoutChanged = leaf.getRoot()
         .on('layout-changed', () => this.registerObserver(containerEl))
     })
   }
 
-  deactive(containerEl: HTMLElement) {
+  deactivate(ctx: ModeContext) {
+    const { containerEl } = ctx
     containerEl.innerHTML = ''
 
     this.contentEl.classList.remove('typ-workspace-binding')
@@ -40,6 +43,14 @@ export class MdEditorController {
     this.unregisterObserver(containerEl)
     this.handleLayoutChanged?.()
     this.handleLayoutChanged = null
+  }
+
+  getScroll(): ScrollState {
+    return { scrollTop: this.contentEl.scrollTop }
+  }
+
+  applyScroll(state: ScrollState): void {
+    this.contentEl.scrollTop = state.scrollTop
   }
 
   private registerObserver(el: HTMLElement) {

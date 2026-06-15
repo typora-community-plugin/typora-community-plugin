@@ -4,45 +4,44 @@ import { useService } from 'src/common/service'
 import type { WorkspaceTabs } from 'src/ui/layout/tabs'
 import type { WorkspaceLeaf } from 'src/ui/layout/workspace-leaf'
 import { ScrollState, WorkspaceView } from 'src/ui/layout/workspace-view'
-import { MdEditorController } from './md-editor-controller'
-import { MdPreviewerController } from './md-previewer-controller'
+import type { MarkdownViewMediator } from './markdown-view-mediator'
+import { TyporaMode } from './mode-typora'
+import { PreviewerMode } from './mode-previewer'
+import type { ModeContext } from './mode-controller'
+import { ActivateEditorCommand } from './activate-editor-command'
 
-
-enum Mode { Typora, Previewer }
 
 const KEY_OPENFILE = Symbol.for('openFile$original')
+
 
 export class MarkdownView extends WorkspaceView {
 
   static type = 'core.markdown'
 
-  /**
-   * Typora editor's tabs
-   */
-  static parent: WorkspaceTabs | null = null
-
-  /**
-   * Set during Previewer↔Editor mode swap to suppress file:open side-effects.
-   */
-  static swappingLeaf: WorkspaceLeaf | null = null
-
   containerEl = $('<div class="typ-markdown-view"></div>')[0]
 
-  currentMode!: Mode
-  mdEditorController = new MdEditorController()
-  mdPreviewerController: MdPreviewerController | null = null
+  private _modeState: TyporaMode | PreviewerMode | null = null
 
   constructor(
     public leaf: WorkspaceLeaf,
     private workspace = useService('workspace'),
     private mdEditor = useService('markdown-editor'),
     private mdRenderer = useService('markdown-renderer'),
+    private mediator = useService('markdown-view-mediator'),
   ) {
     super(leaf)
   }
 
   get filePath() {
     return this.leaf.state.path
+  }
+
+  private get _modeCtx(): ModeContext {
+    return {
+      filePath: this.filePath,
+      leaf: this.leaf,
+      containerEl: this.containerEl,
+    }
   }
 
   onload() {
@@ -58,7 +57,7 @@ export class MarkdownView extends WorkspaceView {
       if (this.isEditor()) return
       if ((e.target as HTMLElement).closest('a')) return
 
-      const editorLeaf = MarkdownView.parent?.findLeaf(leaf =>
+      const editorLeaf = this.mediator.parentTabs?.findLeaf(leaf =>
         leaf.viewType === MarkdownView.type &&
         (leaf.view as MarkdownView).isEditor()
       )
@@ -67,42 +66,41 @@ export class MarkdownView extends WorkspaceView {
 
       (editorLeaf.view as MarkdownView).saveEditorStateToLeaf();
 
-      (editorLeaf.view as MarkdownView).setMode(Mode.Previewer)
+      (editorLeaf.view as MarkdownView).setMode('previewer')
 
       // Flag suppresses file:open side-effects during mode swap
-      MarkdownView.swappingLeaf = this.leaf
+      this.mediator.swappingLeaf = this.leaf
       // Then switch clicked Previewer to Editor
       const isSwappingSameFile = editorLeaf.state.path === this.leaf.state.path
-      this._activateEditor(isSwappingSameFile)
-      MarkdownView.swappingLeaf = null
+      const cmd = new ActivateEditorCommand(this, this.mediator, this.workspace, () => {
+        if (this._modeState instanceof TyporaMode) {
+          const ctrl = this._modeState.controller as import('./md-editor-controller').MdEditorController
+          ctrl.syncSize()
+        }
+      })
+      cmd.execute(isSwappingSameFile)
+      this.mediator.swappingLeaf = null
     })
   }
 
   isEditor() {
-    return this.currentMode === Mode.Typora
+    return this._modeState instanceof TyporaMode
   }
 
   getScroll(): ScrollState {
-    if (this.isEditor()) {
-      return { scrollTop: editor.writingArea.parentElement!.scrollTop }
-    }
-    return { scrollTop: this.containerEl.scrollTop }
+    return this._modeState?.getScroll() ?? super.getScroll()
   }
 
   applyScroll(state: ScrollState): void {
-    if (this.isEditor()) {
-      editor.writingArea.parentElement!.scrollTop = state.scrollTop
-    } else {
-      this.containerEl.scrollTop = state.scrollTop
-    }
+    this._modeState?.applyScroll(state)
   }
 
   autoSetMode() {
-    if (!MarkdownView.parent || MarkdownView.parent === this.leaf.parent) {
-      this.setMode(Mode.Typora)
+    if (!this.mediator.parentTabs || this.mediator.parentTabs === this.leaf.parent) {
+      this.setMode('typora')
     }
     else {
-      this.setMode(Mode.Previewer)
+      this.setMode('previewer')
     }
   }
 
@@ -110,120 +108,56 @@ export class MarkdownView extends WorkspaceView {
     this.autoSetMode()
 
     if (this.isEditor()) {
-      // Already the editor — just switch file
       editor.writingArea.parentElement!.classList.remove('typ-deactive')
       // @ts-ignore
       editor.library[KEY_OPENFILE](this.filePath)
-    } else {
-      this.switchToPreviewerMode(this.filePath)
     }
-  }
-
-  /**
-   * _activateEditor is used for click-to-switch only.
-   */
-  private _activateEditor(isSwappingSameFile: boolean) {
-    // 1. Hide #write so the user doesn't see the editor loading
-    const writeEl = editor.writingArea.parentElement!
-    writeEl.style.display = 'none'
-    writeEl.classList.remove('typ-deactive')
-
-    // Update MarkdownView.parent NOW before opening file,
-    // so autoSetMode triggered by layout-changed sees the correct parent
-    MarkdownView.parent = this.leaf.parent as WorkspaceTabs
-
-    // 2. Open file in editor (populates #write in background)
-    // @ts-ignore
-    editor.library[KEY_OPENFILE](this.filePath)
-
-    // 3. Wait for editor to finish rendering, then swap
-    const doSwap = () => {
-      this.setMode(Mode.Typora)
-
-      // Sync position synchronously before showing #write, so CSS vars are correct
-      this.mdEditorController.syncSize()
-      writeEl.style.display = ''
-
-      // Restore editor scroll/cursor state saved from the previous Editor leaf
-      this.restoreEditorStateFromLeaf()
-    }
-    if (isSwappingSameFile)
-      doSwap()
-    else
-      this.workspace.once('file:open', doSwap)
   }
 
   onClose() {
     if (this.isEditor()) {
       if (this.workspace.activeFile === this.filePath)
         editor.writingArea.parentElement!.classList.add('typ-deactive')
-      // fix: can not close preview when dragging the only one Typora editor tab from Tabs A to Tabs B (which contains preview)
-      if (MarkdownView.parent?.children.length === 1) {
-        MarkdownView.parent = null
+      if (this.mediator.parentTabs?.children.length === 1) {
+        this.mediator.parentTabs = null
 
-        // fix: will not open typora editor after the only one closed
         const nextMdLeaf = this.leaf.getRoot()
           .findLeaf(leaf => leaf.viewType === MarkdownView.type && leaf !== this.leaf)
         if (nextMdLeaf) (nextMdLeaf.parent as WorkspaceTabs).activeLeaf.view.onOpen()
       }
     }
     else {
-      // fix: can not close preview tab when dragging it from Tabs B to Tabs A (which contains preview)
-      this.mdPreviewerController?.deactive(this.containerEl)
-      this.mdPreviewerController = null
+      this._modeState?.exit(this._modeCtx)
+      this._modeState = null
     }
   }
 
-  private setMode(mode: Mode) {
-    // Save editor scroll/cursor state before switching to Previewer
-    if (mode === Mode.Previewer && this.currentMode === Mode.Typora) {
+  setMode(mode: 'typora' | 'previewer') {
+    if (mode === 'previewer' && this._modeState instanceof TyporaMode) {
       this.saveEditorStateToLeaf()
     }
 
-    this.currentMode = mode
-    if (mode === Mode.Typora) {
-      this.switchToTyporaMode()
-    } else {
-      this.switchToPreviewerMode(this.filePath)
-    }
+    this._modeState?.exit(this._modeCtx)
+
+    this._modeState = mode === 'typora'
+      ? new TyporaMode(this.mediator)
+      : new PreviewerMode()
+
+    this._modeState.enter(this._modeCtx)
+    this.setIcon(mode === 'typora' ? 'fa-file-text-o' : 'fa-file-text')
   }
 
-  private saveEditorStateToLeaf() {
+  saveEditorStateToLeaf() {
     const offset = this.mdEditor.selection.getCursor()
     if (offset != null) {
       this.leaf.state.cursorTextOffset = offset
     }
   }
 
-  private restoreEditorStateFromLeaf() {
+  restoreEditorStateFromLeaf() {
     if (this.leaf.state.cursorTextOffset == null) return
 
     this.mdEditor.selection.setCursor(this.leaf.state.cursorTextOffset as number)
-  }
-
-  private switchToTyporaMode() {
-    const { containerEl } = this
-    containerEl.classList.remove('mode-previewer')
-    this.mdPreviewerController?.deactive(containerEl)
-    this.mdPreviewerController = null
-    this.setIcon('fa-file-text-o')
-
-    MarkdownView.parent = this.leaf.parent as WorkspaceTabs
-    containerEl.classList.add('mode-typora')
-    this.mdEditorController.active(containerEl, this)
-  }
-
-  private switchToPreviewerMode(filePath: string) {
-    const { containerEl } = this
-    containerEl.classList.remove('mode-typora')
-    if (MarkdownView.parent === this.leaf.parent) {
-      this.mdEditorController.deactive(containerEl)
-    }
-
-    containerEl.classList.add('mode-previewer')
-    this.mdPreviewerController = new MdPreviewerController()
-    this.mdPreviewerController.active(containerEl, filePath);
-    this.setIcon('fa-file-text')
   }
 
   getCodeMirrorInstance(cid: string): CodeMirror.Editor {
