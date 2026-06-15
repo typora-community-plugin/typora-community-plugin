@@ -7,7 +7,7 @@ import { ScrollState, WorkspaceView } from 'src/ui/layout/workspace-view'
 import { MdEditorMode } from './md-editor-mode'
 import { MdPreviewerMode } from './md-previewer-mode'
 import type { ModeContext, ModeController } from './mode-controller'
-import { ActivateEditorCommand } from './activate-editor-command'
+import { SwapCommand } from './swap-command'
 
 
 const KEY_OPENFILE = Symbol.for('openFile$original')
@@ -17,9 +17,11 @@ export class MarkdownView extends WorkspaceView {
 
   static type = 'core.markdown'
 
+  /** @override */
   containerEl = $('<div class="typ-markdown-view"></div>')[0]
 
   private _modeState: ModeController | null = null
+  private _swapCommad = new SwapCommand()
 
   constructor(
     public leaf: WorkspaceLeaf,
@@ -43,6 +45,7 @@ export class MarkdownView extends WorkspaceView {
     }
   }
 
+  /** @override */
   onload() {
     setTimeout(() => this.autoSetMode())
     this.register(
@@ -70,14 +73,7 @@ export class MarkdownView extends WorkspaceView {
       // Flag suppresses file:open side-effects during mode swap
       this.store.beginSwap(this.filePath)
       // Then switch clicked Previewer to Editor
-      const isSwappingSameFile = editorLeaf.state.path === this.leaf.state.path
-      const cmd = new ActivateEditorCommand(this, this.store, this.workspace, () => {
-          const mode = this._modeState
-          if (mode instanceof MdEditorMode) {
-            mode.syncSize()
-          }
-        })
-      cmd.execute(isSwappingSameFile)
+      this._swapCommad.execute(editorLeaf, this.leaf)
       this.store.endSwap()
     })
   }
@@ -86,10 +82,12 @@ export class MarkdownView extends WorkspaceView {
     return this._modeState instanceof MdEditorMode
   }
 
+  /** @override */
   getScroll(): ScrollState {
     return this._modeState?.getScroll() ?? super.getScroll()
   }
 
+  /** @override */
   applyScroll(state: ScrollState): void {
     this._modeState?.applyScroll(state)
   }
@@ -103,6 +101,7 @@ export class MarkdownView extends WorkspaceView {
     }
   }
 
+  /** @override */
   onOpen() {
     this.autoSetMode()
 
@@ -113,6 +112,7 @@ export class MarkdownView extends WorkspaceView {
     }
   }
 
+  /** @override */
   onClose() {
     if (this.isEditor()) {
       if (this.workspace.activeFile === this.filePath)
@@ -142,7 +142,7 @@ export class MarkdownView extends WorkspaceView {
     this._modeState?.exit(this._modeCtx)
 
     this._modeState = mode === 'typora'
-      ? new MdEditorMode(this.store)
+      ? new MdEditorMode()
       : new MdPreviewerMode()
 
     this._modeState.enter(this._modeCtx)
