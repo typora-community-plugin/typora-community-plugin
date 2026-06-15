@@ -1,7 +1,7 @@
 import './markdown-renderer.scss'
 import { CodeMirror, editor, File, MathJax } from "typora"
 import { useService } from "src/common/service"
-import type { MdPreviewerController } from '../views/markdown-view/md-previewer-controller'
+import type { MdPreviewerMode } from '../views/markdown-view/md-previewer-mode'
 import { parseMarkdown, uniqueId } from "src/utils"
 
 
@@ -79,7 +79,7 @@ export class MarkdownRenderer {
   }
 
   /**
-   * Get the `CodeMirror` instance of the codeblock rendered by the {@link MdPreviewerController} in the `WorkspaceRoot`
+   * Get the `CodeMirror` instance of the codeblock rendered by the {@link MdPreviewerMode} in the `WorkspaceRoot`
    */
   getCodeMirrorInstance(cid: string): CodeMirror.Editor {
     const el = $('.typ-workspace-root').find(`[cid="${cid}"]`)[0]

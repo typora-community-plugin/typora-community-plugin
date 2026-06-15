@@ -9,15 +9,8 @@ export interface ModeContext {
 }
 
 export interface ModeController {
-  activate(ctx: ModeContext): void
-  deactivate(ctx: ModeContext): void
+  enter(ctx: ModeContext): void
+  exit(ctx: ModeContext): void
   getScroll(): ScrollState
   applyScroll(state: ScrollState): void
-}
-
-export const NOOP_CONTROLLER: ModeController = {
-  activate() {},
-  deactivate() {},
-  getScroll: () => ({ scrollTop: 0 }),
-  applyScroll() {},
 }

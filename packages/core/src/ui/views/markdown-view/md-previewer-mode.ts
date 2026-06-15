@@ -4,20 +4,22 @@ import type { ModeController, ModeContext } from './mode-controller'
 import type { ScrollState } from 'src/ui/layout/workspace-view'
 
 
-export class MdPreviewerController implements ModeController {
+export class MdPreviewerMode implements ModeController {
 
   private _containerEl: HTMLElement | null = null
 
   constructor(private mdRenderer = useService('markdown-renderer')) { }
 
-  activate(ctx: ModeContext) {
+  enter(ctx: ModeContext) {
     const { containerEl, filePath } = ctx
+    containerEl.classList.add('mode-previewer')
     this._containerEl = containerEl
     fs.readText(filePath).then(md =>
       this.mdRenderer.renderTo(md, containerEl))
   }
 
-  deactivate(ctx: ModeContext) {
+  exit(ctx: ModeContext) {
+    ctx.containerEl.classList.remove('mode-previewer')
     ctx.containerEl.innerHTML = ''
     this._containerEl = null
   }

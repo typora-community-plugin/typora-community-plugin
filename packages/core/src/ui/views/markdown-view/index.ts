@@ -5,9 +5,9 @@ import type { WorkspaceTabs } from 'src/ui/layout/tabs'
 import type { WorkspaceLeaf } from 'src/ui/layout/workspace-leaf'
 import { ScrollState, WorkspaceView } from 'src/ui/layout/workspace-view'
 import type { MarkdownViewMediator } from './markdown-view-mediator'
-import { TyporaMode } from './mode-typora'
-import { PreviewerMode } from './mode-previewer'
-import type { ModeContext } from './mode-controller'
+import { MdEditorMode } from './md-editor-mode'
+import { MdPreviewerMode } from './md-previewer-mode'
+import type { ModeContext, ModeController } from './mode-controller'
 import { ActivateEditorCommand } from './activate-editor-command'
 
 
@@ -20,7 +20,7 @@ export class MarkdownView extends WorkspaceView {
 
   containerEl = $('<div class="typ-markdown-view"></div>')[0]
 
-  private _modeState: TyporaMode | PreviewerMode | null = null
+  private _modeState: ModeController | null = null
 
   constructor(
     public leaf: WorkspaceLeaf,
@@ -73,18 +73,18 @@ export class MarkdownView extends WorkspaceView {
       // Then switch clicked Previewer to Editor
       const isSwappingSameFile = editorLeaf.state.path === this.leaf.state.path
       const cmd = new ActivateEditorCommand(this, this.mediator, this.workspace, () => {
-        if (this._modeState instanceof TyporaMode) {
-          const ctrl = this._modeState.controller as import('./md-editor-controller').MdEditorController
-          ctrl.syncSize()
-        }
-      })
+          const mode = this._modeState
+          if (mode instanceof MdEditorMode) {
+            mode.syncSize()
+          }
+        })
       cmd.execute(isSwappingSameFile)
       this.mediator.swappingLeaf = null
     })
   }
 
   isEditor() {
-    return this._modeState instanceof TyporaMode
+    return this._modeState instanceof MdEditorMode
   }
 
   getScroll(): ScrollState {
@@ -133,15 +133,15 @@ export class MarkdownView extends WorkspaceView {
   }
 
   setMode(mode: 'typora' | 'previewer') {
-    if (mode === 'previewer' && this._modeState instanceof TyporaMode) {
+    if (mode === 'previewer' && this._modeState instanceof MdEditorMode) {
       this.saveEditorStateToLeaf()
     }
 
     this._modeState?.exit(this._modeCtx)
 
     this._modeState = mode === 'typora'
-      ? new TyporaMode(this.mediator)
-      : new PreviewerMode()
+      ? new MdEditorMode(this.mediator)
+      : new MdPreviewerMode()
 
     this._modeState.enter(this._modeCtx)
     this.setIcon(mode === 'typora' ? 'fa-file-text-o' : 'fa-file-text')

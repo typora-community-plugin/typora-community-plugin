@@ -3,10 +3,11 @@ import { useService } from 'src/common/service'
 import type { WorkspaceTabs } from 'src/ui/layout/tabs'
 import type { DisposeFunc } from 'src/utils/types'
 import type { ModeController, ModeContext } from './mode-controller'
+import type { MarkdownViewMediator } from './markdown-view-mediator'
 import type { ScrollState } from 'src/ui/layout/workspace-view'
 
 
-export class MdEditorController implements ModeController {
+export class MdEditorMode implements ModeController {
 
   contentEl = editor.writingArea.parentElement!
   handleSettingActiveLeaf: ((this: HTMLElement, ev: MouseEvent) => any) | null = null
@@ -14,11 +15,17 @@ export class MdEditorController implements ModeController {
 
   private _parentTabs: WorkspaceTabs | null = null
 
-  constructor(private workspace = useService('workspace')) { }
+  constructor(
+    private mediator: MarkdownViewMediator,
+    private workspace = useService('workspace'),
+  ) { }
 
-  activate(ctx: ModeContext) {
+  enter(ctx: ModeContext) {
     const { containerEl, leaf } = ctx
+    containerEl.classList.add('mode-typora')
     containerEl.innerHTML = '<object type="text/html" data="about:blank"></object>'
+
+    this.mediator.parentTabs = ctx.leaf.parent as WorkspaceTabs
 
     this.contentEl.classList.add('typ-workspace-binding')
     this.contentEl.addEventListener('mousedown', this.handleSettingActiveLeaf = () => {
@@ -34,13 +41,13 @@ export class MdEditorController implements ModeController {
     })
   }
 
-  deactivate(ctx: ModeContext) {
-    const { containerEl } = ctx
-    containerEl.innerHTML = ''
+  exit(ctx: ModeContext) {
+    ctx.containerEl.classList.remove('mode-typora')
+    ctx.containerEl.innerHTML = ''
 
     this.contentEl.classList.remove('typ-workspace-binding')
     this.contentEl.removeEventListener('mousedown', this.handleSettingActiveLeaf!)
-    this.unregisterObserver(containerEl)
+    this.unregisterObserver(ctx.containerEl)
     this.handleLayoutChanged?.()
     this.handleLayoutChanged = null
   }
