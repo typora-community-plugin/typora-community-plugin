@@ -25,6 +25,7 @@ export class SwapCommand {
     const { beginSwap, endSwap } = usePreviewTabToSwap()
 
     saveStateToLeaf(editorLeaf.view)
+    saveStateToLeaf(previewView)
     editorLeaf.view.setMode('previewer')
 
     beginSwap(previewLeaf)
@@ -36,8 +37,11 @@ export class SwapCommand {
       previewView.setMode('typora')
       this._syncEditorSize(previewView)
       this._showEditor(writeEl)
-      restoreStateFromLeaf(previewView)
-      endSwap()
+      setTimeout(() => {
+        restoreStateFromLeaf(editorLeaf.view)
+        restoreStateFromLeaf(previewView)
+        endSwap()
+      })
     }
 
     if (isSwappingSameFile) {

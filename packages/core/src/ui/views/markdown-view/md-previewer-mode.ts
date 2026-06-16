@@ -25,10 +25,13 @@ export class MdPreviewerMode implements ModeController {
   }
 
   getScroll(): ScrollState {
-    return { scrollTop: this._containerEl?.scrollTop ?? 0 }
+    return {
+      scrollTop: this._containerEl?.parentElement!.scrollTop ?? 0,
+    }
   }
 
   applyScroll(state: ScrollState): void {
-    if (this._containerEl) this._containerEl.scrollTop = state.scrollTop
+    if (this._containerEl)
+      this._containerEl.parentElement!.scrollTop = state.scrollTop
   }
 }
