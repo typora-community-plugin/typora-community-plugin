@@ -9,6 +9,7 @@ import { MdPreviewerMode } from './md-previewer-mode'
 import type { ModeContext, ModeController } from './mode-controller'
 import { SwapCommand } from './swap-command'
 import { useEditingTabs } from './use-editing-tabs'
+import { useRecord } from './use-record'
 
 
 const KEY_OPENFILE = Symbol.for('openFile$original')
@@ -111,10 +112,19 @@ export class MarkdownView extends WorkspaceView {
       // @ts-ignore
       editor.library[KEY_OPENFILE](this.filePath)
     }
+
+    this.workspace.once('file:open', () => {
+      const { restoreStateFromLeaf } = useRecord()
+      restoreStateFromLeaf(this)
+      console.log('[MarkdownView] onOpen -  isEditor after restoreStateFromLeaf:', this.isEditor())
+    })
   }
 
   /** @override */
   onClose() {
+    const { saveStateToLeaf } = useRecord()
+    saveStateToLeaf(this)
+
     if (this.isEditor()) {
       if (this.workspace.activeFile === this.filePath)
         editor.writingArea.parentElement!.classList.add('typ-deactive')
@@ -150,9 +160,7 @@ export class MarkdownView extends WorkspaceView {
   }
 
   getState() {
-    const state: Partial<MarkdownViewState> = {
-      ...this.getScroll(),
-    }
+    const state: Partial<MarkdownViewState> = this.getScroll()
     if (this.isEditor()) {
       state.cursorOffset = this.mdEditor.selection.getCursor()!
     }
@@ -160,10 +168,14 @@ export class MarkdownView extends WorkspaceView {
   }
 
   setState(state: Partial<MarkdownViewState>) {
-    if (state.scrollTop != null)
-      this.applyScroll(state as any)
-    if (state.cursorOffset != null && this.isEditor())
-      this.mdEditor.selection.setCursor(state.cursorOffset)
+    requestAnimationFrame(() => {
+      if (state.scrollTop != null) {
+        this.applyScroll(state as any)
+      }
+      if (state.cursorOffset != null && this.isEditor()) {
+        this.mdEditor.selection.setCursor(state.cursorOffset)
+      }
+    })
   }
 
   getCodeMirrorInstance(cid: string): CodeMirror.Editor {

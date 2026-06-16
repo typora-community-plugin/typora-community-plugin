@@ -19,7 +19,7 @@ export class SwapCommand {
 
   execute(editorLeaf: WorkspaceLeaf<MarkdownView>, previewLeaf: WorkspaceLeaf<MarkdownView>) {
     const isSwappingSameFile = editorLeaf.state.path === previewLeaf.state.path
-    const previewView = previewLeaf.view as MarkdownView
+    const previewView = previewLeaf.view
     const writeEl = editor.writingArea.parentElement!
     const { saveStateToLeaf, restoreStateFromLeaf } = useRecord()
     const { beginSwap, endSwap } = usePreviewTabToSwap()
