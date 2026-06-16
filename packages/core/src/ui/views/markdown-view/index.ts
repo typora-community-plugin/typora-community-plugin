@@ -150,9 +150,8 @@ export class MarkdownView extends WorkspaceView {
   }
 
   getState() {
-    const state: MarkdownViewState = {
+    const state: Partial<MarkdownViewState> = {
       ...this.getScroll(),
-      cursorOffset: 0,
     }
     if (this.isEditor()) {
       state.cursorOffset = this.mdEditor.selection.getCursor()!
