@@ -12,7 +12,6 @@ import { draggableTabs } from './tabs/draggable'
 import { createTabs, createUntitledTabs, openFileInActiveTabs, splitDown, splitRight } from './workspace-utils'
 import { onTabsContextMenu } from './tabs/contextmenu'
 import { FileTabContainer } from './tabs/file-tabs'
-import { useScrollRecord } from './tabs/use-scroll-record'
 import { useEditingTabs } from '../views/markdown-view/use-editing-tabs'
 import { usePreviewTabToSwap } from '../views/markdown-view/use-preview-tab-to-swap'
 
@@ -78,8 +77,6 @@ export class WorkspaceRoot extends WorkspaceSplit {
           FileTabContainer.hideTabExtension(isHide)
         })
       )
-
-      // useScrollRecord(this.registry)
 
       this.registry.register(
         workspace.on('file:will-open', (file) => {

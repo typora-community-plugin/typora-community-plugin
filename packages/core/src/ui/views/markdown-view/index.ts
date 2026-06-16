@@ -13,6 +13,11 @@ import { useEditingTabs } from './use-editing-tabs'
 
 const KEY_OPENFILE = Symbol.for('openFile$original')
 
+type MarkdownViewState = {
+  scrollTop: number,
+  cursorOffset: number
+}
+
 export class MarkdownView extends WorkspaceView {
 
   static type = 'core.markdown'
@@ -86,6 +91,7 @@ export class MarkdownView extends WorkspaceView {
     this._modeState?.applyScroll(state)
   }
 
+  /** @private */
   autoSetMode() {
     const { editingTabs, isEditingTabs } = useEditingTabs()
     if (!editingTabs() || isEditingTabs(this.leaf.parent as WorkspaceTabs)) {
@@ -131,11 +137,8 @@ export class MarkdownView extends WorkspaceView {
     }
   }
 
+  /** @private */
   setMode(mode: 'typora' | 'previewer') {
-    if (mode === 'previewer' && this._modeState instanceof MdEditorMode) {
-      this.saveEditorStateToLeaf()
-    }
-
     this._modeState?.exit(this._modeCtx)
 
     this._modeState = mode === 'typora'
@@ -146,17 +149,22 @@ export class MarkdownView extends WorkspaceView {
     this.setIcon(mode === 'typora' ? 'fa-file-text-o' : 'fa-file-text')
   }
 
-  saveEditorStateToLeaf() {
-    const offset = this.mdEditor.selection.getCursor()
-    if (offset != null) {
-      this.leaf.state.cursorTextOffset = offset
+  getState() {
+    const state: MarkdownViewState = {
+      ...this.getScroll(),
+      cursorOffset: 0,
     }
+    if (this.isEditor()) {
+      state.cursorOffset = this.mdEditor.selection.getCursor()!
+    }
+    return state
   }
 
-  restoreEditorStateFromLeaf() {
-    if (this.leaf.state.cursorTextOffset == null) return
-
-    this.mdEditor.selection.setCursor(this.leaf.state.cursorTextOffset as number)
+  setState(state: Partial<MarkdownViewState>) {
+    if (state.scrollTop != null)
+      this.applyScroll(state as any)
+    if (state.cursorOffset != null && this.isEditor())
+      this.mdEditor.selection.setCursor(state.cursorOffset)
   }
 
   getCodeMirrorInstance(cid: string): CodeMirror.Editor {

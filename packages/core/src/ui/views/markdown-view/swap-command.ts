@@ -6,6 +6,7 @@ import type { MarkdownView } from '.'
 import type { MdEditorMode } from './md-editor-mode'
 import { useEditingTabs } from './use-editing-tabs'
 import { usePreviewTabToSwap } from './use-preview-tab-to-swap'
+import { useRecord } from './use-record'
 
 
 const KEY_OPENFILE = Symbol.for('openFile$original')
@@ -20,9 +21,10 @@ export class SwapCommand {
     const isSwappingSameFile = editorLeaf.state.path === previewLeaf.state.path
     const previewView = previewLeaf.view as MarkdownView
     const writeEl = editor.writingArea.parentElement!
+    const { saveStateToLeaf, restoreStateFromLeaf } = useRecord()
     const { beginSwap, endSwap } = usePreviewTabToSwap()
 
-    editorLeaf.view.saveEditorStateToLeaf()
+    saveStateToLeaf(editorLeaf.view)
     editorLeaf.view.setMode('previewer')
 
     beginSwap(previewLeaf)
@@ -34,7 +36,7 @@ export class SwapCommand {
       previewView.setMode('typora')
       this._syncEditorSize(previewView)
       this._showEditor(writeEl)
-      previewView.restoreEditorStateFromLeaf()
+      restoreStateFromLeaf(previewView)
       endSwap()
     }
 
