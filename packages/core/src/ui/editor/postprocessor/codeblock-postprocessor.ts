@@ -4,6 +4,7 @@ import { useService } from "src/common/service"
 import { HtmlPostProcessor } from "./html-postprocessor"
 import type { ButtonOptions, PostProcessorContext } from "./postprocessor"
 import { MarkdownView } from "src/ui/views/markdown-view"
+import { useEditingTabs } from "src/ui/views/markdown-view/use-editing-tabs"
 import { debounce } from "src/utils"
 
 
@@ -34,7 +35,6 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
 
   constructor(
     private workspace = useService('workspace'),
-    private store = useService('markdown-view-store'),
   ) {
     super()
   }
@@ -101,8 +101,9 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
 
   private getValueOfCodeblock(codeblock: HTMLElement) {
     const rootEl = codeblock.closest('#write') ?? codeblock.closest('.typ-markdown-view')!
+    const { editingTabs } = useEditingTabs()
     const leaf = $(rootEl).is('#write')
-      ? this.store.parentTabs!.activeLeaf
+      ? editingTabs()!.activeLeaf
       : this.workspace.rootSplit.findLeaf(leaf => leaf.view.containerEl === rootEl)
     const mdView = leaf.view as MarkdownView
     return mdView.getCodeMirrorInstance(codeblock.getAttribute('cid')!).getValue()

@@ -8,7 +8,6 @@ import type { Vault } from "src/io/vault"
 import type { I18n } from "src/locales/i18n"
 import type { MetadataManager } from "src/metadata/metadata-manager"
 import type { InputBox, QuickPick } from "src/ui/components/quick-open"
-import type { MarkdownViewStore } from "src/ui/views/markdown-view/store"
 import * as Locale from 'src/locales/lang.en.json'
 import type { GithubAPI } from "src/net/github"
 import type { InternalPluginManager } from "src/plugin-internal/internal-plugin-manager"
@@ -60,7 +59,6 @@ type ServiceMap = {
   'workspace-root'(): WorkspaceRoot
   'workspace-split'(direction: Direction): WorkspaceSplit
   'workspace-tabs'(): WorkspaceTabs
-  'markdown-view-store'(): MarkdownViewStore
 }
 
 const services: Partial<ServiceMap> = {}

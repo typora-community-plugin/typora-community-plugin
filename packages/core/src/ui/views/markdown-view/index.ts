@@ -8,10 +8,10 @@ import { MdEditorMode } from './md-editor-mode'
 import { MdPreviewerMode } from './md-previewer-mode'
 import type { ModeContext, ModeController } from './mode-controller'
 import { SwapCommand } from './swap-command'
+import { useEditingTabs } from './use-editing-tabs'
 
 
 const KEY_OPENFILE = Symbol.for('openFile$original')
-
 
 export class MarkdownView extends WorkspaceView {
 
@@ -28,7 +28,6 @@ export class MarkdownView extends WorkspaceView {
     private workspace = useService('workspace'),
     private mdEditor = useService('markdown-editor'),
     private mdRenderer = useService('markdown-renderer'),
-    private store = useService('markdown-view-store'),
   ) {
     super(leaf)
   }
@@ -59,22 +58,17 @@ export class MarkdownView extends WorkspaceView {
       if (this.isEditor()) return
       if ((e.target as HTMLElement).closest('a')) return
 
-      const editorLeaf = this.store.parentTabs?.findLeaf(leaf =>
-        leaf.viewType === MarkdownView.type &&
-        (leaf.view as MarkdownView).isEditor()
-      )
+      const { editingTabs } = useEditingTabs()
+      const editorLeaf = editingTabs()
+        ?.findLeaf<WorkspaceLeaf<MarkdownView>>(leaf =>
+          leaf.viewType === MarkdownView.type &&
+          (leaf.view as MarkdownView).isEditor()
+        )
 
       if (!editorLeaf) return
 
-      (editorLeaf.view as MarkdownView).saveEditorStateToLeaf();
-
-      (editorLeaf.view as MarkdownView).setMode('previewer')
-
-      // Flag suppresses file:open side-effects during mode swap
-      this.store.beginSwap(this.filePath)
       // Then switch clicked Previewer to Editor
-      this._swapCommad.execute(editorLeaf, this.leaf)
-      this.store.endSwap()
+      this._swapCommad.execute(editorLeaf, this.leaf as WorkspaceLeaf<MarkdownView>)
     })
   }
 
@@ -93,7 +87,8 @@ export class MarkdownView extends WorkspaceView {
   }
 
   autoSetMode() {
-    if (!this.store.parentTabs || this.store.isActiveTabs(this.leaf.parent as WorkspaceTabs)) {
+    const { editingTabs, isEditingTabs } = useEditingTabs()
+    if (!editingTabs() || isEditingTabs(this.leaf.parent as WorkspaceTabs)) {
       this.setMode('typora')
     }
     else {
@@ -117,9 +112,11 @@ export class MarkdownView extends WorkspaceView {
     if (this.isEditor()) {
       if (this.workspace.activeFile === this.filePath)
         editor.writingArea.parentElement!.classList.add('typ-deactive')
+
       // fix: can not close preview when dragging the only one Typora editor tab from Tabs A to Tabs B (which contains preview)
-      if (this.store.getEditorTabsHasSingleChild()) {
-        this.store.setParentTabs(null)
+      const { setEditingTabs, isEditingSingleChildTabs } = useEditingTabs()
+      if (isEditingSingleChildTabs()) {
+        setEditingTabs(null)
 
         // fix: will not open typora editor after the only one closed
         const nextMdLeaf = this.leaf.getRoot()

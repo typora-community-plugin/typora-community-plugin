@@ -4,6 +4,8 @@ import type { WorkspaceLeaf } from 'src/ui/layout/workspace-leaf'
 import type { WorkspaceTabs } from 'src/ui/layout/tabs'
 import type { MarkdownView } from '.'
 import type { MdEditorMode } from './md-editor-mode'
+import { useEditingTabs } from './use-editing-tabs'
+import { usePreviewTabToSwap } from './use-preview-tab-to-swap'
 
 
 const KEY_OPENFILE = Symbol.for('openFile$original')
@@ -12,14 +14,18 @@ export class SwapCommand {
 
   constructor(
     private workspace = useService('workspace'),
-    private store = useService('markdown-view-store'),
   ) { }
 
-  execute(editorLeaf: WorkspaceLeaf, previewLeaf: WorkspaceLeaf) {
+  execute(editorLeaf: WorkspaceLeaf<MarkdownView>, previewLeaf: WorkspaceLeaf<MarkdownView>) {
     const isSwappingSameFile = editorLeaf.state.path === previewLeaf.state.path
     const previewView = previewLeaf.view as MarkdownView
     const writeEl = editor.writingArea.parentElement!
+    const { beginSwap, endSwap } = usePreviewTabToSwap()
 
+    editorLeaf.view.saveEditorStateToLeaf()
+    editorLeaf.view.setMode('previewer')
+
+    beginSwap(previewLeaf)
     this._hideEditor(writeEl)
     this._setParent(previewLeaf)
     this._openFile(previewLeaf.state.path)
@@ -29,6 +35,7 @@ export class SwapCommand {
       this._syncEditorSize(previewView)
       this._showEditor(writeEl)
       previewView.restoreEditorStateFromLeaf()
+      endSwap()
     }
 
     if (isSwappingSameFile) {
@@ -44,7 +51,8 @@ export class SwapCommand {
   }
 
   private _setParent(previewLeaf: WorkspaceLeaf) {
-    this.store.setParentTabs(previewLeaf.parent as WorkspaceTabs)
+    const { setEditingTabs } = useEditingTabs()
+    setEditingTabs(previewLeaf.parent as WorkspaceTabs)
   }
 
   private _openFile(filePath: string) {
