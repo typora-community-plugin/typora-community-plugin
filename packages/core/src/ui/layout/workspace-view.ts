@@ -54,10 +54,10 @@ export abstract class WorkspaceView extends Component implements Closeable {
   onClose() { }
 
   getScroll(): ScrollState {
-    return { scrollTop: this.containerEl.scrollTop }
+    return { scrollTop: this.leaf.containerEl.scrollTop }
   }
 
   applyScroll(state: ScrollState): void {
-    this.containerEl.scrollTop = state.scrollTop
+    this.leaf.containerEl.scrollTop = state.scrollTop
   }
 }
