@@ -152,7 +152,7 @@ export class MarkdownView extends WorkspaceView {
     this._modeState?.exit(this._modeCtx)
 
     this._modeState = mode === 'typora'
-      ? new MdEditorMode()
+      ? MdEditorMode.getInstance()
       : new MdPreviewerMode()
 
     this._modeState.enter(this._modeCtx)

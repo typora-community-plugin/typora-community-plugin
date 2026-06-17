@@ -5,15 +5,17 @@ import type { DisposeFunc } from 'src/utils/types'
 import type { ModeController, ModeContext } from './mode-controller'
 import type { ScrollState } from 'src/ui/layout/workspace-view'
 import { useEditingTabs } from './use-editing-tabs'
+import { memorize } from 'src/utils'
 
 
 export class MdEditorMode implements ModeController {
 
-  contentEl = editor.writingArea.parentElement!
-  handleSettingActiveLeaf: ((this: HTMLElement, ev: MouseEvent) => any) | null = null
-  handleLayoutChanged: DisposeFunc | null = null
+  static getInstance = memorize(() => new MdEditorMode())
 
+  contentEl = editor.writingArea.parentElement!
   private _parentTabs: WorkspaceTabs | null = null
+  private _resizeObserver: ResizeObserver | null = null
+  private handleSettingActiveLeaf: ((this: HTMLElement, ev: MouseEvent) => any) | null = null
 
   constructor(
     private workspace = useService('workspace'),
@@ -33,12 +35,9 @@ export class MdEditorMode implements ModeController {
     })
 
     this._parentTabs = leaf.parent as WorkspaceTabs
-    setTimeout(() => {
-      this.syncSize()
-      this.registerObserver(containerEl)
-      this.handleLayoutChanged = leaf.getRoot()
-        .on('layout-changed', () => this.registerObserver(containerEl))
-    })
+
+    this.syncSize()
+    this.registerObserver()
   }
 
   exit(ctx: ModeContext) {
@@ -47,9 +46,7 @@ export class MdEditorMode implements ModeController {
 
     this.contentEl.classList.remove('typ-workspace-binding')
     this.contentEl.removeEventListener('mousedown', this.handleSettingActiveLeaf!)
-    this.unregisterObserver(ctx.containerEl)
-    this.handleLayoutChanged?.()
-    this.handleLayoutChanged = null
+    this.unregisterObserver()
   }
 
   getScroll(): ScrollState {
@@ -60,14 +57,16 @@ export class MdEditorMode implements ModeController {
     this.contentEl.scrollTop = state.scrollTop
   }
 
-  private registerObserver(el: HTMLElement) {
-    const objectEl = el.children[0] as HTMLObjectElement
-    if (objectEl?.contentWindow) objectEl.contentWindow.onresize = this.syncSize
+  private registerObserver() {
+    this._resizeObserver = new ResizeObserver(() => this.syncSize())
+    if (this._parentTabs) {
+      this._resizeObserver.observe(this._parentTabs.tabContentEl)
+    }
   }
 
-  private unregisterObserver(el: HTMLElement) {
-    const objectEl = el.children[0] as HTMLObjectElement | undefined
-    if (objectEl?.contentWindow) objectEl.contentWindow.onresize = null
+  private unregisterObserver() {
+    this._resizeObserver?.disconnect()
+    this._resizeObserver = null
   }
 
   public syncSize() {
