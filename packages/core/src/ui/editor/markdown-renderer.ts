@@ -2,7 +2,7 @@ import './markdown-renderer.scss'
 import { CodeMirror, editor, File, MathJax } from "typora"
 import { useService } from "src/common/service"
 import type { MdPreviewerMode } from '../views/markdown-view/md-previewer-mode'
-import { parseMarkdown, uniqueId } from "src/utils"
+import { memorize, parseMarkdown, uniqueId } from "src/utils"
 
 
 const OPTIONS = {
@@ -29,6 +29,8 @@ const FAKE_EDITOR = {
   }
 }
 
+const MarkdownParser = memorize(() => editor.nodeMap.allNodes.first()!.__proto__.constructor)
+
 export class MarkdownRenderer {
 
   private _cmInstances: WeakMap<HTMLElement, CodeMirror.Editor> = new WeakMap()
@@ -48,7 +50,7 @@ export class MarkdownRenderer {
     const frontMattersHtml = frontMatter ? `<pre mdtype="meta_block" class="md-meta-block md-end-block">${frontMatter}</pre>` : ''
 
     // handle: markdown → html
-    const [contentHtml] = editor.nodeMap.allNodes.first().__proto__.constructor.parseFrom(content)
+    const [contentHtml] = MarkdownParser().parseFrom(content)
     targetEl.classList.add('typ-markdown-preview')
     targetEl.innerHTML = frontMattersHtml + contentHtml
     $('[contenteditable="true"]', targetEl).attr('contenteditable', 'false')
