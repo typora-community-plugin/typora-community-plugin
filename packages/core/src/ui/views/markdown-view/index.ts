@@ -116,7 +116,6 @@ export class MarkdownView extends WorkspaceView {
     this.workspace.once('file:open', () => {
       const { restoreStateFromLeaf } = useRecord()
       restoreStateFromLeaf(this)
-      console.log('[MarkdownView] onOpen -  isEditor after restoreStateFromLeaf:', this.isEditor())
     })
   }
 

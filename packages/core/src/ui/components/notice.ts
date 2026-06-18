@@ -2,7 +2,7 @@ import './notice.scss'
 import { Component } from 'src/common/component'
 import { useService } from 'src/common/service'
 import { Closeable, View } from 'src/ui/common/view'
-import { html } from 'src/utils'
+import { html, until } from 'src/utils'
 
 
 /** @private */
@@ -14,8 +14,7 @@ class NoticeContainer extends Component implements Closeable {
   constructor() {
     super()
 
-    setTimeout(() => {
-      const commands = useService('command-manager')
+    until(() => useService('command-manager')).then((commands) => {
       const { t } = useService('i18n')
       this.register(
         commands.register({
@@ -24,7 +23,7 @@ class NoticeContainer extends Component implements Closeable {
           scope: 'global',
           callback: () => this.clearAll(),
         }))
-    }, 167)
+    })
   }
 
   /** @private */
