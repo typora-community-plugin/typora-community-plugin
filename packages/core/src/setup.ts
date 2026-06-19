@@ -1,5 +1,5 @@
 import path from "./path"
-import { Logger } from "./io/logger"
+import { Logger } from "./io/logger/logger"
 import { App } from "./app"
 import { coreDir } from "./common/constants"
 import { CommandManager } from "./command/command-manager"

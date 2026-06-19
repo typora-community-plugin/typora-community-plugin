@@ -1,4 +1,5 @@
 import { identity } from "src/utils"
+import { getOrCreateDevLogger } from './file-logger'
 
 
 type Level = {
@@ -25,14 +26,13 @@ export function badage(message: string, bgColor: string): [string, string, strin
   ]
 }
 
-export function badages(...messages: [string, string, string][]) {
-  return messages
-    .filter(identity)
-    .reduce((acc, b) => {
-      acc[0] += b[0]
-      acc.push(b[1], b[2])
-      return acc
-    }, [''])
+export function badages(...messages: Array<[string, string, string] | undefined>) {
+  const filtered = messages.filter(identity) as [string, string, string][]
+  return filtered.reduce((acc, b) => {
+    acc[0] += b[0]
+    acc.push(b[1], b[2])
+    return acc
+  }, ['']) as unknown as [string, string, string]
 }
 
 
@@ -49,10 +49,15 @@ export class Logger {
   }
 
   private log(level: Level, messages: any[]) {
+    if (process.env.IS_DEV) {
+      const devLogger = getOrCreateDevLogger()
+      devLogger.log(level.tag, this.scope ? `[${this.scope}]` : '', ...messages)
+    }
+
     console[level.method](
       ...badages(
         badage('[Typora Plugin]', level.bgColor),
-        this.scope && badage(this.scope, 'gray')),
+        !!this.scope ? badage(this.scope, 'gray') : undefined),
       ...messages
     )
   }
