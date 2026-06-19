@@ -58,7 +58,7 @@ export class WorkspaceTabs extends WorkspaceParent {
 
   // --------- Tab Operators ---------
 
-  private _activeLeaf: WorkspaceLeaf
+  private _activeLeaf!: WorkspaceLeaf
 
   get activeLeaf() {
     return this._activeLeaf ?? this.children[0] as WorkspaceLeaf
@@ -71,7 +71,7 @@ export class WorkspaceTabs extends WorkspaceParent {
     tabEl ??= this.tabHeader.getTabById(path)
     this.tabHeader.activeTab(tabEl)
 
-    const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)
+    const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)!
     leaf.containerEl.classList.add('mod-active')
     leaf.view.open()
 
@@ -86,7 +86,7 @@ export class WorkspaceTabs extends WorkspaceParent {
     const newTab = new FileTab(newPath)
     this.tabHeader.renameTab(tabEl, newTab)
 
-    const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === oldPath)
+    const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === oldPath)!
     leaf.state.path = newPath
     leaf.view.setIcon(leaf.view.icon)
   }
@@ -95,13 +95,13 @@ export class WorkspaceTabs extends WorkspaceParent {
     tabEl ??= this.tabHeader.getTabById(path)
     this.tabHeader.closeTab(tabEl)
 
-    const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)
+    const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)!
     leaf.view.close()
     super.removeChild(leaf)
 
     if (!this.children.length) {
       if (this.getRoot() !== this.parent || this.parent.children.length > 1) {
-        this.parent.removeChild(this)
+        this.parent!.removeChild(this)
       }
       else {
         this.appendChild(createEmptyLeaf())

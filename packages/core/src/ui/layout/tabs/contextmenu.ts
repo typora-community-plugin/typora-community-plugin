@@ -16,7 +16,7 @@ export function onTabsContextMenu(
   const menu = new Menu()
 
   return function (event: MouseEvent) {
-    const $tabEl = $(event.target).closest('.typ-tab')
+    const $tabEl = $(event.target!).closest('.typ-tab')
 
     if (!$tabEl.length) return
 
