@@ -1,9 +1,10 @@
 import path from "./path"
 import { Logger } from "./io/logger/logger"
 import { App } from "./app"
-import { coreDir } from "./common/constants"
+import { coreDir, isDebug } from "./common/constants"
 import { CommandManager } from "./command/command-manager"
 import { registerService, useService } from "./common/service"
+import { ServiceLogger } from "src/io/logger/service-logger"
 import { HotkeyManager } from "./hotkey-manager"
 import { ConfigRepository } from "./io/config-repository"
 import { Vault } from "./io/vault"
@@ -31,6 +32,24 @@ import { WorkspaceTabs } from "./ui/layout/tabs"
 import { MetadataManager } from "./metadata/metadata-manager"
 import { registerDefaultMetadataProviders } from "./metadata/metadata-providers"
 import { DEFAULT_INTERNAL_PLUGIN_SETTINGS, InternalPluginManager } from "./plugin-internal/internal-plugin-manager"
+
+
+// ── DEV ONLY: Attach logging listener to ServiceLogger._fire() output ──
+if (process.env.IS_DEV) {
+  const colorMap = { 'enter': '#2196f3', 'exit': '#4caf50', 'error': '#f44336' } as const
+  
+  ServiceLogger.onLog((entry) => {
+    console.groupCollapsed(
+      `%c${entry.scope}%c ${entry.method}%c${entry.displayArgs ?? ''}${entry.ms != null ? ` +${entry.ms.toFixed(2)}ms` : ''}`,
+      'color:#fff;background:#555;padding:1px 4px;border-radius:3px;',
+      `color:${colorMap[entry.direction]};font-weight:bold;`,
+      'color:#888;',
+    )
+    console.groupEnd()
+  })
+}
+
+// ── End dev logging setup ──
 
 
 registerService('logger', memorize(([scope]) => new Logger(scope)))

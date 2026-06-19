@@ -26,6 +26,7 @@ import type { Direction, WorkspaceSplit } from "src/ui/layout/split"
 import type { WorkspaceTabs } from "src/ui/layout/tabs"
 import type { Notice } from "src/ui/components/notice"
 import { isDebug } from "./constants"
+import { wrapWithLoggingProxy } from "src/io/logger/service-logger"
 
 
 type ServiceMap = {
@@ -73,7 +74,7 @@ export function registerService<K extends keyof ServiceMap>
   services[id] = factory as any
 }
 
-export function useService<K extends keyof ServiceMap>(id: K, args?: Parameters<ServiceMap[K]>) {
+export function useService<K extends keyof ServiceMap>(id: K, args?: Parameters<ServiceMap[K]>): ReturnType<ServiceMap[K]> {
   if (process.env.IS_DEV) {
 
     if (!services[id]) {
@@ -100,7 +101,16 @@ export function useService<K extends keyof ServiceMap>(id: K, args?: Parameters<
     console.log(`[Service] Loading "${stacks.join(' → ')}"...`)
   }
 
-  const service = (<any>services[id])(args) as ReturnType<ServiceMap[K]>
+  let service: any = (<any>services[id])(args)
+  if (process.env.IS_DEV && id !== 'logger') {
+    service = wrapWithLoggingProxy(service, id, useService('logger', [id]), {
+      args: true,
+      entry: true,
+      exit: true,
+      errors: true,
+      perf: false,
+    })
+  }
 
   stacks.pop()
 
