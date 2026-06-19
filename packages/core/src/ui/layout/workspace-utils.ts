@@ -33,10 +33,11 @@ export function openFileInActiveTabs(file: string) {
   const workspace = useService('workspace')
   const activeTabs = workspace.activeLeaf?.parent as WorkspaceTabs
   if (activeTabs.findLeaf(leaf => leaf.state.path === file)) {
-    activeTabs.toggleTab(file)
+    workspace.activeLeaf = activeTabs.toggleTab(file)
     return
   }
   activeTabs.appendChild(createEditorLeaf(file))
+  workspace.activeLeaf = activeTabs.activeLeaf
 }
 
 export function createLeaf(state?: ViewState) {

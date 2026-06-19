@@ -1,7 +1,6 @@
 import { editor } from 'typora'
 import { useService } from 'src/common/service'
 import type { WorkspaceTabs } from 'src/ui/layout/tabs'
-import type { DisposeFunc } from 'src/utils/types'
 import type { ModeController, ModeContext } from './mode-controller'
 import type { ScrollState } from 'src/ui/layout/workspace-view'
 import { useEditingTabs } from './use-editing-tabs'
@@ -37,6 +36,7 @@ export class MdEditorMode implements ModeController {
     this._parentTabs = leaf.parent as WorkspaceTabs
 
     this.syncSize()
+    this.unregisterObserver()
     this.registerObserver()
   }
 

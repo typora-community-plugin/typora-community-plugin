@@ -5,7 +5,11 @@ import type { WorkspaceTabs } from "."
 import { splitDown, splitRight } from "../workspace-utils"
 
 
-export function onTabsContextMenu(root: WorkspaceRoot, i18n = useService('i18n')) {
+export function onTabsContextMenu(
+  root: WorkspaceRoot,
+  i18n = useService('i18n'),
+  workspace = useService('workspace'),
+) {
 
   const { t } = i18n
 
@@ -32,13 +36,17 @@ export function onTabsContextMenu(root: WorkspaceRoot, i18n = useService('i18n')
         item
           .setKey('removeOthers')
           .setTitle(t.tabview.closeOthers)
-          .onClick(() => tabs.removeOthers(clickedTabPath))
+          .onClick(() => {
+            workspace.activeLeaf = tabs.removeOthers(clickedTabPath)
+          })
       })
       .addItem(item => {
         item
           .setKey('removeRight')
           .setTitle(t.tabview.closeRight)
-          .onClick(() => tabs.removeRight(clickedTabPath))
+          .onClick(() => {
+            workspace.activeLeaf = tabs.removeRight(clickedTabPath)
+          })
       })
 
     if (tabs.children.length > 1) {

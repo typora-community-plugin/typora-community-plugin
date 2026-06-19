@@ -116,6 +116,13 @@ export class WorkspaceRoot extends WorkspaceSplit {
         // Skip when the file is already the active leaf — redundant (e.g. right-side tab open,
         // tab activation). Only process explicit file opens (file tree, quick open, etc.)
         if (workspace.activeLeaf?.state.path === file) return
+
+        // Skip when the file is already the editing tabs' active leaf — prevents duplicate
+        // tabs when a drag operation updates workspace.activeLeaf before the async file:open
+        // event from KEY_OPENFILE fires.
+        const { editingTabs } = useEditingTabs()
+        if (editingTabs()?.activeLeaf.state.path === file) return
+
         openFileInActiveTabs(file)
       }))
 

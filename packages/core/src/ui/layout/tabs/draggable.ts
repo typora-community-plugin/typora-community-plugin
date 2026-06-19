@@ -1,8 +1,9 @@
+import { useService } from "src/common/service"
 import type { WorkspaceTabs } from "."
 import type { WorkspaceRoot } from "../workspace-root"
 
 
-export function draggableTabs(root: WorkspaceRoot) {
+export function draggableTabs(root: WorkspaceRoot, workspace = useService('workspace')) {
 
   const rootEl = root.containerEl
 
@@ -70,7 +71,10 @@ export function draggableTabs(root: WorkspaceRoot) {
         ? Array.from(dragOverTabEl.parentElement.children).findIndex(el => el === dragOverTabEl)
         : dragOverTabs.children.length
       draggingLeaf.detach()
-      setTimeout(() => dragOverTabs.insertChild(i, draggingLeaf))
+      dragOverTabs.insertChild(i, draggingLeaf)
+      setTimeout(() => {
+        workspace.activeLeaf = draggingLeaf
+      })
     }
 
     draggingTabEl = null
