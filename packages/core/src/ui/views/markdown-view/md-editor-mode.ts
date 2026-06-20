@@ -29,6 +29,7 @@ export class MdEditorMode implements ModeController {
     setEditingTabs(ctx.leaf.parent as WorkspaceTabs)
 
     this.contentEl.classList.add('typ-workspace-binding')
+    this.contentEl.removeEventListener('mousedown', this.handleSettingActiveLeaf!)
     this.contentEl.addEventListener('mousedown', this.handleSettingActiveLeaf = () => {
       this.workspace.activeLeaf = leaf
     })

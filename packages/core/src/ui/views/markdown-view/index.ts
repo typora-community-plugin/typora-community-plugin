@@ -129,14 +129,21 @@ export class MarkdownView extends WorkspaceView {
         editor.writingArea.parentElement!.classList.add('typ-deactive')
 
       // fix: can not close preview when dragging the only one Typora editor tab from Tabs A to Tabs B (which contains preview)
-      const { setEditingTabs, isEditingSingleChildTabs } = useEditingTabs()
-      if (isEditingSingleChildTabs()) {
-        setEditingTabs(null)
+      const { setEditingTabs, isEditingTabs, isEditingSingleChildTabs } = useEditingTabs()
+      if (isEditingTabs(this.leaf.parent as WorkspaceTabs)) {
+        this._modeState?.exit(this._modeCtx)
+        this._modeState = null
 
-        // fix: will not open typora editor after the only one closed
-        const nextMdLeaf = this.leaf.getRoot()
-          .findLeaf(leaf => leaf.viewType === MarkdownView.type && leaf !== this.leaf)
-        if (nextMdLeaf) (nextMdLeaf.parent as WorkspaceTabs).activeLeaf.view.onOpen()
+        if (isEditingSingleChildTabs()) {
+          setEditingTabs(null)
+
+          // fix: will not open typora editor after the only one closed
+          const nextMdLeaf = this.leaf.getRoot()
+            .findLeaf(leaf => leaf.viewType === MarkdownView.type && leaf !== this.leaf)
+          if (nextMdLeaf) (nextMdLeaf.parent as WorkspaceTabs).activeLeaf.view.onOpen()
+        }
+      } else {
+        this._modeState = null
       }
     }
     else {
@@ -148,7 +155,14 @@ export class MarkdownView extends WorkspaceView {
 
   /** @private */
   setMode(mode: 'typora' | 'previewer') {
-    this._modeState?.exit(this._modeCtx)
+    const prevMode = this._modeState
+
+    if (prevMode instanceof MdEditorMode) {
+      this._modeCtx.containerEl.classList.remove('mode-typora')
+      this._modeCtx.containerEl.innerHTML = ''
+    } else {
+      prevMode?.exit(this._modeCtx)
+    }
 
     this._modeState = mode === 'typora'
       ? MdEditorMode.getInstance()
