@@ -107,16 +107,20 @@ export class MarkdownView extends WorkspaceView {
   onOpen() {
     this.autoSetMode()
 
+    const doRestore = () => {
+      const { restoreStateFromLeaf } = useRecord()
+      restoreStateFromLeaf(this)
+    }
+
     if (this.isEditor()) {
       editor.writingArea.parentElement!.classList.remove('typ-deactive')
       // @ts-ignore
       editor.library[KEY_OPENFILE](this.filePath)
+      this.workspace.once('file:open', doRestore)
     }
-
-    this.workspace.once('file:open', () => {
-      const { restoreStateFromLeaf } = useRecord()
-      restoreStateFromLeaf(this)
-    })
+    else {
+      setTimeout(doRestore)
+    }
   }
 
   /** @override */
