@@ -69,17 +69,16 @@ let _devInstance: FileLogger | undefined
 
 export function getOrCreateDevLogger(): FileLogger {
   const logFile = resolveDevLogFile()
-  if (!logFile) return createNoopLogger()
+  if (!logFile) return new NoopFileLogger()
 
   // @ts-ignore Re-check cache in case mount folder changed since last call
   if (_devInstance && _devInstance.logFile === logFile) return _devInstance
 
   _devInstance?.flush()
-  const logDir = path.dirname(logFile)
-
   _devInstance = createFileLogger(logFile)
 
   // Ensure directory exists
+  const logDir = path.dirname(logFile)
   fs.mkdir(logDir).catch(noop)
 
   return _devInstance
@@ -98,10 +97,4 @@ function resolveDevLogFile(): string {
 class NoopFileLogger extends FileLogger {
   constructor() { super('') }
   log() {}
-  get hasData() { return false }
-  flush() { return Promise.resolve() }
-}
-
-function createNoopLogger(): FileLogger {
-  return new NoopFileLogger()
 }

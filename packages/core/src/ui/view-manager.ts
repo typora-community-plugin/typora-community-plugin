@@ -57,14 +57,13 @@ export class ViewManager {
     if (process.env.IS_DEV) {
       this.viewByType[type] = (leaf: WorkspaceLeaf, state?: ViewState) => {
         const view = viewFactory(leaf, state)
-        wrapWithLoggingProxy(view, type, useService('logger', [type]), {
+        return wrapWithLoggingProxy(view, type, useService('logger', [type]), {
           args: true,
           entry: true,
           exit: true,
           errors: true,
           perf: false,
         })
-        return view
       }
     } else {
       this.viewByType[type] = viewFactory
