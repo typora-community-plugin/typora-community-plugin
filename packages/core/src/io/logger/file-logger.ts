@@ -17,7 +17,7 @@ export function createFileLogger(logFile: string): FileLogger {
   const timer = setInterval(() => {
     logger.flush().catch(noop)
   }, 5000)
-  if (timer?.unref) timer.unref() // Don't prevent process exit
+  timer?.unref?.() // Don't prevent process exit
 
   return logger
 }
@@ -95,12 +95,13 @@ function resolveDevLogFile(): string {
   return path.join(mountFolder, '.typora', '__plugin-logger.log')
 }
 
+class NoopFileLogger extends FileLogger {
+  constructor() { super('') }
+  log() {}
+  get hasData() { return false }
+  flush() { return Promise.resolve() }
+}
+
 function createNoopLogger(): FileLogger {
-  return {
-    write: () => {},
-    get hasData() { return false },
-    flush: () => Promise.resolve(),
-    dispose: () => {},
-    logFile: '',
-  } as unknown as FileLogger
+  return new NoopFileLogger()
 }

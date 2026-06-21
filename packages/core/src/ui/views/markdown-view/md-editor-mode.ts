@@ -16,7 +16,7 @@ export class MdEditorMode implements ModeController {
   private _resizeObserver: ResizeObserver | null = null
   private handleSettingActiveLeaf: ((this: HTMLElement, ev: MouseEvent) => any) | null = null
 
-  constructor(
+  private constructor(
     private workspace = useService('workspace'),
   ) { }
 

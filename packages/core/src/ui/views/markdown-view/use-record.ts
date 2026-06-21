@@ -1,8 +1,8 @@
-import { memoize } from "lodash"
 import type { MarkdownView } from "src/ui/views/markdown-view"
+import { memorize } from "src/utils"
 
 
-export const useRecord = memoize(() => {
+export const useRecord = memorize(() => {
   return {
     saveStateToLeaf(view: MarkdownView) {
       view.leaf.state = { ...view.leaf.state, ...view.getState() }
