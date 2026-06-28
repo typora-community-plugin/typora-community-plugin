@@ -19,6 +19,7 @@ import type { InternalPluginManager, InternalPluginSettings } from './plugin-int
 import type { Settings } from 'src/settings/settings'
 import type { FileLinkSettings } from 'src/ui/settings/tabs/file-link-setting-tab'
 import type { AppearanceSettings } from 'src/ui/settings/tabs/appearance-setting-tab'
+import type { WorkspaceSettings } from './ui/settings/tabs-plugin/workspace'
 import type { PluginMarketplaceSettings } from 'src/ui/settings/tabs/plugin-marketplace-setting-tab'
 import type { CoreSettings } from 'src/ui/settings/tabs/about-tab'
 import type { ViewManager } from './ui/view-manager'
@@ -52,6 +53,7 @@ export type AppSettings =
   & CoreSettings
   & RibbonSettings
   & InternalPluginSettings
+  & WorkspaceSettings
 
 export type AppPlugin = (app: App) => void
 

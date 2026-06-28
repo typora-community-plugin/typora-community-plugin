@@ -32,6 +32,7 @@ import { WorkspaceTabs } from "./ui/layout/tabs"
 import { MetadataManager } from "./metadata/metadata-manager"
 import { registerDefaultMetadataProviders } from "./metadata/metadata-providers"
 import { DEFAULT_INTERNAL_PLUGIN_SETTINGS, InternalPluginManager } from "./plugin-internal/internal-plugin-manager"
+import { DEFAULT_WORKSPACE_SETTINGS } from "./ui/settings/tabs-plugin/workspace"
 
 
 // ── DEV ONLY: Attach logging listener to ServiceLogger._fire() output ──
@@ -96,6 +97,7 @@ registerService('settings', memorize(() => {
   settings.setDefault(DEFAULT_INTERNAL_PLUGIN_SETTINGS)
   settings.setDefault(DEFAULT_PLUGIN_MARKETPLACE_SETTINGS)
   settings.setDefault(DEFAULT_RIBBON_SETTINGS)
+  settings.setDefault(DEFAULT_WORKSPACE_SETTINGS)
 
   return settings
 }))

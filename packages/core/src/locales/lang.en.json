@@ -17,6 +17,17 @@
     "metadata": {
       "name": "Metadata (beta)",
       "description": "Index metadata of all files in the vault. Used by other plugins (like `tag`)."
+    },
+    "workspace": {
+      "name": "Workspace",
+      "description": "Support split & tabs layout. Provides workspace, file tabs, and related features. Better to enable \"App Setting → General → Save without asking when switch files on side panel\"",
+      "settings": {
+        "hideExtensionInFileTab": "Hide extension in file tab",
+        "hideExtensionInFileTabDesc": "For example, file tab of \"File.md\" will be shown as \"File\".",
+        "useBlankNewTab": "Use blank New Tab",
+        "useAutoSwap": "Swap editor and preview on click",
+        "useAutoSwapDesc": "Click on previewer content area to swap the current Typora editor with the clicked preview tab."
+      }
     }
   },
   "notice": {
@@ -36,6 +47,7 @@
     "titleGlobal": "Global Settings",
     "titleVault": "Vault Settings",
     "groupCore": "Core",
+    "groupInternalPlugins": "Core Plugins",
     "groupPlugins": "Community Plugins"
   },
   "settingTabs": {
@@ -66,16 +78,7 @@
       "advancedSearchModeDesc": "Replace native file search with custom ripgrep-based engine that supports regex patterns. A toggle button appears next to the regex button in the search bar.",
       "advanced": "Advanced",
       "ribbon": "Show Ribbon",
-      "ribbonDesc": "Also enable Custom Sidebar Panel",
-      "workspace": "Use Workspace (Support split & tabs layout)",
-      "workspaceDesc": "It will disable the Legacy \"Show File Tabs\" feature. Better to enable \"App Setting → General → Save without asking when switch files on side panel\"",
-      "fileTabs": "Show File Tabs (Deprecated)",
-      "fileTabsDesc": "Better to enable \"App Setting → General → Save without asking when switch files on side panel\"",
-      "hideExtensionInFileTab": "Hide extension in file tab",
-      "hideExtensionInFileTabDesc": "For example, file tab of \"File.md\" will be shown as \"File\".",
-      "useBlankNewTab": "Use blank New Tab",
-      "useAutoSwap": "Swap editor and preview on click",
-      "useAutoSwapDesc": "Click on previewer content area to swap the current Typora editor with the clicked preview tab."
+      "ribbonDesc": "Also enable Custom Sidebar Panel"
     },
     "hotkey": {
       "name": "Hotkey",

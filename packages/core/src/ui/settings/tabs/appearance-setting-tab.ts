@@ -8,12 +8,6 @@ export type AppearanceSettings = {
   showSearchResultFullPath: boolean
   advancedSearchMode: boolean
   showRibbon: boolean
-  useWorkspace: boolean
-  /** @deprecated */
-  showFileTabs: boolean
-  hideExtensionInFileTab: boolean
-  useBlankNewTab: boolean
-  useAutoSwap: boolean
 }
 
 export const DEFAULT_APPEARANCE_SETTINGS: AppearanceSettings = {
@@ -22,11 +16,6 @@ export const DEFAULT_APPEARANCE_SETTINGS: AppearanceSettings = {
   showSearchResultFullPath: false,
   advancedSearchMode: false,
   showRibbon: true,
-  useWorkspace: true,
-  showFileTabs: false,
-  hideExtensionInFileTab: false,
-  useBlankNewTab: false,
-  useAutoSwap: true,
 }
 
 export class AppearanceSettingTab extends SettingTab {
@@ -105,62 +94,6 @@ export class AppearanceSettingTab extends SettingTab {
         checkbox.checked = settings.get('showRibbon')
         checkbox.onclick = () => {
           settings.set('showRibbon', checkbox.checked)
-        }
-      })
-    })
-    this.addSetting(setting => {
-      setting.addName(t.workspace)
-      setting.addDescription(t.workspaceDesc)
-      setting.addCheckbox(checkbox => {
-        checkbox.checked = settings.get('useWorkspace')
-        checkbox.onclick = () => {
-          settings.set('useWorkspace', checkbox.checked)
-          settings.set('showFileTabs', false)
-        }
-      })
-    })
-    /* TODO: REMOVE **********************************************/
-    // this.addSetting(setting => {
-    //   setting.addName(t.fileTabs)
-    //   setting.addDescription(t.fileTabsDesc)
-    //   setting.addCheckbox(checkbox => {
-    //     checkbox.disabled = settings.get('useWorkspace')
-    //     checkbox.checked = settings.get('showFileTabs')
-    //     checkbox.onclick = () => {
-    //       settings.set('showFileTabs', checkbox.checked)
-    //     }
-    //     settings.onChange('useWorkspace', (_, isEnabled) => {
-    //       checkbox.disabled = isEnabled
-    //       if (isEnabled) checkbox.checked = false
-    //     })
-    //   })
-    // })
-    this.addSetting(setting => {
-      setting.addName(t.hideExtensionInFileTab)
-      setting.addDescription(t.hideExtensionInFileTabDesc)
-      setting.addCheckbox(checkbox => {
-        checkbox.checked = settings.get('hideExtensionInFileTab')
-        checkbox.onclick = () => {
-          settings.set('hideExtensionInFileTab', checkbox.checked)
-        }
-      })
-    })
-    this.addSetting(setting => {
-      setting.addName(t.useBlankNewTab)
-      setting.addCheckbox(checkbox => {
-        checkbox.checked = settings.get('useBlankNewTab')
-        checkbox.onclick = () => {
-          settings.set('useBlankNewTab', checkbox.checked)
-        }
-      })
-    })
-    this.addSetting(setting => {
-      setting.addName(t.useAutoSwap)
-      setting.addDescription(t.useAutoSwapDesc)
-      setting.addCheckbox(checkbox => {
-        checkbox.checked = settings.get('useAutoSwap')
-        checkbox.onclick = () => {
-          settings.set('useAutoSwap', checkbox.checked)
         }
       })
     })

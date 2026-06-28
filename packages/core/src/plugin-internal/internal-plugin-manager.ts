@@ -1,6 +1,7 @@
 import { useService } from "src/common/service"
 import { InternalPlugin, InternalPluginManifest } from "./internal-plugin"
 import { MetadataPlugin, PLUGIN_METADATA_ID } from "./plugins/plugin-metadata"
+import { WorkspacePlugin, PLUGIN_WORKSPACE_ID } from "./plugins/plugin-workspace"
 
 
 const KEY_OF_ENABLED_PLUGINS = 'internalPlugin.enabledPlugins'
@@ -12,6 +13,7 @@ export type InternalPluginSettings = {
 export const DEFAULT_INTERNAL_PLUGIN_SETTINGS = {
   [KEY_OF_ENABLED_PLUGINS]: {
     [PLUGIN_METADATA_ID]: false,
+    [PLUGIN_WORKSPACE_ID]: true,
   }
 }
 
@@ -27,13 +29,16 @@ export class InternalPluginManager {
     private logger = useService('logger', ['InternalPluginManager']),
   ) {
     const metadata = new MetadataPlugin()
+    const workspace = new WorkspacePlugin()
 
     this.instances = {
       [PLUGIN_METADATA_ID]: metadata,
+      [PLUGIN_WORKSPACE_ID]: workspace,
     }
 
     this.manifests = {
       [PLUGIN_METADATA_ID]: metadata.manifest,
+      [PLUGIN_WORKSPACE_ID]: workspace.manifest,
     }
   }
 

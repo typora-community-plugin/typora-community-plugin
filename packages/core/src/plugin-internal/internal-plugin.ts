@@ -1,5 +1,7 @@
 import { useService } from 'src/common/service'
 import { Plugin } from '../plugin/plugin'
+import type { SettingTab } from 'src/ui/settings/setting-tab'
+import { SettingsModal } from 'src/ui/settings/settings-modal'
 
 
 export interface InternalPluginManifest {
@@ -21,4 +23,11 @@ export class InternalPlugin extends Plugin<any> {
 
   /** @ignore useless in internal plugin */
   registerSettings() { }
+
+  registerSettingTab(tab: SettingTab) {
+    setTimeout(() =>
+      this.register(
+        this.app.workspace.getViewByType(SettingsModal)!
+          .addCorePluginTab(tab)))
+  }
 }
