@@ -14,13 +14,16 @@ registerService('app', memorize(() => (
   } as any
 )))
 
-registerService('config-repository', memorize(() => (
-  {
+registerService('config-repository', memorize(() => {
+  let configDir = '/default-config-dir'
+  return {
+    get configDir() { return configDir },
+    setConfigDir(d: string) { configDir = d },
     readConfigJson: jest.fn()
       .mockImplementation((filename, defaultValue) => defaultValue),
     writeConfigJson: jest.fn(),
   } as any
-)))
+}))
 
 registerService('hotkey-manager', memorize(() => (
   {

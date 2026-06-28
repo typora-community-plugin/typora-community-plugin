@@ -3,14 +3,12 @@ import { SettingTab } from "../setting-tab"
 
 
 export type WorkspaceSettings = {
-  useWorkspace: boolean
   hideExtensionInFileTab: boolean
   useBlankNewTab: boolean
   useAutoSwap: boolean
 }
 
 export const DEFAULT_WORKSPACE_SETTINGS: WorkspaceSettings = {
-  useWorkspace: true,
   hideExtensionInFileTab: false,
   useBlankNewTab: false,
   useAutoSwap: true,

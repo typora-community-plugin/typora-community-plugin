@@ -8,12 +8,12 @@ export interface SettingsOptions {
    * Filename relative to typora config folder `.typora`
    */
   filename: string
-  /**
-   * Settings file's structure version.
-   * Increasing it after breaking change. And need to use `migare()` to upgrade it.
-   */
-  version: number
-  migations?: SettingMigrations
+   /**
+    * Settings file's structure version.
+    * Increasing it after breaking change. And need to use `migrate()` to upgrade it.
+    */
+   version: number
+   migrations?: SettingMigrations
 }
 
 interface SettingsFile<T> {
@@ -29,7 +29,7 @@ type SettingsListeners<T> = Record<
 
 export class Settings<T extends Record<string, any>> {
 
-  private _settingsDir: string
+  private _settingsDir!: string
   private get _isSettingsLoaded() {
     return this._settingsDir === this.config.configDir
   }
@@ -40,10 +40,11 @@ export class Settings<T extends Record<string, any>> {
     return this._stores.version
   }
 
+  private _codeVersion = 0
   private _defaultSettings = {} as T
   private _stores = { settings: {} } as SettingsFile<T>
   private _listeners = {} as SettingsListeners<T>
-  private _migations: SettingMigrations | null
+  private _migrations: SettingMigrations | undefined
 
   constructor(
     options: SettingsOptions,
@@ -51,11 +52,12 @@ export class Settings<T extends Record<string, any>> {
     private config = useService('config-repository')
   ) {
     this.filename = options.filename
+    this._codeVersion = options.version
     this._stores = {
       version: options.version,
       settings: Object.create(this._defaultSettings),
     }
-    this._migations = options.migations
+    this._migrations = options.migrations
 
     this.load()
   }
@@ -101,10 +103,10 @@ export class Settings<T extends Record<string, any>> {
     if (!this._listeners[key]) {
       this._listeners[key] = []
     }
-    if (this._listeners[key].includes(listener)) {
+    if (this._listeners[key].includes(listener as any)) {
       return noop
     }
-    this._listeners[key].push(listener)
+    this._listeners[key].push(listener as any)
     return () => this.removeChangeListener(key, listener)
   }
 
@@ -130,11 +132,12 @@ export class Settings<T extends Record<string, any>> {
     }
 
     const oldSettings = this._stores.settings
-
-    this._stores = this.config.readConfigJson(this.filename, {
-      version: this.version,
+    const rawStores = this.config.readConfigJson(this.filename, {
+      version: this._codeVersion,
       settings: {},
     })
+    const fileVersion = rawStores.version
+    this._stores = rawStores
 
     this._stores.settings = Object.assign(
       Object.create(this._defaultSettings),
@@ -146,14 +149,13 @@ export class Settings<T extends Record<string, any>> {
       this._emit(key, this._stores.settings[key])
     })
 
-    if (!this._migations) return
-
-    this._migations.migrate(this)
-
-    if (!this._migations.hasMigrated) return
-
-    this.save()
-    this._migations.hasMigrated = false
+    if (fileVersion < this._codeVersion) {
+      this._migrations?.migrate(this)
+      if (this._migrations?.hasMigrated) {
+        this.save()
+        this._migrations.hasMigrated = false
+      }
+    }
   }
 
   @debounced(1e3)

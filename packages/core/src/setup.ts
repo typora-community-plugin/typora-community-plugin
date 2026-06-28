@@ -1,7 +1,7 @@
 import path from "./path"
 import { Logger } from "./io/logger/logger"
 import { App } from "./app"
-import { coreDir, isDebug } from "./common/constants"
+import { coreDir } from "./common/constants"
 import { CommandManager } from "./command/command-manager"
 import { registerService, useService } from "./common/service"
 import { ServiceLogger } from "src/io/logger/service-logger"
@@ -33,12 +33,13 @@ import { MetadataManager } from "./metadata/metadata-manager"
 import { registerDefaultMetadataProviders } from "./metadata/metadata-providers"
 import { DEFAULT_INTERNAL_PLUGIN_SETTINGS, InternalPluginManager } from "./plugin-internal/internal-plugin-manager"
 import { DEFAULT_WORKSPACE_SETTINGS } from "./ui/settings/tabs-plugin/workspace"
+import { createSettingsMigration } from "./settings/settings-migration"
 
 
 // ── DEV ONLY: Attach logging listener to ServiceLogger._fire() output ──
 if (process.env.IS_DEV) {
   const colorMap = { 'enter': '#2196f3', 'exit': '#4caf50', 'error': '#f44336' } as const
-  
+
   ServiceLogger.onLog((entry) => {
     console.groupCollapsed(
       `%c${entry.scope}%c ${entry.method}%c${entry.displayArgs ?? ''}${entry.ms != null ? ` +${entry.ms.toFixed(2)}ms` : ''}`,
@@ -87,9 +88,11 @@ registerService('config-repository', memorize(() => new ConfigRepository()))
 registerService('github', memorize(() => new GithubAPI()))
 
 registerService('settings', memorize(() => {
+  const [version, migrations] = createSettingsMigration()
   const settings = new Settings<any>({
     filename: 'core',
-    version: 1,
+    version,
+    migrations,
   })
 
   settings.setDefault(DEFAULT_FILE_LINK_SETTINGS)
