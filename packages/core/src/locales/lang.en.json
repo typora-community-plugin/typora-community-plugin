@@ -73,7 +73,9 @@
       "fileTabsDesc": "Better to enable \"App Setting → General → Save without asking when switch files on side panel\"",
       "hideExtensionInFileTab": "Hide extension in file tab",
       "hideExtensionInFileTabDesc": "For example, file tab of \"File.md\" will be shown as \"File\".",
-      "useBlankNewTab": "Use blank New Tab"
+      "useBlankNewTab": "Use blank New Tab",
+      "useAutoSwap": "Swap editor and preview on click",
+      "useAutoSwapDesc": "Click on previewer content area to swap the current Typora editor with the clicked preview tab."
     },
     "hotkey": {
       "name": "Hotkey",

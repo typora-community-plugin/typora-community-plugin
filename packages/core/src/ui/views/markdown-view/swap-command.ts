@@ -1,4 +1,5 @@
 import { editor } from 'typora'
+import { Component } from 'src/common/component'
 import { useService } from 'src/common/service'
 import type { WorkspaceLeaf } from 'src/ui/layout/workspace-leaf'
 import type { WorkspaceTabs } from 'src/ui/layout/tabs'
@@ -11,13 +12,28 @@ import { useRecord } from './use-record'
 
 const KEY_OPENFILE = Symbol.for('openFile$original')
 
-export class SwapCommand {
+export class SwapCommand extends Component {
 
   constructor(
+    private settings = useService('settings'),
     private workspace = useService('workspace'),
-  ) { }
+  ) {
+    super()
+
+    const SETTING_KEY = 'useAutoSwap'
+
+    if (settings.get(SETTING_KEY)) {
+      this.load()
+    }
+
+    settings.onChange(SETTING_KEY, (_, isEnabled) => {
+      isEnabled ? this.load() : this.unload()
+    })
+  }
 
   execute(editorLeaf: WorkspaceLeaf<MarkdownView>, previewLeaf: WorkspaceLeaf<MarkdownView>) {
+    if (!this._loaded) return
+
     const isSwappingSameFile = editorLeaf.state.path === previewLeaf.state.path
     const previewView = previewLeaf.view
     const writeEl = editor.writingArea.parentElement!

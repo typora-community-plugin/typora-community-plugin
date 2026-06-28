@@ -73,7 +73,9 @@
       "fileTabsDesc": "推荐启用“应用设置 → 通用 → 切换文件时自动保存对上一个文件的更改”。",
       "hideExtensionInFileTab": "隐藏文件标签的文件扩展名",
       "hideExtensionInFileTabDesc": "例如，文件标签 “File.md” 会显示为 “File”。",
-      "useBlankNewTab": "显示空白 New Tab"
+      "useBlankNewTab": "显示空白 New Tab",
+      "useAutoSwap": "单击预览区域时切换编辑器和预览",
+      "useAutoSwapDesc": "单击预览区域会将其切换为 Typora 编辑器，同时将当前编辑器切换为预览。"
     },
     "hotkey": {
       "name": "快捷键",

@@ -13,6 +13,7 @@ export type AppearanceSettings = {
   showFileTabs: boolean
   hideExtensionInFileTab: boolean
   useBlankNewTab: boolean
+  useAutoSwap: boolean
 }
 
 export const DEFAULT_APPEARANCE_SETTINGS: AppearanceSettings = {
@@ -25,6 +26,7 @@ export const DEFAULT_APPEARANCE_SETTINGS: AppearanceSettings = {
   showFileTabs: false,
   hideExtensionInFileTab: false,
   useBlankNewTab: false,
+  useAutoSwap: true,
 }
 
 export class AppearanceSettingTab extends SettingTab {
@@ -149,6 +151,16 @@ export class AppearanceSettingTab extends SettingTab {
         checkbox.checked = settings.get('useBlankNewTab')
         checkbox.onclick = () => {
           settings.set('useBlankNewTab', checkbox.checked)
+        }
+      })
+    })
+    this.addSetting(setting => {
+      setting.addName(t.useAutoSwap)
+      setting.addDescription(t.useAutoSwapDesc)
+      setting.addCheckbox(checkbox => {
+        checkbox.checked = settings.get('useAutoSwap')
+        checkbox.onclick = () => {
+          settings.set('useAutoSwap', checkbox.checked)
         }
       })
     })

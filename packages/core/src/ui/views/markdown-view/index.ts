@@ -27,7 +27,7 @@ export class MarkdownView extends WorkspaceView {
   containerEl = $('<div class="typ-markdown-view"></div>')[0]
 
   private _modeState: ModeController | null = null
-  private _swapCommad = new SwapCommand()
+  private _swapCommand = new SwapCommand()
 
   constructor(
     public leaf: WorkspaceLeaf,
@@ -52,6 +52,7 @@ export class MarkdownView extends WorkspaceView {
 
   /** @override */
   onload() {
+    this.addChild(this._swapCommand)
     setTimeout(() => this.autoSetMode())
     this.register(
       this.leaf.getRoot().on('layout-changed', () => this.autoSetMode()))
@@ -74,7 +75,7 @@ export class MarkdownView extends WorkspaceView {
       if (!editorLeaf) return
 
       // Then switch clicked Previewer to Editor
-      this._swapCommad.execute(editorLeaf, this.leaf as WorkspaceLeaf<MarkdownView>)
+      this._swapCommand.execute(editorLeaf, this.leaf as WorkspaceLeaf<MarkdownView>)
     })
   }
 
