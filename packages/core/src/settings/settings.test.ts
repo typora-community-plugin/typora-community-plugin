@@ -45,7 +45,7 @@ describe('class Settings', () => {
 
   describe('setDefault()', () => {
 
-    it('should set default settings when _stores.settings is empty', () => {
+    it('should set default settings when _data is empty', () => {
       const defaultSettings = {
         key1: 'value1',
         key2: 'value2',
@@ -54,12 +54,12 @@ describe('class Settings', () => {
       settings.setDefault(defaultSettings)
 
       // @ts-ignore
-      expect(settings._stores.settings).toEqual({})
+      expect(settings._data).toEqual({})
       // @ts-ignore
-      expect(Object.getPrototypeOf(settings._stores.settings)).toEqual(defaultSettings)
+      expect(Object.getPrototypeOf(settings._data)).toEqual(defaultSettings)
     })
 
-    it('should merge default settings with existing _stores.settings', () => {
+    it('should merge default settings with existing _data', () => {
       settings.set('existingKey', 'existingValue')
 
       const defaultSettings = {
@@ -93,7 +93,7 @@ describe('class Settings', () => {
 
   describe('set()', () => {
 
-    it('should set the value in _stores.settings', () => {
+    it('should set the value in _data', () => {
       const testKey = 'testKey'
       const testValue = 'testValue'
 

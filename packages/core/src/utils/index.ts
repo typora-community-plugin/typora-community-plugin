@@ -18,6 +18,7 @@ export * from './string/yaml'
 
 export * from './html'
 export * from './indexed-db'
+export * from './store'
 export * from './uniqueId'
 export * from './until'
 export * from './versions'

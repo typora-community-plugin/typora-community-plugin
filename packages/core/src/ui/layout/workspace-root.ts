@@ -220,13 +220,5 @@ export class WorkspaceRoot extends WorkspaceSplit {
       const { setEditingTabs } = useEditingTabs()
       setEditingTabs(null)
     }
-
-    settings.onChange('useWorkspace', (_, isEnabled) => {
-      isEnabled ? this.registry.load() : this.registry.unload()
-    })
-
-    setTimeout(() => {
-      settings.get('useWorkspace') ? this.registry.load() : this.registry.unload()
-    })
   }
 }
