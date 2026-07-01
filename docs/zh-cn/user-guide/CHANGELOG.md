@@ -1,6 +1,6 @@
 # 更新日志
 
-## v2.9.3
+## v2.9.4
 
 - refactor(settings): 迁移 settings 配置文件到 v2 版本
 

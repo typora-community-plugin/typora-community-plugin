@@ -1,6 +1,6 @@
 # Changelog
 
-## v2.9.3
+## v2.9.4
 
 - refactor(settings): migrate settings config to v2
 
