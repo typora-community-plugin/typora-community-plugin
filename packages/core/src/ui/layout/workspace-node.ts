@@ -9,7 +9,7 @@ import type { WorkspaceSplit } from './split'
 export abstract class WorkspaceNode extends Events<any> {
 
   abstract type: string
-  parent: WorkspaceParent
+  parent: WorkspaceParent | null = null
   containerEl: HTMLElement
   resizeHandleEl: HTMLElement
 
@@ -23,12 +23,12 @@ export abstract class WorkspaceNode extends Events<any> {
   abstract isLeaf(): this is WorkspaceLeaf
 
   closest(type: string) {
-    let node = this as WorkspaceNode
+    let node = this as WorkspaceNode | null
     while (node != null && node.type !== type) node = node.parent
     return node
   }
 
-  setParent(parent: WorkspaceParent) {
+  setParent(parent: WorkspaceParent | null) {
     this.parent = parent
   }
 
@@ -41,7 +41,7 @@ export abstract class WorkspaceNode extends Events<any> {
   }
 
   onResizeStart(event: MouseEvent): any {
-    if (event.button === 0 && this.parent.type === 'split') {
+    if (event.button === 0 && this.parent?.type === 'split') {
       (this.parent as WorkspaceSplit).onChildResizeStart(this, event)
     }
   }

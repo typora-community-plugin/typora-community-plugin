@@ -93,10 +93,11 @@ export class PluginManagerSettingTab extends SettingTab {
   private renderPluginList(query: string = '') {
     query = query.toLowerCase()
     this.cleanPluginList()
-    Object.values(this.plugins.manifests)
-      .filter(p => !query || (p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query)))
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .forEach(p => this.renderPlugin(p))
+    this.plugins.marketplace.loadCommunityPlugins().then(() =>
+      Object.values(this.plugins.manifests)
+        .filter(p => !query || (p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query)))
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .forEach(p => this.renderPlugin(p)))
   }
 
   private cleanPluginList() {

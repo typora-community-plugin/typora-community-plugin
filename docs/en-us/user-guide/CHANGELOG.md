@@ -1,5 +1,21 @@
 # Changelog
 
+## v2.9.3
+
+- refactor(settings): migrate settings config to v2
+
+- **Workspace**
+  - feat(core/ui/views/markdown-view): switch edit/preview view on click ([#92](https://github.com/typora-community-plugin/typora-community-plugin/issues/92))
+  - refactor(ui/settings/tabs): migrate workspace-related configs from "Appearance" settings tab to the built-in "Workspace" plugin settings
+
+- **Plugin Update**
+  - [collapsible-section][]
+    - feat: add granular enable/disable controls
+    - feat: add per-feature glob pattern filtering for file path targeting
+    - feat: add frontmatter-based uncollapsableSections / collapsableSections permission filter
+  - [footnotes][]
+    - fix(reindex): can not reindex
+
 ## v2.9.0
 
 - feat(core/ui/statusbar): add **Statistics component** with extensible word-count row registry, cross-stat evaluation via `StatisticContext`, and DOM fallback for built-in stat values

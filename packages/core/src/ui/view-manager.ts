@@ -1,6 +1,8 @@
 import type { DisposeFunc } from "src/utils/types"
 import type { WorkspaceLeaf } from "./layout/workspace-leaf"
 import { WorkspaceView } from "./layout/workspace-view"
+import { wrapWithLoggingProxy } from "src/io/logger/service-logger"
+import { useService } from "src/common/service"
 
 
 export interface ViewState {
@@ -52,7 +54,20 @@ export class ViewManager {
   }
 
   registerView(type: string, viewFactory: ViewFactory): DisposeFunc {
-    this.viewByType[type] = viewFactory
+    if (process.env.IS_DEV) {
+      this.viewByType[type] = (leaf: WorkspaceLeaf, state?: ViewState) => {
+        const view = viewFactory(leaf, state)
+        return wrapWithLoggingProxy(view, type, useService('logger', [type]), {
+          args: true,
+          entry: true,
+          exit: true,
+          errors: true,
+          perf: false,
+        })
+      }
+    } else {
+      this.viewByType[type] = viewFactory
+    }
     return () => this.unregisterView(type)
   }
 

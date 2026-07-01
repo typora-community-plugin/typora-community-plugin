@@ -3,7 +3,7 @@ import type { CommandManager } from "src/command/command-manager"
 import type { ConfigRepository } from "src/io/config-repository"
 import type { ExportManager } from "src/export-manager"
 import type { HotkeyManager } from "src/hotkey-manager"
-import type { ILogger } from "src/io/logger"
+import type { ILogger } from "src/io/logger/logger"
 import type { Vault } from "src/io/vault"
 import type { I18n } from "src/locales/i18n"
 import type { MetadataManager } from "src/metadata/metadata-manager"
@@ -14,7 +14,6 @@ import type { InternalPluginManager } from "src/plugin-internal/internal-plugin-
 import type { PluginManager } from "src/plugin/plugin-manager"
 import type { PluginMarketplace } from "src/plugin/plugin-marketplace"
 import type { Settings } from "src/settings/settings"
-import type { TabsView } from "src/ui/tabs/tabs-view"
 import type { MarkdownEditor } from "src/ui/editor/markdown-editor"
 import type { MarkdownRenderer } from "src/ui/editor/markdown-renderer"
 import type { WorkspaceRibbon } from "src/ui/ribbon/workspace-ribbon"
@@ -27,6 +26,7 @@ import type { Direction, WorkspaceSplit } from "src/ui/layout/split"
 import type { WorkspaceTabs } from "src/ui/layout/tabs"
 import type { Notice } from "src/ui/components/notice"
 import { isDebug } from "./constants"
+import { wrapWithLoggingProxy } from "src/io/logger/service-logger"
 
 
 type ServiceMap = {
@@ -48,7 +48,6 @@ type ServiceMap = {
 
   'view-manager'(): ViewManager
   'workspace'(): Workspace
-  'file-tabs'(): TabsView
   'markdown-editor'(): MarkdownEditor
   'markdown-renderer'(): MarkdownRenderer
   'ribbon'(): WorkspaceRibbon
@@ -75,7 +74,7 @@ export function registerService<K extends keyof ServiceMap>
   services[id] = factory as any
 }
 
-export function useService<K extends keyof ServiceMap>(id: K, args?: Parameters<ServiceMap[K]>) {
+export function useService<K extends keyof ServiceMap>(id: K, args?: Parameters<ServiceMap[K]>): ReturnType<ServiceMap[K]> {
   if (process.env.IS_DEV) {
 
     if (!services[id]) {
@@ -102,7 +101,16 @@ export function useService<K extends keyof ServiceMap>(id: K, args?: Parameters<
     console.log(`[Service] Loading "${stacks.join(' → ')}"...`)
   }
 
-  const service = (<any>services[id])(args) as ReturnType<ServiceMap[K]>
+  let service: any = (<any>services[id])(args)
+  if (process.env.IS_DEV && id !== 'logger') {
+    service = wrapWithLoggingProxy(service, id, useService('logger', [id]), {
+      args: true,
+      entry: true,
+      exit: true,
+      errors: true,
+      perf: false,
+    })
+  }
 
   stacks.pop()
 

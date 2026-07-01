@@ -66,15 +66,15 @@ export abstract class WorkspaceParent extends WorkspaceNode {
     }
   }
 
-  findNode<R extends WorkspaceNode = WorkspaceNode>(iteratee: (node: WorkspaceNode) => boolean): R {
-    let res: WorkspaceNode
+  findNode<R extends WorkspaceNode = WorkspaceNode>(iteratee: (node: WorkspaceNode) => boolean): R | null {
+    let res: WorkspaceNode | null = null
     this.eachNodes(node => {
       if (iteratee(node)) {
         res = node
         return true
       }
     })
-    return res as R
+    return res
   }
 
   filterNodes<R extends WorkspaceNode = WorkspaceNode>(iteratee: (node: WorkspaceNode) => boolean): R[] {
@@ -97,15 +97,15 @@ export abstract class WorkspaceParent extends WorkspaceNode {
     }
   }
 
-  findLeaf<L extends WorkspaceLeaf = WorkspaceLeaf>(iteratee: (leaf: WorkspaceLeaf) => boolean): L {
-    let res: WorkspaceLeaf
+  findLeaf<L extends WorkspaceLeaf = WorkspaceLeaf>(iteratee: (leaf: WorkspaceLeaf) => boolean): L | null {
+    let res: WorkspaceLeaf | null = null
     this.eachLeaves(leaf => {
       if (iteratee(leaf)) {
         res = leaf
         return true
       }
     })
-    return res as L
+    return res
   }
 
   filterLeaves<L extends WorkspaceLeaf = WorkspaceLeaf>(iteratee: (leaf: WorkspaceLeaf) => boolean): L[] {

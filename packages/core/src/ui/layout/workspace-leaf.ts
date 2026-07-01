@@ -8,14 +8,14 @@ export class WorkspaceLeaf<V extends WorkspaceView = WorkspaceView> extends Work
 
   type = 'leaf'
 
-  state: ViewState['state']
-  viewType: string
+  state: NonNullable<ViewState['state']> = {}
+  viewType!: string
   view: V
 
   constructor(view?: V, private viewManager = useService('view-manager')) {
     super()
     this.containerEl.classList.add('typ-workspace-leaf')
-    this.view = view
+    this.view = view!
   }
 
   isLeaf(): this is WorkspaceLeaf {

@@ -10,10 +10,12 @@ import type { WorkspaceTabs } from './tabs'
 import type { WorkspaceLeaf } from './workspace-leaf'
 import { draggableTabs } from './tabs/draggable'
 import { createTabs, createUntitledTabs, openFileInActiveTabs, splitDown, splitRight } from './workspace-utils'
-import { MarkdownView } from '../views/markdown-view'
 import { onTabsContextMenu } from './tabs/contextmenu'
 import { FileTabContainer } from './tabs/file-tabs'
-import { useScrollRecord } from './tabs/use-scroll-record'
+import { useEditingTabs } from '../views/markdown-view/use-editing-tabs'
+import { usePreviewTabToSwap } from '../views/markdown-view/use-preview-tab-to-swap'
+import { KEY_OF_ENABLED_PLUGINS } from 'src/plugin-internal/internal-plugin-manager'
+import { PLUGIN_WORKSPACE_ID } from 'src/plugin-internal/plugins/plugin-workspace'
 
 
 export type WorkspaceRootEvents = {
@@ -21,7 +23,8 @@ export type WorkspaceRootEvents = {
   'leaf:open'(leaf: WorkspaceLeaf): void
   'leaf:active'(leaf: WorkspaceLeaf): void
   'leaf:will-deactive'(leaf: WorkspaceLeaf): void
-  // 'leaf:close'(leaf: WorkspaceLeaf): void
+  'leaf:will-close'(leaf: WorkspaceLeaf): void
+  'leaf:close'(leaf: WorkspaceLeaf): void
 }
 
 
@@ -51,14 +54,14 @@ export class WorkspaceRoot extends WorkspaceSplit {
         const LeafEl = (e.target as HTMLElement).closest('.typ-workspace-leaf')
         if (LeafEl) workspace.activeLeaf = this.findLeaf(leaf => leaf.containerEl === LeafEl)
 
-        const $anchorEl = $(e.target).closest('a')
+        const $anchorEl = $(e.target!).closest('a')
         if ($anchorEl.length) {
           const url = $anchorEl.attr('href')
           if (url) {
             // fix: clicking on the link out of `div#wirte` will close Typora unexpectly
             e.preventDefault()
             e.stopPropagation()
-            app.openLink($anchorEl.attr('href'))
+            app.openLink($anchorEl.attr('href')!)
           }
           else {
             editor.tryOpenLink($anchorEl)
@@ -77,16 +80,15 @@ export class WorkspaceRoot extends WorkspaceSplit {
         })
       )
 
-      useScrollRecord(this.registry)
-
       this.registry.register(
         workspace.on('file:will-open', (file) => {
+          const { editingTabs } = useEditingTabs()
           if (
             // handle: after closing the only file, it should be able to be opened again.
             file === workspace.activeFile &&
             // handle: do not re-execute after `openFileInActiveTabs` has be called once.
             //         [Call Chain] 'file:will-open' → openFileInActiveTabs() → MarkdownView#onOpen() → editor.library.openFile() → 'file:will-open'
-            file !== MarkdownView.parent?.activedLeaf.state.path
+            file !== editingTabs()?.activeLeaf.state.path
           ) {
             openFileInActiveTabs(file)
           }
@@ -94,24 +96,41 @@ export class WorkspaceRoot extends WorkspaceSplit {
 
       this.registry.register(
         decorate(editor.library, 'openFile', fn => (file, callback) => {
+          const { editingTabs, isEditingTabs } = useEditingTabs()
           const activeTabs = workspace.activeLeaf?.parent as WorkspaceTabs
           if (
-            !MarkdownView.parent ||
+            !editingTabs ||
             // handle: click file tree → open file in ActivedTabs
-            MarkdownView.parent === activeTabs ||
+            isEditingTabs(activeTabs as WorkspaceTabs) ||
             // handle: (drag ActivedTab → close ActivedTab → open SiblingTab → open file in Non-ActivedTabs) in the Tabs with MarkdownEditorView (mode: Typora)
-            MarkdownView.parent.activedLeaf.state.path === file
+            editingTabs()!.activeLeaf.state.path === file
           )
             fn(file, callback)
           else
             setTimeout(() => openFileInActiveTabs(file))
         }))
 
-      this.registry.register(workspace.on('file:open', openFileInActiveTabs))
+      this.registry.register(workspace.on('file:open', (file) => {
+        // Skip during Previewer↔Editor mode swap — the click handler handles everything
+        const { isPreviewFileToSwap } = usePreviewTabToSwap()
+        if (isPreviewFileToSwap(file)) return
+
+        // Skip when the file is already the active leaf — redundant (e.g. right-side tab open,
+        // tab activation). Only process explicit file opens (file tree, quick open, etc.)
+        if (workspace.activeLeaf?.state.path === file) return
+
+        // Skip when the file is already the editing tabs' active leaf — prevents duplicate
+        // tabs when a drag operation updates workspace.activeLeaf before the async file:open
+        // event from KEY_OPENFILE fires.
+        const { editingTabs } = useEditingTabs()
+        if (editingTabs()?.activeLeaf.state.path === file) return
+
+        openFileInActiveTabs(file)
+      }))
 
       this.registry.register(
         vault.on('file:rename', (oldPath, newPath) => {
-          const tabs = this.findLeaf(leaf => leaf.state.path === oldPath).parent as WorkspaceTabs
+          const tabs = this.findLeaf(leaf => leaf.state.path === oldPath)?.parent as WorkspaceTabs
           tabs.renameTab(oldPath, newPath)
         }))
 
@@ -189,8 +208,8 @@ export class WorkspaceRoot extends WorkspaceSplit {
     this.registry.onunload = () => {
       // Removing the current tabs in reverse order causes the left tab to keep reopening, resulting in two tabs remaining after resetting the workspace.
       // So it is necessary to handle the current Tabs separately.
-      const activeTabs = workspace.activeLeaf.parent as WorkspaceTabs
-      activeTabs.removeOthers(workspace.activeLeaf.state.path)
+      const activeTabs = workspace.activeLeaf?.parent as WorkspaceTabs
+      activeTabs.removeOthers(workspace.activeLeaf?.state.path)
 
       // Elements need to be deleted in reverse order
       this.eachLeaves(leaf => leaf.detach())
@@ -198,16 +217,17 @@ export class WorkspaceRoot extends WorkspaceSplit {
 
       this.containerEl.remove()
       workspace.activeLeaf = null
-      editor.writingArea.parentElement.setAttribute('class', '')
-      MarkdownView.parent = null
+      editor.writingArea.parentElement!.setAttribute('class', '')
+
+      const { setEditingTabs } = useEditingTabs()
+      setEditingTabs(null)
     }
 
-    settings.onChange('useWorkspace', (_, isEnabled) => {
+    const USE_WORKSPACE = [KEY_OF_ENABLED_PLUGINS, PLUGIN_WORKSPACE_ID]
+    const switchWorkspace = (_: string | string[], isEnabled: any) => {
       isEnabled ? this.registry.load() : this.registry.unload()
-    })
-
-    setTimeout(() => {
-      settings.get('useWorkspace') ? this.registry.load() : this.registry.unload()
-    })
+    }
+    settings.onChange(USE_WORKSPACE, switchWorkspace)
+    setTimeout(() => switchWorkspace(USE_WORKSPACE, settings.get(USE_WORKSPACE)))
   }
 }

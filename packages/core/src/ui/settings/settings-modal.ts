@@ -10,6 +10,7 @@ import { InternalPluginsManagerSettingTab } from './tabs/internal-plugin-manager
 import { PluginMarketplaceSettingTab } from './tabs/plugin-marketplace-setting-tab'
 import { PluginManagerSettingTab } from "./tabs/plugin-manager-setting-tab"
 import { AboutTab } from './tabs/about-tab'
+import { WorkspaceSettingTab } from './tabs-plugin/workspace'
 import { Component } from 'src/common/component'
 
 
@@ -23,10 +24,10 @@ import { Component } from 'src/common/component'
  */
 export class SettingsModal extends Component {
 
-  private modal: Modal
+  private modal!: Modal
 
-  private sidebar: HTMLElement
-  private main: HTMLElement
+  private sidebar!: HTMLElement
+  private main!: HTMLElement
 
   activeTab: SettingTab
   private tabs: SettingTab[] = []
@@ -98,6 +99,8 @@ export class SettingsModal extends Component {
     this.addTab(new PluginManagerSettingTab())
     this.addTab(new AboutTab())
 
+    this.addGroupTitle(t.groupInternalPlugins)
+
     this.addGroupTitle(t.groupPlugins)
   }
 
@@ -132,6 +135,19 @@ export class SettingsModal extends Component {
     return () => this.removeTab(tab)
   }
 
+  addCorePluginTab(tab: SettingTab) {
+    this.tabs.push(tab)
+
+    // @deprecated
+    tab.load()
+
+    const navItem = html`<div class="typ-nav__item" data-name="${tab.name}">${tab.name}</div>`
+    const pluginsGroups = Array.from(this.sidebar.querySelectorAll('.typ-nav__group-title'))
+    this.sidebar.insertBefore(navItem, pluginsGroups.pop()!)
+
+    return () => this.removeTab(tab)
+  }
+
   removeTab(tab: SettingTab) {
     this.sidebar.querySelector(`.typ-nav__item[data-name="${tab.name}"]`)?.remove()
     this.tabs = this.tabs.filter(t => t !== tab)
@@ -142,7 +158,7 @@ export class SettingsModal extends Component {
     this.sidebar.querySelector(`[data-name="${tab.name}"]`)!.classList.add('active')
 
     this.activeTab?.containerEl?.remove()
-    this.activeTab.hide()
+    this.activeTab?.hide()
 
     this.activeTab = tab
 

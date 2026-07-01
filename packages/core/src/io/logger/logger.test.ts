@@ -1,10 +1,10 @@
 import 'src/setup-test-env'
 import { jest } from '@jest/globals'
-import { Logger, badage, badages } from './logger'
+import { Logger, badge, badges } from './logger'
 
-describe('badage', () => {
+describe('badge', () => {
   test('creates badge with correct format', () => {
-    const result = badage('Test', 'red')
+    const result = badge('Test', 'red')
 
     expect(result).toHaveLength(3)
     expect(result[0]).toBe('%cTest%c ')
@@ -13,36 +13,36 @@ describe('badage', () => {
   })
 
   test('includes CSS styles in badge', () => {
-    const result = badage('DEBUG', 'dimgray')
+    const result = badge('DEBUG', 'dimgray')
 
     expect(result[1]).toContain('padding: 2px 4px;')
     expect(result[1]).toContain('border-radius: 4px;')
   })
 })
 
-describe('badages', () => {
+describe('badges', () => {
   test('combines multiple badges correctly', () => {
-    const badge1 = badage('First', 'red')
-    const badge2 = badage('Second', 'blue')
+    const badge1 = badge('First', 'red')
+    const badge2 = badge('Second', 'blue')
 
-    const result = badages(badge1, badge2)
+    const result = badges(badge1, badge2)
 
     expect(result[0]).toBe('%cFirst%c %cSecond%c ')
     expect(result).toHaveLength(5) // [template, style1, reset, style2, reset]
   })
 
   test('filters out falsy badges', () => {
-    const badge1 = badage('First', 'red')
+    const badge1 = badge('First', 'red')
     const badge2 = null as any
 
-    const result = badages(badge1, badge2)
+    const result = badges(badge1, badge2)
 
     expect(result[0]).toBe('%cFirst%c ')
     expect(result).toHaveLength(3)
   })
 
   test('handles empty array', () => {
-    const result = badages()
+    const result = badges()
 
     expect(result[0]).toBe('')
     expect(result).toHaveLength(1)

@@ -14,7 +14,11 @@ export class WorkspaceTabs extends WorkspaceParent {
 
   tabHeader = new FileTabContainer({
     className: 'typ-workspace-tab-header',
-    onToggle: (tabId, tabEl) => this.toggleTab(tabId, tabEl),
+    onToggle: (tabId, tabEl) => {
+      const leaf = this.toggleTab(tabId, tabEl)
+      const [, setActiveLeaf] = useActiveLeaf()
+      setActiveLeaf(leaf)
+    },
     onClose: (tabId, tabEl) => this.removeTab(tabId, tabEl),
   })
 
@@ -54,28 +58,27 @@ export class WorkspaceTabs extends WorkspaceParent {
 
   // --------- Tab Operators ---------
 
-  private _activeLeaf: WorkspaceLeaf
+  private _activeLeaf!: WorkspaceLeaf
 
-  get activedLeaf() {
+  get activeLeaf() {
     return this._activeLeaf ?? this.children[0] as WorkspaceLeaf
   }
 
-  toggleTab(path: string, tabEl?: HTMLElement): void {
-    this.activedLeaf.view.close()
+  toggleTab(path: string, tabEl?: HTMLElement): WorkspaceLeaf {
+    this.activeLeaf.view.close()
     this.tabContentEl.querySelector('.mod-active')?.classList.remove('mod-active')
 
     tabEl ??= this.tabHeader.getTabById(path)
     this.tabHeader.activeTab(tabEl)
 
-    const [, setActiveLeaf] = useActiveLeaf()
-    const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)
+    const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)!
     leaf.containerEl.classList.add('mod-active')
     leaf.view.open()
 
     this._activeLeaf = leaf
-    setActiveLeaf(leaf)
 
     this.emit('tab:toggle', leaf)
+    return leaf
   }
 
   renameTab(oldPath: string, newPath: string): void {
@@ -83,7 +86,7 @@ export class WorkspaceTabs extends WorkspaceParent {
     const newTab = new FileTab(newPath)
     this.tabHeader.renameTab(tabEl, newTab)
 
-    const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === oldPath)
+    const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === oldPath)!
     leaf.state.path = newPath
     leaf.view.setIcon(leaf.view.icon)
   }
@@ -92,13 +95,13 @@ export class WorkspaceTabs extends WorkspaceParent {
     tabEl ??= this.tabHeader.getTabById(path)
     this.tabHeader.closeTab(tabEl)
 
-    const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)
+    const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)!
     leaf.view.close()
     super.removeChild(leaf)
 
     if (!this.children.length) {
       if (this.getRoot() !== this.parent || this.parent.children.length > 1) {
-        this.parent.removeChild(this)
+        this.parent!.removeChild(this)
       }
       else {
         this.appendChild(createEmptyLeaf())
@@ -106,13 +109,15 @@ export class WorkspaceTabs extends WorkspaceParent {
     }
   }
 
-  removeOthers(path: string) {
-    this.toggleTab(path)
+  removeOthers(path: string): WorkspaceLeaf {
+    const leaf = this.toggleTab(path)
     this.tabHeader.closeOtherTabs(this.tabHeader.getTabById(path))
+    return leaf
   }
 
-  removeRight(path: string) {
-    this.toggleTab(path)
+  removeRight(path: string): WorkspaceLeaf {
+    const leaf = this.toggleTab(path)
     this.tabHeader.closeRightTabs(this.tabHeader.getTabById(path))
+    return leaf
   }
 }

@@ -1,9 +1,10 @@
 import path from "./path"
-import { Logger } from "./io/logger"
+import { Logger } from "./io/logger/logger"
 import { App } from "./app"
 import { coreDir } from "./common/constants"
 import { CommandManager } from "./command/command-manager"
 import { registerService, useService } from "./common/service"
+import { ServiceLogger } from "src/io/logger/service-logger"
 import { HotkeyManager } from "./hotkey-manager"
 import { ConfigRepository } from "./io/config-repository"
 import { Vault } from "./io/vault"
@@ -25,14 +26,32 @@ import { PluginMarketplace } from "./plugin/plugin-marketplace"
 import { InputBox, QuickPick } from "./ui/components/quick-open"
 import { Notice } from "./ui/components/notice"
 import { FileExplorer } from "./ui/sidebar/file-explorer"
-import { TabsView } from "./ui/tabs/tabs-view"
 import { ExportManager } from "./export-manager"
 import { WorkspaceSplit } from "./ui/layout/split"
 import { WorkspaceTabs } from "./ui/layout/tabs"
 import { MetadataManager } from "./metadata/metadata-manager"
 import { registerDefaultMetadataProviders } from "./metadata/metadata-providers"
 import { DEFAULT_INTERNAL_PLUGIN_SETTINGS, InternalPluginManager } from "./plugin-internal/internal-plugin-manager"
+import { DEFAULT_WORKSPACE_SETTINGS } from "./ui/settings/tabs-plugin/workspace"
+import { createSettingsMigration } from "./settings/settings-migration"
 
+
+// ── DEV ONLY: Attach logging listener to ServiceLogger._fire() output ──
+if (process.env.IS_DEV) {
+  const colorMap = { 'enter': '#2196f3', 'exit': '#4caf50', 'error': '#f44336' } as const
+
+  ServiceLogger.onLog((entry) => {
+    console.groupCollapsed(
+      `%c${entry.scope}%c ${entry.method}%c${entry.displayArgs ?? ''}${entry.ms != null ? ` +${entry.ms.toFixed(2)}ms` : ''}`,
+      'color:#fff;background:#555;padding:1px 4px;border-radius:3px;',
+      `color:${colorMap[entry.direction]};font-weight:bold;`,
+      'color:#888;',
+    )
+    console.groupEnd()
+  })
+}
+
+// ── End dev logging setup ──
 
 
 registerService('logger', memorize(([scope]) => new Logger(scope)))
@@ -69,9 +88,11 @@ registerService('config-repository', memorize(() => new ConfigRepository()))
 registerService('github', memorize(() => new GithubAPI()))
 
 registerService('settings', memorize(() => {
+  const [version, migrations] = createSettingsMigration()
   const settings = new Settings<any>({
     filename: 'core',
-    version: 1,
+    version,
+    migrations,
   })
 
   settings.setDefault(DEFAULT_FILE_LINK_SETTINGS)
@@ -79,6 +100,7 @@ registerService('settings', memorize(() => {
   settings.setDefault(DEFAULT_INTERNAL_PLUGIN_SETTINGS)
   settings.setDefault(DEFAULT_PLUGIN_MARKETPLACE_SETTINGS)
   settings.setDefault(DEFAULT_RIBBON_SETTINGS)
+  settings.setDefault(DEFAULT_WORKSPACE_SETTINGS)
 
   return settings
 }))
@@ -93,7 +115,6 @@ registerService('plugin-marketplace', memorize(() => new PluginMarketplace()))
 
 registerService('view-manager', memorize(() => new ViewManager()))
 registerService('workspace', memorize(() => new Workspace()))
-registerService('file-tabs', memorize(() => new TabsView()))
 registerService('markdown-editor', memorize(() => new MarkdownEditor()))
 registerService('markdown-renderer', memorize(() => new MarkdownRenderer()))
 registerService('ribbon', memorize(() => new WorkspaceRibbon()))

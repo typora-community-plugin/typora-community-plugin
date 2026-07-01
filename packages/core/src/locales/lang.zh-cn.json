@@ -17,6 +17,17 @@
     "metadata": {
       "name": "元数据 (测试版)",
       "description": "索引笔记目录中所有文件的元数据。用于其他插件（如 标签插件 `tag`）。"
+    },
+    "workspace": {
+      "name": "工作区",
+      "description": "支持分栏、多标签布局。提供工作区、文件标签等相关功能。推荐启用“应用设置 → 通用 → 切换文件时自动保存对上一个文件的更改”。",
+      "settings": {
+        "hideExtensionInFileTab": "隐藏文件标签的文件扩展名",
+        "hideExtensionInFileTabDesc": "例如，文件标签 \"File.md\" 会显示为 \"File\"。",
+        "useBlankNewTab": "显示空白 New Tab",
+        "useAutoSwap": "单击预览区域时切换编辑器和预览",
+        "useAutoSwapDesc": "单击预览区域会将其切换为 Typora 编辑器，同时将当前编辑器切换为预览。"
+      }
     }
   },
   "notice": {
@@ -36,6 +47,7 @@
     "titleGlobal": "全局设置",
     "titleVault": "本地设置",
     "groupCore": "核心设置",
+    "groupInternalPlugins": "内置插件设置",
     "groupPlugins": "社区插件设置"
   },
   "settingTabs": {
@@ -66,14 +78,7 @@
       "advancedSearchModeDesc": "使用自定义 ripgrep 引擎替换原生文件搜索，支持正则表达式。启用后搜索栏的正则按钮右侧会出现切换按钮。",
       "advanced": "高级选项",
       "ribbon": "显示活动栏",
-      "ribbonDesc": "同时会启用自定义侧边面板。",
-      "workspace": "启用工作区（支持分栏、多标签布局）",
-      "workspaceDesc": "将会禁用过时的“显示文件标签页”特性。推荐启用“应用设置 → 通用 → 切换文件时自动保存对上一个文件的更改”。",
-      "fileTabs": "显示文件标签页（已弃用）",
-      "fileTabsDesc": "推荐启用“应用设置 → 通用 → 切换文件时自动保存对上一个文件的更改”。",
-      "hideExtensionInFileTab": "隐藏文件标签的文件扩展名",
-      "hideExtensionInFileTabDesc": "例如，文件标签 “File.md” 会显示为 “File”。",
-      "useBlankNewTab": "显示空白 New Tab"
+      "ribbonDesc": "同时会启用自定义侧边面板。"
     },
     "hotkey": {
       "name": "快捷键",

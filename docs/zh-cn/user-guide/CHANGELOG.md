@@ -1,5 +1,21 @@
 # 更新日志
 
+## v2.9.3
+
+- refactor(settings): 迁移 settings 配置文件到 v2 版本
+
+- **工作区**
+  - feat(core/ui/views/markdown-view): 点击自动切换编辑/预览视图 ([#92](https://github.com/typora-community-plugin/typora-community-plugin/issues/92))
+  - refactor(ui/settings/tabs): 将工作区相关配置从“外观”配置页迁移到内置插件“工作区”配置页
+
+- **插件更新**
+  - [collapsible-section][]
+    - feat: add granular enable/disable controls
+    - feat: add per-feature glob pattern filtering for file path targeting
+    - feat: add frontmatter-based uncollapsableSections / collapsableSections permission filter
+  - [footnotes][]
+    - fix(reindex): can not reindex
+
 ## v2.9.0
 
 - feat(core/ui/statusbar): 新增 **统计组件（Statistics）**，支持可扩展的词数行注册、通过 `StatisticContext` 进行跨统计项评估，以及内置统计值的 DOM 回退方案

@@ -4,6 +4,7 @@ content {
     left: var(--typ-editor-left) !important;
     width: var(--typ-editor-width);
     height: var(--typ-editor-height);
+    transition: none !important;
 
     .html-for-mac & {
       // fix: `<content>` will cover `.typ-workspace-root` in webview (Safari) on macOS.
@@ -32,6 +33,7 @@ content {
 .typ-markdown-view {
   position: relative;
   width: 100%;
+  height: 100%;
 
   &.mode-typora object {
     display: block;

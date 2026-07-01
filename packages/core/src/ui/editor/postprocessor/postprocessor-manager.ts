@@ -1,10 +1,10 @@
 import { editor } from "typora"
 import { useService } from "src/common/service"
+import { useEventBus } from "src/common/eventbus"
 import type { MarkdownEditor } from "../markdown-editor"
 import { PostProcessor, type RawProcessor } from './postprocessor'
 import { HtmlPostProcessor } from './html-postprocessor'
 import { CodeblockPostProcessor } from './codeblock-postprocessor'
-import type { WorkspaceLeaf } from "src/ui/layout/workspace-leaf"
 import { CodeblockExportProcessor } from "src/export-manager"
 import { noop } from "src/utils"
 import type { DisposeFunc } from "src/utils/types"
@@ -72,9 +72,8 @@ export function bindPostProcessorToEditor(mdEditor: MarkdownEditor) {
   const { postProcessor } = mdEditor
 
   setTimeout(() => {
-    const workspace = useService('workspace')
-    workspace.rootSplit.on('leaf:open', (leaf: WorkspaceLeaf) => {
-      if (leaf.type === MarkdownView.type && (leaf.view as MarkdownView).isEidtor())
+    useEventBus('workspace-root').on('leaf:open', leaf => {
+      if (leaf.type === MarkdownView.type && (leaf.view as MarkdownView).isEditor())
         postProcessor.processAll()
     })
   })

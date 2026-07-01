@@ -5,9 +5,13 @@ import type { WorkspaceTabs } from "./tabs"
 import type { WorkspaceLeaf } from "./workspace-leaf"
 
 
+export interface ScrollState {
+  scrollTop: number
+}
+
 export abstract class WorkspaceView extends Component implements Closeable {
 
-  containerEl: HTMLElement
+  containerEl!: HTMLElement
 
   icon = 'fa-file-text-o'
 
@@ -41,9 +45,19 @@ export abstract class WorkspaceView extends Component implements Closeable {
   close() {
     if (!this.isOpen) return
     this.isOpen = false
+    useEventBus('workspace-root').emit('leaf:will-close', this.leaf)
     this.onClose()
+    useEventBus('workspace-root').emit('leaf:close', this.leaf)
     this.unload()
   }
 
   onClose() { }
+
+  getScroll(): ScrollState {
+    return { scrollTop: this.leaf.containerEl.scrollTop }
+  }
+
+  applyScroll(state: ScrollState): void {
+    this.leaf.containerEl.scrollTop = state.scrollTop
+  }
 }

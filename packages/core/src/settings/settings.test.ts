@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals'
 import 'src/setup-test-env'
-import { Settings } from "./settings"
+import { Settings, SettingMigrations } from "./settings"
+import { useService } from "src/common/service"
 
 
 describe('class Settings', () => {
@@ -44,7 +45,7 @@ describe('class Settings', () => {
 
   describe('setDefault()', () => {
 
-    it('should set default settings when _stores.settings is empty', () => {
+    it('should set default settings when _data is empty', () => {
       const defaultSettings = {
         key1: 'value1',
         key2: 'value2',
@@ -53,12 +54,12 @@ describe('class Settings', () => {
       settings.setDefault(defaultSettings)
 
       // @ts-ignore
-      expect(settings._stores.settings).toEqual({})
+      expect(settings._data).toEqual({})
       // @ts-ignore
-      expect(Object.getPrototypeOf(settings._stores.settings)).toEqual(defaultSettings)
+      expect(Object.getPrototypeOf(settings._data)).toEqual(defaultSettings)
     })
 
-    it('should merge default settings with existing _stores.settings', () => {
+    it('should merge default settings with existing _data', () => {
       settings.set('existingKey', 'existingValue')
 
       const defaultSettings = {
@@ -92,7 +93,7 @@ describe('class Settings', () => {
 
   describe('set()', () => {
 
-    it('should set the value in _stores.settings', () => {
+    it('should set the value in _data', () => {
       const testKey = 'testKey'
       const testValue = 'testValue'
 
@@ -228,6 +229,198 @@ describe('class Settings', () => {
 
       // @ts-ignore
       expect(settings._listeners[key]).toBeUndefined()
+    })
+  })
+
+  describe('migrations', () => {
+
+    let configRepo: any
+    beforeEach(() => {
+      jest.useFakeTimers()
+      configRepo = useService('config-repository')
+      configRepo.readConfigJson.mockReset()
+      configRepo.readConfigJson.mockImplementation((filename: string, defaultValue: any) => defaultValue)
+      configRepo.writeConfigJson.mockReset()
+      configRepo.setConfigDir(`/unique-config-dir-${Date.now()}-${Math.random()}`)
+    })
+
+    afterEach(() => {
+      jest.useRealTimers()
+    })
+
+    it('should not migrate when file version equals code version', () => {
+      configRepo.readConfigJson.mockReturnValue({
+        version: 1,
+        settings: { theme: 'dark' },
+      })
+
+      const migrations = new SettingMigrations()
+      migrations.addMigration(1, 2, (oldStores) => ({
+        ...oldStores,
+        settings: { ...oldStores.settings, themeMode: oldStores.settings.theme },
+      }))
+
+      const s = new Settings<any>({
+        filename: 'migration-test',
+        version: 1,
+        migrations,
+      })
+
+      jest.runAllTimers()
+
+      expect(s.get('theme')).toBe('dark')
+      expect(configRepo.writeConfigJson).not.toHaveBeenCalled()
+      expect(migrations.hasMigrated).toBe(false)
+    })
+
+    it('should migrate when file version is less than code version', () => {
+      configRepo.readConfigJson.mockReturnValue({
+        version: 1,
+        settings: { theme: 'dark', fontSize: 14 },
+      })
+
+      const migrations = new SettingMigrations()
+      migrations.addMigration(1, 2, (oldStores) => ({
+        version: 2,
+        settings: {
+          ...oldStores.settings,
+          appearance: {
+            theme: oldStores.settings.theme,
+            fontSize: oldStores.settings.fontSize,
+          },
+        },
+      }))
+
+      const s = new Settings<any>({
+        filename: 'migration-test',
+        version: 2,
+        migrations,
+      })
+
+      jest.runAllTimers()
+
+      expect(migrations.hasMigrated).toBe(false)
+      expect(configRepo.writeConfigJson).toHaveBeenCalledTimes(1)
+      expect(s.get('appearance')).toEqual({
+        theme: 'dark',
+        fontSize: 14,
+      })
+    })
+
+    it('should perform chained migrations across multiple versions', () => {
+      configRepo.readConfigJson.mockReturnValue({
+        version: 1,
+        settings: { theme: 'dark', fontSize: 14 },
+      })
+
+      const migrations = new SettingMigrations()
+      migrations
+        .addMigration(1, 2, (oldStores) => ({
+          version: 2,
+          settings: {
+            ...oldStores.settings,
+            appearance: {
+              theme: oldStores.settings.theme,
+              fontSize: oldStores.settings.fontSize,
+            },
+          },
+        }))
+        .addMigration(2, 3, (oldStores) => ({
+          version: 3,
+          settings: {
+            ...oldStores.settings,
+            appearance: {
+              ...oldStores.settings.appearance,
+              lineHeight: 1.6,
+            },
+          },
+        }))
+
+      const s = new Settings<any>({
+        filename: 'migration-test',
+        version: 3,
+        migrations,
+      })
+
+      jest.runAllTimers()
+
+      expect(migrations.hasMigrated).toBe(false)
+      expect(configRepo.writeConfigJson).toHaveBeenCalledTimes(1)
+      expect(s.get('appearance')).toEqual({
+        theme: 'dark',
+        fontSize: 14,
+        lineHeight: 1.6,
+      })
+    })
+
+    it('should migrate only from intermediate version when file is partially migrated', () => {
+      configRepo.readConfigJson.mockReturnValue({
+        version: 2,
+        settings: {
+          appearance: { theme: 'light', fontSize: 16 },
+        },
+      })
+
+      const migrations = new SettingMigrations()
+      migrations
+        .addMigration(1, 2, (oldStores) => ({
+          version: 2,
+          settings: {
+            ...oldStores.settings,
+            appearance: {
+              theme: oldStores.settings.theme,
+              fontSize: oldStores.settings.fontSize,
+            },
+          },
+        }))
+        .addMigration(2, 3, (oldStores) => ({
+          version: 3,
+          settings: {
+            ...oldStores.settings,
+            appearance: {
+              ...oldStores.settings.appearance,
+              lineHeight: 1.6,
+            },
+          },
+        }))
+
+      const s = new Settings<any>({
+        filename: 'migration-test',
+        version: 3,
+        migrations,
+      })
+
+      jest.runAllTimers()
+
+      expect(configRepo.writeConfigJson).toHaveBeenCalledTimes(1)
+      expect(s.get('appearance')).toEqual({
+        theme: 'light',
+        fontSize: 16,
+        lineHeight: 1.6,
+      })
+    })
+
+    it('should not call save when no migrations are needed', () => {
+      configRepo.readConfigJson.mockReturnValue({
+        version: 2,
+        settings: { appearance: { theme: 'dark' } },
+      })
+
+      const migrations = new SettingMigrations()
+      migrations.addMigration(1, 2, (oldStores) => ({
+        ...oldStores,
+        settings: { appearance: { theme: oldStores.settings.theme } },
+      }))
+
+      new Settings<any>({
+        filename: 'migration-test',
+        version: 2,
+        migrations,
+      })
+
+      jest.runAllTimers()
+
+      expect(configRepo.writeConfigJson).not.toHaveBeenCalled()
     })
   })
 })

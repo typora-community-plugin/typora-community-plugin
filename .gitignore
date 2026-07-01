@@ -19,6 +19,7 @@ node_modules
 dist
 typings
 typora-community-plugin.zip
+*.log
 
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store
