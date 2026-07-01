@@ -14,6 +14,8 @@ import { onTabsContextMenu } from './tabs/contextmenu'
 import { FileTabContainer } from './tabs/file-tabs'
 import { useEditingTabs } from '../views/markdown-view/use-editing-tabs'
 import { usePreviewTabToSwap } from '../views/markdown-view/use-preview-tab-to-swap'
+import { KEY_OF_ENABLED_PLUGINS } from 'src/plugin-internal/internal-plugin-manager'
+import { PLUGIN_WORKSPACE_ID } from 'src/plugin-internal/plugins/plugin-workspace'
 
 
 export type WorkspaceRootEvents = {
@@ -220,5 +222,12 @@ export class WorkspaceRoot extends WorkspaceSplit {
       const { setEditingTabs } = useEditingTabs()
       setEditingTabs(null)
     }
+
+    const USE_WORKSPACE = [KEY_OF_ENABLED_PLUGINS, PLUGIN_WORKSPACE_ID]
+    const switchWorkspace = (_: string | string[], isEnabled: any) => {
+      isEnabled ? this.registry.load() : this.registry.unload()
+    }
+    settings.onChange(USE_WORKSPACE, switchWorkspace)
+    setTimeout(() => switchWorkspace(USE_WORKSPACE, settings.get(USE_WORKSPACE)))
   }
 }

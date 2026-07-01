@@ -4,7 +4,7 @@ import { MetadataPlugin, PLUGIN_METADATA_ID } from "./plugins/plugin-metadata"
 import { WorkspacePlugin, PLUGIN_WORKSPACE_ID } from "./plugins/plugin-workspace"
 
 
-const KEY_OF_ENABLED_PLUGINS = 'internalPlugin.enabledPlugins'
+export const KEY_OF_ENABLED_PLUGINS = 'internalPlugin.enabledPlugins'
 
 export type InternalPluginSettings = {
   [KEY_OF_ENABLED_PLUGINS]: Record<string, boolean>
@@ -60,9 +60,8 @@ export class InternalPluginManager {
 
   enablePlugin(id: string) {
     try {
-      this.enabledPlugins[id] = true
+      this.settings.set([KEY_OF_ENABLED_PLUGINS, id], true)
       this.instances[id].load()
-      this.settings.set(KEY_OF_ENABLED_PLUGINS, { ...this.enabledPlugins })
     } catch (error) {
       this.logger.error(error)
     }
@@ -70,9 +69,8 @@ export class InternalPluginManager {
 
   disablePlugin(id: string) {
     try {
-      this.enabledPlugins[id] = false
+      this.settings.set([KEY_OF_ENABLED_PLUGINS, id], false)
       this.instances[id].unload()
-      this.settings.set(KEY_OF_ENABLED_PLUGINS, { ...this.enabledPlugins })
     } catch (error) {
       this.logger.error(error)
     }

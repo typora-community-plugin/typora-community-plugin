@@ -75,10 +75,9 @@ export class Settings<T extends Record<string, any>>
     })
     this._fileVersion = rawStores.version
 
-    const deserialized = Store.deserialize(rawStores.settings, this._defaultSettings)
     this._data = Object.assign(
       Object.create(this._defaultSettings),
-      deserialized
+      rawStores.settings
     )
 
     Object.keys(this._defaultSettings).forEach((key: keyof T) => {
@@ -98,7 +97,7 @@ export class Settings<T extends Record<string, any>>
   @debounced(1e3)
   save() {
     this.logger.debug(`Saving settings to ${this.filename}.json`)
-    this.config.writeConfigJson(this.filename, { version: this._fileVersion, settings: Store.serialize(this._data) })
+    this.config.writeConfigJson(this.filename, { version: this._fileVersion, settings: this._data })
   }
 
   migrateTo(newVersion: number, transform: (oldStores: SettingsFile<any>) => any) {
