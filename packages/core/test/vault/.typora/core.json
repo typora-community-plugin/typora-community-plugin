@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "settings": {
     "showNotSupportedFile": true,
     "mdLinkWithoutExtension": true,
@@ -20,12 +20,11 @@
         "order": 2
       }
     },
-    "showFileTabs": false,
-    "useWorkspace": true,
     "internalPlugin.enabledPlugins": {
       "internal.metadata": true,
       "internal.workspace": true
     },
-    "advancedSearchMode": true
+    "advancedSearchMode": true,
+    "useAutoSwap": false
   }
 }
