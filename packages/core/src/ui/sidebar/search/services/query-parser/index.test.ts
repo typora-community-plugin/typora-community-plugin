@@ -105,8 +105,13 @@ describe('tryParse', () => {
     expect((ast as TermNode).pattern).toBe('hello')
   })
 
-  it('multiple bare words without quotes returns null (pure text)', () => {
-    expect(tryParse('hello world')).toBeNull()
+  it('multiple bare words returns AND of TermNodes', () => {
+    const ast = tryParse('hello world')
+    expect(ast).not.toBeNull()
+    expect(ast!.type).toBe('and')
+    const and = ast as AndNode
+    expect(and.children).toHaveLength(2)
+    expect(and.children.every(c => c.type === 'term')).toBe(true)
   })
 
   it('single field prefix returns FieldNode', () => {

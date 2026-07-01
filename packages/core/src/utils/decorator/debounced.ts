@@ -3,7 +3,7 @@ import { debounce } from "src/utils/schedule/debounce"
 
 export function debounced(delay: number): MethodDecorator {
   return function (
-    target: new (...args: any[]) => any,
+    target,
     propertyKey,
     descriptor
   ) {

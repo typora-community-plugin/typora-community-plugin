@@ -5,7 +5,7 @@ import typoraPlugin from 'esbuild-plugin-typora'
 const typora = typoraPlugin()
 
 export default {
-  async processAsync(source, sourcePath, { transformerConfig }) {
+  async process(source, sourcePath, transformerConfig) {
     const { outputFiles } = await esbuild.build({
       target: "esnext",
       bundle: false,
@@ -24,10 +24,14 @@ export default {
       ],
     })
 
+    const codeGlobalPrepend = `import{createRequire}from"module";globalThis.reqnode=globalThis.reqnode||(createRequire(import.meta.url));\n`
+
     return outputFiles.reduce((result, outputFile) => {
       const key = outputFile.path.endsWith(".map") ? "map" : "code"
 
-      result[key] = outputFile.text
+      result[key] = key === 'code'
+        ? codeGlobalPrepend + outputFile.text
+        : outputFile.text
 
       return result
     }, {})

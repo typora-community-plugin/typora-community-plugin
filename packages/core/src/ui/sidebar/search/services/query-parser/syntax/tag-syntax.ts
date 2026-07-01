@@ -36,7 +36,7 @@ export const TagSyntaxHandler: SyntaxHandler = {
     // 2. Check inline tags from body text (#word patterns) - case-insensitive exact match
     const patternLower = node.pattern.toLowerCase()
     for (const tag of context.inlineTags ?? []) {
-      if (tag === patternLower) return true
+      if (tag.toLowerCase() === patternLower) return true
     }
 
     return false
