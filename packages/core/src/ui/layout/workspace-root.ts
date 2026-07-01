@@ -217,7 +217,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
 
       this.containerEl.remove()
       workspace.activeLeaf = null
-      editor.writingArea.parentElement!.setAttribute('class', '')
+      setTimeout(() => editor.writingArea.parentElement!.setAttribute('class', ''))
 
       const { setEditingTabs } = useEditingTabs()
       setEditingTabs(null)
