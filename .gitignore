@@ -16,6 +16,7 @@ references/
 node_modules
 
 # output
+coverage
 dist
 typings
 typora-community-plugin.zip
