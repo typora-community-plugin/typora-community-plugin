@@ -6,20 +6,21 @@ import { throttle } from 'src/utils'
 
 
 const TBODY_SEL = 'li.ty-footer-word-count-all table tbody'
+const SELECTION_TBODY_SEL = 'li.footer-word-count-selection table tbody'
+
+/** Maps built-in Typora footer stat IDs to their corresponding DOM element selectors. */
+export const DOM_STAT_IDS: Record<string, string> = {
+  'reading-time': '#footer-read-time-count-td',
+  'lines': '#footer-line-count-td',
+  'words': '#footer-word-count-td',
+  'characters': '#footer-char-count-td',
+}
 
 /**
  * Evaluation context passed to {@link StatisticHandler.eval}. Provides lazy-cached access
  * to the current document's markdown content and cross-stat value sharing.
  */
 export class StatisticContext {
-
-  /** Maps built-in Typora footer stat IDs to their corresponding DOM element selectors. */
-  private static readonly _DOM_STAT_IDS: Record<string, string> = {
-    'reading-time': '#footer-read-time-count-td',
-    'lines': '#footer-line-count-td',
-    'words': '#footer-word-count-td',
-    'characters': '#footer-char-count-td',
-  }
 
   private _markdown: string | undefined
   private readonly _values: Record<string, string | null> = {}
@@ -29,8 +30,12 @@ export class StatisticContext {
     return this._markdown ??= editor.getMarkdown()
   }
 
-  set markdown(value: string) {
-    this._markdown = value
+  /**
+   * Reads the currently selected plain text (not markdown) from the DOM.
+   * Returns an empty string when no selection exists.
+   */
+  get selectionText(): string {
+    return window.getSelection()?.toString() ?? ''
   }
 
   /**
@@ -45,7 +50,7 @@ export class StatisticContext {
 
   /** Lazy-load a built-in stat value from the Typora footer DOM. */
   private _lazyFromDOM(id: string): string | null {
-    const selector = StatisticContext._DOM_STAT_IDS[id]
+    const selector = DOM_STAT_IDS[id]
     if (!selector) return null
     const el = document.querySelector<HTMLElement>(selector)
     const val = el?.textContent?.trim() ?? null
@@ -84,12 +89,14 @@ export type StatisticHandler = {
 export class Statistics extends Component {
 
   private _stats: StatisticHandler[] = []
+  private _selectionStats: StatisticHandler[] = []
   private _observer: MutationObserver | null = null
 
   onload(): void {
     this.register(
       decorate.afterCall(editor.wordCount, 'updateLabel', () => {
         this._updateAllStats()
+        this._updateAllSelectionStats()
       }))
 
     this._observePanelClass()
@@ -98,7 +105,9 @@ export class Statistics extends Component {
   onunload(): void {
     this._disconnectObserver()
     this._removeInjectedRows()
+    this._removeInjectedSelectionRows()
     this._stats = []
+    this._selectionStats = []
   }
 
 
@@ -123,6 +132,27 @@ export class Statistics extends Component {
     return () => {
       this._stats = this._stats.filter(s => s !== stat)
       $(`#typ-wc-${stat.id}`).closest('tr').remove()
+    }
+  }
+
+  /**
+   * Register a statistic row in the selection section of the word-count panel.
+   *
+   * If the panel is open the row is injected and synced immediately.
+   * Returns a dispose function that unregisters the statistic and removes its DOM row.
+   */
+  registerSelectionStatistic(stat: StatisticHandler): DisposeFunc {
+    if (this._selectionStats.some(s => s.id === stat.id)) throw new Error(`[WordCountStatistics] Duplicate selection statistic id: "${stat.id}"`)
+
+    this._selectionStats.push(stat)
+    if (document.body.classList.contains('ty-show-word-count')) {
+      this._injectSelectionRow(stat)
+      this._updateSelectionStat(stat, new StatisticContext())
+    }
+
+    return () => {
+      this._selectionStats = this._selectionStats.filter(s => s !== stat)
+      $(`#typ-wc-sel-${stat.id}`).closest('tr').remove()
     }
   }
 
@@ -155,11 +185,16 @@ export class Statistics extends Component {
     if (this._stats.length > 0 && !document.querySelector(`#typ-wc-${this._stats[0].id}`)) {
       this._stats.forEach(s => this._injectRow(s))
     }
+    if (this._selectionStats.length > 0 && !document.querySelector(`#typ-wc-sel-${this._selectionStats[0].id}`)) {
+      this._selectionStats.forEach(s => this._injectSelectionRow(s))
+    }
     this._updateAllStats()
+    this._updateAllSelectionStats()
   }
 
   private _onPanelClose(): void {
     this._removeInjectedRows()
+    this._removeInjectedSelectionRows()
   }
 
   private _updateAllStats = throttle(() => {
@@ -168,8 +203,25 @@ export class Statistics extends Component {
     this._stats.forEach(s => this._updateStat(s, context))
   }, 167)
 
+  private _updateAllSelectionStats = throttle(() => {
+    if (!document.body.classList.contains('ty-show-word-count')) return
+    const context = new StatisticContext()
+    this._selectionStats.forEach(s => this._updateSelectionStat(s, context))
+  }, 167)
+
   private _updateStat(stat: StatisticHandler, context: StatisticContext): void {
     const $cell = $(`#typ-wc-${stat.id}`)
+    if (!$cell.length) return
+
+    const val = stat.eval(context)
+    context.set(stat.id, val)
+    val === null
+      ? $cell.closest('tr').hide()
+      : ($cell.closest('tr').show(), $cell.text(val))
+  }
+
+  private _updateSelectionStat(stat: StatisticHandler, context: StatisticContext): void {
+    const $cell = $(`#typ-wc-sel-${stat.id}`)
     if (!$cell.length) return
 
     const val = stat.eval(context)
@@ -189,7 +241,18 @@ export class Statistics extends Component {
     }
   }
 
+  private _injectSelectionRow(stat: StatisticHandler): void {
+    const $tbody = $(SELECTION_TBODY_SEL)
+    if ($tbody.length) {
+      $tbody.append(`<tr><td id="typ-wc-sel-${stat.id.replace(/#/g, '\\#')}">-</td><td>${stat.name}</td><td></td></tr>`)
+    }
+  }
+
   private _removeInjectedRows(): void {
     this._stats.forEach(s => $(`#typ-wc-${s.id}`).closest('tr').remove())
+  }
+
+  private _removeInjectedSelectionRows(): void {
+    this._selectionStats.forEach(s => $(`#typ-wc-sel-${s.id}`).closest('tr').remove())
   }
 }

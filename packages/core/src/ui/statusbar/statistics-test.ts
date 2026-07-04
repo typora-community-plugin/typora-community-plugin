@@ -13,3 +13,11 @@ export const TEST_STATS: StatisticHandler = {
     return String(countUp())
   },
 }
+
+export const TEST_SELECTION_STATS: StatisticHandler = {
+  id: 'count-up',
+  name: 'counted times',
+  eval(ctx) {
+    return String(countUp())
+  },
+}
