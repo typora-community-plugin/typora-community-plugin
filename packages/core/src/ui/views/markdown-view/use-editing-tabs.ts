@@ -16,7 +16,7 @@ export const useEditingTabs = memorize(() => {
       return editingTabs === tabs
     },
     isEditingSingleChildTabs(): boolean {
-      return editingTabs?.children.length === 1 ?? false
+      return editingTabs?.children.length === 1
     },
   }
 })

@@ -53,6 +53,7 @@ export class Store<T extends Record<string, any>> {
     }
   }
 
+  addChangeListener<K extends keyof T>(key: K, listener: (key: K, value: T[K]) => void): DisposeFunc
   addChangeListener<K extends keyof T>(
     key: K | string[] | '*',
     listener: (key: keyof T, value: T[keyof T]) => void
@@ -65,7 +66,7 @@ export class Store<T extends Record<string, any>> {
       return noop
     }
     this._listeners[keyPath].push(listener as any)
-    return () => this.removeChangeListener(key, listener)
+    return () => this.removeChangeListener(key as any, listener)
   }
 
   /**
@@ -73,9 +74,10 @@ export class Store<T extends Record<string, any>> {
    */
   onChange = this.addChangeListener
 
+  removeChangeListener<K extends keyof T>(key: K, listener: (key: K, value: T[K]) => void): void
   removeChangeListener<K extends keyof T>(
     key: K | string[] | '*',
-    listener: (key: keyof T, value: T[keyof T]) => void
+    listener: (key: K | string[], value: any) => void
   ) {
     const keyPath = _normalizeToPathKey(key as string | string[])
     if (!this._listeners[keyPath]) return

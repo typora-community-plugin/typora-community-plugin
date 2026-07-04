@@ -74,7 +74,7 @@ export abstract class WorkspaceParent extends WorkspaceNode {
         return true
       }
     })
-    return res
+    return res as unknown as R | null
   }
 
   filterNodes<R extends WorkspaceNode = WorkspaceNode>(iteratee: (node: WorkspaceNode) => boolean): R[] {
@@ -105,7 +105,7 @@ export abstract class WorkspaceParent extends WorkspaceNode {
         return true
       }
     })
-    return res
+    return res as unknown as L | null
   }
 
   filterLeaves<L extends WorkspaceLeaf = WorkspaceLeaf>(iteratee: (leaf: WorkspaceLeaf) => boolean): L[] {
