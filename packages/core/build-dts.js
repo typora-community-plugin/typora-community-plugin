@@ -4,7 +4,13 @@ import * as fs from 'node:fs/promises'
 
 await fs.rm('./typings', { recursive: true, force: true })
 
-child_process.execSync('tspc -p .', { cwd: process.cwd() })
+try {
+  child_process.execSync('tspc -p .', { cwd: process.cwd(), stdio: 'inherit' })
+} catch (e) {
+  if (e.stdout) console.error(e.stdout.toString())
+  if (e.stderr) console.error(e.stderr.toString())
+  process.exit(1)
+}
 
 await fs.copyFile('./src/utils/types.d.ts', './typings/utils/types.d.ts')
 

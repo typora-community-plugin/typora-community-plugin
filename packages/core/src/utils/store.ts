@@ -53,6 +53,7 @@ export class Store<T extends Record<string, any>> {
     }
   }
 
+  addChangeListener<K extends keyof T>(key: string[] | '*', listener: (key: K | string[], value: T[keyof T]) => void): DisposeFunc
   addChangeListener<K extends keyof T>(key: K, listener: (key: K, value: T[K]) => void): DisposeFunc
   addChangeListener<K extends keyof T>(
     key: K | string[] | '*',
@@ -74,6 +75,7 @@ export class Store<T extends Record<string, any>> {
    */
   onChange = this.addChangeListener
 
+  removeChangeListener<K extends keyof T>(key: string[] | '*', listener: (key: K | string[], value: T[keyof T]) => void): void
   removeChangeListener<K extends keyof T>(key: K, listener: (key: K, value: T[K]) => void): void
   removeChangeListener<K extends keyof T>(
     key: K | string[] | '*',
