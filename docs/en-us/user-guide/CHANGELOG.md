@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.9.6
+
+- **Workspace**
+  - fix(core/ui/layout/workspace-root): can not reopen after closing all tabs
+
+- **Developer**
+  - feat(core/ui/statusbar/statistics): add `registerSelectionStatistic()` method to register custom selection count stat row
+
 ## v2.9.4
 
 - refactor(settings): migrate settings config to v2

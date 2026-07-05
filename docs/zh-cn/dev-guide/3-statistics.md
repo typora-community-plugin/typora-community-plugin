@@ -4,14 +4,15 @@ Statistics 模块允许插件在 Typora 的词数统计面板（可通过 `Ctrl+
 
 ## 注册统计项
 
-通过 `statistics` 服务上的 `registerStatistic()` 方法添加新行：
+### 注册普通统计行
+
+通过 `registerStatistic()` 方法添加新行：
 
 ```js
 // typora-plugin-example /src/main.ts
 
 export default class extends Plugin {
   onload() {
-    
     this.app.plugins.registerStatistic({
       id: 'my-stat',
       name: '我的统计',
@@ -25,19 +26,47 @@ export default class extends Plugin {
 }
 ```
 
-插件卸载时，已注册的统计项会自动移除。
+### 注册选中区域统计行
+
+通过 `registerSelectionStatistic()` 方法在词数面板的"选中区域"章节中注册统计行：
+
+```js
+// typora-plugin-example /src/main.ts
+
+export default class extends Plugin {
+  onload() {
+    this.app.plugins.registerSelectionStatistic({
+      id: 'selected-lines',
+      name: '选中行数',
+      eval(context) {
+        const selectionText = context.selectionText
+        const lines = selectionText.split('\n').filter(l => l.trim()).length
+        return lines > 0 ? String(lines) : null
+      }
+    })
+  }
+}
+```
+
+两种注册方法均返回一个 dispose 函数，调用后可注销统计项并移除其 DOM 行。
+
+```js
+const dispose = this.app.plugins.registerStatistic(...)
+// ...后续需要时取消注册
+dispose()
+```
 
 ## StatisticHandler
 
-调用 `registerStatistic()` 时需要传入一个包含以下字段的 handler 对象：
+传递给 `registerStatistic()` / `registerSelectionStatistic()` 的 handler 对象包含以下字段：
 
 | 字段          | 类型                                              | 说明                                                                                         |
 | ------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `id`          | `string`                                          | 所有已注册统计项中的唯一标识符。用作 DOM ID 前缀（`typ-wc-{id}`），不得与其他注册项冲突。    |
+| `id`          | `string`                                          | 所有已注册统计项（含普通与选中区域统计）中的唯一标识符。用作 DOM ID 前缀（普通为 `typ-wc-{id}`，选中区域为 `typ-wc-sel-{id}`），不得与其他注册项冲突。    |
 | `name`        | `string`                                          | 显示在统计行中的名称 / 单位标签。                                                            |
 | `eval(context)` | `(context: StatisticContext) => string \| null`   | 计算该统计项的值。                                                                           |
 
-`eval()` 方法会在词数面板打开或 Markdown 内容变化时被调用。返回非空字符串即可显示值，返回 `null` 则隐藏该行。
+`eval()` 方法会在词数面板打开、Markdown 内容变化或被选中区域变化时被调用。返回非空字符串即可显示值，返回 `null` 则隐藏该行。
 
 ## StatisticContext
 
@@ -47,10 +76,17 @@ export default class extends Plugin {
 
 ```ts
 get markdown(): string
-set markdown(value: string)
 ```
 
-惰性读取当前文档的 Markdown 内容，仅读取一次；后续访问会返回缓存值。你也可以通过 setter 覆写它来进行测试或自定义处理。
+惰性读取当前文档的 Markdown 内容，仅读取一次；后续访问会返回缓存值。
+
+### `context.selectionText` — 选中文本
+
+```ts
+get selectionText(): string
+```
+
+从 DOM 读取当前选中的纯文本（非 Markdown）。当没有选中区域时返回空字符串。
 
 ### `context.get(id)` — 跨统计值共享
 
@@ -60,7 +96,7 @@ get(id: string): string | null
 
 按 ID 检索之前计算的统计值，使一个统计项可以依赖于另一个：
 
-- 对于 Typora 内置底部统计（`reading-time`、`lines`、`words`、`characters`），如果不存在之前计算的值，则会回退到从原始 DOM 中惰性读取。
+- 对于 Typora 内置底部统计（`reading-time`、`lines`、`words`、`characters`、`selected-words`、`selected-characters`），如果不存在之前计算的值，则会回退到从原始 DOM 中惰性读取。
 - 如果该统计尚未被计算或已被隐藏，则返回 `null`。
 
 ```js

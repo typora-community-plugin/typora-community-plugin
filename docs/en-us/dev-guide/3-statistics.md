@@ -1,17 +1,18 @@
 # Statistics API
 
-The Statistics module allows plugins to register custom statistic rows in Typora's word-count footer panel (accessible via `Ctrl+Shift+W`). Registered statistics display alongside built-in stats like word count, character count, and reading time.
+The Statistics module allows plugins to register custom statistic rows in Typora's word-count panel (accessible via `Ctrl+Shift+W`). Registered statistics display alongside built-in stats like word count, character count, and reading time.
 
 ## Register a Statistic
 
-Use `registerStatistic()` on the `statistics` service to add a new row:
+### Register a regular statistic row
+
+Add new rows with the `registerStatistic()` method:
 
 ```js
 // typora-plugin-example /src/main.ts
 
 export default class extends Plugin {
   onload() {
-    
     this.app.plugins.registerStatistic({
       id: 'my-stat',
       name: 'My Statistic',
@@ -25,43 +26,78 @@ export default class extends Plugin {
 }
 ```
 
-Registered statistics are automatically removed when the plugin is unloaded.
+### Register a selection statistic row
+
+Register a statistic row in the "Selection" section of the word-count panel with the `registerSelectionStatistic()` method:
+
+```js
+// typora-plugin-example /src/main.ts
+
+export default class extends Plugin {
+  onload() {
+    this.app.plugins.registerSelectionStatistic({
+      id: 'selected-lines',
+      name: 'Selected Lines',
+      eval(context) {
+        const selectionText = context.selectionText
+        const lines = selectionText.split('\n').filter(l => l.trim()).length
+        return lines > 0 ? String(lines) : null
+      }
+    })
+  }
+}
+```
+
+Both registration methods return a dispose function. Calling it unregisters the statistic and removes its DOM row.
+
+```js
+const dispose = this.app.plugins.registerStatistic(...)
+// ...when you need to unregister later
+dispose()
+```
 
 ## StatisticHandler
 
-When calling `registerStatistic()`, you pass a handler object with these fields:
+The handler object passed to `registerStatistic()` / `registerSelectionStatistic()` contains the following fields:
 
-| Field   | Type                                              | Description                                                |
-| ------- | ------------------------------------------------- | ---------------------------------------------------------- |
-| `id`    | `string`                                          | Unique identifier across all registered statistics. Used as the DOM ID prefix (`typ-wc-{id}`). Must not collide with other registrations. |
-| `name`  | `string`                                          | Display name / unit label shown in the statistic row.      |
-| `eval(context)` | `(context: StatisticContext) => string \| null` | Compute the value for this statistic.                      |
+| Field         | Type                                              | Description                                                                                         |
+| ------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `id`          | `string`                                          | Unique identifier across all registered statistics (including both regular and selection stats). Serves as the DOM ID prefix (`typ-wc-{id}` for regular, `typ-wc-sel-{id}` for selection). Must not collide with other registrations. |
+| `name`        | `string`                                          | Name / unit label displayed in the statistic row.                                                   |
+| `eval(context)` | `(context: StatisticContext) => string \| null`   | Computes the value of this statistic.                                                                 |
 
-The `eval()` method is called when the word-count panel opens or markdown content changes. Return a non-null string to display the value, or return `null` to hide the row.
+The `eval()` method is called when the word-count panel opens, markdown content changes, or the selection area changes. Return a non-null string to display the value, or return `null` to hide the row.
 
 ## StatisticContext
 
-The context object passed to `eval()` provides:
+The context object passed to `eval()` provides the following:
 
 ### `context.markdown` — Current document content
 
 ```ts
 get markdown(): string
-set markdown(value: string)
 ```
 
-Lazily reads the current document's markdown once; subsequent accesses return the cached value. You can also override it via the setter for testing or custom processing.
+Lazily reads the current document's Markdown content, only once; subsequent accesses return the cached value.
 
-### `context.get(id)` — Cross-stat value sharing
+### `context.selectionText` — Selected text
+
+```ts
+get selectionText(): string
+```
+
+Reads the current plain-text selection from the DOM (non-Markdown). Returns an empty string when there is no selection.
+
+### `context.get(id)` — Cross-statistic value sharing
 
 ```ts
 get(id: string): string | null
 ```
 
-Retrieves a previously computed stat value by its ID, enabling one statistic to depend on another:
+Retrieves a previously computed statistic value by ID, allowing one statistic to depend on another:
 
-- For built-in Typora footer stats (`reading-time`, `lines`, `words`, `characters`), falls back to lazily reading from the raw DOM when no previously computed value exists.
-- Returns `null` if the stat hasn't been computed yet or was hidden.
+- For Typora built-in bottom stats (`reading-time`, `lines`, `words`, `characters`, `selected-words`, `selected-characters`), falls back to lazily reading from the raw DOM if no previously computed value exists.
+- Returns `null` if the statistic has not been computed yet or was hidden.
 
 ```js
 eval(context) {
@@ -76,8 +112,8 @@ eval(context) {
 set(id: string, value: string | null): void
 ```
 
-Stores a result under any stat ID so it can be read by other statistics via `get()`. Pass `null` to indicate the stat is hidden/skipped. Use your own unique ID or another registered statistic's ID.
+Stores a result under a statistic ID so other statistics can read it via `get()`. Pass `null` to indicate the statistic has been hidden or skipped. You can use your own unique ID or another registered statistic's ID.
 
 ## Platform Compatibility
 
-> **Note:** The Statistics module is only compatible with Windows and Linux due to dependencies on Typora-specific DOM structures that differ on macOS.
+> **Note:** The Statistics module is only compatible with Windows and Linux, as it depends on Typora-specific DOM structures that differ on macOS.

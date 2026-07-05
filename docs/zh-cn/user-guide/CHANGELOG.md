@@ -1,5 +1,13 @@
 # 更新日志
 
+## v2.9.6
+
+- **工作区**
+  - fix(core/ui/layout/workspace-root): 关闭所有标签页后无法重新打开
+
+- **开发者**
+  - feat(core/ui/statusbar/statistics): 新增 `registerSelectionStatistic()` 方法，允许注册自定义选中词统计行
+
 ## v2.9.4
 
 - refactor(settings): 迁移 settings 配置文件到 v2 版本
