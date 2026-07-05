@@ -1,3 +1,4 @@
+import './statistics.scss'
 import { editor } from 'typora'
 import { Component } from 'src/common/component'
 import type { DisposeFunc } from 'src/utils/types'
@@ -14,6 +15,8 @@ export const DOM_STAT_IDS: Record<string, string> = {
   'lines': '#footer-line-count-td',
   'words': '#footer-word-count-td',
   'characters': '#footer-char-count-td',
+  'selected-words': '#footer-word-count-td-sel',
+  'selected-characters': '#footer-char-count-td-sel',
 }
 
 /**
@@ -41,7 +44,7 @@ export class StatisticContext {
   /**
    * Get a stat's result by its `id`. Returns `null` if not yet computed or was hidden.
    *
-   * For the built-in Typora footer stats (`reading-time`, `lines`, `words`, `characters`),
+   * For the built-in Typora footer stats (`reading-time`, `lines`, `words`, `characters`, `selected-words`, `selected-characters`),
    * falls back to lazily reading from the raw DOM when no previously computed value exists.
    */
   get(id: string): string | null {
