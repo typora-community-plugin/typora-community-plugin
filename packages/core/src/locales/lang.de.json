@@ -1,0 +1,162 @@
+{
+  "commandModal": {
+    "commandOpen": "Befehlspanel öffnen",
+    "placeholder": "Befehle durch Eingabe filtern"
+  },
+  "config": {
+    "commandUseGlobalConfig": "Globale Einstellungen verwenden (`.typora` aus Vault entfernen)",
+    "commandUseVaultConfig": "Vault-Einstellungen verwenden (`.typora` zu Vault hinzufügen)"
+  },
+  "net": {
+    "fileDownloadFailed": "Download fehlgeschlagen. Sie können es später erneut versuchen."
+  },
+  "githubAPI": {
+    "proxyNotFound": "Github-Proxy wurde entfernt und automatisch auf die Standardeinstellungen zurückgesetzt."
+  },
+  "internalPlugins": {
+    "metadata": {
+      "name": "Metadaten (Beta)",
+      "description": "Indexiert Metadaten aller Dateien in der Vault. Wird von anderen Plugins verwendet (wie `tag`)."
+    },
+    "workspace": {
+      "name": "Arbeitsbereich",
+      "description": "Unterstützt geteiltes und Tab-Layout. Bietet Arbeitsbereich, Dateitabs und zugehörige Funktionen. Besser, um \"App-Einstellungen → Allgemein → Speichern ohne Nachfrage beim Wechseln von Dateien im Seitenpanel\" zu aktivieren",
+      "settings": {
+        "hideExtensionInFileTab": "Erweiterung im Dateitab ausblenden",
+        "hideExtensionInFileTabDesc": "Zum Beispiel wird der Dateitab von \"Datei.md\" als \"Datei\" angezeigt.",
+        "useBlankNewTab": "Leeren neuen Tab verwenden",
+        "useAutoSwap": "Editor und Vorschau beim Klicken tauschen",
+        "useAutoSwapDesc": "Klicken Sie auf den Vorschau-Inhaltsbereich, um den aktuellen Typora-Editor mit dem angeklickten Vorschau-Tab zu tauschen."
+      }
+    }
+  },
+  "notice": {
+    "clearAll": "Hinweis: Alle Hinweise löschen"
+  },
+  "pluginManager": {
+    "needNewerCoreVersion": "Plugin \"{name}\" benötigt eine höhere Version des Typora Community Plugin. Bitte auf Updates prüfen.",
+    "upToDate": "Plugin \"{name}\" ist auf dem neuesten Stand.",
+    "updateSuccessful": "Das Plugin \"{name}\" wurde erfolgreich aktualisiert."
+  },
+  "pluginMarketplace": {
+    "idNotCorrect": "Die ID des heruntergeladenen Plugins \"{name}\" stimmt nicht mit der vom Benutzer installierten ID überein.",
+    "installSuccessful": "Das Plugin \"{name}\" wurde erfolgreich installiert."
+  },
+  "settingModal": {
+    "commandOpen": "Plugin-Einstellungen öffnen",
+    "titleGlobal": "Globale Einstellungen",
+    "titleVault": "Vault-Einstellungen",
+    "groupCore": "Kern",
+    "groupInternalPlugins": "Kern-Plugins",
+    "groupPlugins": "Community-Plugins"
+  },
+  "settingTabs": {
+    "fileLink": {
+      "name": "Datei & Link",
+      "link": "Link",
+      "openLinkInCurrentWin": "Markdown-Links im aktuellen Fenster öffnen",
+      "openLinkInCurrentWinDesc": "Strg(⌘)+Klick auf Markdown-Links öffnet die Markdown-Datei im aktuellen Fenster. Aktivieren Sie dies besser, wenn Sie Dateitabs verwenden.",
+      "mdLinkWithoutExtension": "Markdown-Link ohne Erweiterung",
+      "mdLinkWithoutExtensionDesc": "Markdown-Link kann ohne die Erweiterung `.md` verwendet werden, z.B. `[Notiz](note)` öffnet `note.md`",
+      "quickOpen": "Schnellöffnen",
+      "quickOpenInCurrentWin": "Datei im aktuellen Fenster schnell öffnen",
+      "quickOpenInCurrentWinDesc": "Das Auswählen einer Datei im Schnellöffnen-Panel öffnet die Markdown-Datei im aktuellen Fenster. Aktivieren Sie dies besser, wenn Sie Dateitabs verwenden.",
+      "ignoreFileGlob": "Ordner im Schnellöffnen-Panel ignorieren",
+      "ignoreFileGlobDesc": "Dateien in Ordnern ignorieren (durch Komma getrennt) und nicht im Schnellöffnen-Panel anzeigen."
+    },
+    "appearance": {
+      "name": "Erscheinungsbild",
+      "fileExplorer": "Datei-Explorer",
+      "showNotSupportedFile": "Nicht unterstützte Datei anzeigen",
+      "showNotSupportedFileDesc": "Nicht unterstützte Dateien werden mit der Standardanwendung geöffnet.",
+      "search": "Suche",
+      "keepSearchResult": "Suchergebnisse behalten",
+      "keepSearchResultDesc": "Wenn Sie zu einem anderen Panel (wie \"Dateien\") wechseln und dann zum Suchpanel zurückkehren, gehen die jüngsten Suchergebnisse nicht verloren.",
+      "searchResultFullPath": "Vollständigen Suchergebnispfad anzeigen",
+      "searchResultFullPathDesc": "Bewegen Sie den Cursor über den Pfad, um den vollständigen Pfad in einem Tooltip anzuzeigen.",
+      "advancedSearchMode": "Erweiterter Suchmodus",
+      "advancedSearchModeDesc": "Ersetzt die native Dateisuche durch eine benutzerdefinierte ripgrep-basierte Engine, die Regex-Muster unterstützt. Eine Umschaltfläche erscheint neben der Regex-Schaltfläche in der Suchleiste.",
+      "advanced": "Erweitert",
+      "ribbon": "Ribbon anzeigen",
+      "ribbonDesc": "Aktiviert auch benutzerdefiniertes Seitenleisten-Panel"
+    },
+    "hotkey": {
+      "name": "Tastenkürzel",
+      "waitHotkey": "Tastenkürzel drücken..."
+    },
+    "internalPlugins": {
+      "name": "Kern-Plugins"
+    },
+    "pluginMarketplace": {
+      "name": "Plugin-Marktplatz",
+      "downloader": "Downloader",
+      "downloaderDesc": "- Typora: Stabiler, zeigt sehr wenige Fehlermeldungen;\n- Nodejs: Zeigt mehr Fehlermeldungen.",
+      "githubProxy": "Github-Proxy",
+      "githubProxyDesc": "Proxy von Github zum Laden der Plugin-Liste und zum Herunterladen von Plugins.",
+      "searchPlugin": "Plugins suchen:",
+      "pluginList": "Plugin-Liste",
+      "reloadPluginList": "Plugin-Liste neu laden",
+      "author": "Autor",
+      "installToGlobal": "Global",
+      "installToGlobalDesc": "Global installieren",
+      "installToVault": "Vault",
+      "installToVaultDesc": "In Vault installieren"
+    },
+    "plugins": {
+      "name": "Installierte Plugins",
+      "searchPlugin": "Plugins suchen:",
+      "titleInstalled": "Installiertes Plugin ({0} installiert)",
+      "checkForUpdate": "Nach Updates suchen",
+      "checkingForUpdate": "Suche nach Updates... ({0}/{1})",
+      "update": "Aktualisieren",
+      "uninstall": "Deinstallieren"
+    },
+    "about": {
+      "name": "Über",
+      "projectDesc": "Ein Community-Plugin-System für",
+      "labelVersion": "Version",
+      "labelBuildTime": "Build-Zeit",
+      "labelAuthor": "Autor",
+      "labelHomepage": "Homepage",
+      "buttonUpdate": "Aktualisieren",
+      "coreUpToDate": "Typora Community Plugin ist auf dem neuesten Stand.",
+      "coreUpdateSuccessful": "Typora Community Plugin-Update erfolgreich. (Typora muss neu gestartet werden)",
+      "lang": "Sprache",
+      "langDesc": "Anzeigesprache des Typora Community Plugin. (Typora muss neu gestartet werden)"
+    }
+  },
+  "ribbon": {
+    "search": "Dateiinhalt durchsuchen",
+    "files": "Dateien",
+    "outline": "Gliederung",
+    "settings": "Einstellungen",
+    "settingOfApp": "App-Einstellungen öffnen",
+    "globalSettingOfPlugin": "Plugin-Einstellungen öffnen (Global)",
+    "vaultSettingOfPlugin": "Plugin-Einstellungen öffnen (Vault)"
+  },
+  "sidebar": {
+    "search": {
+      "commonMode": "Suchen",
+      "advancedMode": "Erweiterte Suche",
+      "advancedModeDesc": "Syntax:\n  space        = UND\n  OR           = ODER\n  -term       = NICHT (ausschließen)\n  (group)      = Gruppierung\n  tag:/title:/filename:value = Feldsuche\n  \"exact phrase\" = exakte Übereinstimmung"
+    }
+  },
+  "tabview": {
+    "close": "Schließen",
+    "closeOthers": "Andere Tabs schließen",
+    "closeRight": "Rechte Tabs schließen",
+    "splitRight": "Rechts teilen",
+    "splitDown": "Unten teilen"
+  },
+  "views": {
+    "empty": {
+      "noFile": "Keine Datei ist geöffnet."
+    }
+  },
+  "workspace": {
+    "commandSplitRight": "Arbeitsbereich: Rechts teilen",
+    "commandSplitDown": "Arbeitsbereich: Unten teilen",
+    "commandReset": "Arbeitsbereich: Zurücksetzen",
+    "fileContextMenuSplitRight": "Rechts öffnen"
+  }
+}

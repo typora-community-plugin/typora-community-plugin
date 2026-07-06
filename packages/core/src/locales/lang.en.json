@@ -1,7 +1,7 @@
 {
   "commandModal": {
     "commandOpen": "Open Command Panel",
-    "placeholder": "Filter commands by text inputed"
+    "placeholder": "Filter commands by text input"
   },
   "config": {
     "commandUseGlobalConfig": "Use global settings (remove `.typora` from vault)",
@@ -34,7 +34,7 @@
     "clearAll": "Notice: Clear all notices"
   },
   "pluginManager": {
-    "needNewerCoreVersion": "Plugin \"{name}\" need higher version Typora Community Plugin. Please check for update.",
+    "needNewerCoreVersion": "Plugin \"{name}\" requires a newer version of Typora Community Plugin. Please check for updates.",
     "upToDate": "Plugin \"{name}\" is up to date.",
     "updateSuccessful": "The plugin \"{name}\" has been updated successfully."
   },
@@ -55,14 +55,14 @@
       "name": "File & Link",
       "link": "Link",
       "openLinkInCurrentWin": "Open Markdown links in current window",
-      "openLinkInCurrentWinDesc": "Ctrl(⌘)+Click to open Markdown links will open Markdown file in current window. Enable it better if use File Tabs.",
+      "openLinkInCurrentWinDesc": "Ctrl(⌘)+Click to open Markdown links will open the Markdown file in the current window. Recommended when using File Tabs.",
       "mdLinkWithoutExtension": "Markdown link without extension",
       "mdLinkWithoutExtensionDesc": "Markdown link can be used without the extension `.md`, e.g. `[Note](note)` will open `note.md`",
       "quickOpen": "Quick Open",
       "quickOpenInCurrentWin": "Quick open file in current window",
-      "quickOpenInCurrentWinDesc": "Choose file in quick open panel will open Markdown file in current window. Enable it better if use File Tabs.",
+      "quickOpenInCurrentWinDesc": "Choosing a file in the quick open panel will open the Markdown file in the current window. Recommended when using File Tabs.",
       "ignoreFileGlob": "Ignore folder in quick open panel",
-      "ignoreFileGlobDesc": "Ignore files in folders (seperated by comma) and not show in quick open panel."
+      "ignoreFileGlobDesc": "Ignore files in folders (separated by comma) and not show them in the quick open panel."
     },
     "appearance": {
       "name": "Appearance",
