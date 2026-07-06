@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.9.7
+
+- feat(core/i18n): add German translation and improve English locales
+
 ## v2.9.6
 
 - **Workspace**
