@@ -1,0 +1,45 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '[0-9]*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm run build
+
+      - name: Extract changelog
+        run: |
+          tag="${{ github.ref_name }}"
+          awk -v ver="v$tag" '
+            $0 ~ "^## " ver " *$" { found=1; next }
+            found && /^## / { exit }
+            found { print }
+          ' docs/en-us/user-guide/CHANGELOG.md > release_body.md
+          [ -s release_body.md ] || echo "# $tag" > release_body.md
+
+      - name: Create Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          gh release create "${{ github.ref_name }}"
+          --title "${{ github.ref_name }}"
+          --notes-file release_body.md
+          --verify-tag
+          typora-community-plugin.zip
