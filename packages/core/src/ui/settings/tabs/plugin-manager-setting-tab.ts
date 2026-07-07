@@ -52,7 +52,7 @@ export class PluginManagerSettingTab extends SettingTab {
         button.innerHTML = '<span class="fa fa-refresh"></span>'
         button.onclick = () => {
           button.disabled = true
-          this.checkForUpdate().then(() => button.disabled = false)
+          this.checkForUpdate().finally(() => button.disabled = false)
         }
       })
     })
@@ -76,12 +76,16 @@ export class PluginManagerSettingTab extends SettingTab {
 
       if (!info) continue
 
-      const version = await marketplace.getPluginNewestVersion(info)
-      const manifest = manifests[id]
+      try {
+        const version = await marketplace.getPluginNewestVersion(info)
+        const manifest = manifests[id]
 
-      if (versions.compare(manifest.version, version) < 0) {
-        info.newestVersion = version
-        $(`.typ-plugin-item[data-id="${id}"] button:has(.fa-repeat)`, this.containerEl).show()
+        if (versions.compare(manifest.version, version) < 0) {
+          info.newestVersion = version
+          $(`.typ-plugin-item[data-id="${id}"] button:has(.fa-repeat)`, this.containerEl).show()
+        }
+      } catch (e) {
+        Notice.error(`Failed to check update for plugin ${id}`)
       }
 
       notice.message = format(text, [+i + 1, ids.length])
