@@ -1,6 +1,6 @@
 # Typora Community Plugin
 
-English | [简体中文](https://github.com/typora-community-plugin/typora-community-plugin/blob/main/README.zh-CN.md)
+English | [简体中文](./README.zh-CN.md)
 
 A community plugin system for [Typora](https://typora.io/). Inspired by [Obsidian plugin system](https://docs.obsidian.md/Home).
 
@@ -31,16 +31,17 @@ To be on the safe side, install an open source plugin that can review the source
 
 ## Features <small>([CHANGELOG](./docs/en-us/user-guide/CHANGELOG.md))</small>
 
-- Plugin Manage
+- [Plugin Manage](./docs/en-us/user-guide/2-plugin-installation.md)
   - [x] Install/Uninstall/Update plugin
   - [x] Enable/Disable plugin
 - New UI components
+  - [x] Command Panel
   - [x] [Ribbon](./docs/en-us/user-guide/4b-ribbon.md)
   - [x] [Workspace](./docs/en-us/user-guide/4a-workspace.md)
     - [x] (Virtual) Multi File Tabs
     - [x] Split View
-- [x] Custom command hotkey
-- [x] I18n: follow system or manual configure, now support English and Chinese
+- [x] Custom command [hotkeys](./docs/en-us/user-guide/3c-hotkey.md)
+- [x] [I18n](./docs/en-us/user-guide/5-i18n.md): follow system or manual configure, now support English, Chinese and German
 - [x] Compatible with macOS
 - [x] [Advanced Search](./docs/en-us/user-guide/4c-advanced-search.md) <sup>`New`</sup>: support expressions like `(book film) OR tag:game`
 

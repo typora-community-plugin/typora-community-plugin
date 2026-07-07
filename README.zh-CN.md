@@ -1,8 +1,8 @@
 # Typora Community Plugin
 
-[English](https://github.com/typora-community-plugin/typora-community-plugin#README.md) | 简体中文
+[English](./README.md) | 简体中文
 
-一个适用于 [Typora](https://typora.io/) 的社区插件系统。受到 [Obsidian 插件系统](https://docs.obsidian.md/Home) 启发。
+一个适用于 [Typora](https://typoraio.cn/) 的社区插件系统。受到 [Obsidian 插件系统](https://docs.obsidian.md/Home) 启发。
 
 **警告**: 第三方插件可能有数据和隐私风险。
 
@@ -31,16 +31,17 @@
 
 ## 特性 <small>([更新日志](./docs/zh-cn/user-guide/CHANGELOG.md))</small>
 
-- 插件管理
+- [插件管理](./docs/zh-cn/user-guide/2-plugin-installation.md)
   - [x] 安装/卸载/更新 插件
   - [x] 启用/禁用 插件
 - 新的 UI 组件
+  - [x] 命令面板
   - [x] [Ribbon](./docs/zh-cn/user-guide/4b-ribbon.md)
   - [x] [工作区](./docs/zh-cn/user-guide/4a-workspace.md)
     - [x] (模拟的) 多文件标签页
     - [x] 分屏视图
-- [x] 自定义命令的快捷键
-- [x] I18n: 跟随系统或手动配置，现在支持英语和中文
+- [x] 自定义命令的[快捷键](./docs/zh-cn/user-guide/3c-hotkey.md)
+- [x] [多国语言](./docs/zh-cn/user-guide/5-i18n.md): 跟随系统或手动配置，现在支持英语、中文和德语
 - [x] 兼容 macOS
 - [x] [高级搜索](./docs/zh-cn/user-guide/4c-advanced-search.md) <sup>`新`</sup>: 支持如 `(书籍 电影) OR tag:游戏` 的表达式
 
