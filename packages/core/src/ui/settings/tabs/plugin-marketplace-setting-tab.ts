@@ -128,12 +128,6 @@ export class PluginMarketplaceSettingTab extends SettingTab {
       .forEach(el => el.remove())
   }
 
-  private formatFileSize(bytes: number): string {
-    if (bytes < 1024) return `${bytes} B`
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
-  }
-
   private renderPlugin(info: PluginMarketInfo) {
     const t = this.i18n.t.settingTabs.pluginMarketplace
 
@@ -144,12 +138,15 @@ export class PluginMarketplaceSettingTab extends SettingTab {
       setting.addDescription(el => {
         const stats = this.marketplace.pluginStats[info.id]
         const downloads = stats ? stats.downloads.toLocaleString() : null
-        const size = stats ? this.formatFileSize(stats.size) : null
+        const size = stats ? formatFileSize(stats.size) : null
+        const lastUpdate = stats?.updated ? formatDate(stats.updated) : null
 
         $(el).append(
           `<span class="typ-plugin-meta"><span class="fa fa-user"></span> ${info.author}</span>`,
 
           $(`<span class="typ-plugin-meta"><span class="fa fa-github"></span> <a href="https://github.com/${info.repo}">Repository</a></span>`),
+
+          lastUpdate ? `<span class="typ-plugin-meta" title="${t.lastUpdate}"><span class="fa fa-clock-o"></span> ${lastUpdate}</span>` : '',
 
           size ? `<span class="typ-plugin-meta" title="${t.size}"><span class="fa fa-file-archive-o"></span> ${size}</span>` : '',
 
@@ -191,4 +188,19 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     })
   }
 
+}
+
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+function formatDate(timestamp: number): string {
+  const date = new Date(timestamp)
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
