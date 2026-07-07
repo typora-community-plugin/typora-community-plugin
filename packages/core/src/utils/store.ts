@@ -109,6 +109,9 @@ function _setPathValue(obj: any, parts: string[], value: any) {
     if (current[parts[i]] == null || typeof current[parts[i]] !== 'object') {
       current[parts[i]] = {}
     }
+    else if (!Object.hasOwn(current, parts[i])) {
+      current[parts[i]] = { ...current[parts[i]] }
+    }
     current = current[parts[i]]
   }
   current[parts[parts.length - 1]] = value

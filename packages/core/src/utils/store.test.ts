@@ -1,5 +1,5 @@
 import { Store } from "./store"
-import { jest } from '@jest/globals'
+import { jest, describe, it, expect } from '@jest/globals'
 
 describe('Store', () => {
 
@@ -255,6 +255,35 @@ describe('Store', () => {
       store.removeChangeListener('*', listener)
       store.set('name', 'updated')
       expect(listener).not.toHaveBeenCalled()
+    })
+
+  })
+
+  describe('prototype chain', () => {
+
+    it('should copy inherited object to own property before modifying nested path', () => {
+      const defaults = { plugins: { a: true, b: false } }
+      const store = new Store<typeof defaults>()
+      store._data = Object.create(defaults)
+      store.set(['plugins', 'c'], true)
+      expect(store.get(['plugins', 'c'])).toBe(true)
+      expect(Object.hasOwn(store._data, 'plugins')).toBe(true)
+      expect(defaults.plugins.c).toBeUndefined()
+    })
+
+    it('should not copy inherited object when it is already an own property', () => {
+      const store = newStore({ plugins: { a: true, b: false } })
+      store.set(['plugins', 'c'], true)
+      expect(store.get(['plugins', 'c'])).toBe(true)
+    })
+
+    it('should handle deep path where intermediate is own property', () => {
+      const defaults = { outer: { inner: { a: 1 } } }
+      const store = new Store<typeof defaults>()
+      store._data = Object.assign(Object.create(defaults), { outer: defaults.outer })
+      store.set(['outer', 'inner', 'b'], 2)
+      expect(store.get(['outer', 'inner', 'b'])).toBe(2)
+      expect(defaults.outer.inner.b).toBe(2)
     })
 
   })
