@@ -22,7 +22,7 @@ export class PluginManager {
   instances: Record<string, Plugin> = {}
   styles: Record<string, string> = {}
 
-  marketplace: PluginMarketplace
+  marketplace!: PluginMarketplace
 
   constructor(
     private logger = useService('logger', ['PluginManager']),
@@ -182,8 +182,9 @@ export class PluginManager {
     const { marketplace } = this
     const t = this.i18n.t.pluginManager
     const manifest = this.manifests[id]
-
     const info = marketplace.getPlugin(id)
+    if (!manifest || !info) return
+
     const version = await marketplace.getPluginNewestVersion(info)
 
     if (versions.compare(manifest.version, version) >= 0) {
@@ -195,8 +196,8 @@ export class PluginManager {
 
     await this.uninstallPlugin(id)
 
-    return marketplace.installPlugin(info, manifest.postion)
-      .then(() => isEnabled && this.enablePlugin(id))
+    return marketplace.installPlugin(info, manifest.postion!)
+      .then(() => { isEnabled && this.enablePlugin(id) })
       .then(() => { Notice.success(format(t.updateSuccessful, manifest)) })
   }
 
