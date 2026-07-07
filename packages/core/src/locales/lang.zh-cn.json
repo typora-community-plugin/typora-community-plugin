@@ -97,11 +97,12 @@
       "pluginList": "插件列表",
       "reloadPluginList": "重新加载插件列表",
       "author": "作者",
+      "downloads": "下载次数",
+      "size": "大小",
       "installToGlobal": "全局",
       "installToGlobalDesc": "安装到全局",
       "installToVault": "笔记库",
-      "installToVaultDesc": "安装到笔记库",
-      "downloads": "下载次数"
+      "installToVaultDesc": "安装到笔记库"
     },
     "plugins": {
       "name": "已安装插件",

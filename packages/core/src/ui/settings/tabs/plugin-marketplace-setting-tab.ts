@@ -128,6 +128,12 @@ export class PluginMarketplaceSettingTab extends SettingTab {
       .forEach(el => el.remove())
   }
 
+  private formatFileSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes} B`
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+  }
+
   private renderPlugin(info: PluginMarketInfo) {
     const t = this.i18n.t.settingTabs.pluginMarketplace
 
@@ -138,11 +144,14 @@ export class PluginMarketplaceSettingTab extends SettingTab {
       setting.addDescription(el => {
         const stats = this.marketplace.pluginStats[info.id]
         const downloads = stats ? stats.downloads.toLocaleString() : null
+        const size = stats ? this.formatFileSize(stats.size) : null
 
         $(el).append(
           `<span class="typ-plugin-meta"><span class="fa fa-user"></span> ${info.author}</span>`,
 
           $(`<span class="typ-plugin-meta"><span class="fa fa-github"></span> <a href="https://github.com/${info.repo}">Repository</a></span>`),
+
+          size ? `<span class="typ-plugin-meta" title="${t.size}"><span class="fa fa-file-archive-o"></span> ${size}</span>` : '',
 
           downloads ? `<span class="typ-plugin-meta" title="${t.downloads}"><span class="fa fa-download"></span> ${downloads}</span>` : '',
 

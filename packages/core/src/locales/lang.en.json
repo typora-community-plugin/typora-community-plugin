@@ -97,11 +97,12 @@
       "pluginList": "Plugin List",
       "reloadPluginList": "Reload Plugin List",
       "author": "Author",
+      "downloads": "Downloads",
+      "size": "Size",
       "installToGlobal": "Global",
       "installToGlobalDesc": "Install to global",
       "installToVault": "Vault",
-      "installToVaultDesc": "Install to vault",
-      "downloads": "Downloads"
+      "installToVaultDesc": "Install to vault"
     },
     "plugins": {
       "name": "Installed Plugins",
