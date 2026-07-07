@@ -106,12 +106,14 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     const version = +uniqueId()
 
     this.cleanPluginList()
-    this.marketplace.loadCommunityPlugins()
-      .then(() => {
-        if (version <= this._pluginListVersion) return
-        this._pluginListVersion = version
-        this.renderPluginList()
-      })
+    Promise.all([
+      this.marketplace.loadCommunityPlugins(),
+      this.marketplace.loadCommunityPluginStats(),
+    ]).then(() => {
+      if (version <= this._pluginListVersion) return
+      this._pluginListVersion = version
+      this.renderPluginList()
+    })
   }
 
   private renderPluginList(query: string = '') {
@@ -134,10 +136,15 @@ export class PluginMarketplaceSettingTab extends SettingTab {
 
       setting.addName(info.name || info.id)
       setting.addDescription(el => {
+        const stats = this.marketplace.pluginStats[info.id]
+        const downloads = stats ? stats.downloads.toLocaleString() : null
+
         $(el).append(
           `<span class="typ-plugin-meta"><span class="fa fa-user"></span> ${info.author}</span>`,
 
           $(`<span class="typ-plugin-meta"><span class="fa fa-github"></span> <a href="https://github.com/${info.repo}">Repository</a></span>`),
+
+          downloads ? `<span class="typ-plugin-meta" title="${t.downloads}"><span class="fa fa-download"></span> ${downloads}</span>` : '',
 
           `<span class="typ-plugin-meta">OS: ${info.platforms.map(p => `<span class="fa fa-${platformIcons[p]}"></span>`).join(' ')}</span>`,
         )

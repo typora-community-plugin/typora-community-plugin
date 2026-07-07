@@ -10,9 +10,17 @@ export type PluginMarketInfo = Pick<PluginManifest, "id" | "name" | "description
   newestVersion?: string
 }
 
+export type PluginStat = {
+  downloads: number
+  updated: number
+  size: number
+  [version: string]: number | undefined
+}
+
 export class PluginMarketplace {
 
   pluginList: PluginMarketInfo[] = []
+  pluginStats: Record<string, PluginStat> = {}
 
   get isLoaded() {
     return !!this.pluginList.length
@@ -40,6 +48,12 @@ export class PluginMarketplace {
   loadCommunityPlugins(): Promise<PluginMarketInfo[]> {
     return this.github.getJSON('typora-community-plugin/typora-plugin-releases', 'main', 'community-plugins.json')
       .then(res => this.pluginList = res ?? [])
+  }
+
+  loadCommunityPluginStats(): Promise<Record<string, PluginStat>> {
+    return this.github.getJSON('typora-community-plugin/typora-plugin-releases', 'main', 'community-plugin-stats.json')
+      .then(res => this.pluginStats = res ?? {})
+      .catch(() => this.pluginStats = {})
   }
 
   installPlugin(info: PluginMarketInfo, pos: PluginPostion) {

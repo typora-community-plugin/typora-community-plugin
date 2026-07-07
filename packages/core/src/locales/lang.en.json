@@ -100,7 +100,8 @@
       "installToGlobal": "Global",
       "installToGlobalDesc": "Install to global",
       "installToVault": "Vault",
-      "installToVaultDesc": "Install to vault"
+      "installToVaultDesc": "Install to vault",
+      "downloads": "Downloads"
     },
     "plugins": {
       "name": "Installed Plugins",
