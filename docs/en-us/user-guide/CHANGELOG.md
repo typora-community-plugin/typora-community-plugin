@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.9.13
+
+- **Settings**
+  - feat(core/ui/settings/tabs/plugin-marketplace): add plugin last updated date to marketplace card
+  - feat(core/ui/settings/tabs/plugin-marketplace): add plugin file size to marketplace card
+  - feat(core/ui/settings/tabs/plugin-marketplace): add plugin download count to marketplace card
+  - fix(core/ui/settings/tabs/plugin-marketplace): fix duplicate notification after updating plugins
+  - fix(core/plugin-manager): handle update check errors, do not interrupt detection loop on failure and show error prompt
+  - fix(core/settings): fix cannot save enable/disable config for built-in plugins
+
+- **Documentation**
+  - docs: add shortcut key and i18n guides, improve README (include German language support notes)
+
 ## v2.9.7
 
 - feat(core/i18n): add German translation and improve English locales

@@ -1,5 +1,18 @@
 # 更新日志
 
+## v2.9.13
+
+- **设置**
+  - feat(core/ui/settings/tabs/plugin-marketplace): 插件市场卡片新增插件更新日期信息
+  - feat(core/ui/settings/tabs/plugin-marketplace): 插件市场卡片新增插件文件大小信息
+  - feat(core/ui/settings/tabs/plugin-marketplace): 插件市场卡片新增插件下载量统计信息
+  - fix(core/ui/settings/tabs/plugin-marketplace): 修复更新插件后出现重复提示通知的问题
+  - fix(core/plugin-manager): 处理更新检查错误，失败时不中断检测循环并显示错误提示
+  - fix(core/settings): 修复无法保存内置插件的 启用/禁用 配置的问题
+
+- **文档**
+  - docs: 添加快捷键和 i18n 指南，完善 README（含德国語言支持说明）
+
 ## v2.9.7
 
 - feat(core/i18n): 新增德语翻译，完善英语本地化
