@@ -14,6 +14,8 @@
 
 ## 上传
 
+### 手动打包
+
 1. 为当前的 git commit 创建一个标签 (使用*新版本号*命名，如 `1.0.0`)
 2. 推送 commits 和 tags 到 Github
 3. 在终端运行 `pnpm run pack` 打包你的插件为 `plugin.zip`
@@ -21,6 +23,16 @@
 	1. 关联刚才创建的、使用版本号命名的标签
 	2. 上传 `plugin.zip` 
 	3. 创建 Release
+
+此时，大家就可以从你的插件项目的 Releases 中下载插件。
+
+### 自动打包
+
+示例插件项目 [typora-plugin-example](https://github.com/typora-community-plugin/typora-plugin-example) 自带了自动打包发布的 Github Action。
+
+1. 为当前的 git commit 创建一个标签 (使用*新版本号*命名，如 `1.0.0`)
+2. 推送 commits 和 tags 到 Github
+   > Github Action 检查到*新版本号*将会自动打包并发布
 
 此时，大家就可以从你的插件项目的 Releases 中下载插件。
 
@@ -33,14 +45,14 @@
 首先 Fork 仓库 [typora-plugin-releases](https://github.com/typora-community-plugin/typora-plugin-releases)，并编辑文件 `community-plugins.json`，添加你的插件的元数据。如：
 
   ```json
-{
-  "id": "author.plugin-name",
-  "name": "Plugin Name",
-  "author": "author",
-  "description": "Plugin description.",
-  "repo": "github-user/github-repo",
-  "platforms": ["win32", "linux", "darwin"]
-}
+  {
+    "id": "author.plugin-name",
+    "name": "Plugin Name",
+    "author": "author",
+    "description": "Plugin description.",
+    "repo": "github-user/github-repo",
+    "platforms": ["win32", "linux", "darwin"]
+  }
   ```
 
 然后创建一个 pull request 到源仓库，等待仓库合并。
