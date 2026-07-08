@@ -166,7 +166,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
         button.classList.add('primary')
         button.onclick = () => {
           button.disabled = true
-          this.marketplace.installPlugin(info, 'global')
+          this.installPlugin(info, 'global')
             .then(() => setting.controls.remove())
             .catch(() => button.disabled = false)
         }
@@ -180,12 +180,18 @@ export class PluginMarketplaceSettingTab extends SettingTab {
         button.classList.add('primary')
         button.onclick = () => {
           button.disabled = true
-          this.marketplace.installPlugin(info, 'vault')
+          this.installPlugin(info, 'vault')
             .then(() => setting.controls.remove())
             .catch(() => button.disabled = false)
         }
       })
     })
+  }
+
+  private async installPlugin(info: PluginMarketInfo, pos: 'global' | 'vault') {
+    const t = this.i18n.t.pluginMarketplace
+    await this.marketplace.installPlugin(info, pos)
+      .then(() => { Notice.success(format(t.installSuccessful, info)) })
   }
 
 }
