@@ -101,12 +101,16 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
 
   private getValueOfCodeblock(codeblock: HTMLElement) {
     const rootEl = codeblock.closest('#write') ?? codeblock.closest('.typ-markdown-view')!
-    const { editingTabs } = useEditingTabs()
-    const leaf = $(rootEl).is('#write')
-      ? editingTabs()!.activeLeaf
-      : this.workspace.rootSplit.findLeaf(leaf => leaf.view.containerEl === rootEl)
-    const mdView = leaf.view as MarkdownView
-    return mdView.getCodeMirrorInstance(codeblock.getAttribute('cid')!).getValue()
+    const cid = codeblock.getAttribute('cid')
+    if (!cid) throw Error('`cid` of codeblock can not be empty.')
+    if ($(rootEl).is('#write')) {
+      return editor.fences.getCm(cid)?.getValue() ?? ''
+    }
+    else {
+      const leaf = this.workspace.rootSplit.findLeaf(leaf => leaf.view.containerEl === rootEl)
+      const mdView = leaf?.view as MarkdownView | undefined
+      return mdView?.getCodeMirrorInstance(cid)?.getValue() ?? ''
+    }
   }
 
   static from(options: Partial<Pick<CodeblockPostProcessor, 'lang' | 'button' | 'preview' | 'exportPreview' | 'process'>>) {
