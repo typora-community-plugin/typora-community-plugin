@@ -100,13 +100,35 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
   }
 
   private getValueOfCodeblock(codeblock: HTMLElement) {
-    const rootEl = codeblock.closest('#write') ?? codeblock.closest('.typ-markdown-view')!
-    const { editingTabs } = useEditingTabs()
-    const leaf = $(rootEl).is('#write')
-      ? editingTabs()!.activeLeaf
-      : this.workspace.rootSplit.findLeaf(leaf => leaf.view.containerEl === rootEl)
-    const mdView = leaf.view as MarkdownView
-    return mdView.getCodeMirrorInstance(codeblock.getAttribute('cid')!).getValue()
+    const cid = codeblock.getAttribute('cid')
+    if (!cid) return ''
+
+    const rootEl =
+      codeblock.closest('#write') ??
+      codeblock.closest('.typ-markdown-view')
+
+    if (!rootEl) return ''
+
+    if ($(rootEl).is('#write')) {
+      const { editingTabs } = useEditingTabs()
+
+      const mdView =
+        editingTabs()?.activeLeaf?.view as MarkdownView | undefined
+
+      const cm =
+        mdView?.getCodeMirrorInstance(cid) ??
+        editor.fences.getCm(cid)
+
+      return cm?.getValue() ?? ''
+    }
+
+    const leaf = this.workspace.rootSplit.findLeaf(
+      leaf => leaf.view.containerEl === rootEl,
+    )
+
+    const mdView = leaf?.view as MarkdownView | undefined
+
+    return mdView?.getCodeMirrorInstance(cid)?.getValue() ?? ''
   }
 
   static from(options: Partial<Pick<CodeblockPostProcessor, 'lang' | 'button' | 'preview' | 'exportPreview' | 'process'>>) {
