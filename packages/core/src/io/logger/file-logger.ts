@@ -25,7 +25,7 @@ export function createFileLogger(logFile: string): FileLogger {
 
 export class FileLogger {
 
-  #buffer = ''
+  private _buffer = ''
 
   constructor(private readonly logFile: string) {}
 
@@ -35,25 +35,25 @@ export class FileLogger {
     ).join(' ')
 
     const timestamp = new Date().toISOString()
-    this.#buffer += `[${timestamp}] ${level.padEnd(5)} ${msgStr}\n`
+    this._buffer += `[${timestamp}] ${level.padEnd(5)} ${msgStr}\n`
 
     // Keep buffer within bounds — truncate oldest lines when too large
-    while (this.#buffer.length > DEFAULT_BUFFER_SIZE) {
-      const nl = this.#buffer.indexOf('\n')
-      if (nl === -1) this.#buffer = ''
-      else this.#buffer = this.#buffer.slice(nl + 1)
+    while (this._buffer.length > DEFAULT_BUFFER_SIZE) {
+      const nl = this._buffer.indexOf('\n')
+      if (nl === -1) this._buffer = ''
+      else this._buffer = this._buffer.slice(nl + 1)
     }
   }
 
   get hasData(): boolean {
-    return !!this.#buffer.length
+    return !!this._buffer.length
   }
 
   flush(): Promise<void> {
     if (!this.hasData) return Promise.resolve()
 
-    const content = this.#buffer
-    this.#buffer = ''
+    const content = this._buffer
+    this._buffer = ''
 
     const dirPath = path.dirname(this.logFile)
     return fs.mkdir(dirPath).catch(noop)

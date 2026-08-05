@@ -80,7 +80,7 @@ export function parseTagsWithPositionsFromYAML(metaString: string, startLine: nu
 
   // Case 1: Inline array on the same line, e.g. `tags: [tag1, tag2]`
   if (valuePart.startsWith("[")) {
-    const inlineMatch = valuePart.match(/^\[(.*)\]/s);
+    const inlineMatch = valuePart.match(/^\[(.*)\]/);
     if (inlineMatch) {
       const items = inlineMatch[1].split(",").map((s: string) => s.trim()).filter(Boolean);
       for (const item of items) {
