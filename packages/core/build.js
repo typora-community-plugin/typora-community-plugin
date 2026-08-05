@@ -32,7 +32,9 @@ await esbuild.build({
     typoraPlugin({
       mode: IS_PROD ? 'production' : 'development'
     }),
-    sassPlugin(),
+    sassPlugin({
+      silenceDeprecations: ['import'],
+    }),
   ],
 })
 

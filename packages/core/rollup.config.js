@@ -64,6 +64,7 @@ export default defineConfig({
     }),
     scss({
       fileName: 'core.css',
+      silenceDeprecations: ['import'],
       processor: (css, map) => ({ css: css.replace(/\n+\s*/g, '') }),
     }),
     terser(),
