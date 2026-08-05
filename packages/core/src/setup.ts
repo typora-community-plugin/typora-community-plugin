@@ -8,7 +8,7 @@ import { ServiceLogger } from "src/io/logger/service-logger"
 import { HotkeyManager } from "./hotkey-manager"
 import { ConfigRepository } from "./io/config-repository"
 import { Vault } from "./io/vault"
-import { DEFALUT_OPTIONS, I18n } from "./locales/i18n"
+import { DEFAULT_OPTIONS, I18n } from "./locales/i18n"
 import { GithubAPI } from "./net/github"
 import { PluginManager } from "./plugin/plugin-manager"
 import { memorize } from "./utils/function/memorize"
@@ -74,7 +74,7 @@ registerService('i18n', memorize(() => {
     userLang: useService('settings').get('displayLang'),
   })
 
-  DEFALUT_OPTIONS.userLang = i18n.locale
+  DEFAULT_OPTIONS.userLang = i18n.locale
 
   return i18n
 }))

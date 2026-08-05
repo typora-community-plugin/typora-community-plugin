@@ -39,7 +39,7 @@ export type AppEvents = {
   'load'(): void
 }
 
-export type EnvironmentVairables = {
+export type EnvironmentVariables = {
   PLUGIN_CORE_PATH?: string
   PLUGIN_GLOBAL_DIR?: string
 
@@ -88,7 +88,7 @@ export class App extends Events<AppEvents> {
   config: ConfigRepository = useService('config-repository')
   settings!: Settings<AppSettings>
   i18n!: I18n<typeof Locale>
-  env: EnvironmentVairables = useService('env')
+  env: EnvironmentVariables = useService('env')
   github!: GithubAPI
   hotkeyManager: HotkeyManager = useService('hotkey-manager')
   commands!: CommandManager
@@ -174,7 +174,7 @@ export class App extends Events<AppEvents> {
   /**
    * Open Markdown file with Typora or unsupported file with default app.
    *
-   * @param filepath path of Markdown file or unsuppoted file
+   * @param filepath path of Markdown file or unsupported file
    */
   async openFile(filepath: string) {
     if (filepath.startsWith('<')) {
@@ -212,7 +212,7 @@ export class App extends Events<AppEvents> {
   /**
    * Open unsupported file with default app.
    *
-   * @param filepath path of unsuppoted file
+   * @param filepath path of unsupported file
    */
   openFileWithDefaultApp(filepath: string) {
     return fs.access(filepath)

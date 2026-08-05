@@ -3,7 +3,7 @@ import { Notice } from 'src/ui/components/notice'
 import fs from 'src/io/fs/filesystem'
 import path from 'src/path'
 import { Plugin } from "./plugin"
-import type { PluginManifest, PluginPostion } from "./plugin-manifest"
+import type { PluginManifest, PluginPosition } from "./plugin-manifest"
 import { PluginMarketplace } from './plugin-marketplace'
 import { debounced, format } from 'src/utils'
 import * as versions from 'src/utils/versions'
@@ -60,11 +60,11 @@ export class PluginManager {
     await this._loadManifests('vault', this.vaultPluginsDir)
   }
 
-  private async _loadManifests(postion: PluginPostion, pluginsPath: string) {
+  private async _loadManifests(position: PluginPosition, pluginsPath: string) {
     const pluginDirs = await this._readPluginsDir(pluginsPath)
 
     for (const dir of pluginDirs) {
-      await this.loadManifest(postion, dir)
+      await this.loadManifest(position, dir)
     }
   }
 
@@ -79,14 +79,14 @@ export class PluginManager {
       .catch(() => [] as any[])
   }
 
-  loadManifest(postion: PluginPostion, pluginPath: string) {
+  loadManifest(position: PluginPosition, pluginPath: string) {
     const manifestPath = path.join(pluginPath, 'manifest.json')
 
     return fs.access(manifestPath)
       .then(() => fs.readTextSync(manifestPath))
       .then(text => {
         const manifest = JSON.parse(text) as PluginManifest
-        manifest.postion = postion
+        manifest.position = position
         manifest.dir = pluginPath
 
         this.manifests[manifest.id] = manifest
@@ -196,7 +196,7 @@ export class PluginManager {
 
     await this.uninstallPlugin(id)
 
-    return marketplace.installPlugin(info, manifest.postion!)
+    return marketplace.installPlugin(info, manifest.position!)
       .then(() => { isEnabled && this.enablePlugin(id) })
       .then(() => { Notice.success(format(t.updateSuccessful, manifest)) })
   }

@@ -1,10 +1,10 @@
 import type { App } from ".."
 
 
-export type PluginPostion = 'global' | 'vault'
+export type PluginPosition = 'global' | 'vault'
 
 export interface PluginManifest {
-  postion?: PluginPostion
+  position?: PluginPosition
   /** Plugin dir full path */
   dir?: string
 

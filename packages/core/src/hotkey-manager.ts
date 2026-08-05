@@ -23,9 +23,9 @@ const arrowKeys: Record<string, string> = {
 
 export class HotkeyManager {
 
-  keybings: Record<string, EventListener[]> = {}
+  keybindings: Record<string, EventListener[]> = {}
 
-  editorKeybings: Record<string, EventListener[]> = {}
+  editorKeybindings: Record<string, EventListener[]> = {}
 
   constructor(
     markdownEditor = useEventBus('markdown-editor')
@@ -33,36 +33,36 @@ export class HotkeyManager {
     markdownEditor.on('load', (editorEl) => {
       // TODO move to MarkdownEditor
 
-      document.body.addEventListener('keyup', this._onKeyup(this.keybings))
+      document.body.addEventListener('keyup', this._onKeyup(this.keybindings))
 
-      editorEl.addEventListener('keyup', this._onKeyup(this.editorKeybings))
+      editorEl.addEventListener('keyup', this._onKeyup(this.editorKeybindings))
     })
   }
 
-  private _onKeyup(keybings: Record<string, EventListener[]>) {
+  private _onKeyup(keybindings: Record<string, EventListener[]>) {
     return (event: KeyboardEvent) => {
       const hotkey = eventToHotkey(event)
       // TODO: try..catch with more msg
-      keybings[hotkey]?.forEach(listener => listener(event))
+      keybindings[hotkey]?.forEach(listener => listener(event))
     }
   }
 
   private _addHotkey(
-    keybings: Record<string, EventListener[]>,
+    keybindings: Record<string, EventListener[]>,
     hotkey: string,
     listener: EventListener
   ) {
     const normalHotkey = normalizeHotkey(hotkey)
-    if (!keybings[normalHotkey]) {
-      keybings[normalHotkey] = []
+    if (!keybindings[normalHotkey]) {
+      keybindings[normalHotkey] = []
     }
-    keybings[normalHotkey].push(listener)
+    keybindings[normalHotkey].push(listener)
 
-    return () => this._removeHotkey(keybings, normalHotkey, listener, true)
+    return () => this._removeHotkey(keybindings, normalHotkey, listener, true)
   }
 
   private _removeHotkey(
-    keybings: Record<string, EventListener[]>,
+    keybindings: Record<string, EventListener[]>,
     hotkey: string,
     listener: EventListener,
     isNormal = false
@@ -71,26 +71,26 @@ export class HotkeyManager {
       ? hotkey
       : normalizeHotkey(hotkey)
 
-    const hotkeyBings = keybings[normalHotkey]
-    if (!hotkeyBings) return
+    const hotkeyBinds = keybindings[normalHotkey]
+    if (!hotkeyBinds) return
 
-    keybings[normalHotkey] = hotkeyBings.filter(fn => fn !== listener)
+    keybindings[normalHotkey] = hotkeyBinds.filter(fn => fn !== listener)
   }
 
   addHotkey(hotkey: string, listener: EventListener) {
-    return this._addHotkey(this.keybings, hotkey, listener)
+    return this._addHotkey(this.keybindings, hotkey, listener)
   }
 
   removeHotkey(hotkey: string, listener: EventListener) {
-    this._removeHotkey(this.keybings, hotkey, listener)
+    this._removeHotkey(this.keybindings, hotkey, listener)
   }
 
   addEditorHotkey(hotkey: string, listener: EventListener) {
-    return this._addHotkey(this.editorKeybings, hotkey, listener)
+    return this._addHotkey(this.editorKeybindings, hotkey, listener)
   }
 
   removeEditorHotkey(hotkey: string, listener: EventListener) {
-    this._removeHotkey(this.editorKeybings, hotkey, listener)
+    this._removeHotkey(this.editorKeybindings, hotkey, listener)
   }
 }
 

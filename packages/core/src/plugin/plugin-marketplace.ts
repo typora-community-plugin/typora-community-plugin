@@ -2,7 +2,7 @@ import path from 'src/path'
 import { useService } from 'src/common/service'
 import { Notice } from 'src/ui/components/notice'
 import fs from 'src/io/fs/filesystem'
-import type { PluginManifest, PluginPostion } from "./plugin-manifest"
+import type { PluginManifest, PluginPosition } from "./plugin-manifest"
 import { format } from 'src/utils'
 
 
@@ -56,12 +56,12 @@ export class PluginMarketplace {
       .catch(() => this.pluginStats = {})
   }
 
-  installPlugin(info: PluginMarketInfo, pos: PluginPostion) {
+  installPlugin(info: PluginMarketInfo, position: PluginPosition) {
     const t = this.i18n.t.pluginMarketplace
     return this.getPluginNewestVersion(info)
       .then(version => this.github.downloadThenUnzipToTemp(info.repo, version, 'plugin.zip'))
       .then(tmp => {
-        const dir = pos === 'global'
+        const dir = position === 'global'
           ? this.plugins.globalPluginsDir
           : this.plugins.vaultPluginsDir
         const root = path.join(dir, info.id)
@@ -75,7 +75,7 @@ export class PluginMarketplace {
               throw new Error(t.idNotCorrect)
             }
             else {
-              manifest.postion = pos
+              manifest.position = position
               manifest.dir = root
               this.plugins.manifests[manifest.id] = manifest
 

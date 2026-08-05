@@ -1,4 +1,4 @@
-import type { App, AppSettings, EnvironmentVairables } from "src/app"
+import type { App, AppSettings, EnvironmentVariables } from "src/app"
 import type { CommandManager } from "src/command/command-manager"
 import type { ConfigRepository } from "src/io/config-repository"
 import type { ExportManager } from "src/export-manager"
@@ -33,7 +33,7 @@ type ServiceMap = {
   'app'(): App
   'command-manager'(): CommandManager
   'config-repository'(): ConfigRepository
-  'env'(): EnvironmentVairables
+  'env'(): EnvironmentVariables
   'exporter'(): ExportManager
   'github'(): GithubAPI
   'hotkey-manager'(): HotkeyManager
@@ -65,7 +65,7 @@ type ServiceMap = {
 const services: Partial<ServiceMap> = {}
 const loadedServices: Record<string, boolean> = {}
 const stacks: string[] = []
-const fixedSerivcesLoadingOrder: (keyof ServiceMap)[] = [
+const fixedServicesLoadingOrder: (keyof ServiceMap)[] = [
   'app', 'config-repository', 'settings', 'i18n', 'workspace'
 ]
 
@@ -83,13 +83,13 @@ export function useService<K extends keyof ServiceMap>(id: K, args?: Parameters<
     if (stacks.includes(id)) {
       throw Error(`[Service] Circular dependency detected: ${[...stacks, id].join(' → ')}`)
     }
-    if (fixedSerivcesLoadingOrder.includes(id)) {
-      const index = fixedSerivcesLoadingOrder.indexOf(id)
+    if (fixedServicesLoadingOrder.includes(id)) {
+      const index = fixedServicesLoadingOrder.indexOf(id)
       if (index !== 0) {
-        throw Error(`[Service] "${id}" should be loaded before: ${fixedSerivcesLoadingOrder.slice(0, index).join(' → ')}`)
+        throw Error(`[Service] "${id}" should be loaded before: ${fixedServicesLoadingOrder.slice(0, index).join(' → ')}`)
       }
       else {
-        fixedSerivcesLoadingOrder.shift()
+        fixedServicesLoadingOrder.shift()
       }
     }
   }

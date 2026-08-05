@@ -6,6 +6,9 @@ export const useEditingTabs = memorize(() => {
   let editingTabs: WorkspaceTabs | null = null
 
   return {
+    /**
+     * @tips Cannot be used outside the Workspace API; otherwise, `null` will be returned after the Workspace is disabled.
+     */
     editingTabs(): WorkspaceTabs | null {
       return editingTabs
     },

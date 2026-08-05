@@ -17,7 +17,7 @@ type I18nJsonOptions<T> = I18nBaseOptions & {
 }
 type I18nOptions<T> = I18nFileOptions | I18nJsonOptions<T>
 
-export const DEFALUT_OPTIONS: I18nBaseOptions = {
+export const DEFAULT_OPTIONS: I18nBaseOptions = {
   defaultLang: 'en',
 }
 
@@ -37,7 +37,7 @@ export class I18n<T> {
       userLang,
       localePath,
       resources,
-    } = Object.assign({}, DEFALUT_OPTIONS, options) as Required<I18nBaseOptions> & Partial<I18nFileOptions & I18nJsonOptions<T>>
+    } = Object.assign({}, DEFAULT_OPTIONS, options) as Required<I18nBaseOptions> & Partial<I18nFileOptions & I18nJsonOptions<T>>
 
     const locale = (userLang ?? _options.appLocale ?? _options.locale).toLowerCase();
     const localeList = [locale, locale.split('-').at(0)!, defaultLang]

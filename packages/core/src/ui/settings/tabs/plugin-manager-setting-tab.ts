@@ -129,7 +129,7 @@ export class PluginManagerSettingTab extends SettingTab {
 
       setting.addDescription(el => {
         $(el).append(
-          `<span class="typ-plugin-meta"><span class="fa fa-folder"></span> ${manifest.postion}</span>`,
+          `<span class="typ-plugin-meta"><span class="fa fa-folder"></span> ${manifest.position}</span>`,
 
           `<span class="typ-plugin-meta"><span class="fa fa-cube"></span> v${manifest.version}</span>`,
 
