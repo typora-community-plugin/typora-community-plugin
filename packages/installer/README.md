@@ -30,7 +30,7 @@ su root
 macOS "System Settings" → "Privacy & Security" → "App Management" → allow "Terminal" to update or delete other applications
 
 ```bash
-chmod +x install-linux.sh
+chmod +x install-macos.sh
 
 ./install-macos.sh
 # or custom install postion
@@ -65,7 +65,7 @@ su root
 macOS "System Settings" → "Privacy & Security" → "App Management" → allow "Terminal" to update or delete other applications
 
 ```bash
-chmod +x uninstall-linux.sh
+chmod +x uninstall-macos.sh
 
 ./uninstall-macos.sh
 # or custom install postion
