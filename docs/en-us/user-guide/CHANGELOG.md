@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.9.14
+
+- fix(core/ui/editor/postprocessor/codeblock): support codeblock postprocessors without workspace
+- docs(installer/README): correct macOS installer/uninstaller script names
+- docs(releasing): improve release process documentation with automatic packaging notes
+
 ## v2.9.13
 
 - **Settings**

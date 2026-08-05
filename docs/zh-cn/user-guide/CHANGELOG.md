@@ -1,5 +1,11 @@
 # 更新日志
 
+## v2.9.14
+
+- fix(core/ui/editor/postprocessor/codeblock): 支持非工作区环境下的代码块后处理器
+- docs(installer/README): 修正 macOS 安装/卸载脚本名称
+- docs(releasing): 完善发布流程，新增自动打包说明
+
 ## v2.9.13
 
 - **设置**
