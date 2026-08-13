@@ -93,6 +93,7 @@ export class WorkspaceTabs extends WorkspaceParent {
 
   removeTab(path: string, tabEl?: HTMLElement): void {
     tabEl ??= this.tabHeader.getTabById(path)
+    if (!tabEl) return
     this.tabHeader.closeTab(tabEl)
 
     const leaf = (this.children as WorkspaceLeaf[]).find(c => c.state.path === path)!
