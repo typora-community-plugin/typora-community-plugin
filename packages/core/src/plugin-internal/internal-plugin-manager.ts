@@ -55,7 +55,15 @@ export class InternalPluginManager {
   unloadPlugins() {
     Object.keys(this.manifests)
       .filter(id => this.enabledPlugins[id])
-      .map(id => this.disablePlugin(id))
+      .forEach(id => {
+        // Only unload the plugin instance without persisting the disabled state,
+        // so that loadPlugins() will re-enable them on the next start().
+        try {
+          this.instances[id].unload()
+        } catch (error) {
+          this.logger.error(error)
+        }
+      })
   }
 
   enablePlugin(id: string) {
