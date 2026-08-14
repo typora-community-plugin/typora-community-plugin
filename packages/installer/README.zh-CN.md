@@ -32,7 +32,7 @@ su root
 macOS 设置 → 隐私与安全 → App 管理 → 允许“终端”修改或删除其他应用程序
 
 ```bash
-chmod +x install-linux.sh
+chmod +x install-macos.sh
 
 # 自动查找 Typora 安装路径
 ./install-macos.sh
