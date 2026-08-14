@@ -125,7 +125,10 @@
       "coreUpToDate": "Typora Community Plugin is up to date.",
       "coreUpdateSuccessful": "Typora Community Plugin update successful. (Need to relaunch Typora)",
       "lang": "Language",
-      "langDesc": "Display language of Typora Community Plugin. (Need to relaunch Typora)"
+      "langDesc": "Display language of Typora Community Plugin. (Need to relaunch Typora)",
+      "debugDownloadUrl": "Debug Download URL",
+      "debugDownloadUrlDesc": "Enter the download URL for the Core update package, for development debugging",
+      "debugDownloadEmpty": "Please enter a download URL first"
     }
   },
   "ribbon": {

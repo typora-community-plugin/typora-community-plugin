@@ -1,5 +1,5 @@
 import path from 'src/path'
-import { coreDir, coreVersion } from 'src/common/constants'
+import { coreDir, coreVersion, isDebug } from 'src/common/constants'
 import { Notice } from 'src/ui/components/notice'
 import fs from 'src/io/fs/filesystem'
 import { SettingTab } from "src/ui/settings/setting-tab"
@@ -10,6 +10,7 @@ import { useService } from 'src/common/service'
 
 export type CoreSettings = {
   displayLang: string
+  debugDownloadUrl: string
 }
 
 
@@ -70,6 +71,34 @@ export class AboutTab extends SettingTab {
       })
     })
 
+    if (process.env.IS_DEV || isDebug())
+      this.addSetting(setting => {
+        setting.addName(t.debugDownloadUrl)
+        setting.addDescription(t.debugDownloadUrlDesc)
+        setting.addText(el => {
+          el.placeholder = 'https://example.com/update.zip'
+          const saved = this.settings.get('debugDownloadUrl')
+          if (saved) el.value = saved
+          $(el).on('change', e => {
+            this.settings.set('debugDownloadUrl', $(e.target).val()?.toString() ?? '')
+          })
+        })
+        setting.addButton(button => {
+          button.classList.add('primary')
+          button.innerText = t.buttonUpdate
+          button.onclick = () => {
+            const url = this.settings.get('debugDownloadUrl')
+            if (url) {
+              button.disabled = true
+              this.installCore(url)
+                .finally(() => button.disabled = false)
+            } else {
+              Notice.info(t.debugDownloadEmpty)
+            }
+          }
+        })
+      })
+
     this.addSetting(async setting => {
       setting.addName(t.lang)
       setting.addDescription(t.langDesc)
@@ -85,7 +114,7 @@ export class AboutTab extends SettingTab {
         $(el)
           .append(...options)
           .on('change', e => {
-            this.settings.set('displayLang', $(e.target).val().toString())
+            this.settings.set('displayLang', $(e.target).val()?.toString() ?? '')
           })
       })
     })
