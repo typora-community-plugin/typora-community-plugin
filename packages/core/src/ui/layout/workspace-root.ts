@@ -48,7 +48,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
     $(this.containerEl).addClass('typ-workspace-root')
 
     this.registry.onload = () => {
-      $(document.body).append(this.containerEl)
+      $(this.containerEl).insertBefore('content')
 
       this.registry.registerDomEvent(this.containerEl, 'click', e => {
         const LeafEl = (e.target as HTMLElement).closest('.typ-workspace-leaf')
