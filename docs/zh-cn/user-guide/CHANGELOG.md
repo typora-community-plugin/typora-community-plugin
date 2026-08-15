@@ -1,5 +1,16 @@
 # 更新日志
 
+## v2.9.18
+
+- fix(core/plugin-internal/manager): 卸载插件时不持久化禁用状态，确保下次启动时能重新加载
+
+- **工作区**
+  - fix(core/ui/layout/workspace-root): 修复 macOS 无法操作编辑区的问题 ([#96](https://github.com/typora-community-plugin/typora-community-plugin/issues/96))
+  - fix(core/path): 修复 macOS 标签页标题无法显示的问题
+
+- **开发者**
+  - feat(core/ui/settings/tabs/about): 新增调试模式下的"更新"按钮，支持手动输入 Core 更新包下载链接进行开发调试
+
 ## v2.9.14
 
 - fix(core/ui/editor/postprocessor/codeblock): 支持非工作区环境下的代码块后处理器

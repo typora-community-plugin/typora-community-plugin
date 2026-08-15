@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.9.18
+
+- fix(core/plugin-internal/manager): do not persist disabled state when uninstalling plugins, ensuring they can be reloaded on next startup
+
+- **Workspace**
+  - fix(core/ui/layout/workspace-root): fix inability to interact with the editor area on macOS ([#96](https://github.com/typora-community-plugin/typora-community-plugin/issues/96))
+  - fix(core/path): fix tab title not displaying on macOS
+
+- **Developer**
+  - feat(core/ui/settings/tabs/about): add "Update" button in debug mode, supporting manual input of Core update package download link for development debugging
+
 ## v2.9.14
 
 - fix(core/ui/editor/postprocessor/codeblock): support codeblock postprocessors without workspace
