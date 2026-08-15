@@ -139,9 +139,9 @@ export class App extends Events<AppEvents> {
       this._isReady = true
     })
     this.config.on('switch', () => {
-      this.internalPlugins.unloadPlugins()
-      this.plugins.unloadPlugins()
-      this.settings.load()
+      this.internalPlugins?.unloadPlugins()
+      this.plugins?.unloadPlugins()
+      this.settings?.load()
       this.start()
     })
 

@@ -123,6 +123,7 @@ export class Notice extends View {
   }
 
   show() {
+    if (!noticeContainer.containerEl) return
     noticeContainer.containerEl.append(this.containerEl)
     noticeContainer.add(this)
     noticeContainer.open()

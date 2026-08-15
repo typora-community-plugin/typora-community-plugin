@@ -22,7 +22,8 @@ export class MetadataPlugin extends InternalPlugin {
   }
 
   onload() {
-    const { metadata } = this.app
+    if (!this.app?.metadata) return
+    const { metadata } = this.app!
     this.progressEl = this.addStatusBarItem({ position: 'right', type: 'item' })
     let $indexedCount: JQuery = null
 
@@ -43,7 +44,7 @@ export class MetadataPlugin extends InternalPlugin {
   }
 
   onunload() {
-    this.progressEl.remove()
-    this.app.metadata.clear()
+    this.progressEl?.remove()
+    this.app?.metadata?.clear()
   }
 }

@@ -58,6 +58,7 @@ export class ConfigRepository extends Events<ConfigEvents> {
     this.once('switch', () => {
       const commands = useService('command-manager')
       const i18n = useService('i18n')
+      if (!commands || !i18n) return
 
       this._disposeCommand = commands.register({
         id: 'config:vault',
@@ -80,6 +81,7 @@ export class ConfigRepository extends Events<ConfigEvents> {
     this.once('switch', () => {
       const commands = useService('command-manager')
       const i18n = useService('i18n')
+      if (!commands || !i18n) return
 
       this._disposeCommand = commands.register({
         id: 'config:global',
