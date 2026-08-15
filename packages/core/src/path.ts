@@ -27,8 +27,10 @@ class BrowserPath implements IPath {
   basename(filepath: string, suffix?: string): string {
     const segments = filepath.split(/[\\\/]+/)
     if (!segments[segments.length - 1]) segments.pop()
-    const base = segments.pop()
-    return suffix ? base.slice(0, -1 * suffix.length) : base
+    const base = segments.pop() ?? ''
+    return (suffix && base.endsWith(suffix))
+      ? base.slice(0, -suffix.length)
+      : base
   }
 
   extname(filepath: string): string {
@@ -72,20 +74,27 @@ class BrowserPath implements IPath {
 
     const segments1 = from.trim().split(/[\\\/]+/).filter(Boolean)
     const segments2 = to.trim().split(/[\\\/]+/).filter(Boolean)
-    const len = Math.max(segments1.length, segments2.length)
-    const res = []
 
-    for (let i = 0; i < len; i++) {
-      const s1 = segments1[i]
-      const s2 = segments2[i]
-      if (s1 === s2) continue
-      // Only push '..' when we still have a current directory to exit
-      if (s1 != null && s2 != null) res.push('..')
-      else if (s1 == null && s2 != null) {
-        // 'from' is an ancestor of 'to', no more '..' needed
-        break
-      }
-      if (s2 != null) res.push(s2)
+    // Find the common ancestor segments
+    let commonLength = 0
+    while (
+      commonLength < segments1.length &&
+      commonLength < segments2.length &&
+      segments1[commonLength] === segments2[commonLength]
+    ) {
+      commonLength++
+    }
+
+    const res: string[] = []
+
+    // Go up for every remaining segment of `from`
+    for (let i = commonLength; i < segments1.length; i++) {
+      res.push('..')
+    }
+
+    // Then descend into the remaining segments of `to`
+    for (let i = commonLength; i < segments2.length; i++) {
+      res.push(segments2[i])
     }
 
     return res.join(this.sep)

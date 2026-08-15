@@ -34,13 +34,17 @@ describe('BrowserPath', () => {
       expect(path.basename('foo/bar\\baz.txt')).toBe('baz.txt')
     })
 
-    test('should strip given suffix by length', () => {
+    test('should strip suffix when the basename ends with it', () => {
       expect(path.basename('/foo/bar/baz.txt', '.txt')).toBe('baz')
       expect(path.basename('/foo/bar/baz.js', '.js')).toBe('baz')
     })
 
-    test('should slice suffix.length chars even when suffix not matched', () => {
-      expect(path.basename('/foo/bar/baz.txt', '.md')).toBe('baz.')
+    test('should keep the basename unchanged when suffix does not match', () => {
+      expect(path.basename('/foo/bar/baz.txt', '.md')).toBe('baz.txt')
+    })
+
+    test('should return empty string for empty path', () => {
+      expect(path.basename('')).toBe('')
     })
 
     test('should handle trailing separator', () => {
@@ -163,9 +167,17 @@ describe('BrowserPath', () => {
       expect(path.relative('foo/a', 'foo/b')).toBe('..' + path.sep + 'b')
     })
 
-    test('should return empty for ancestor-descendant paths', () => {
-      expect(path.relative('foo', 'foo/bar/baz')).toBe('')
-      expect(path.relative('foo/bar/baz', 'foo')).toBe('')
+    test('should compute path from ancestor to descendant', () => {
+      expect(path.relative('foo', 'foo/bar/baz')).toBe('bar' + path.sep + 'baz')
+    })
+
+    test('should compute path from descendant to ancestor', () => {
+      expect(path.relative('foo/bar/baz', 'foo')).toBe('..' + path.sep + '..')
+    })
+
+    test('should compute path from an absolute ancestor to an absolute descendant', () => {
+      expect(path.relative('/Users/vault', '/Users/vault/file.md')).toBe('file.md')
+      expect(path.relative('/Users/vault', '/Users/vault/sub/file.md')).toBe('sub' + path.sep + 'file.md')
     })
 
     test('should handle mixed separators', () => {
@@ -179,7 +191,7 @@ describe('BrowserPath', () => {
 
     test('should handle deeply nested diverging paths', () => {
       const result = path.relative('a/b/c', 'a/x/y')
-      expect(result).toBe('..' + path.sep + 'x' + path.sep + '..' + path.sep + 'y')
+      expect(result).toBe('..' + path.sep + '..' + path.sep + 'x' + path.sep + 'y')
     })
 
     test('should handle root-level differences', () => {
