@@ -67,9 +67,11 @@ export class WorkspaceSplit extends WorkspaceParent {
     let dragging = true
     const isVertical = this.direction === 'vertical'
     const splits = this.children
-    const idx = splits.findIndex(c => c === child)
+    const idx = process.env.IS_DEV
+      ? splits.findIndex(c => c.containerEl === child.containerEl)
+      : splits.findIndex(c => c === child)
 
-    if (idx === 0) return
+    if (idx <= 0) return
     const leftIdx = idx - 1
 
     const containerRect = this.containerEl.getBoundingClientRect()
