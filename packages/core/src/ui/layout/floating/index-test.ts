@@ -4,6 +4,9 @@ import type { WorkspaceLeaf } from "../workspace-leaf"
 import { WorkspaceView } from "../workspace-view"
 import { createLeaf } from "../workspace-utils"
 import type { WorkspaceTabs } from "../tabs"
+import { defautTheme } from "./defaut-theme"
+import { resizeable } from "./resizeable"
+import { draggable } from "./draggable"
 
 
 /**
@@ -18,13 +21,7 @@ export class TestFloatingView extends WorkspaceView {
   static type = 'core.test-floating'
 
   containerEl = html`
-    <div class="typ-test-floating-view" style="
-      position: fixed; top: 80px; right: 24px; z-index: 1000;
-      width: 320px; padding: 12px 16px;
-      background: #fff; border: 1px solid #ddd; border-radius: 8px;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, .15);
-      font-size: 13px;
-    ">
+    <div class="typ-test-floating-view">
       <div style="font-weight: 600; margin-bottom: 8px;">Floating Test View</div>
       <div style="margin-bottom: 8px;">This view lives in <code>workspace.floatingSplit</code>.</div>
       <button type="button" class="typ-test-floating-close">Close</button>
@@ -38,6 +35,10 @@ export class TestFloatingView extends WorkspaceView {
   onload() {
     // Floating layer manages DOM independently: append directly to document.body
     document.body.appendChild(this.containerEl)
+
+    defautTheme(this.containerEl)
+    this.register(resizeable(this.containerEl))
+    this.register(draggable(this.containerEl))
 
     this.registerDomEvent(
       this.containerEl.querySelector('.typ-test-floating-close')!,
