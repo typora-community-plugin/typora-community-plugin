@@ -22,6 +22,7 @@ import type { Sidebar } from "src/ui/sidebar/sidebar"
 import type { ViewManager } from "src/ui/view-manager"
 import type { Workspace } from "src/ui/workspace"
 import type { WorkspaceRoot } from "src/ui/layout/workspace-root"
+import type { WorkspaceFloating } from "src/ui/layout/floating"
 import type { Direction, WorkspaceSplit } from "src/ui/layout/split"
 import type { WorkspaceTabs } from "src/ui/layout/tabs"
 import type { Notice } from "src/ui/components/notice"
@@ -58,6 +59,7 @@ type ServiceMap = {
   'notice'(message: string, delay?: number): Notice
 
   'workspace-root'(): WorkspaceRoot
+  'workspace-floating'(): WorkspaceFloating
   'workspace-split'(direction: Direction): WorkspaceSplit
   'workspace-tabs'(): WorkspaceTabs
 }

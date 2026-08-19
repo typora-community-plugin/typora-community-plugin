@@ -11,6 +11,7 @@ import { EditaleTableTestTab } from './ui/components/editable-table-test'
 import { SettingItemTestTab } from './ui/settings/setting-item-test'
 import { TEST_SELECTION_STATS, TEST_STATS } from './ui/statusbar/statistics-test'
 import { FooSlashSuggest, BarSlashSuggest } from './ui/editor/suggestion/suggest-test'
+import { registerTestFloatingView } from './ui/layout/floating/index-test'
 
 
 export function devtools(
@@ -36,6 +37,7 @@ export function devtools(
     registerTestTab()
     registerTestStatistic()
     registerTestSuggest()
+    registerTestFloatingView()
   })
 
   if (File.isNode) {

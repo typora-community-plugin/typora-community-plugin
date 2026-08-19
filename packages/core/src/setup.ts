@@ -123,6 +123,7 @@ registerService('sidebar', memorize(() => useService('workspace').sidebar))
 registerService('notice', ([message, delay]) => new Notice(message, delay))
 
 registerService('workspace-root', memorize(() => useService('workspace').rootSplit))
+registerService('workspace-floating', memorize(() => useService('workspace').floatingSplit))
 registerService('workspace-split', ([direction]) => new WorkspaceSplit(direction))
 registerService('workspace-tabs', () => new WorkspaceTabs())
 

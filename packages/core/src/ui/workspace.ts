@@ -16,6 +16,7 @@ import type { Component } from 'src/common/component'
 import { useEventBus } from 'src/common/eventbus'
 import { useService } from 'src/common/service'
 import { WorkspaceRoot } from './layout/workspace-root'
+import { WorkspaceFloating, createFloating } from './layout/floating'
 import type { WorkspaceLeaf } from './layout/workspace-leaf'
 import { useActiveLeaf } from './layout/use-active-leaf'
 import { createLeaf } from './layout/workspace-utils'
@@ -41,6 +42,11 @@ export class Workspace extends Events<WorkspaceEvents> {
   ribbon: WorkspaceRibbon
   sidebar: Sidebar
   rootSplit: WorkspaceRoot = new WorkspaceRoot(this)
+
+  /**
+   * Floating container: holds views detached from the main layout (rootSplit).
+   */
+  floatingSplit: WorkspaceFloating = createFloating()
 
   get activeLeaf(): WorkspaceLeaf | null {
     const [getActiveLeaf] = useActiveLeaf()
@@ -117,6 +123,27 @@ export class Workspace extends Events<WorkspaceEvents> {
       if (!(<any>childView)._children.length) continue
       this.iterateViews(childView, callback)
     }
+  }
+
+  /**
+   * Iterate all leaves in the whole layout tree (rootSplit + floatingSplit).
+   *
+   * @param callback return `true` to stop iteration
+   */
+  eachLeaves(callback: (leaf: WorkspaceLeaf) => boolean | void) {
+    this.rootSplit.eachLeaves(callback)
+    this.floatingSplit.eachLeaves(callback)
+  }
+
+  findLeaf<L extends WorkspaceLeaf = WorkspaceLeaf>(iteratee: (leaf: WorkspaceLeaf) => boolean): L | null {
+    return this.rootSplit.findLeaf(iteratee) ?? this.floatingSplit.findLeaf(iteratee)
+  }
+
+  filterLeaves<L extends WorkspaceLeaf = WorkspaceLeaf>(iteratee: (leaf: WorkspaceLeaf) => boolean): L[] {
+    return [
+      ...this.rootSplit.filterLeaves(iteratee),
+      ...this.floatingSplit.filterLeaves(iteratee),
+    ] as L[]
   }
 
   private _emitMissingEvents() {

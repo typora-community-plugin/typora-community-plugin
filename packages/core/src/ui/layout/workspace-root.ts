@@ -215,6 +215,9 @@ export class WorkspaceRoot extends WorkspaceSplit {
       this.eachLeaves(leaf => leaf.detach())
       this.children.reverse().forEach(child => child.detach())
 
+      // Also clean up floating views (they are not part of the rootSplit)
+      workspace.floatingSplit.eachLeaves(leaf => leaf.detach())
+
       this.containerEl.remove()
       workspace.activeLeaf = null
       setTimeout(() => editor.writingArea.parentElement!.setAttribute('class', ''))
