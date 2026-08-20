@@ -59,8 +59,7 @@ app.workspace.ensureSideLeaf(type, 'right', opts)
   onOpen() {
     this.updateStateInfo()
 
-    const ws = useService('workspace')
-    const rs = ws.rightSplit
+    const rs = useService('workspace').rightSplit
 
     this.registerDomEvent(
       this.containerEl.querySelector('.typ-test-sidedock-collapse')!,
@@ -80,7 +79,35 @@ app.workspace.ensureSideLeaf(type, 'right', opts)
       () => rs.toggle(),
     )
 
-    // Tab operations are handled by the registration closure below
+    this.registerDomEvent(
+      this.containerEl.querySelector('.typ-test-sidedock-add-tab')!,
+      'click',
+      () => this.addTab(),
+    )
+
+    this.registerDomEvent(
+      this.containerEl.querySelector('.typ-test-sidedock-close-all')!,
+      'click',
+      () => this.closeAllTabs(),
+    )
+  }
+
+  /** Add a new tab (leaf) to the dock's tabs container */
+  private addTab() {
+    const workspace = useService('workspace')
+    const tabs = this.leaf.parent
+    if (!tabs) return
+
+    const leaf = workspace.createLeaf({
+      type: TestSidedockView.type,
+      state: { path: `typ://${TestSidedockView.type}/tab-${Date.now()}` },
+    })
+    tabs.appendChild(leaf)
+  }
+
+  /** Close all leaves in the right split (empty tabs cascade-removes) */
+  private closeAllTabs() {
+    useService('workspace').rightSplit.eachLeaves(leaf => leaf.detach())
   }
 
   private updateStateInfo() {
@@ -106,12 +133,11 @@ app.workspace.ensureSideLeaf(type, 'right', opts)
 // ── Registration (dev-only) ─────────────────────────────────────────────
 
 /**
- * Register the test side-dock view and a status-bar button to toggle it.
+ * Register {@link TestSidedockView} in the `viewManager` and open it
+ * inside `workspace.rightSplit`.
  *
- * - Registers {@link TestSidedockView} in the `viewManager`;
- * - Adds a footer button that opens/closes the test view in the right dock;
- * - Open: creates a leaf under a new `WorkspaceTabs` inside `rightSplit`;
- * - Close: detaches all leaves from `rightSplit`.
+ * The status-bar button that opens/closes this view is registered by
+ * the workspace plugin (`plugin-workspace.ts`).
  */
 export function registerTestSidedockView(
   workspace = useService('workspace'),
@@ -122,67 +148,16 @@ export function registerTestSidedockView(
     (leaf) => new TestSidedockView(leaf),
   )
 
-  let sidedockTabs: ReturnType<typeof useService<'workspace-tabs'>> | null = null
+  // Ensure the dock is expanded
+  workspace.rightSplit.expand()
 
-  // Status bar button
-  $('<div class="footer-item footer-item-right" style="margin-left: 8px; padding: 0 8px;" ty-hint="Toggle side dock test view" aria-label="Toggle side dock test view">')
-    .on('click', toggle)
-    .html('<i class="fa fa-align-right"></i>')
-    .insertBefore($('#footer-word-count'))
+  const leaf = workspace.createLeaf({
+    type: TestSidedockView.type,
+    state: { path: `typ://${TestSidedockView.type}/test` },
+  })
 
-  function toggle() {
-    sidedockTabs ? closeSidedockView() : openSidedockView()
-  }
+  const tabs = useService('workspace-tabs')
+  tabs.appendChild(leaf)
 
-  function addTab() {
-    if (!sidedockTabs) return
-    const leaf = workspace.createLeaf({
-      type: TestSidedockView.type,
-      state: { path: `typ://${TestSidedockView.type}/tab-${Date.now()}` },
-    })
-    sidedockTabs.appendChild(leaf)
-  }
-
-  function closeAllTabs() {
-    if (!sidedockTabs) return
-    workspace.rightSplit.eachLeaves(leaf => leaf.detach())
-    sidedockTabs = null
-  }
-
-  // Wire up tab operation buttons on the test view's DOM
-  function wireTabButtons(viewEl: HTMLElement) {
-    const addBtn = viewEl.querySelector('.typ-test-sidedock-add-tab') as HTMLElement
-    if (addBtn) $(addBtn).off('click').on('click', () => addTab())
-
-    const closeBtn = viewEl.querySelector('.typ-test-sidedock-close-all') as HTMLElement
-    if (closeBtn) $(closeBtn).off('click').on('click', () => closeAllTabs())
-  }
-
-  function openSidedockView() {
-    if (sidedockTabs) return
-
-    // Ensure the dock is expanded
-    workspace.rightSplit.expand()
-
-    const leaf = workspace.createLeaf({
-      type: TestSidedockView.type,
-      state: { path: `typ://${TestSidedockView.type}/test` },
-    })
-
-    sidedockTabs = useService('workspace-tabs')
-    sidedockTabs.appendChild(leaf)
-    workspace.rightSplit.appendChild(sidedockTabs)
-
-    // Wire up tab buttons after the view is rendered
-    setTimeout(() => wireTabButtons(leaf.view.containerEl), 50)
-  }
-
-  function closeSidedockView() {
-    if (!sidedockTabs) return
-
-    // Detach all leaves in the right split (empty tabs cascade-removes)
-    workspace.rightSplit.eachLeaves(leaf => leaf.detach())
-
-    sidedockTabs = null
-  }
+  workspace.rightSplit.appendChild(tabs)
 }
