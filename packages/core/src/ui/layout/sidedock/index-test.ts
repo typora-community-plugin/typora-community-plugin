@@ -148,9 +148,6 @@ export function registerTestSidedockView(
     (leaf) => new TestSidedockView(leaf),
   )
 
-  // Ensure the dock is expanded
-  workspace.rightSplit.expand()
-
   const leaf = workspace.createLeaf({
     type: TestSidedockView.type,
     state: { path: `typ://${TestSidedockView.type}/test` },

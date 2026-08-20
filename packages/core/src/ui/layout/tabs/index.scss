@@ -4,6 +4,7 @@
 }
 
 .typ-workspace-tabs {
+  display: flex;
   flex-direction: column;
 
   border-left: solid 1px rgb(var(--typ-border-color));
