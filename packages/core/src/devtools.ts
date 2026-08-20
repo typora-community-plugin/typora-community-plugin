@@ -12,6 +12,7 @@ import { SettingItemTestTab } from './ui/settings/setting-item-test'
 import { TEST_SELECTION_STATS, TEST_STATS } from './ui/statusbar/statistics-test'
 import { FooSlashSuggest, BarSlashSuggest } from './ui/editor/suggestion/suggest-test'
 import { registerTestFloatingView } from './ui/layout/floating/index-test'
+import { registerTestSidedockView } from './ui/layout/sidedock/index-test'
 
 
 export function devtools(
@@ -38,6 +39,7 @@ export function devtools(
     registerTestStatistic()
     registerTestSuggest()
     registerTestFloatingView()
+    registerTestSidedockView()
   })
 
   if (File.isNode) {

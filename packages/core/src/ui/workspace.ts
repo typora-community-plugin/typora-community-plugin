@@ -22,6 +22,7 @@ import { useActiveLeaf } from './layout/use-active-leaf'
 import { createLeaf } from './layout/workspace-utils'
 import { EmptyView } from './views/empty-view'
 import { MarkdownView } from './views/markdown-view'
+import { WorkspaceSidedock } from './layout/sidedock'
 
 
 export type WorkspaceEvents = {
@@ -48,6 +49,14 @@ export class Workspace extends Events<WorkspaceEvents> {
    */
   floatingSplit: WorkspaceFloating = createFloating()
 
+  /**
+   * Right side dock panel.
+   * Similar to Obsidian's `workspace.rightSplit`.
+   *
+   * @since v2.10.0
+   */
+  rightSplit: WorkspaceSidedock
+
   get activeLeaf(): WorkspaceLeaf | null {
     const [getActiveLeaf] = useActiveLeaf()
     return getActiveLeaf()
@@ -72,6 +81,15 @@ export class Workspace extends Events<WorkspaceEvents> {
   ) {
     super('workspace')
 
+    // Create right side dock with toggle callback
+    this.rightSplit = new WorkspaceSidedock('right', (collapsed) => {
+      if (collapsed) {
+        document.body.classList.remove('is-right-sidedock-open')
+      } else {
+        document.body.classList.add('is-right-sidedock-open')
+      }
+    })
+
     app.once('load', () => this._emitMissingEvents())
 
     this._registerEventHooks()
@@ -92,6 +110,9 @@ export class Workspace extends Events<WorkspaceEvents> {
     this.activeEditor = useService('markdown-editor')
 
     setTimeout(() => this._children.forEach(child => child.load()))
+
+    // Insert rightSplit into DOM (position: fixed, so it floats independently)
+    document.body.appendChild(this.rightSplit.containerEl)
 
     viewManager.registerViewWithExtensions(['md', 'markdown'], MarkdownView.type, (leaf, s) => new MarkdownView(leaf))
     viewManager.registerView(EmptyView.type, (leaf) => new EmptyView(leaf))
@@ -126,24 +147,115 @@ export class Workspace extends Events<WorkspaceEvents> {
   }
 
   /**
-   * Iterate all leaves in the whole layout tree (rootSplit + floatingSplit).
+   * Iterate all leaves in the whole layout tree (rootSplit + floatingSplit + rightSplit).
    *
    * @param callback return `true` to stop iteration
    */
   eachLeaves(callback: (leaf: WorkspaceLeaf) => boolean | void) {
     this.rootSplit.eachLeaves(callback)
     this.floatingSplit.eachLeaves(callback)
+    this.rightSplit.eachLeaves(callback)
   }
 
   findLeaf<L extends WorkspaceLeaf = WorkspaceLeaf>(iteratee: (leaf: WorkspaceLeaf) => boolean): L | null {
-    return this.rootSplit.findLeaf(iteratee) ?? this.floatingSplit.findLeaf(iteratee)
+    return this.rootSplit.findLeaf(iteratee) ?? this.floatingSplit.findLeaf(iteratee) ?? this.rightSplit.findLeaf(iteratee)
   }
 
   filterLeaves<L extends WorkspaceLeaf = WorkspaceLeaf>(iteratee: (leaf: WorkspaceLeaf) => boolean): L[] {
     return [
       ...this.rootSplit.filterLeaves(iteratee),
       ...this.floatingSplit.filterLeaves(iteratee),
+      ...this.rightSplit.filterLeaves(iteratee),
     ] as L[]
+  }
+
+  // ── Right Side Dock API ──────────────────────────────────────────────
+
+  /**
+   * Get or create a leaf in the right side dock.
+   *
+   * @param createTabs - If true and no tabs container exists, create one first.
+   * @returns The leaf, or null if the dock is collapsed and `createTabs` is false.
+   */
+  getRightLeaf(createTabs = true): WorkspaceLeaf | null {
+    const sidedock = this.rightSplit
+
+    // If collapsed and not creating tabs, try to expand first
+    if (sidedock.collapsed && !createTabs) {
+      return null
+    }
+
+    // Ensure the dock is expanded
+    if (sidedock.collapsed) {
+      sidedock.expand()
+    }
+
+    // Find existing tabs container or create one
+    let tabs = sidedock.children.find(c => c.type === 'tabs') as any
+    if (!tabs) {
+      const newTabs = useService('workspace-tabs')
+      sidedock.appendChild(newTabs)
+      tabs = newTabs
+    }
+
+    // If no leaf in tabs, create one
+    if (tabs.children.length === 0) {
+      const leaf = createLeaf()
+      tabs.appendChild(leaf)
+      return leaf
+    }
+
+    // Return the last leaf
+    const lastChild = tabs.children[tabs.children.length - 1]
+    if (lastChild && lastChild.isLeaf()) {
+      return lastChild as WorkspaceLeaf
+    }
+
+    return null
+  }
+
+  /**
+   * Ensure a view of the given type is open in the right side dock.
+   * If an existing leaf of that type exists, reuse it; otherwise create a new one.
+   *
+   * @example
+   * ```js
+   * app.workspace.ensureSideLeaf('my-panel', 'right', { active: true })
+   * ```
+   */
+  ensureSideLeaf(type: string, side: 'right', options?: { active?: boolean; state?: Record<string, any> }) {
+    if (side !== 'right') {
+      throw new Error(`[Workspace] Only 'right' side is supported at this time.`)
+    }
+
+    const sidedock = this.rightSplit
+    const leaves = sidedock.filterLeaves(leaf => leaf.viewType === type)
+
+    let targetLeaf: WorkspaceLeaf | null = null
+
+    if (leaves.length === 0) {
+      // Create a new leaf in the right dock
+      targetLeaf = this.getRightLeaf(true)
+      if (targetLeaf) {
+        targetLeaf.setState({ type, state: options?.state })
+      }
+    } else {
+      // Reuse existing leaf
+      targetLeaf = leaves[0]
+      if (options?.state) {
+        targetLeaf.setState({ type, state: options.state })
+      }
+    }
+
+    if (targetLeaf) {
+      // Expand the dock if collapsed
+      if (sidedock.collapsed) {
+        sidedock.expand()
+      }
+      if (options?.active) {
+        this.activeLeaf = targetLeaf
+      }
+    }
   }
 
   private _emitMissingEvents() {

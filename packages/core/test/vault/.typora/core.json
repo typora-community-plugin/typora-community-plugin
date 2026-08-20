@@ -25,6 +25,7 @@
       "internal.workspace": true
     },
     "advancedSearchMode": true,
-    "useAutoSwap": false
+    "useAutoSwap": false,
+    "githubProxy": "ghproxy.net"
   }
 }

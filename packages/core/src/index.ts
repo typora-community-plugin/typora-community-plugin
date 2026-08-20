@@ -21,6 +21,7 @@ export { openQuickPick } from './ui/components/quick-open'
 
 export type { WorkspaceTabs } from './ui/layout/tabs'
 export type { WorkspaceSplit } from './ui/layout/split'
+export type { WorkspaceSidedock } from './ui/layout/sidedock'
 export type { WorkspaceNode } from './ui/layout/workspace-node'
 export type { WorkspaceParent } from './ui/layout/workspace-parent'
 export type { WorkspaceLeaf } from './ui/layout/workspace-leaf'

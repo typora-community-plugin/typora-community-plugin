@@ -73,9 +73,9 @@ export function registerTestFloatingView(
 
   let floatingTabs: WorkspaceTabs | null = null
 
-  $('<div class="footer-item footer-item-right" style="padding: 0 8px;" ty-hint="Toggle floating test view" aria-label="Toggle floating test view">')
+  $('<div class="footer-item footer-item-right footer-btn" style="padding: 0 8px;" ty-hint="Toggle floating test view" aria-label="Toggle floating test view">')
     .on('click', toggle)
-    .html('<i class="fa fa-arrows-alt"></i>')
+    .html('<i class="fa fa-external-link"></i>')
     .appendTo($('footer.ty-footer'))
 
   function toggle() {
