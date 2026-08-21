@@ -1,8 +1,7 @@
 import './index.scss'
 import { WorkspaceParent } from '../workspace-parent'
 import type { WorkspaceNode } from '../workspace-node'
-import type { WorkspaceTabs } from '../tabs'
-import type { WorkspaceLeaf } from '../workspace-leaf'
+import { useService } from 'src/common/service'
 
 
 /**
@@ -30,6 +29,7 @@ export class WorkspaceSidedock extends WorkspaceParent {
   constructor(
     side: 'right',
     private onToggle?: (collapsed: boolean) => void,
+    private i18n = useService('i18n'),
   ) {
     super()
 
@@ -53,7 +53,7 @@ export class WorkspaceSidedock extends WorkspaceParent {
 
     // Create empty state hint (shown when no children)
     this.emptyStateEl = $(`<div class="workspace-sidedock-empty-state">
-      <p class="u-muted">This panel is empty</p>
+      <p class="u-muted">${i18n.t.workspace.sidedockEmptySidebar}</p>
     </div>`)[0]!
     this.containerEl.appendChild(this.emptyStateEl)
 

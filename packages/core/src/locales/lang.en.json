@@ -163,6 +163,8 @@
     "commandSplitRight": "Workspace: Split right",
     "commandSplitDown": "Workspace: Split down",
     "commandReset": "Workspace: Reset",
-    "fileContextMenuSplitRight": "Open to the right"
+    "fileContextMenuSplitRight": "Open to the right",
+    "toggleRightSidebar": "Toggle right sidebar",
+    "sidedockEmptySidebar": "This sidebar is empty."
   }
 }

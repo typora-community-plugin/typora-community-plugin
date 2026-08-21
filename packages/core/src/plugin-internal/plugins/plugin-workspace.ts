@@ -42,7 +42,7 @@ export class WorkspacePlugin extends InternalPlugin {
     const workspace = useService('workspace')
 
     // Status bar button (registered for auto-removal on unload)
-    const btn = this.addStatusBarItem({ type: 'item', position: 'right', hint: 'Toggle side dock test view' })
+    const btn = this.addStatusBarItem({ type: 'item', position: 'right', hint: this.i18n.t.workspace.toggleRightSidebar })
 
     $(btn)
       .css({ marginLeft: '8px', padding: '0 8px' })
