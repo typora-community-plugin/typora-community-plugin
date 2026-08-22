@@ -72,8 +72,12 @@ export function registerTestFloatingView(
   )
 
   let floatingTabs: WorkspaceTabs | null = null
+  const btnSelector = '.footer-btn-float-test'
 
-  $('<div class="footer-item footer-item-right footer-btn" style="padding: 0 8px;" ty-hint="Toggle floating test view" aria-label="Toggle floating test view">')
+  // Guard against duplicate registration (e.g. devtools hot-reload)
+  if ($(btnSelector).length > 0) return
+
+  const $btn = $(`<div class="footer-item footer-item-right footer-btn footer-btn-float-test" style="padding: 0 8px;" ty-hint="Toggle floating test view" aria-label="Toggle floating test view">`)
     .on('click', toggle)
     .html('<i class="fa fa-external-link"></i>')
     .appendTo($('footer.ty-footer'))

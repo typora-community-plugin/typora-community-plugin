@@ -19,7 +19,9 @@ export class WorkspaceSidedock extends WorkspaceParent {
 
   type = 'sidedock'
 
-  size: number = 280          // default width in px
+  private static readonly MIN_SIZE = 180
+
+  size: number = WorkspaceSidedock.MIN_SIZE    // default width in px
   collapsed: boolean = false  // collapse state
   side: 'right'               // which side this dock is on
 
@@ -83,11 +85,12 @@ export class WorkspaceSidedock extends WorkspaceParent {
     this.collapsed ? this.expand() : this.collapse()
   }
 
-  /** Set the dock width to `n` px (minimum 280) */
+  /** Set the dock width to `n` px (minimum 180) */
   setSize(n: number) {
-    const MIN_SIZE = 280
-    this.size = Math.max(MIN_SIZE, n)
-    document.body.style.setProperty('--typ-sidedock-width', (n === 0 ? 0 : this.size) + 'px')
+    if (n > 0) {
+      this.size = Math.max(WorkspaceSidedock.MIN_SIZE, n)
+    }
+    document.body.style.setProperty('--typ-sidedock-width', (n > 0 ? this.size : 0) + 'px')
   }
 
   /** Override: insert child DOM into the content area */
@@ -131,7 +134,7 @@ export class WorkspaceSidedock extends WorkspaceParent {
     const startPos = e.clientX
     const startSize = dock.size
 
-    document.onmousemove = (e2: MouseEvent) => {
+    function onMouseMove(e2: MouseEvent) {
       if (!dragging) return
       const delta = startPos - e2.clientX  // drag left = wider
       let newSize = startSize + delta
@@ -140,20 +143,22 @@ export class WorkspaceSidedock extends WorkspaceParent {
       if (newSize < 50) {
         dock.collapse()
         dragging = false
-        document.onmousemove = null
-        document.onmouseup = null
+        document.removeEventListener('mousemove', onMouseMove)
+        document.removeEventListener('mouseup', onMouseUp)
         return
       }
 
-      const minSize = 180
-      newSize = Math.max(minSize, newSize)
+      newSize = Math.max(WorkspaceSidedock.MIN_SIZE, newSize)
       dock.setSize(newSize)
     }
 
-    document.onmouseup = () => {
+    function onMouseUp() {
       dragging = false
-      document.onmousemove = null
-      document.onmouseup = null
+      document.removeEventListener('mousemove', onMouseMove)
+      document.removeEventListener('mouseup', onMouseUp)
     }
+
+    document.addEventListener('mousemove', onMouseMove)
+    document.addEventListener('mouseup', onMouseUp)
   }
 }
