@@ -5,6 +5,8 @@ import type { WorkspaceNode } from '../workspace-node'
 
 /**
  * Floating container: holds views detached from the main layout (rootSplit).
+ *
+ * @since v2.10.1
  */
 export class WorkspaceFloating extends WorkspaceParent {
 

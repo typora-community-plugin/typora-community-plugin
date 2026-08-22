@@ -17,13 +17,13 @@ import { ensureRightSidedockLeaf } from '../workspace-utils'
  * - Drag-to-resize
  * - Empty state when no children
  *
- * @since v2.10.0
+ * @since v2.10.1
  */
 export class WorkspaceSidedock extends WorkspaceParent {
 
   type = 'sidedock'
 
-  private static readonly MIN_SIZE = 180
+  private static readonly MIN_SIZE = 280
 
   size: number = WorkspaceSidedock.MIN_SIZE    // default width in px
   collapsed: boolean = false  // collapse state
@@ -38,12 +38,14 @@ export class WorkspaceSidedock extends WorkspaceParent {
     side: 'right',
     private onToggle?: (collapsed: boolean) => void,
     commands = useService('command-manager'),
-    settings = useService('settings'),
-    private i18n = useService('i18n'),
+    private settings = useService('settings'),
+    i18n = useService('i18n'),
   ) {
     super()
 
     this.side = side
+    this.size = Math.max(WorkspaceSidedock.MIN_SIZE, this.settings.get('rightSplitWidth'))
+
     const sideClass = `mod-${side}-split`
     $(this.containerEl).addClass(`typ-workspace-sidedock ${sideClass}`)
 
@@ -82,11 +84,11 @@ export class WorkspaceSidedock extends WorkspaceParent {
     }
 
     const USE_WORKSPACE = [KEY_OF_ENABLED_PLUGINS, PLUGIN_WORKSPACE_ID]
-    const switchWorkspace = (_: string | string[], isEnabled: any) => {
+    const onSwitchWorkspace = (_: string | string[], isEnabled: any) => {
       isEnabled ? this.registry.load() : this.registry.unload()
     }
-    settings.onChange(USE_WORKSPACE, switchWorkspace)
-    setTimeout(() => switchWorkspace(USE_WORKSPACE, settings.get(USE_WORKSPACE)))
+    settings.onChange(USE_WORKSPACE, onSwitchWorkspace)
+    setTimeout(() => onSwitchWorkspace(USE_WORKSPACE, settings.get(USE_WORKSPACE)))
   }
 
   /** Collapse the side dock */
@@ -116,6 +118,7 @@ export class WorkspaceSidedock extends WorkspaceParent {
   setSize(n: number) {
     if (n > 0) {
       this.size = Math.max(WorkspaceSidedock.MIN_SIZE, n)
+      this.settings.set('rightSplitWidth', this.size)
     }
     // When collapsed (n === 0), this.size retains the last expanded width so expand() restores it.
     document.body.style.setProperty('--typ-sidedock-width', (n > 0 ? this.size : 0) + 'px')
