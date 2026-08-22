@@ -60,8 +60,10 @@ export function createEditorLeaf(filePath: string) {
 const RE_TYPE = /^typ:\/\/([^/]+)/
 
 function createCustomLeaf(path: string) {
+  const type = (path.match(RE_TYPE) ?? [])[1]
+  if (!type) throw Error(`View "${type}" has not registered.`)
   return createLeaf({
-    type: path.match(RE_TYPE)[1],
+    type,
     state: {
       path,
     }
@@ -106,6 +108,10 @@ function split(direction: Direction, path?: string) {
 
 export function ensureRightSidedockLeaf(uri: string) {
   const workspace = useService('workspace')
+  const type = (uri.match(RE_TYPE) ?? [])[1]
+  const existing = workspace.rightSplit.findLeaf(leaf => leaf.type === type)
+  if (existing) return
+
   const tabs = useService('workspace-tabs')
   const leaf = createCustomLeaf(uri)
 
