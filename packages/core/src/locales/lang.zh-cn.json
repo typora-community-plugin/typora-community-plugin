@@ -163,6 +163,10 @@
     "commandSplitRight": "Workspace: 右侧打开窗格",
     "commandSplitDown": "Workspace: 下方打开窗格",
     "commandReset": "Workspace: 重置",
-    "fileContextMenuSplitRight": "在右侧打开"
+    "fileContextMenuSplitRight": "在右侧打开",
+    "rightSplit": {
+      "toggleButton": "切换右侧面板",
+      "empty": "此侧边栏为空。"
+    }
   }
 }

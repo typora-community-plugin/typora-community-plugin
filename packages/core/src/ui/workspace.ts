@@ -16,11 +16,14 @@ import type { Component } from 'src/common/component'
 import { useEventBus } from 'src/common/eventbus'
 import { useService } from 'src/common/service'
 import { WorkspaceRoot } from './layout/workspace-root'
+import type { WorkspaceTabs } from './layout/tabs'
+import { WorkspaceFloating, createFloating } from './layout/floating'
 import type { WorkspaceLeaf } from './layout/workspace-leaf'
 import { useActiveLeaf } from './layout/use-active-leaf'
 import { createLeaf } from './layout/workspace-utils'
 import { EmptyView } from './views/empty-view'
 import { MarkdownView } from './views/markdown-view'
+import { WorkspaceSidedock } from './layout/sidedock'
 
 
 export type WorkspaceEvents = {
@@ -41,6 +44,19 @@ export class Workspace extends Events<WorkspaceEvents> {
   ribbon: WorkspaceRibbon
   sidebar: Sidebar
   rootSplit: WorkspaceRoot = new WorkspaceRoot(this)
+
+  /**
+   * Floating container: holds views detached from the main layout (rootSplit).
+   */
+  floatingSplit: WorkspaceFloating = createFloating()
+
+  /**
+   * Right side dock panel.
+   * Similar to Obsidian's `workspace.rightSplit`.
+   *
+   * @since v2.10.0
+   */
+  rightSplit: WorkspaceSidedock
 
   get activeLeaf(): WorkspaceLeaf | null {
     const [getActiveLeaf] = useActiveLeaf()
@@ -66,6 +82,15 @@ export class Workspace extends Events<WorkspaceEvents> {
   ) {
     super('workspace')
 
+    // Create right side dock with toggle callback
+    this.rightSplit = new WorkspaceSidedock('right', (collapsed) => {
+      if (collapsed) {
+        document.body.classList.remove('is-right-sidedock-open')
+      } else {
+        document.body.classList.add('is-right-sidedock-open')
+      }
+    })
+
     app.once('load', () => this._emitMissingEvents())
 
     this._registerEventHooks()
@@ -86,6 +111,9 @@ export class Workspace extends Events<WorkspaceEvents> {
     this.activeEditor = useService('markdown-editor')
 
     setTimeout(() => this._children.forEach(child => child.load()))
+
+    // Insert rightSplit into DOM (position: fixed, so it floats independently)
+    document.body.appendChild(this.rightSplit.containerEl)
 
     viewManager.registerViewWithExtensions(['md', 'markdown'], MarkdownView.type, (leaf, s) => new MarkdownView(leaf))
     viewManager.registerView(EmptyView.type, (leaf) => new EmptyView(leaf))
@@ -117,6 +145,29 @@ export class Workspace extends Events<WorkspaceEvents> {
       if (!(<any>childView)._children.length) continue
       this.iterateViews(childView, callback)
     }
+  }
+
+  /**
+   * Iterate all leaves in the whole layout tree (rootSplit + floatingSplit + rightSplit).
+   *
+   * @param callback return `true` to stop iteration
+   */
+  eachLeaves(callback: (leaf: WorkspaceLeaf) => boolean | void) {
+    this.rootSplit.eachLeaves(callback)
+    this.floatingSplit.eachLeaves(callback)
+    this.rightSplit.eachLeaves(callback)
+  }
+
+  findLeaf<L extends WorkspaceLeaf = WorkspaceLeaf>(iteratee: (leaf: WorkspaceLeaf) => boolean): L | null {
+    return this.rootSplit.findLeaf(iteratee) ?? this.floatingSplit.findLeaf(iteratee) ?? this.rightSplit.findLeaf(iteratee)
+  }
+
+  filterLeaves<L extends WorkspaceLeaf = WorkspaceLeaf>(iteratee: (leaf: WorkspaceLeaf) => boolean): L[] {
+    return [
+      ...this.rootSplit.filterLeaves(iteratee),
+      ...this.floatingSplit.filterLeaves(iteratee),
+      ...this.rightSplit.filterLeaves(iteratee),
+    ] as L[]
   }
 
   private _emitMissingEvents() {

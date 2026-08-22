@@ -10,7 +10,7 @@ div.typ-workspace-root {
   bottom: var(--typ-footer-height);
 
   left: calc(var(--typ-ribbon-width));
-  width: calc(100% - var(--typ-ribbon-width));
+  width: calc(100% - var(--typ-ribbon-width) - var(--typ-sidedock-width));
 
   .html-for-mac & {
     // fix: `<content>` will cover `.typ-workspace-root` in webview (Safari) on macOS.
@@ -19,6 +19,6 @@ div.typ-workspace-root {
 
   .pin-outline & {
     left: calc(var(--typ-ribbon-width) + var(--sidebar-width));
-    width: calc(100% - var(--typ-ribbon-width) - var(--sidebar-width));
+    width: calc(100% - var(--typ-ribbon-width) - var(--sidebar-width) - var(--typ-sidedock-width));
   }
 }

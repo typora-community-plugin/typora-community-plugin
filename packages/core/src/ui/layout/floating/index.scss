@@ -1,0 +1,16 @@
+.typ-workspace-floating {
+  position: relative;
+  z-index: 10;
+
+  // The floating container itself does not participate in the main layout flex flow;
+  // child DOM is rendered independently by the floating layer — only base container styles here.
+  &,
+  &>.typ-workspace-node {
+    display: flex;
+  }
+
+  &>.typ-workspace-node {
+    min-width: 0;
+    min-height: 0;
+  }
+}

@@ -9,6 +9,8 @@ import type { ViewState } from "../view-manager"
 import { uniqueId } from "src/utils"
 
 
+// ---------- workspace.rootSplit ----------
+
 export function createUntitledTabs() {
   const tabs = useService('workspace-tabs')
   tabs.appendChild(createEditorLeaf(''))
@@ -98,4 +100,15 @@ function split(direction: Direction, path?: string) {
     newSplit.appendChild(previousTabs)
     newSplit.appendChild(createTabs(path))
   }
+}
+
+// ---------- workspace.rightSplit ----------
+
+export function ensureRightSidedockLeaf(uri: string) {
+  const workspace = useService('workspace')
+  const tabs = useService('workspace-tabs')
+  const leaf = createCustomLeaf(uri)
+
+  tabs.appendChild(leaf)
+  workspace.rightSplit.appendChild(tabs)
 }

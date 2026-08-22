@@ -1,0 +1,62 @@
+// WorkspaceSidedock — right panel / side dock styles
+:root {
+  --typ-sidedock-width: 0;
+}
+
+.typ-workspace-sidedock {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  width: var(--typ-sidedock-width);
+  z-index: 3;
+  transition: width 0.15s ease;
+
+  &.mod-right-split {
+    top: var(--typ-workspace-top);
+    right: 0;
+    bottom: var(--typ-footer-height);
+    border-left: solid 1px rgb(var(--typ-border-color));
+  }
+
+  // Collapsed state
+  &.is-sidedock-collapsed {
+    width: 0;
+
+    .sidedock-content,
+    .workspace-sidedock-empty-state {
+      display: none !important;
+    }
+  }
+
+  // Resize handle
+  .typ-workspace-leaf-resize-handle {
+    width: 6px;
+    height: 100%;
+    cursor: col-resize;
+  }
+
+  // Content area (only visible when expanded)
+  .sidedock-content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  // Empty state
+  .workspace-sidedock-empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 16px;
+    text-align: center;
+
+    p.u-muted {
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 0;
+    }
+  }
+}
