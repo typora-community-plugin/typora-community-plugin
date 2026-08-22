@@ -164,7 +164,9 @@
     "commandSplitDown": "Arbeitsbereich: Unten teilen",
     "commandReset": "Arbeitsbereich: Zurücksetzen",
     "fileContextMenuSplitRight": "Rechts öffnen",
-    "toggleRightSidebar": "Seitenleiste rechts umschalten",
-    "sidedockEmptySidebar": "Diese Seitenleiste ist leer."
+    "rightSplit": {
+      "toggleButton": "Seitenleiste rechts umschalten",
+      "empty": "Diese Seitenleiste ist leer."
+    }
   }
 }

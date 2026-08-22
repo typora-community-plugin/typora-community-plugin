@@ -27,6 +27,7 @@ type InternalCommands = {
   'core.workspace:reset'(): void
   'core.workspace:split-right'(path?: string): void
   'core.workspace:split-down'(path?: string): void
+  'core.workspace.right-split:ensure-leaf'(path?: string): void
   'settings:open'(): void
 }
 

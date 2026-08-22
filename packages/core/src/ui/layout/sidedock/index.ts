@@ -2,6 +2,10 @@ import './index.scss'
 import { WorkspaceParent } from '../workspace-parent'
 import type { WorkspaceNode } from '../workspace-node'
 import { useService } from 'src/common/service'
+import { Component } from 'src/common/component'
+import { KEY_OF_ENABLED_PLUGINS } from 'src/plugin-internal/internal-plugin-manager'
+import { PLUGIN_WORKSPACE_ID } from 'src/plugin-internal/plugins/plugin-workspace'
+import { ensureRightSidedockLeaf } from '../workspace-utils'
 
 
 /**
@@ -28,9 +32,13 @@ export class WorkspaceSidedock extends WorkspaceParent {
   private contentEl!: HTMLElement   // .sidedock-content
   private emptyStateEl!: HTMLElement // empty state hint
 
+  private registry = new Component()
+
   constructor(
     side: 'right',
     private onToggle?: (collapsed: boolean) => void,
+    commands = useService('command-manager'),
+    settings = useService('settings'),
     private i18n = useService('i18n'),
   ) {
     super()
@@ -43,11 +51,12 @@ export class WorkspaceSidedock extends WorkspaceParent {
     // For sidedock, we override its behavior: drag it to resize the dock itself.
     this.resizeHandleEl.classList.add('sidedock-resize-handle')
     // Remove the default split-child-resize handler; sidedock handles its own resize.
-    $(this.resizeHandleEl).off('mousedown')
-    $(this.resizeHandleEl).on('mousedown', (e: any) => {
-      e.stopImmediatePropagation()
-      this._onResizeStart(e.originalEvent as MouseEvent)
-    })
+    $(this.resizeHandleEl)
+      .off('mousedown')
+      .on('mousedown', (e: any) => {
+        e.stopImmediatePropagation()
+        this._onResizeStart(e.originalEvent as MouseEvent)
+      })
 
     // Create content area — children are inserted here, not directly on the dock
     this.contentEl = $('<div class="sidedock-content">')[0]!
@@ -55,11 +64,29 @@ export class WorkspaceSidedock extends WorkspaceParent {
 
     // Create empty state hint (shown when no children)
     this.emptyStateEl = $(`<div class="workspace-sidedock-empty-state">
-      <p class="u-muted">${i18n.t.workspace.sidedockEmptySidebar}</p>
+      <p class="u-muted">${i18n.t.workspace.rightSplit.empty}</p>
     </div>`)[0]!
     this.containerEl.appendChild(this.emptyStateEl)
 
     this.collapse()
+
+    this.registry.onload = () => {
+      this.registry.register(
+        commands.register({
+          id: 'core.workspace.right-split:ensure-leaf',
+          title: 'Ensure leaf',
+          scope: 'global',
+          showInCommandPanel: false,
+          callback: ensureRightSidedockLeaf,
+        }))
+    }
+
+    const USE_WORKSPACE = [KEY_OF_ENABLED_PLUGINS, PLUGIN_WORKSPACE_ID]
+    const switchWorkspace = (_: string | string[], isEnabled: any) => {
+      isEnabled ? this.registry.load() : this.registry.unload()
+    }
+    settings.onChange(USE_WORKSPACE, switchWorkspace)
+    setTimeout(() => switchWorkspace(USE_WORKSPACE, settings.get(USE_WORKSPACE)))
   }
 
   /** Collapse the side dock */

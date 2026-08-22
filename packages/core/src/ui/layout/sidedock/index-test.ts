@@ -140,7 +140,7 @@ app.workspace.ensureSideLeaf(type, 'right', opts)
  * the workspace plugin (`plugin-workspace.ts`).
  */
 export function registerTestSidedockView(
-  workspace = useService('workspace'),
+  commands = useService('command-manager'),
   viewManager = useService('view-manager'),
 ) {
   viewManager.registerView(
@@ -148,13 +148,5 @@ export function registerTestSidedockView(
     (leaf) => new TestSidedockView(leaf),
   )
 
-  const leaf = workspace.createLeaf({
-    type: TestSidedockView.type,
-    state: { path: `typ://${TestSidedockView.type}/test` },
-  })
-
-  const tabs = useService('workspace-tabs')
-  tabs.appendChild(leaf)
-
-  workspace.rightSplit.appendChild(tabs)
+  commands.run('core.workspace.right-split:ensure-leaf', [`typ://${TestSidedockView.type}/Test`])
 }

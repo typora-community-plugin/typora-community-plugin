@@ -164,7 +164,9 @@
     "commandSplitDown": "Workspace: 下方打开窗格",
     "commandReset": "Workspace: 重置",
     "fileContextMenuSplitRight": "在右侧打开",
-    "toggleRightSidebar": "切换右侧面板",
-    "sidedockEmptySidebar": "此侧边栏为空。"
+    "rightSplit": {
+      "toggleButton": "切换右侧面板",
+      "empty": "此侧边栏为空。"
+    }
   }
 }
