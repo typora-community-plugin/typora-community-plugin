@@ -25,20 +25,6 @@ export class TestSidedockView extends WorkspaceView {
         <pre id="sidedock-state" style="font-size: 12px; white-space: pre-wrap; margin-top: 4px;"></pre>
       </details>
 
-      <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-        <button type="button" class="typ-test-sidedock-collapse">Collapse</button>
-        <button type="button" class="typ-test-sidedock-expand">Expand</button>
-        <button type="button" class="typ-test-sidedock-toggle">Toggle</button>
-      </div>
-
-      <hr style="margin: 16px 0; border: none; border-top: 1px solid var(--base-border);" />
-
-      <div style="font-weight: 500; margin-bottom: 8px;">Tab Operations</div>
-      <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-        <button type="button" class="typ-test-sidedock-add-tab">Add Tab</button>
-        <button type="button" class="typ-test-sidedock-close-all">Close All Tabs</button>
-      </div>
-
       <hr style="margin: 16px 0; border: none; border-top: 1px solid var(--base-border);" />
 
       <div style="font-weight: 500; margin-bottom: 8px;">API Reference</div>
@@ -46,8 +32,7 @@ export class TestSidedockView extends WorkspaceView {
 app.workspace.rightSplit.expand()
 app.workspace.rightSplit.collapse()
 app.workspace.rightSplit.toggle()
-app.workspace.getRightLeaf(createTabs?)
-app.workspace.ensureSideLeaf(type, 'right', opts)
+app.commands.run('core.workspace.right-split:ensure-leaf', [path])
       </pre>
     </div>`
 
@@ -58,56 +43,6 @@ app.workspace.ensureSideLeaf(type, 'right', opts)
   /** @override */
   onOpen() {
     this.updateStateInfo()
-
-    const rs = useService('workspace').rightSplit
-
-    this.registerDomEvent(
-      this.containerEl.querySelector('.typ-test-sidedock-collapse')!,
-      'click',
-      () => rs.collapse(),
-    )
-
-    this.registerDomEvent(
-      this.containerEl.querySelector('.typ-test-sidedock-expand')!,
-      'click',
-      () => rs.expand(),
-    )
-
-    this.registerDomEvent(
-      this.containerEl.querySelector('.typ-test-sidedock-toggle')!,
-      'click',
-      () => rs.toggle(),
-    )
-
-    this.registerDomEvent(
-      this.containerEl.querySelector('.typ-test-sidedock-add-tab')!,
-      'click',
-      () => this.addTab(),
-    )
-
-    this.registerDomEvent(
-      this.containerEl.querySelector('.typ-test-sidedock-close-all')!,
-      'click',
-      () => this.closeAllTabs(),
-    )
-  }
-
-  /** Add a new tab (leaf) to the dock's tabs container */
-  private addTab() {
-    const workspace = useService('workspace')
-    const tabs = this.leaf.parent
-    if (!tabs) return
-
-    const leaf = workspace.createLeaf({
-      type: TestSidedockView.type,
-      state: { path: `typ://${TestSidedockView.type}/tab-${Date.now()}` },
-    })
-    tabs.appendChild(leaf)
-  }
-
-  /** Close all leaves in the right split (empty tabs cascade-removes) */
-  private closeAllTabs() {
-    useService('workspace').rightSplit.eachLeaves(leaf => leaf.detach())
   }
 
   private updateStateInfo() {
