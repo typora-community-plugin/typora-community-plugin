@@ -1,5 +1,12 @@
 # 更新日志
 
+## v2.10.1
+
+- **工作区**
+  - feat(core/ui/layout/floating): 新增浮动工作区容器
+  - feat(core/ui/layout/sidedock): 新增右侧边栏面板
+  - fix(core/ui/layout/split): 修复开发环境下无法调整分割区大小的问题
+
 ## v2.9.18
 
 - fix(core/plugin-internal/manager): 卸载插件时不持久化禁用状态，确保下次启动时能重新加载

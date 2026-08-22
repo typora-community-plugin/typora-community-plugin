@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.10.1
+
+- **Workspace**
+  - feat(core/ui/layout/floating): add floating workspace container
+  - feat(core/ui/layout/sidedock): add right side dock panel
+  - fix(core/ui/layout/split): fix inability to resize split in development environment
+
 ## v2.9.18
 
 - fix(core/plugin-internal/manager): do not persist disabled state when uninstalling plugins, ensuring they can be reloaded on next startup
