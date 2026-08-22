@@ -28,6 +28,10 @@
     }
   }
 
+  .typ-tabs .typ-tab .typ-close {
+    display: none !important;
+  }
+
   // Resize handle
   .typ-workspace-leaf-resize-handle {
     width: 6px;
