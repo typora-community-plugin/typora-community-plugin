@@ -1,5 +1,10 @@
 # 更新日志
 
+## v2.10.2
+
+- **工作区**
+  - fix(core/ui/layout/sidedock): 避免多次调用 `ensureRightSidedockLeaf()` 会创建重复视图
+
 ## v2.10.1
 
 - **工作区**

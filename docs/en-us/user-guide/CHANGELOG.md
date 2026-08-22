@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.10.2
+
+- **Workspace**
+  - fix(core/ui/layout/sidedock): prevent duplicate leaves in `ensureRightSidedockLeaf()`
+
 ## v2.10.1
 
 - **Workspace**
