@@ -13,7 +13,7 @@ export class WorkspaceFloating extends WorkspaceParent {
   constructor() {
     super()
 
-    $(this.containerEl).addClass('typ-workspace-floating')
+    $(this.containerEl).addClass('typ-workspace-floating').css({ display: 'none' })
   }
 
   /**

@@ -4,7 +4,7 @@ import type { WorkspaceLeaf } from "../workspace-leaf"
 import { WorkspaceView } from "../workspace-view"
 import { createLeaf } from "../workspace-utils"
 import type { WorkspaceTabs } from "../tabs"
-import { defautTheme } from "./defaut-theme"
+import { defaultTheme } from "./default-theme"
 import { resizeable } from "./resizeable"
 import { draggable } from "./draggable"
 
@@ -36,7 +36,7 @@ export class TestFloatingView extends WorkspaceView {
     // Floating layer manages DOM independently: append directly to document.body
     document.body.appendChild(this.containerEl)
 
-    defautTheme(this.containerEl)
+    defaultTheme(this.containerEl)
     this.register(resizeable(this.containerEl))
     this.register(draggable(this.containerEl))
 
@@ -110,3 +110,4 @@ export function registerTestFloatingView(
     floatingTabs = null
   }
 }
+

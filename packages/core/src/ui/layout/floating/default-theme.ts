@@ -5,7 +5,7 @@
  * view's container: fixed positioning, size, background, border and shadow —
  * everything except the view's own content markup.
  */
-export function defautTheme(containerEl: HTMLElement) {
+export function defaultTheme(containerEl: HTMLElement) {
   Object.assign(containerEl.style, {
     position: 'fixed',
     top: '80px',
@@ -20,3 +20,4 @@ export function defautTheme(containerEl: HTMLElement) {
     fontSize: '13px',
   } satisfies Partial<CSSStyleDeclaration>)
 }
+
