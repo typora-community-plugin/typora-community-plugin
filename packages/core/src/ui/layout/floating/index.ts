@@ -1,4 +1,4 @@
-﻿import './index.scss'
+import './index.scss'
 import { WorkspaceParent } from '../workspace-parent'
 import type { WorkspaceNode } from '../workspace-node'
 
@@ -27,6 +27,7 @@ export class WorkspaceFloating extends WorkspaceParent {
 
   protected _removeChild(child: WorkspaceNode) {
     const index = this.children.findIndex(c => c === child)
+    if (index === -1) return
     this.children.splice(index, 1)
     child.setParent(null)
     // Do not call child.containerEl.remove(): DOM is managed independently by the floating layer

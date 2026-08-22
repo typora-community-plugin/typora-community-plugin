@@ -90,6 +90,7 @@ export class WorkspaceSidedock extends WorkspaceParent {
     if (n > 0) {
       this.size = Math.max(WorkspaceSidedock.MIN_SIZE, n)
     }
+    // When collapsed (n === 0), this.size retains the last expanded width so expand() restores it.
     document.body.style.setProperty('--typ-sidedock-width', (n > 0 ? this.size : 0) + 'px')
   }
 

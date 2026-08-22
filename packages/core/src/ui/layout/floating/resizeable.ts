@@ -38,7 +38,6 @@ export function resizeable(
   let startHeight = 0
 
   function onMouseMove(e: MouseEvent) {
-    e.preventDefault()
     const width = Math.max(minWidth, startWidth + e.clientX - startX)
     const height = Math.max(minHeight, startHeight + e.clientY - startY)
     containerEl.style.width = `${width}px`
@@ -51,7 +50,6 @@ export function resizeable(
   }
 
   function onHandleMouseDown(e: MouseEvent) {
-    e.preventDefault()
     e.stopPropagation()
     startX = e.clientX
     startY = e.clientY
@@ -65,6 +63,7 @@ export function resizeable(
   containerEl.appendChild(handle)
 
   return () => {
+    handle.removeEventListener('mousedown', onHandleMouseDown)
     handle.remove()
     document.removeEventListener('mousemove', onMouseMove)
     document.removeEventListener('mouseup', onMouseUp)

@@ -21,7 +21,6 @@ export function draggable(
   let startTop = 0
 
   function onMouseMove(e: MouseEvent) {
-    e.preventDefault()
     containerEl.style.left = `${startLeft + e.clientX - startX}px`
     containerEl.style.top = `${startTop + e.clientY - startY}px`
   }

@@ -16,6 +16,7 @@ import type { Component } from 'src/common/component'
 import { useEventBus } from 'src/common/eventbus'
 import { useService } from 'src/common/service'
 import { WorkspaceRoot } from './layout/workspace-root'
+import type { WorkspaceTabs } from './layout/tabs'
 import { WorkspaceFloating, createFloating } from './layout/floating'
 import type { WorkspaceLeaf } from './layout/workspace-leaf'
 import { useActiveLeaf } from './layout/use-active-leaf'
@@ -191,7 +192,7 @@ export class Workspace extends Events<WorkspaceEvents> {
     }
 
     // Find existing tabs container or create one
-    let tabs = sidedock.children.find(c => c.type === 'tabs') as any
+    let tabs = sidedock.children.find(c => c.type === 'tabs') as WorkspaceTabs | undefined
     if (!tabs) {
       const newTabs = useService('workspace-tabs')
       sidedock.appendChild(newTabs)

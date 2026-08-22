@@ -1,4 +1,7 @@
 // WorkspaceSidedock — right panel / side dock styles
+:root {
+  --typ-sidedock-width: 0;
+}
 
 .typ-workspace-sidedock {
   display: flex;
@@ -6,7 +9,7 @@
   position: fixed;
   width: var(--typ-sidedock-width);
   z-index: 3;
-  transition: width 0.15s ease, opacity 0.15s ease;
+  transition: width 0.15s ease;
 
   &.mod-right-split {
     top: var(--typ-workspace-top);
