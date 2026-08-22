@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.10.4
+
+- **Workspace**
+  - feat(core/ui/layout/sidedock): persist right-sidedock width to settings and raise min size to 280px
+  - refactor(core/ui/layout/sidedock): hide tab close buttons
+
 ## v2.10.2
 
 - **Workspace**

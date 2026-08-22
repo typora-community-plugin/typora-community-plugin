@@ -1,5 +1,11 @@
 # 更新日志
 
+## v2.10.4
+
+- **工作区**
+  - feat(core/ui/layout/sidedock): 右侧边栏宽度持久化到设置，最小宽度提升至 280px
+  - refactor(core/ui/layout/sidedock): 隐藏侧边栏标签页的关闭按钮
+
 ## v2.10.2
 
 - **工作区**
