@@ -51,6 +51,7 @@ export { StatisticHandler, StatisticContext } from './ui/statusbar/statistics'
 
 export { default as fs } from 'src/io/fs/filesystem'
 export { default as path } from 'src/path'
+export { default as os } from 'src/os'
 
 export { debounce } from './utils/schedule/debounce'
 export { format } from './utils/string/format'
