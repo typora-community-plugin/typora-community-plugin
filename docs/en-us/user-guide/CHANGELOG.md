@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.10.5
+
+- **Developer**
+  - feat(core/os): add cross-platform OS abstraction with browser fallback
+
 ## v2.10.4
 
 - **Workspace**
