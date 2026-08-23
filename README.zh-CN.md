@@ -55,6 +55,7 @@
 | -------------------------------- | ------------------------------------------ |
 | [abcjs][p12]                     | 支持在多行代码块中使用 ABC 记谱法。              |
 | [callout][p1]                    | 支持标注块语法 `> [!type]`                    |
+| [chat][p23]  <sup>`新`</sup>    | 和 AI 协作编写笔记                              |
 | [code-folding][p14]              | 令多行代码块中的代码可折叠。                     |
 | [codeblock-copy-button][p2]      | 在多行代码块右上角添加一个复制按钮。              |
 | [codeblock-highlight-mapper][p3] | 将语言 A 映射为语言 B，使用语言 B 的语法高亮代码。 |
@@ -69,7 +70,7 @@
 | [note-refactor][p7]              | 提取选中文本到新文件                           |
 | [note-snippets][p8]              | 使用斜线指令输入笔记片段                        |
 | [tag][p9]                        | 高亮 `#tag` 语法，自动完成，提供标签面板管理和搜索标签 |
-| [statistics][p22] <sup>`新`</sup> | 显示文档统计信息                                   |
+| [statistics][p22]                | 显示文档统计信息                                   |
 | [styled-text][p21]               | 为匹配正则表达式的文本添加临时样式               |
 | [templater][p19]                 | 从模板创建笔记                                 |
 | [trigger][p20]                   | 为命令设置一个触发器，以自动执行。               |
@@ -134,3 +135,4 @@
 [p20]: https://github.com/typora-community-plugin/typora-plugin-trigger
 [p21]: https://github.com/typora-community-plugin/typora-plugin-styled-text
 [p22]: https://github.com/typora-community-plugin/typora-plugin-statistics
+[p23]: https://github.com/typora-community-plugin/typora-plugin-chat
