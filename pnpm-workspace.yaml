@@ -1,7 +1,10 @@
-allowBuilds:
-  '@parcel/watcher': set this to true or false
-  core-js: true
-  esbuild: true
-git-checks: false
 packages:
   - 'packages/*'
+
+allowBuilds:
+  '@parcel/watcher': false
+  core-js: true
+  esbuild: true
+
+git-checks: false
+
