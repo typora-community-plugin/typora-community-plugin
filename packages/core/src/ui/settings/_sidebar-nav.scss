@@ -1,0 +1,30 @@
+@mixin sidebar-container {
+  overflow: auto;
+
+  .typ-nav__group-title {
+    color: var(--control-text-color);
+    font-weight: 300;
+
+    &:not(:first-child) {
+      margin: 1rem 0 .2rem 0;
+    }
+  }
+}
+
+@mixin nav-item($active-bg: var(--control-text-color), $active-color: var(--side-bar-bg-color)) {
+  margin: 0 .75rem 2px 0;
+  padding: .3rem .8rem;
+  width: 10rem;
+  border-radius: .25rem;
+  font-size: .75rem;
+
+  &:hover {
+    background: rgba(var(--typ-border-color), .35);
+  }
+
+  &.active {
+    color: $active-color;
+    background: $active-bg;
+    opacity: .8;
+  }
+}

@@ -152,4 +152,82 @@ export class SettingItem extends View {
     build(table)
     this.containerEl.append(table.containerEl)
   }
+
+  /**
+   * Add a sidebar + panel layout. The active state is managed internally;
+   * `onSelect` receives the selected item and the panel element to render into.
+   * Returns an object with methods to manage the sidebar list dynamically.
+   * @beta
+   */
+  addSidebarLayout(
+    options: { items: string[]; initialActive?: string },
+    onSelect: (ctx: { items: string[], item: string; panelEl: HTMLElement }) => void,
+  ): {
+    setItems(items: string[]): void
+    addItem(item: string): void
+    removeItem(item: string): void
+  } {
+    const layoutEl = html`<div class="typ-setting-sidebar-layout"></div>`
+    const sidebarEl = html`<aside class="typ-sidebar typ-setting-sidebar"></aside>`
+    const panelEl = html`<div class="typ-setting-panel"></div>`
+    layoutEl.append(sidebarEl, panelEl)
+
+    let active = options.initialActive ?? options.items[0]
+
+    const renderSidebar = () => {
+      sidebarEl.replaceChildren()
+      for (const item of options.items) {
+        const el = html`<div class="typ-nav__item"></div>` as HTMLElement
+        el.textContent = item
+        if (item === active) el.classList.add('active')
+        el.onclick = () => select(item)
+        sidebarEl.append(el)
+      }
+    }
+
+    const select = (item: string) => {
+      active = item
+      renderSidebar()
+      panelEl.replaceChildren()
+      onSelect({ items: options.items, item, panelEl })
+    }
+
+    renderSidebar()
+    if (options.items.length) select(active!)
+
+    this.info.append(layoutEl)
+
+    return {
+      setItems(items: string[]) {
+        options.items = [...items]
+        if (options.items.length) {
+          if (!options.items.includes(active)) active = options.items[0]
+          select(active)
+        } else {
+          sidebarEl.replaceChildren()
+          panelEl.replaceChildren()
+        }
+      },
+      addItem(item: string) {
+        if (!options.items.includes(item)) {
+          options.items.push(item)
+          renderSidebar()
+        }
+      },
+      removeItem(item: string) {
+        const index = options.items.indexOf(item)
+        if (index >= 0) {
+          options.items.splice(index, 1)
+          if (item === active && !options.items.length) {
+            renderSidebar()
+            panelEl.replaceChildren()
+          } else if (item === active) {
+            select(options.items[0])
+          } else {
+            renderSidebar()
+          }
+        }
+      },
+    }
+  }
 }

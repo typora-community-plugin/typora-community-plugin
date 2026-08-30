@@ -1,5 +1,6 @@
 @import '../components/button.scss';
 @import '../components/tag.scss';
+@import '_sidebar-nav';
 
 
 .typ-setting-item {
@@ -38,6 +39,39 @@
 
       &>* {
         margin-left: .5rem;
+      }
+    }
+  }
+
+  @at-root .typ-setting-sidebar-layout {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    width: 100%;
+
+    >* {
+      align-self: stretch;
+    }
+
+    @at-root .typ-setting-sidebar {
+      flex: 0 0 auto;
+      width: 10rem;
+
+      .typ-nav__item {
+        @include nav-item($active-bg: var(--control-text-color), $active-color: var(--primary-btn-text-color));
+
+        margin: 0 0 2px 0;
+        width: calc(100% - .5rem);
+        text-align: left;
+      }
+    }
+
+    @at-root .typ-setting-panel {
+      flex: 1;
+      min-width: 0;
+
+      > .typ-setting-item:last-child {
+        border-bottom: none;
       }
     }
   }
