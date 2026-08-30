@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.10.6
+
+- **Developer**
+  - feat(core/ui/settings/item): add a sidebar layout component to the settings modal, refactor the settings modal styles and supplement tests
+
+- **New Plugin**
+  - [chat][]: Write notes collaboratively with AI
+
 ## v2.10.5
 
 - **Developer**
@@ -742,6 +750,8 @@
 
 
 [abcjs]: https://github.com/typora-community-plugin/typora-plugin-abcjs
+
+[chat]: https://github.com/typora-community-plugin/typora-plugin-chat
 
 [codeblock-copy-button]:https://github.com/typora-community-plugin/typora-plugin-codeblock-copy-button
 

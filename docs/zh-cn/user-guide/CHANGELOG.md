@@ -1,5 +1,13 @@
 # 更新日志
 
+## v2.10.6
+
+- **开发者**
+  - feat(core/ui/settings/item): 设置弹出框新增侧边栏布局组件，重构设置弹窗样式并补充测试
+
+- **新增插件**
+  - [chat][]: 和 AI 协作编写笔记
+
 ## v2.10.5
 
 - **开发者**
@@ -744,6 +752,8 @@
 
 
 [abcjs]: https://github.com/typora-community-plugin/typora-plugin-abcjs
+
+[chat]: https://github.com/typora-community-plugin/typora-plugin-chat
 
 [codeblock-copy-button]:https://github.com/typora-community-plugin/typora-plugin-codeblock-copy-button
 
