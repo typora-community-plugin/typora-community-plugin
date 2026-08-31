@@ -2,7 +2,7 @@ import { useService } from "src/common/service"
 import { platform } from "src/common/constants"
 import type { PluginMarketInfo } from "src/plugin/plugin-marketplace"
 import { SettingTab } from "../setting-tab"
-import { debounce, format, uniqueId } from "src/utils"
+import { debounce, format } from "src/utils"
 import { Downloader } from "src/net/net"
 import { File } from "typora"
 import { Notice } from "src/ui/components/notice"
@@ -100,19 +100,22 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     this.loadPluginList()
   }
 
+  private _loadPromise: Promise<void> | undefined
   private _pluginListVersion = 0
 
   private loadPluginList() {
-    const version = +uniqueId()
+    const version = ++this._pluginListVersion
 
     this.cleanPluginList()
-    Promise.all([
-      this.marketplace.loadCommunityPlugins(),
-      this.marketplace.loadCommunityPluginStats(),
-    ]).then(() => {
-      if (version <= this._pluginListVersion) return
-      this._pluginListVersion = version
-      this.renderPluginList()
+    if (!this._loadPromise) {
+      this._loadPromise = this.marketplace.loadCommunityPlugins().finally(() => {
+        this._loadPromise = undefined
+      })
+    }
+
+    return this._loadPromise.then(() => {
+      if (version === this._pluginListVersion)
+        this.renderPluginList()
     })
   }
 

@@ -109,8 +109,6 @@
       "name": "Installierte Plugins",
       "searchPlugin": "Plugins suchen:",
       "titleInstalled": "Installiertes Plugin ({0} installiert)",
-      "checkForUpdate": "Nach Updates suchen",
-      "checkingForUpdate": "Suche nach Updates... ({0}/{1})",
       "update": "Aktualisieren",
       "uninstall": "Deinstallieren"
     },

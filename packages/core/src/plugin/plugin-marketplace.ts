@@ -3,7 +3,7 @@ import { useService } from 'src/common/service'
 import { Notice } from 'src/ui/components/notice'
 import fs from 'src/io/fs/filesystem'
 import type { PluginManifest, PluginPosition } from "./plugin-manifest"
-import { format } from 'src/utils'
+import * as versions from "src/utils/versions"
 
 
 export type PluginMarketInfo = Pick<PluginManifest, "id" | "name" | "description" | "author" | "repo" | "platforms"> & {
@@ -39,15 +39,45 @@ export class PluginMarketplace {
   }
 
   getPluginNewestVersion(info: PluginMarketInfo) {
-    return info.newestVersion
-      ? Promise.resolve(info.newestVersion)
-      : this.github.getReleaseInfo(info.repo)
-        .then(data => data.tag_name)
+    return Promise.resolve(
+      info.newestVersion || this.getStatsNewestVersion(info.id)
+    )
   }
 
-  loadCommunityPlugins(): Promise<PluginMarketInfo[]> {
-    return this.github.getJSON('typora-community-plugin/typora-plugin-releases', 'main', 'community-plugins.json')
-      .then(res => this.pluginList = res ?? [])
+  loadCommunityPlugins(): Promise<void> {
+    return Promise.all([
+      this.github.getJSON('typora-community-plugin/typora-plugin-releases', 'main', 'community-plugins.json'),
+      this.loadCommunityPluginStats(),
+    ]).then(([list]) => {
+      this.pluginList = list ?? []
+      this.markUpdatesAvailable()
+    })
+  }
+
+  private markUpdatesAvailable() {
+    for (const info of this.pluginList) {
+      const newestVersion = this.getStatsNewestVersion(info.id)
+      if (newestVersion) {
+        info.newestVersion = newestVersion
+      } else {
+        delete info.newestVersion
+      }
+    }
+  }
+
+  private getStatsNewestVersion(id: string): string | undefined {
+    const stats = this.pluginStats[id]
+    if (!stats) return
+
+    let newest: string | undefined
+    for (const version of Object.keys(stats)) {
+      if (/^\d/.test(version)) {
+        if (!newest || versions.compare(newest, version) < 0) {
+          newest = version
+        }
+      }
+    }
+    return newest
   }
 
   loadCommunityPluginStats(): Promise<Record<string, PluginStat>> {

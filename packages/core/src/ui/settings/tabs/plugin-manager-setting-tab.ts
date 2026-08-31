@@ -1,6 +1,5 @@
 import './plugin-manager-setting-tab.scss'
 import { useService } from 'src/common/service'
-import { Notice } from 'src/ui/components/notice'
 import type { PluginManifest } from "src/plugin/plugin-manifest"
 import { SettingTab } from "../setting-tab"
 import { debounce, format } from "src/utils"
@@ -46,62 +45,34 @@ export class PluginManagerSettingTab extends SettingTab {
 
     this.addSetting(setting => {
       setting.addTitle(format(t.titleInstalled, [Object.keys(this.plugins.manifests).length]))
-
-      setting.addButton(button => {
-        button.title = t.checkForUpdate
-        button.innerHTML = '<span class="fa fa-refresh"></span>'
-        button.onclick = () => {
-          button.disabled = true
-          this.checkForUpdate().finally(() => button.disabled = false)
-        }
-      })
     })
 
     this.renderPluginList()
   }
 
-  private async checkForUpdate() {
-    const { manifests, marketplace } = this.plugins
-    const ids = Object.keys(manifests)
-    const text = this.i18n.t.settingTabs.plugins.checkingForUpdate
-    const notice = Notice.info(format(text, [0, ids.length]), 0)
-
-    if (!marketplace.isLoaded) {
-      await marketplace.loadCommunityPlugins()
-    }
-
-    for (const i in ids) {
-      const id = ids[i]
-      const info = marketplace.getPlugin(id)
-
-      if (!info) continue
-
-      try {
-        const version = await marketplace.getPluginNewestVersion(info)
-        const manifest = manifests[id]
-
-        if (versions.compare(manifest.version, version) < 0) {
-          info.newestVersion = version
-          $(`.typ-plugin-item[data-id="${id}"] button:has(.fa-repeat)`, this.containerEl).show()
-        }
-      } catch (e) {
-        Notice.error(`Failed to check update for plugin ${id}`)
-      }
-
-      notice.message = format(text, [+i + 1, ids.length])
-    }
-
-    notice.close()
-  }
-
   private renderPluginList(query: string = '') {
     query = query.toLowerCase()
     this.cleanPluginList()
-    this.plugins.marketplace.loadCommunityPlugins().then(() =>
+
+    this.plugins.marketplace.loadCommunityPlugins().then(() => {
+      const { manifests, marketplace } = this.plugins
+      for (const id of Object.keys(manifests)) {
+        const info = marketplace.getPlugin(id)
+        if (!info) continue
+
+        const newestVersion = marketplace.pluginList.find(info => info.id === id)?.newestVersion
+        if (newestVersion && versions.compare(manifests[id].version, newestVersion) < 0) {
+          info.newestVersion = newestVersion
+        } else {
+          delete info.newestVersion
+        }
+      }
+
       Object.values(this.plugins.manifests)
         .filter(p => !query || (p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query)))
         .sort((a, b) => a.name.localeCompare(b.name))
-        .forEach(p => this.renderPlugin(p)))
+        .forEach(p => this.renderPlugin(p))
+    })
   }
 
   private cleanPluginList() {
@@ -162,7 +133,7 @@ export class PluginManagerSettingTab extends SettingTab {
         button.onclick = () => {
           plugins.updatePlugin(manifest.id)
             .then(() => {
-              const info = marketplace.getPlugin(manifest.id)
+              const info = marketplace.getPlugin(manifest.id)!
               info.newestVersion = undefined
               this.renderPluginList()
             })
