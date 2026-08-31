@@ -3,7 +3,7 @@ import type { App } from "src/app"
 import type { Plugin } from "src/plugin/plugin"
 import { View } from "src/ui/common/view"
 import { html } from "src/utils"
-import { SettingItem } from "./setting-item"
+import { SettingContainer, SettingItem } from "./setting-item"
 
 
 export abstract class SettingTab extends View {
@@ -20,9 +20,7 @@ export abstract class SettingTab extends View {
   }
 
   addSetting(build: (setting: SettingItem) => void) {
-    const setting = new SettingItem()
-    build(setting)
-    this.containerEl.append(setting.containerEl)
+    new SettingContainer(this.containerEl).addSetting(build)
   }
 
   /**

@@ -4,6 +4,21 @@ import { View } from "src/ui/common/view"
 import { html, noop } from 'src/utils'
 
 
+export class SettingContainer {
+
+  containerEl: HTMLElement
+
+  constructor(el: HTMLElement) {
+    this.containerEl = el
+  }
+
+  addSetting(build: (setting: SettingItem) => void) {
+    const setting = new SettingItem()
+    build(setting)
+    this.containerEl.append(setting.containerEl)
+  }
+}
+
 type SelectOptions = {
   options: string[]
   selected: string
@@ -155,13 +170,14 @@ export class SettingItem extends View {
 
   /**
    * Add a sidebar + panel layout. The active state is managed internally;
-   * `onSelect` receives the selected item and the panel element to render into.
+   * `onSelect` receives the selected item, the panel element and a `panel`
+   * object supporting `addSetting()` to compose multiple setting rows into it.
    * Returns an object with methods to manage the sidebar list dynamically.
    * @beta
    */
   addSidebarLayout(
     options: { items: string[]; initialActive?: string },
-    onSelect: (ctx: { items: string[], item: string; panelEl: HTMLElement }) => void,
+    onSelect: (ctx: { items: string[], item: string; panelEl: HTMLElement; panel: SettingContainer }) => void,
   ): {
     setItems(items: string[]): void
     addItem(item: string): void
@@ -189,7 +205,8 @@ export class SettingItem extends View {
       active = item
       renderSidebar()
       panelEl.replaceChildren()
-      onSelect({ items: options.items, item, panelEl })
+      const panel = new SettingContainer(panelEl)
+      onSelect({ items: options.items, item, panelEl, panel })
     }
 
     renderSidebar()

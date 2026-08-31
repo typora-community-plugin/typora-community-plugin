@@ -28,32 +28,32 @@ export class SettingItemTestTab extends SettingTab {
 
       const layout = setting.addSidebarLayout(
         { items: ['item-one', 'item-two', 'item-three', '+'], initialActive: 'item-one' },
-        ({ items, item, panelEl }) => {
-          const labelItem = new SettingItem()
-          labelItem.addName("Label")
-          labelItem.addDescription(`Selected item: ${item}`)
-          labelItem.addText(input => { input.placeholder = `text for ${item}` })
-          panelEl.append(labelItem.containerEl)
+        ({ items, item, panel }) => {
+          panel.addSetting(labelItem => {
+            labelItem.addName("Label")
+            labelItem.addDescription(`Selected item: ${item}`)
+            labelItem.addText(input => { input.placeholder = `text for ${item}` })
+          })
 
-          const valueItem = new SettingItem()
-          valueItem.addName("Value")
-          valueItem.addInput('password', input => { input.placeholder = "value..." })
-          panelEl.append(valueItem.containerEl)
+          panel.addSetting(valueItem => {
+            valueItem.addName("Value")
+            valueItem.addInput('password', input => { input.placeholder = "value..." })
+          })
 
-          const button = new SettingItem()
-          if (item !== '+') {
-            button.addButton(button => {
-              button.textContent = "remove"
-              button.onclick = () => layout.removeItem(item)
-            })
-          }
-          else {
-            button.addButton(button => {
-              button.textContent = "add"
-              button.onclick = () => layout.setItems([...items.slice(0, -1), `item-${++nextIndex}`, '+'])
-            })
-          }
-          panelEl.append(button.containerEl)
+          panel.addSetting(button => {
+            if (item !== '+') {
+              button.addButton(btn => {
+                btn.textContent = "remove"
+                btn.onclick = () => layout.removeItem(item)
+              })
+            }
+            else {
+              button.addButton(btn => {
+                btn.textContent = "add"
+                btn.onclick = () => layout.setItems([...items.slice(0, -1), `item-${++nextIndex}`, '+'])
+              })
+            }
+          })
         },
       )
     })

@@ -19,6 +19,42 @@ describe('SettingItem.addSidebarLayout', () => {
     expect(getItems(sidebarEl).map(el => el.textContent)).toEqual(['a', 'b', 'c'])
   })
 
+  it('panel.addSetting() composes rows into the panel', () => {
+    const setting = new SettingItem()
+    document.body.append(setting.containerEl)
+    let captured: any
+    setting.addSidebarLayout({ items: ['a'] }, ctx => captured = ctx)
+    expect(captured.panel).toBeDefined()
+
+    captured.panel.addSetting(item => item.addName("Row 1"))
+    captured.panel.addSetting(item => item.addDescription("desc 2"))
+
+    const panelEl = setting.info.querySelector('.typ-setting-panel')! as HTMLElement
+    expect(panelEl.childElementCount).toBe(1)
+    const names = [...panelEl.querySelectorAll('.typ-setting-name')]
+    expect(names.map(el => el.textContent)).toEqual(['Row 1 '])
+    expect([...panelEl.querySelectorAll('.typ-setting-description')].map(el => el.textContent)).toEqual(['desc 2'])
+  })
+
+  it('re-selecting replaces the previous panel content', () => {
+    const setting = new SettingItem()
+    document.body.append(setting.containerEl)
+    const ctxs: any[] = []
+    setting.addSidebarLayout({ items: ['a', 'b'] }, ctx => {
+      ctxs.push(ctx)
+      ctx.panel.addSetting(item => item.addName(`Row ${ctx.item}`))
+    })
+
+    // initial selection of 'a' happened; now click 'b' in the sidebar
+    const sidebarEl = setting.info.querySelector('.typ-setting-sidebar')! as HTMLElement
+    ;(getItems(sidebarEl)[1] as HTMLElement).click()
+
+    expect(ctxs.map(c => c.item)).toEqual(['a', 'b'])
+    // 'a''s panel was removed from the DOM, only 'b''s remains
+    const names = [...setting.info.querySelectorAll('.typ-setting-panel .typ-setting-name')]
+    expect(names.map(el => el.textContent)).toEqual(['Row b '])
+  })
+
   describe('addItem()', () => {
     it('appends a new item to the sidebar', () => {
       const { setting, layout, sidebarEl } = setup(['a'])

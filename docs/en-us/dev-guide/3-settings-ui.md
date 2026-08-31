@@ -212,13 +212,25 @@ setting.addTable(table => {
 
 ### `addSidebarLayout(options, onSelect)`
 
-Add a sidebar + panel layout (`@beta`).
+Add a sidebar + panel layout (`@beta`). The callback context contains:
+
+- `items` — the full list of current sidebar items
+- `item` — the currently selected item
+- `panelEl` — the panel container element (free to manipulate DOM directly)
+- `panel` — a panel object exposing `addSetting(build)`, the same method as `SettingTab.addSetting()`, to compose multiple setting rows into one panel
 
 ```typescript
 const layout = setting.addSidebarLayout(
   { items: ["Option A", "Option B"], initialActive: "Option A" },
-  ({ item, panelEl }) => {
-    panelEl.innerHTML = `<p>Selected: ${item}</p>`
+  ({ item, panel }) => {
+    // Option 1: compose rows via panel.addSetting() (recommended)
+    panel.addSetting(row => {
+      row.addName("Selected")
+      row.addDescription(`Current: ${item}`)
+    })
+
+    // Option 2: manipulate panelEl directly
+    // panelEl.innerHTML = `<p>Selected: ${item}</p>`
   }
 )
 

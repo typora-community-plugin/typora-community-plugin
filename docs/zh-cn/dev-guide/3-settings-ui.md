@@ -212,13 +212,25 @@ setting.addTable(table => {
 
 ### `addSidebarLayout(options, onSelect)`
 
-添加一个侧边栏 + 面板布局（`@beta`）。
+添加一个侧边栏 + 面板布局（`@beta`）。回调的上下文对象包含：
+
+- `items` — 当前全部侧边栏项目列表
+- `item` — 当前选中的项目
+- `panelEl` — 面板容器元素（可自由操作 DOM）
+- `panel` — 面板对象，提供与 `SettingTab.addSetting()` 相同的 `addSetting(build)` 方法，可将多行设置组合进同一面板
 
 ```typescript
 const layout = setting.addSidebarLayout(
   { items: ["选项 A", "选项 B"], initialActive: "选项 A" },
-  ({ item, panelEl }) => {
-    panelEl.innerHTML = `<p>当前选中：${item}</p>`
+  ({ item, panel }) => {
+    // 方式一：通过 panel.addSetting() 组合多行（推荐）
+    panel.addSetting(row => {
+      row.addName("当前选中")
+      row.addDescription(`当前：${item}`)
+    })
+
+    // 方式二：直接操作 panelEl
+    // panelEl.innerHTML = `<p>当前选中：${item}</p>`
   }
 )
 
