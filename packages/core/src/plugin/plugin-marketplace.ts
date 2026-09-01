@@ -87,11 +87,10 @@ export class PluginMarketplace {
     if (!stats) return
 
     let newest: string | undefined
-    for (const version of Object.keys(stats)) {
-      if (/^\d/.test(version)) {
-        if (!newest || versions.compare(newest, version) < 0) {
-          newest = version
-        }
+    for (const key of Object.keys(stats)) {
+      const version = key.replace(/^v/i, '')
+      if (/^\d/.test(version) && (!newest || versions.compare(newest, version) < 0)) {
+        newest = version
       }
     }
     return newest
