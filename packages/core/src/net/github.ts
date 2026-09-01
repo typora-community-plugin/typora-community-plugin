@@ -26,32 +26,28 @@ const ghproxyNet: GithubProxy = {
   raw: 'https://ghproxy.net/' + github.raw,
 }
 
-const ghproxyCom: GithubProxy = {
-  ...github,
-  id: 'mirror.ghproxy.com',
-  base: 'https://mirror.ghproxy.com/' + github.base,
-  raw: 'https://mirror.ghproxy.com/' + github.raw,
-}
-
 const gh$proxyCom: GithubProxy = {
   ...github,
   id: 'gh-proxy.com',
   base: 'https://gh-proxy.com/' + github.base,
   raw: 'https://gh-proxy.com/' + github.raw,
+  api: 'https://gh-proxy.com/' + github.api,
 }
 
-const gh$ddlcTop: GithubProxy = {
+const gh$proxyOrg: GithubProxy = {
   ...github,
-  id: 'gh.ddlc.top',
-  base: 'https://gh.ddlc.top/' + github.base,
-  raw: 'https://gh.ddlc.top/' + github.raw,
+  id: 'gh-proxy.org',
+  base: 'https://gh-proxy.org/' + github.base,
+  raw: 'https://gh-proxy.org/' + github.raw,
+  api: 'https://gh-proxy.org/' + github.api,
 }
 
-const moeyyXyz: GithubProxy = {
+const ghproxyHomeboycCn: GithubProxy = {
   ...github,
-  id: 'github.moeyy.xyz',
-  base: 'https://github.moeyy.xyz/' + github.base,
-  raw: 'https://github.moeyy.xyz/' + github.raw,
+  id: 'ghproxy.homeboyc.cn',
+  base: 'https://ghproxy.homeboyc.cn/' + github.base,
+  raw: 'https://ghproxy.homeboyc.cn/' + github.raw,
+  api: 'https://ghproxy.homeboyc.cn/' + github.api,
 }
 
 
@@ -59,11 +55,10 @@ export class GithubAPI {
 
   proxies: GithubProxy[] = [
     github,
-    ghproxyNet,
-    ghproxyCom,
     gh$proxyCom,
-    gh$ddlcTop,
-    moeyyXyz,
+    gh$proxyOrg,
+    ghproxyNet,
+    ghproxyHomeboycCn,
   ]
 
   private uri: GithubProxy
