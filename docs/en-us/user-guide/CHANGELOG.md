@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.10.10
+
+- **Plugin Marketplace**
+  - feat(core/plugin/plugin-marketplace): load localized community plugin list
+  - refactor(core/ui/settings/tabs/plugin-manager): automatically check for plugin updates when loading the list and derive the latest version from statistics (avoid multiple requests to the GitHub API)
+  - fix(core/plugin/plugin-marketplace): strip the `v` prefix when parsing a plugin's latest version to avoid incorrect version comparisons
+
+- **Developer**
+  - feat(core/ui/settings/item): add `panel.addSetting()` for the `sidebar` layout context
+
 ## v2.10.6
 
 - **Developer**

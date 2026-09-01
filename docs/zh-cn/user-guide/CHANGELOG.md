@@ -1,5 +1,15 @@
 # 更新日志
 
+## v2.10.10
+
+- **插件市场**
+  - feat(core/plugin/plugin-marketplace): 加载本地化的社区插件列表
+  - refactor(core/ui/settings/tabs/plugin-manager): 加载列表时自动检查插件更新，并从统计数据推导最新版本（避免多次请求 Github API）
+  - fix(core/plugin/plugin-marketplace): 解析插件最新版本时去除 `v` 前缀，避免版本号比较错误
+
+- **开发者**
+  - feat(core/ui/settings/item): `sidebar` 布局上下文新增 `panel.addSetting()`
+
 ## v2.10.6
 
 - **开发者**
