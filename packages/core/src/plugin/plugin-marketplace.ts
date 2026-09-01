@@ -46,12 +46,29 @@ export class PluginMarketplace {
 
   loadCommunityPlugins(): Promise<void> {
     return Promise.all([
-      this.github.getJSON('typora-community-plugin/typora-plugin-releases', 'main', 'community-plugins.json'),
+      this.loadCommunityPluginList(),
       this.loadCommunityPluginStats(),
-    ]).then(([list]) => {
-      this.pluginList = list ?? []
-      this.markUpdatesAvailable()
-    })
+    ]).then(() => this.markUpdatesAvailable())
+  }
+
+  private async loadCommunityPluginList(): Promise<void> {
+    const repo = 'typora-community-plugin/typora-plugin-releases';
+    const branch = 'main';
+    const locale = this.i18n.locale.toLowerCase();
+
+    const fileNames = locale && locale !== 'en'
+      ? [`community-plugins.${locale}.json`, 'community-plugins.json']
+      : ['community-plugins.json'];
+
+    for (const fileName of fileNames) {
+      try {
+        const list = await this.github.getJSON<PluginMarketInfo[]>(repo, branch, fileName);
+        this.pluginList = Array.isArray(list) ? list : [];
+        return;
+      } catch (error) {
+        this.logger.warn(`Failed to load ${fileName}.`);
+      }
+    }
   }
 
   private markUpdatesAvailable() {

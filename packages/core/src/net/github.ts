@@ -103,7 +103,7 @@ export class GithubAPI {
    * @example
    * app.github.getJSON('typora-community-plugin/typora-plugin-releases', 'main', 'community-plugins.json')
    */
-  getJSON(repo: string, branch: string, filepath: string) {
+  getJSON<T = unknown>(repo: string, branch: string, filepath: string): Promise<T> {
     return this.getFile(repo, branch, filepath)
       .then(res => res.json())
   }
