@@ -80,7 +80,7 @@ export function registerTestFloatingView(
       state: {
         path: `typ://${TestFloatingView.type}/test`,
         theme: 'window',
-        resizeable: true,
+        resizable: true,
         draggable: true,
         onClose: toggle,
       },

@@ -7,7 +7,7 @@ import type { DisposeFunc } from "src/utils/types"
  * width/height while dragging. Returns a dispose function that removes the
  * handle and all listeners (safe to call multiple times).
  */
-export function resizeable(
+export function resizable(
   containerEl: HTMLElement,
   options?: { minWidth?: number; minHeight?: number },
 ): DisposeFunc {

@@ -9,7 +9,7 @@ import { EmptyView } from "../views/empty-view"
 import type { ViewState } from "../view-manager"
 import { uniqueId } from "src/utils"
 import { defaultTheme, windowTheme } from "./floating/theme"
-import { resizeable } from "./floating/resizeable"
+import { resizable } from "./floating/resizable"
 import { draggable } from "./floating/draggable"
 import { closable } from "./floating/closable"
 
@@ -141,7 +141,7 @@ export function openFloatingLeaf(arg0: string | WorkspaceLeaf) {
       windowTheme(containerEl, state.path.split('/').pop()),
       titlebar = containerEl.querySelector('.typ-titlebar'))
 
-    state.resizeable && view.register(resizeable(containerEl))
+    state.resizable && view.register(resizable(containerEl))
     state.draggable && view.register(draggable(containerEl, titlebar))
     state.onClose && view.register(closable(titlebar ?? containerEl, state.onClose))
   })
