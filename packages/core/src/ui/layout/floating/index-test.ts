@@ -4,9 +4,6 @@ import type { WorkspaceLeaf } from "../workspace-leaf"
 import { WorkspaceView } from "../workspace-view"
 import { createLeaf, openFloatingLeaf } from "../workspace-utils"
 import type { WorkspaceTabs } from "../tabs"
-import { defaultTheme } from "./default-theme"
-import { resizeable } from "./resizeable"
-import { draggable } from "./draggable"
 
 
 /**
@@ -35,10 +32,6 @@ export class TestFloatingView extends WorkspaceView {
   onload() {
     // Floating layer manages DOM independently: append directly to document.body
     document.body.appendChild(this.containerEl)
-
-    defaultTheme(this.containerEl)
-    this.register(resizeable(this.containerEl))
-    this.register(draggable(this.containerEl))
 
     this.registerDomEvent(
       this.containerEl.querySelector('.typ-test-floating-close')!,
@@ -91,7 +84,12 @@ export function registerTestFloatingView(
 
     const leaf = createLeaf({
       type: TestFloatingView.type,
-      state: { path: `typ://${TestFloatingView.type}/test` },
+      state: {
+        path: `typ://${TestFloatingView.type}/test`,
+        theme: 'default',
+        resizeable: true,
+        draggable: true,
+      },
     })
 
     openFloatingLeaf(leaf)

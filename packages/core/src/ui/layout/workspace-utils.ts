@@ -1,3 +1,4 @@
+import decorate from "@plylrnsdy/decorate.js"
 import { useService } from "src/common/service"
 import type { Workspace } from "../workspace"
 import type { Direction, WorkspaceSplit } from "./split"
@@ -7,6 +8,9 @@ import { MarkdownView } from "../views/markdown-view"
 import { EmptyView } from "../views/empty-view"
 import type { ViewState } from "../view-manager"
 import { uniqueId } from "src/utils"
+import { defaultTheme } from "./floating/default-theme"
+import { resizeable } from "./floating/resizeable"
+import { draggable } from "./floating/draggable"
 
 
 // ---------- workspace.rootSplit ----------
@@ -125,6 +129,13 @@ export function openFloatingLeaf(arg0: string | WorkspaceLeaf) {
   const workspace = useService('workspace')
   const tabs = useService('workspace-tabs')
   const leaf = typeof arg0 === 'string' ? createCustomLeaf(arg0) : arg0
+  const { view } = leaf
+
+  decorate.afterCall(view, 'onload', () => {
+    leaf.state.theme === 'default' && defaultTheme(view.containerEl)
+    leaf.state.resizeable && view.register(resizeable(view.containerEl))
+    leaf.state.draggable && view.register(draggable(view.containerEl))
+  })
 
   tabs.appendChild(leaf)
   workspace.floatingSplit.appendChild(tabs)
