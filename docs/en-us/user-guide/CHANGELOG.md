@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.10.12
+
+- refactor(core/net/github): update GitHub proxy list and reorder fallback proxies
+
+- **Developer**
+  - feat(core/command/command-manager): register `core.workspace.floating-split:open-leaf` command
+  - feat(core/ui/layout/floating): add window theme with titlebar
+  - feat(core/ui/layout/floating): add `closable` mixin with `onClose` support for floating views
+  - refactor(core/ui/layout/floating): add `openFloatingLeaf` command & utility function
+
+
 ## v2.10.10
 
 - **Plugin Marketplace**

@@ -1,5 +1,15 @@
 # 更新日志
 
+## v2.10.12
+
+- refactor(core/net/github): 更新 GitHub 代理列表，调整 fallback 代理顺序
+
+- **开发者**
+  - feat(core/command/command-manager): 注册 `core.workspace.floating-split:open-leaf` 命令
+  - feat(core/ui/layout/floating): 新增带标题栏的 window 主题
+  - feat(core/ui/layout/floating): 新增 `closable` 混入，支持浮动视图 `onClose` 回调
+  - refactor(core/ui/layout/floating): 新增 `openFloatingLeaf` 命令与工具函数
+
 ## v2.10.10
 
 - **插件市场**
