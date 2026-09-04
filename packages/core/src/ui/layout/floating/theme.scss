@@ -1,0 +1,48 @@
+.typ-workspace-floating {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .15);
+  font-size: 13px;
+  width: 50vw;
+
+  &.typ-theme-default {
+    padding: 12px 16px;
+  }
+
+  &.typ-theme-window {
+    overflow: hidden;
+    padding: 48px 16px 12px;
+
+    .typ-titlebar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 36px;
+      padding: 0 12px;
+      border-bottom: 1px solid #ddd;
+      user-select: none;
+
+      .typ-titlebar-icon {
+        display: flex;
+        align-items: center;
+        color: #888;
+        font-size: 14px;
+      }
+
+      .typ-titlebar-text {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 13px;
+        font-weight: 500;
+        color: #333;
+      }
+    }
+  }
+}

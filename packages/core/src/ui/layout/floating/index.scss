@@ -1,8 +1,10 @@
 .typ-workspace-floating {
-  position: relative;
-  z-index: 10;
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  z-index: 999;
 
-  &>.typ-workspace-node {
+  & > .typ-workspace-node {
     min-width: 0;
     min-height: 0;
   }
@@ -21,7 +23,7 @@
   // Close button
   .typ-floating-close {
     position: absolute;
-    top: 0;
+    top: 4px;
     right: 5px;
     width: 24px;
     height: 24px;

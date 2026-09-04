@@ -8,7 +8,7 @@ import { MarkdownView } from "../views/markdown-view"
 import { EmptyView } from "../views/empty-view"
 import type { ViewState } from "../view-manager"
 import { uniqueId } from "src/utils"
-import { defaultTheme } from "./floating/default-theme"
+import { defaultTheme, windowTheme } from "./floating/theme"
 import { resizeable } from "./floating/resizeable"
 import { draggable } from "./floating/draggable"
 import { closable } from "./floating/closable"
@@ -130,14 +130,20 @@ export function openFloatingLeaf(arg0: string | WorkspaceLeaf) {
   const workspace = useService('workspace')
   const tabs = useService('workspace-tabs')
   const leaf = typeof arg0 === 'string' ? createCustomLeaf(arg0) : arg0
-  const { view } = leaf
+  const { view, state } = leaf
+  const { containerEl } = view
+  let titlebar: HTMLElement | null
 
-  view.containerEl.classList.add('typ-workspace-floating')
+  containerEl.classList.add('typ-workspace-floating')
   decorate.afterCall(view, 'onload', () => {
-    leaf.state.theme === 'default' && defaultTheme(view.containerEl)
-    leaf.state.resizeable && view.register(resizeable(view.containerEl))
-    leaf.state.draggable && view.register(draggable(view.containerEl))
-    leaf.state.onClose && view.register(closable(view.containerEl, leaf.state.onClose))
+    state.theme === 'default' && defaultTheme(containerEl)
+    state.theme === 'window' && (
+      windowTheme(containerEl, state.path.split('/').pop()),
+      titlebar = containerEl.querySelector('.typ-titlebar'))
+
+    state.resizeable && view.register(resizeable(containerEl))
+    state.draggable && view.register(draggable(containerEl, titlebar))
+    state.onClose && view.register(closable(titlebar ?? containerEl, state.onClose))
   })
 
   tabs.appendChild(leaf)
