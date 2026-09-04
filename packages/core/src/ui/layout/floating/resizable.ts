@@ -16,15 +16,6 @@ export function resizable(
 
   const handle = document.createElement('div')
   handle.className = 'typ-floating-resize-handle'
-  Object.assign(handle.style, {
-    position: 'absolute',
-    right: '0',
-    bottom: '0',
-    width: '12px',
-    height: '12px',
-    cursor: 'nwse-resize',
-    zIndex: '1',
-  })
 
   // ensure the container can host an absolute handle without changing layout
   const prevPosition = getComputedStyle(containerEl).position
@@ -51,6 +42,7 @@ export function resizable(
 
   function onHandleMouseDown(e: MouseEvent) {
     e.stopPropagation()
+    e.preventDefault()
     startX = e.clientX
     startY = e.clientY
     startWidth = containerEl.offsetWidth

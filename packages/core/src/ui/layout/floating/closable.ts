@@ -14,7 +14,6 @@ export function closable(
 ): DisposeFunc {
   const closeBtn = document.createElement('div')
   closeBtn.className = 'typ-floating-close'
-  closeBtn.className = 'typ-floating-close'
   closeBtn.innerHTML = `<i class="typ-icon typ-close"></i>`
 
   function onClick(e: MouseEvent) {
