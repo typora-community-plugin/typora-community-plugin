@@ -21,7 +21,6 @@ export class TestFloatingView extends WorkspaceView {
     <div class="typ-test-floating-view">
       <div style="font-weight: 600; margin-bottom: 8px;">Floating Test View</div>
       <div style="margin-bottom: 8px;">This view lives in <code>workspace.floatingSplit</code>.</div>
-      <button type="button" class="typ-test-floating-close">Close</button>
     </div>`
 
   constructor(leaf: WorkspaceLeaf) {
@@ -32,12 +31,6 @@ export class TestFloatingView extends WorkspaceView {
   onload() {
     // Floating layer manages DOM independently: append directly to document.body
     document.body.appendChild(this.containerEl)
-
-    this.registerDomEvent(
-      this.containerEl.querySelector('.typ-test-floating-close')!,
-      'click',
-      () => this.leaf.detach(),
-    )
   }
 
   /** @override */
@@ -89,6 +82,7 @@ export function registerTestFloatingView(
         theme: 'default',
         resizeable: true,
         draggable: true,
+        onClose: toggle,
       },
     })
 

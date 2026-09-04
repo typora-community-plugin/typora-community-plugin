@@ -2,15 +2,33 @@
   position: relative;
   z-index: 10;
 
-  // The floating container itself does not participate in the main layout flex flow;
-  // child DOM is rendered independently by the floating layer — only base container styles here.
-  &,
-  &>.typ-workspace-node {
-    display: flex;
-  }
-
   &>.typ-workspace-node {
     min-width: 0;
     min-height: 0;
+  }
+
+  // Resize handle
+  .typ-floating-resize-handle {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 12px;
+    height: 12px;
+    cursor: nwse-resize;
+    z-index: 1;
+  }
+
+  // Close button
+  .typ-floating-close {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1;
   }
 }

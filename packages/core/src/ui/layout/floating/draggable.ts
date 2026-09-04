@@ -53,10 +53,10 @@ export function draggable(
     document.addEventListener('mouseup', onMouseUp)
   }
 
-  handle.addEventListener('mousedown', onHandleMouseDown)
+  handle.addEventListener('mousedown', onHandleMouseDown as EventListener)
 
   return () => {
-    handle.removeEventListener('mousedown', onHandleMouseDown)
+    handle.removeEventListener('mousedown', onHandleMouseDown as EventListener)
     document.removeEventListener('mousemove', onMouseMove)
     document.removeEventListener('mouseup', onMouseUp)
   }

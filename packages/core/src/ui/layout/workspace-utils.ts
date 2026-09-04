@@ -11,6 +11,7 @@ import { uniqueId } from "src/utils"
 import { defaultTheme } from "./floating/default-theme"
 import { resizeable } from "./floating/resizeable"
 import { draggable } from "./floating/draggable"
+import { closable } from "./floating/closable"
 
 
 // ---------- workspace.rootSplit ----------
@@ -131,10 +132,12 @@ export function openFloatingLeaf(arg0: string | WorkspaceLeaf) {
   const leaf = typeof arg0 === 'string' ? createCustomLeaf(arg0) : arg0
   const { view } = leaf
 
+  view.containerEl.classList.add('typ-workspace-floating')
   decorate.afterCall(view, 'onload', () => {
     leaf.state.theme === 'default' && defaultTheme(view.containerEl)
     leaf.state.resizeable && view.register(resizeable(view.containerEl))
     leaf.state.draggable && view.register(draggable(view.containerEl))
+    leaf.state.onClose && view.register(closable(view.containerEl, leaf.state.onClose))
   })
 
   tabs.appendChild(leaf)
