@@ -111,7 +111,7 @@ export class PluginManagerSettingTab extends SettingTab {
         )
       })
 
-      setting.addDescription(manifest.description)
+      setting.addDescription(info?.description || manifest.description)
 
       setting.addCheckbox(checkbox => {
         checkbox.checked = plugins.enabledPlugins[manifest.id]
