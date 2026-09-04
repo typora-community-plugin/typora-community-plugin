@@ -1,6 +1,7 @@
 import { useEventBus } from "src/common/eventbus"
 import { useService } from "src/common/service"
 import { type HotkeyScope, readableHotkey } from "src/hotkey-manager"
+import { WorkspaceLeaf } from "src/ui/layout/workspace-leaf"
 import { debounced } from "src/utils"
 import type { DisposeFunc } from "src/utils/types"
 
@@ -27,7 +28,8 @@ type InternalCommands = {
   'core.workspace:reset'(): void
   'core.workspace:split-right'(path?: string): void
   'core.workspace:split-down'(path?: string): void
-  'core.workspace.right-split:ensure-leaf'(path?: string): void
+  'core.workspace.right-split:ensure-leaf'(path: string): void
+  'core.workspace.floating-split:open-leaf'(arg0: string | WorkspaceLeaf): void
   'settings:open'(): void
 }
 

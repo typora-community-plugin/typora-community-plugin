@@ -118,3 +118,14 @@ export function ensureRightSidedockLeaf(uri: string) {
   tabs.appendChild(leaf)
   workspace.rightSplit.appendChild(tabs)
 }
+
+// ---------- workspace.floatingSplit ----------
+
+export function openFloatingLeaf(arg0: string | WorkspaceLeaf) {
+  const workspace = useService('workspace')
+  const tabs = useService('workspace-tabs')
+  const leaf = typeof arg0 === 'string' ? createCustomLeaf(arg0) : arg0
+
+  tabs.appendChild(leaf)
+  workspace.floatingSplit.appendChild(tabs)
+}

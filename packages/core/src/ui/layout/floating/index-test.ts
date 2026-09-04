@@ -2,7 +2,7 @@ import { useService } from "src/common/service"
 import { html } from "src/utils"
 import type { WorkspaceLeaf } from "../workspace-leaf"
 import { WorkspaceView } from "../workspace-view"
-import { createLeaf } from "../workspace-utils"
+import { createLeaf, openFloatingLeaf } from "../workspace-utils"
 import type { WorkspaceTabs } from "../tabs"
 import { defaultTheme } from "./default-theme"
 import { resizeable } from "./resizeable"
@@ -18,7 +18,7 @@ import { draggable } from "./draggable"
  */
 export class TestFloatingView extends WorkspaceView {
 
-  static type = 'core.test-floating'
+  static type = 'core.test-floating' as const
 
   containerEl = html`
     <div class="typ-test-floating-view">
@@ -91,14 +91,12 @@ export function registerTestFloatingView(
 
     const leaf = createLeaf({
       type: TestFloatingView.type,
-      state: { path: 'typ://core.test-floating/test' },
+      state: { path: `typ://${TestFloatingView.type}/test` },
     })
 
-    const tabs = useService('workspace-tabs')
-    tabs.appendChild(leaf)
-    workspace.floatingSplit.appendChild(tabs)
+    openFloatingLeaf(leaf)
 
-    floatingTabs = tabs
+    floatingTabs = leaf.parent as WorkspaceTabs
   }
 
   function closeFloatingView() {

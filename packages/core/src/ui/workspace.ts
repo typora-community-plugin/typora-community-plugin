@@ -16,8 +16,7 @@ import type { Component } from 'src/common/component'
 import { useEventBus } from 'src/common/eventbus'
 import { useService } from 'src/common/service'
 import { WorkspaceRoot } from './layout/workspace-root'
-import type { WorkspaceTabs } from './layout/tabs'
-import { WorkspaceFloating, createFloating } from './layout/floating'
+import { WorkspaceFloating } from './layout/floating'
 import type { WorkspaceLeaf } from './layout/workspace-leaf'
 import { useActiveLeaf } from './layout/use-active-leaf'
 import { createLeaf } from './layout/workspace-utils'
@@ -48,7 +47,7 @@ export class Workspace extends Events<WorkspaceEvents> {
   /**
    * Floating container: holds views detached from the main layout (rootSplit).
    */
-  floatingSplit: WorkspaceFloating = createFloating()
+  floatingSplit: WorkspaceFloating = new WorkspaceFloating()
 
   /**
    * Right side dock panel.
