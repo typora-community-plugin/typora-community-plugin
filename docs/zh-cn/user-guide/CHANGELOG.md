@@ -1,5 +1,12 @@
 # 更新日志
 
+## v2.10.14
+
+- fix(core/ui/settings/tabs/plugin-manager): 多语言插件列表使用 description 字段显示描述信息
+
+- **工作区**
+  - fix(core/ui/layout/floating): 修复调整视图大小时同时会选中内容的问题
+
 ## v2.10.12
 
 - refactor(core/net/github): 更新 GitHub 代理列表，调整 fallback 代理顺序
@@ -103,11 +110,11 @@
 
 - **插件更新**
   - [collapsible-section][]
-    - feat: add granular enable/disable controls
-    - feat: add per-feature glob pattern filtering for file path targeting
-    - feat: add frontmatter-based uncollapsableSections / collapsableSections permission filter
+    - feat: 新增细粒度的启用/禁用控制
+    - feat: 支持按功能的 glob 模式过滤，精确匹配文件路径
+    - feat: 基于 frontmatter 的 uncollapsableSections / collapsableSections 权限过滤
   - [footnotes][]
-    - fix(reindex): can not reindex
+    - fix(reindex): 修复无法重新编号的问题
 
 ## v2.9.0
 
@@ -794,6 +801,8 @@
 [image-viewer]: https://github.com/typora-community-plugin/typora-plugin-image-viewer
 
 [markmap]: https://github.com/typora-community-plugin/typora-plugin-markmap
+
+[note-refactor]: https://github.com/typora-community-plugin/typora-plugin-note-refactor
 
 [note-snippets]: https://github.com/typora-community-plugin/typora-plugin-note-snippets
 

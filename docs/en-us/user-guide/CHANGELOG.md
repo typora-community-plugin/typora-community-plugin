@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.10.14
+
+- fix(core/ui/settings/tabs/plugin-manager): use description in i18n's plugin list
+
+- **Workspace**
+  - fix(core/ui/layout/floating): fix content selection when resizing view size
+
 ## v2.10.12
 
 - refactor(core/net/github): update GitHub proxy list and reorder fallback proxies
