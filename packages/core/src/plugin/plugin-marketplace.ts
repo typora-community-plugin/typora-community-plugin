@@ -98,7 +98,7 @@ export class PluginMarketplace {
 
   loadCommunityPluginStats(): Promise<Record<string, PluginStat>> {
     return this.github.getJSON('typora-community-plugin/typora-plugin-releases', 'main', 'community-plugin-stats.json')
-      .then(res => this.pluginStats = res ?? {})
+      .then(res => this.pluginStats = res ?? {} as any)
       .catch(() => this.pluginStats = {})
   }
 
