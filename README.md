@@ -20,7 +20,7 @@ To be on the safe side, install an open source plugin that can review the source
 
 
 
-## Compatible
+### Compatibility
 
 | Tested |                  |                  |                     |
 | :----: | ---------------- | ---------------- | ------------------- |
@@ -31,7 +31,7 @@ To be on the safe side, install an open source plugin that can review the source
 
 ## Features <small>([CHANGELOG](./docs/en-us/user-guide/CHANGELOG.md))</small>
 
-- [Plugin Manage](./docs/en-us/user-guide/2-plugin-installation.md)
+- [Plugin Management](./docs/en-us/user-guide/2-plugin-installation.md)
   - [x] Install/Uninstall/Update plugin
   - [x] Enable/Disable plugin
 - New UI components
@@ -40,42 +40,45 @@ To be on the safe side, install an open source plugin that can review the source
   - [x] [Workspace](./docs/en-us/user-guide/4a-workspace.md)
     - [x] (Virtual) Multi File Tabs
     - [x] Split View
+    - [x] Side Panel <sup>`New`</sup>
+    - [x] Floating View <sup>`New`</sup>
 - [x] Custom command [hotkeys](./docs/en-us/user-guide/3c-hotkey.md)
 - [x] [I18n](./docs/en-us/user-guide/5-i18n.md): follow system or manual configure, now support English, Chinese and German
 - [x] Compatible with macOS
-- [x] [Advanced Search](./docs/en-us/user-guide/4c-advanced-search.md) <sup>`New`</sup>: support expressions like `(book film) OR tag:game`
+- [x] [Advanced Search](./docs/en-us/user-guide/4c-advanced-search.md): support expressions like `(book film) OR tag:game`
 
 
 
-### Plugins
+### Available Plugins
 
 You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from the Plugin Marketplace:
 
-| Plugins                          | Description                                               |
-| -------------------------------- | --------------------------------------------------------- |
-| [abcjs][p12]                     | Use ABC music notation in codeblock.                      |
-| [callout][p1]                    | Support Obsidian-like Callout `> [!type]`.                |
-| [chat][p23] <sup>`New`</sup>     | Chat about your note with AI.                             |
-| [code-folding][p14]              | Make your codes foldable.                                 |
-| [codeblock-copy-button][p2]      | Add a copy button to each codeblock's top-right corner.   |
-| [codeblock-highlight-mapper][p3] | Map language A to language B for highlighting it.         |
-| [collapsible-section][p4]        | Fold/unfold markdown section. Supports headings, list, codeblock, table, quoteblock, callout. |
-| [darkmode][p13]                  | General dark mode for any theme.                          |
-| [file-icon][p5]                  | Show different icon for different file type in file tree. |
-| [footnotes][p18]                 | Footnote marker suggestion & Re-index the numerical footnotes. |
-| [front-matter][p6]               | Auto edit front matter.                                   |
-| [image-location][p15]            | Resolve image's location relative to vault's root.        |
-| [image-viewer][p16]              | View all the images in current Markdown.                  |
-| [markmap][p11]                   | Support Markmap in codeblock.                             |
-| [note-refactor][p7]              | Extract selection to new file.                            |
-| [note-snippets][p8]              | Use slash command to autocomplete note snippets.          |
-| [statistics][p22]                | Display document statistics.                              |
-| [styled-text][p21]               | Decorate the text matching RegExp.                        |
-| [tag][p9]                        | Support tag like `#tag`.                                  |
-| [templater][p19]                 | Create notes from templates.                              |
-| [trigger][p20]                   | Set a trigger for the command to execute automatically.   |
-| [wavedrom][p17]                  | Support WaveDrom in codeblock.                            |
-| [wikilink][p10]                  | Support wikilink like `[[text]]`.                         |
+| Plugins                              | Description                                               |
+| ------------------------------------ | --------------------------------------------------------- |
+| [abcjs][p12]                         | Use ABC music notation in codeblock.                      |
+| [callout][p1]                        | Support Obsidian-like Callout `> [!type]`.                |
+| [codeblock-previewer-plus][p24] <sup>`New`</sup> | Preview codeblocks (e.g. mermaid) in floating view, with zoom and drag support |
+| [chat][p23]  <sup>`New`</sup>       | Collaborate with AI to write notes.                       |
+| [code-folding][p14]                  | Make your codes foldable.                                 |
+| [codeblock-copy-button][p2]          | Add a copy button to each codeblock's top-right corner.   |
+| [codeblock-highlight-mapper][p3]     | Map language A to language B for highlighting it.         |
+| [collapsible-section][p4]            | Fold/unfold markdown section. Supports headings, list, codeblock, table, quoteblock, callout. |
+| [darkmode][p13]                      | General dark mode for any theme.                          |
+| [file-icon][p5]                      | Show different icon for different file type in file tree. |
+| [footnotes][p18]                     | Footnote marker suggestion & Re-index the numerical footnotes. |
+| [front-matter][p6]                   | Auto edit front matter, including creation time, editing time, etc. |
+| [image-location][p15]                | Resolve image's location relative to vault's root.        |
+| [image-viewer][p16]                  | View all the images in current Markdown.                  |
+| [markmap][p11]                       | Support Markmap in codeblock.                             |
+| [note-refactor][p7]                  | Extract selection to new file.                            |
+| [note-snippets][p8]                  | Use slash command to autocomplete note snippets.          |
+| [statistics][p22]                    | Display document statistics.                              |
+| [styled-text][p21]                   | Add temporary styles to text matching regular expressions.|
+| [tag][p9]                            | Highlight `#tag` syntax, autocomplete, tag panel management and search tags |
+| [templater][p19]                     | Create notes from templates.                              |
+| [trigger][p20]                       | Set a trigger for the command to execute automatically.   |
+| [wavedrom][p17]                      | Support WaveDrom in codeblock.                            |
+| [wikilink][p10]                      | Support wikilink like `[[text]]`, with autocomplete.      |
 
 
 
@@ -87,7 +90,7 @@ You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from
 
 
 
-### Hotkeys
+### Default Hotkeys
 
 | Hotkey                      | Function            |
 | --------------------------- | ------------------- |
@@ -137,3 +140,4 @@ If you have any problem or suggestion please open an issue [here](https://github
 [p21]: https://github.com/typora-community-plugin/typora-plugin-styled-text
 [p22]: https://github.com/typora-community-plugin/typora-plugin-statistics
 [p23]: https://github.com/typora-community-plugin/typora-plugin-chat
+[p24]: https://github.com/typora-community-plugin/typora-plugin-codeblock-previewer-plus

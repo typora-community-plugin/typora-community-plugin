@@ -40,10 +40,12 @@
   - [x] [工作区](./docs/zh-cn/user-guide/4a-workspace.md)
     - [x] (模拟的) 多文件标签页
     - [x] 分屏视图
+    - [x] 右侧栏面板 <sup>`新`</sup>
+    - [x] 浮动视图 <sup>`新`</sup>
 - [x] 自定义命令的[快捷键](./docs/zh-cn/user-guide/3c-hotkey.md)
 - [x] [多国语言](./docs/zh-cn/user-guide/5-i18n.md): 跟随系统或手动配置，现在支持英语、中文和德语
 - [x] 兼容 macOS
-- [x] [高级搜索](./docs/zh-cn/user-guide/4c-advanced-search.md) <sup>`新`</sup>: 支持如 `(书籍 电影) OR tag:游戏` 的表达式
+- [x] [高级搜索](./docs/zh-cn/user-guide/4c-advanced-search.md): 支持如 `(书籍 电影) OR tag:游戏` 的表达式
 
 
 
@@ -55,6 +57,7 @@
 | -------------------------------- | ------------------------------------------ |
 | [abcjs][p12]                     | 支持在多行代码块中使用 ABC 记谱法。              |
 | [callout][p1]                    | 支持标注块语法 `> [!type]`                    |
+| [codeblock-previewer-plus][p24] <sup>`新`</sup> | 在悬浮视图中查看代码块预览（如 mermaid），支持缩放和拖动查看 |
 | [chat][p23]  <sup>`新`</sup>    | 和 AI 协作编写笔记                              |
 | [code-folding][p14]              | 令多行代码块中的代码可折叠。                     |
 | [codeblock-copy-button][p2]      | 在多行代码块右上角添加一个复制按钮。              |
@@ -69,9 +72,9 @@
 | [markmap][p11]                   | 支持在多行代码块中使用 Markmap                  |
 | [note-refactor][p7]              | 提取选中文本到新文件                           |
 | [note-snippets][p8]              | 使用斜线指令输入笔记片段                        |
-| [tag][p9]                        | 高亮 `#tag` 语法，自动完成，提供标签面板管理和搜索标签 |
 | [statistics][p22]                | 显示文档统计信息                                   |
 | [styled-text][p21]               | 为匹配正则表达式的文本添加临时样式               |
+| [tag][p9]                        | 高亮 `#tag` 语法，自动完成，提供标签面板管理和搜索标签 |
 | [templater][p19]                 | 从模板创建笔记                                 |
 | [trigger][p20]                   | 为命令设置一个触发器，以自动执行。               |
 | [wavedrom][p17]                  | 支持在多行代码块中使用 WaveDrom                 |
@@ -136,3 +139,4 @@
 [p21]: https://github.com/typora-community-plugin/typora-plugin-styled-text
 [p22]: https://github.com/typora-community-plugin/typora-plugin-statistics
 [p23]: https://github.com/typora-community-plugin/typora-plugin-chat
+[p24]: https://github.com/typora-community-plugin/typora-plugin-codeblock-previewer-plus
