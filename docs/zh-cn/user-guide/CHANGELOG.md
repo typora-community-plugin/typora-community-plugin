@@ -1,5 +1,9 @@
 # 更新日志
 
+## v2.10.15
+
+- fix(core/plugin/marketplace): 修复首日发布的插件无法安装的问题，在 `newestVersion` 和统计数据均缺失时回退到 GitHub Release API
+
 ## v2.10.14
 
 - fix(core/ui/settings/tabs/plugin-manager): 多语言插件列表使用 description 字段显示描述信息

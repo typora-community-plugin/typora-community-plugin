@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.10.15
+
+- fix(core/plugin/marketplace): fix issue where plugins released on their first day could not be installed; fall back to GitHub Release API when `newestVersion` and statistics are both missing
+
 ## v2.10.14
 
 - fix(core/ui/settings/tabs/plugin-manager): use description in i18n's plugin list
