@@ -38,10 +38,14 @@ export class PluginMarketplace {
     return this.pluginList.find(p => p.id === id)
   }
 
-  getPluginNewestVersion(info: PluginMarketInfo) {
-    return Promise.resolve(
-      info.newestVersion || this.getStatsNewestVersion(info.id)
-    )
+  async getPluginNewestVersion(info: PluginMarketInfo) {
+    if (info.newestVersion) return info.newestVersion
+
+    const statsVersion = this.getStatsNewestVersion(info.id)
+    if (statsVersion) return statsVersion
+
+    return this.github.getReleaseInfo(info.repo)
+      .then(data => data.tag_name)
   }
 
   loadCommunityPlugins(): Promise<void> {
