@@ -13,6 +13,12 @@ export type CoreSettings = {
   debugDownloadUrl: string
 }
 
+const LANG_NAMES: Record<string, string> = {
+  'zh-cn': '简体中文',
+  en: 'English',
+  de: 'Deutsch',
+}
+
 
 export class AboutTab extends SettingTab {
 
@@ -109,7 +115,7 @@ export class AboutTab extends SettingTab {
         const select = (opt: string) => opt === selected ? 'selected' : ''
         const options = files
           .map(name => name.slice(5, -5))
-          .map(name => `<option ${select(name)}>${name}</option>`)
+          .map(name => `<option value="${name}" ${select(name)}>${LANG_NAMES[name] ?? name}</option>`)
 
         $(el)
           .append(...options)
