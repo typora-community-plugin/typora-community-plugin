@@ -104,10 +104,10 @@
       "installToGlobalDesc": "Install to global",
       "installToVault": "Vault",
       "installToVaultDesc": "Install to vault",
-      "viewReadme": "View README",
-      "viewReadmeDesc": "Download and render the README.md of this plugin repository.",
-      "collapseReadme": "Collapse",
-      "loadingReadme": "Loading…",
+      "readmeView": "README",
+      "readmeViewDesc": "Download and render the README.md of this plugin repository.",
+      "readmeCollapse": "Collapse",
+      "readmeLoading": "Loading…",
       "readmeNotFound": "No README found in this repository."
     },
     "plugins": {

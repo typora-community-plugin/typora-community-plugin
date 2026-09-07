@@ -173,16 +173,16 @@ export class PluginMarketplaceSettingTab extends SettingTab {
       let readmeSection: HTMLElement | undefined
       let readmeEl: HTMLElement | undefined
       setting.addButton(button => {
-        button.innerHTML = '<span class="fa fa-book"></span> ' + t.viewReadme
-        button.title = t.viewReadmeDesc
+        button.innerHTML = '<span class="fa fa-book"></span> ' + t.readmeView
+        button.title = t.readmeViewDesc
 
         const resetButton = () => {
           button.disabled = false
-          button.innerHTML = `<span class="fa fa-book"></span> ${t.viewReadme}`
+          button.innerHTML = `<span class="fa fa-book"></span> ${t.readmeView}`
         }
 
         const setToggleLabel = () => {
-          button.innerHTML = `<span class="fa fa-book"></span> ${readmeEl?.classList.contains('collapsed') ? t.viewReadme : t.collapseReadme}`
+          button.innerHTML = `<span class="fa fa-book"></span> ${readmeEl?.classList.contains('collapsed') ? t.readmeView : t.readmeCollapse}`
         }
 
         button.onclick = () => {
@@ -193,7 +193,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
           }
 
           button.disabled = true
-          button.innerHTML = `<span class="fa fa-spinner fa-spin"></span> ${t.loadingReadme}`
+          button.innerHTML = `<span class="fa fa-spinner fa-spin"></span> ${t.readmeLoading}`
 
           this.marketplace.getPluginReadme(info)
             .then(readme => {
