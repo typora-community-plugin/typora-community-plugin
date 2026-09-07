@@ -63,6 +63,14 @@ export class GithubAPI {
 
   private uri: GithubProxy
 
+  get rawUrl() {
+    return this.uri.raw
+  }
+
+  get baseUrl() {
+    return this.uri.base
+  }
+
   constructor(
     settings = useService('settings'),
     i18n = useService('i18n')
@@ -101,6 +109,25 @@ export class GithubAPI {
   getJSON<T = unknown>(repo: string, branch: string, filepath: string): Promise<T> {
     return this.getFile(repo, branch, filepath)
       .then(res => res.json())
+  }
+
+  /**
+   * Fetch raw file text. Returns `undefined` when the file does not exist or the request fails.
+   */
+  getFileText(repo: string, branch: string, filepath: string): Promise<string | undefined> {
+    return this.getFile(repo, branch, filepath)
+      .then(res => res.ok ? res.text() : undefined)
+      .catch((): undefined => undefined)
+  }
+
+  /**
+   * Get the default branch of a repository via GitHub API.
+   */
+  getDefaultBranch(repo: string): Promise<string> {
+    const uri = this.uri.api + 'repos/{repo}'
+    return fetch(format(uri, { repo }))
+      .then(res => res.json())
+      .then(data => data.default_branch as string)
   }
 
   getReleaseInfo(repo: string) {

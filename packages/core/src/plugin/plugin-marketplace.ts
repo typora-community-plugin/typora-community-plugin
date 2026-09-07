@@ -17,10 +17,18 @@ export type PluginStat = {
   [version: string]: number | undefined
 }
 
+export type PluginReadme = {
+  md: string
+  branch: string
+  filepath: string
+}
+
 export class PluginMarketplace {
 
   pluginList: PluginMarketInfo[] = []
   pluginStats: Record<string, PluginStat> = {}
+
+  private _readmeCache = new Map<string, Promise<PluginReadme | undefined>>()
 
   get isLoaded() {
     return !!this.pluginList.length
@@ -98,6 +106,37 @@ export class PluginMarketplace {
       }
     }
     return newest
+  }
+
+  /**
+   * Get the README.md content of a plugin repository.
+   * Resolves `undefined` when no README is found or the request fails.
+   */
+  getPluginReadme(info: PluginMarketInfo): Promise<PluginReadme | undefined> {
+    const key = info.repo
+    if (!this._readmeCache.has(key)) {
+      this._readmeCache.set(key, this.fetchReadme(key))
+    }
+    return this._readmeCache.get(key)!
+  }
+
+  clearReadmeCache() {
+    this._readmeCache.clear()
+  }
+
+  private async fetchReadme(repo: string): Promise<PluginReadme | undefined> {
+    let branch = 'main'
+    try {
+      const defaultBranch = await this.github.getDefaultBranch(repo)
+      if (defaultBranch) branch = defaultBranch
+    } catch (error) {
+      this.logger.warn(`Failed to get default branch of ${repo}.`)
+    }
+
+    for (const filepath of ['README.md', 'readme.md', 'Readme.md']) {
+      const md = await this.github.getFileText(repo, branch, filepath)
+      if (md) return { md, branch, filepath }
+    }
   }
 
   loadCommunityPluginStats(): Promise<Record<string, PluginStat>> {

@@ -103,7 +103,12 @@
       "installToGlobal": "Global",
       "installToGlobalDesc": "Global installieren",
       "installToVault": "Vault",
-      "installToVaultDesc": "In Vault installieren"
+      "installToVaultDesc": "In Vault installieren",
+      "viewReadme": "README anzeigen",
+      "viewReadmeDesc": "Lädt die README.md dieses Plugin-Repositories herunter und rendert sie.",
+      "collapseReadme": "Einklappen",
+      "loadingReadme": "Wird geladen…",
+      "readmeNotFound": "Kein README in diesem Repository gefunden."
     },
     "plugins": {
       "name": "Installierte Plugins",

@@ -1,0 +1,28 @@
+
+.typ-setting-item:has(>.typ-plugin-readme-section) {
+  flex-wrap: wrap;
+  border-bottom: solid 1px rgb(var(--typ-border-color));
+}
+
+.typ-plugin-readme-section.with-readme {
+  margin-top: .5rem;
+  width: 100%;
+
+  >.typ-plugin-readme {
+    max-height: 0;
+    transition: max-height .2s ease-out;
+
+    &:not(.collapsed) {
+      max-height: 16rem;
+      border: solid 1px rgb(var(--typ-border-color));
+      border-radius: .25rem;
+      background-color: var(--rawblock-edit-panel-bd);
+
+      >.typ-plugin-readme-content {
+        padding: .75rem 1rem;
+        max-height: 16rem;
+        overflow-y: auto;
+      }
+    }
+  }
+}

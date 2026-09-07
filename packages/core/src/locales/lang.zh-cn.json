@@ -103,7 +103,12 @@
       "installToGlobal": "全局",
       "installToGlobalDesc": "安装到全局",
       "installToVault": "笔记库",
-      "installToVaultDesc": "安装到笔记库"
+      "installToVaultDesc": "安装到笔记库",
+      "viewReadme": "查看 README",
+      "viewReadmeDesc": "下载并渲染该插件仓库的 README.md。",
+      "collapseReadme": "收起",
+      "loadingReadme": "加载中…",
+      "readmeNotFound": "该仓库未找到 README。"
     },
     "plugins": {
       "name": "已安装插件",
