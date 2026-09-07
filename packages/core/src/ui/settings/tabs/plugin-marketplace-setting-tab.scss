@@ -10,6 +10,7 @@
 
   >.typ-plugin-readme {
     max-height: 0;
+    overflow: hidden;
     transition: max-height .2s ease-out;
 
     &:not(.collapsed) {
