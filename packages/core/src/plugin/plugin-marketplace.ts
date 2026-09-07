@@ -124,6 +124,17 @@ export class PluginMarketplace {
     this._readmeCache.clear()
   }
 
+  private readmeFilepaths(): string[] {
+    const paths: string[] = []
+    const locale = this.i18n.locale.toLowerCase()
+    if (locale && locale !== 'en') {
+      const [lang, region] = locale.split('-')
+      const suffix = lang + (region ? `-${region.toUpperCase()}` : '')
+      paths.push(`README.${suffix}.md`)
+    }
+    return [...paths, 'README.md', 'readme.md', 'Readme.md']
+  }
+
   private async fetchReadme(repo: string): Promise<PluginReadme | undefined> {
     let branch = 'main'
     try {
@@ -133,7 +144,7 @@ export class PluginMarketplace {
       this.logger.warn(`Failed to get default branch of ${repo}.`)
     }
 
-    for (const filepath of ['README.md', 'readme.md', 'Readme.md']) {
+    for (const filepath of this.readmeFilepaths()) {
       const md = await this.github.getFileText(repo, branch, filepath)
       if (md) return { md, branch, filepath }
     }
