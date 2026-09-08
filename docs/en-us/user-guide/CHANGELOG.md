@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.10.18
+
+- **Plugin Marketplace**
+  - feat(core/ui/settings/tabs/plugin-marketplace): add a "View README" button to fetch and render the plugin repository's `README.md`
+
+- **Settings**
+  - feat(core/ui/settings/tabs/about): add a changelog viewer to the About settings page
+  - feat(core/ui/settings/tab/about): language selector shows localized language names
+
 ## v2.10.15
 
 - fix(core/plugin/marketplace): fix issue where plugins released on their first day could not be installed; fall back to GitHub Release API when `newestVersion` and statistics are both missing

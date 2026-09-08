@@ -1,5 +1,14 @@
 # 更新日志
 
+## v2.10.18
+
+- **插件市场**
+  - feat(core/ui/settings/tabs/plugin-marketplace): 新增“查看 README”按钮，获取并渲染插件仓库的 `README.md`
+
+- **设置**
+  - feat(core/ui/settings/tabs/about): “关于”设置页新增“更新日志”查看器
+  - feat(core/ui/settings/tab/about): 语言选择器显示本地化的语言名称
+
 ## v2.10.15
 
 - fix(core/plugin/marketplace): 修复首日发布的插件无法安装的问题，在 `newestVersion` 和统计数据均缺失时回退到 GitHub Release API
