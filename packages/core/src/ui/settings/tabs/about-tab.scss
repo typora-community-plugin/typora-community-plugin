@@ -1,0 +1,29 @@
+
+.typ-setting-item:has(>.typ-changelog-section) {
+  flex-wrap: wrap;
+  border-bottom: solid 1px rgb(var(--typ-border-color));
+}
+
+.typ-changelog-section.with-changelog {
+  margin-top: .5rem;
+  width: 100%;
+
+  >.typ-changelog {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .2s ease-out;
+
+    &:not(.collapsed) {
+      max-height: 16rem;
+      border: solid 1px rgb(var(--typ-border-color));
+      border-radius: .25rem;
+      background-color: var(--rawblock-edit-panel-bd);
+
+      >.typ-changelog-content {
+        padding: .75rem 1rem;
+        max-height: 16rem;
+        overflow-y: auto;
+      }
+    }
+  }
+}

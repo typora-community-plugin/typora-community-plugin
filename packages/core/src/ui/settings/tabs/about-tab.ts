@@ -1,3 +1,4 @@
+import './about-tab.scss'
 import path from 'src/path'
 import { coreDir, coreVersion, isDebug } from 'src/common/constants'
 import { Notice } from 'src/ui/components/notice'
@@ -5,7 +6,11 @@ import fs from 'src/io/fs/filesystem'
 import { SettingTab } from "src/ui/settings/setting-tab"
 import * as versions from 'src/utils/versions'
 import * as net from 'src/net/net'
+import { html } from 'src/utils'
 import { useService } from 'src/common/service'
+
+const CORE_NAME = 'typora-community-plugin'
+const CORE_REPO = `${CORE_NAME}/${CORE_NAME}`
 
 
 export type CoreSettings = {
@@ -31,7 +36,8 @@ export class AboutTab extends SettingTab {
     private logger = useService('logger', ['AboutTab']),
     private settings = useService('settings'),
     private i18n = useService('i18n'),
-    private github = useService('github')
+    private github = useService('github'),
+    private mdRenderer = useService('markdown-renderer')
   ) {
     super()
 
@@ -64,6 +70,57 @@ export class AboutTab extends SettingTab {
           `${t.labelAuthor}: `, authorUrl, '<br>',
           `${t.labelHomepage}: `, repoUrl,
         )
+      })
+
+      let changelogSection: HTMLElement | undefined
+      let changelogEl: HTMLElement | undefined
+
+      setting.addButton(button => {
+        button.innerHTML = '<span class="fa fa-history"></span> ' + t.changelogView
+        button.title = t.changelogViewDesc
+
+        const resetButton = () => {
+          button.disabled = false
+          button.innerHTML = `<span class="fa fa-history"></span> ${t.changelogView}`
+        }
+
+        const setToggleLabel = () => {
+          button.innerHTML = `<span class="fa fa-history"></span> ${changelogEl?.classList.contains('collapsed') ? t.changelogView : t.changelogCollapse}`
+        }
+
+        button.onclick = () => {
+          if (changelogSection && changelogEl) {
+            changelogEl.classList.toggle('collapsed')
+            setToggleLabel()
+            return
+          }
+
+          button.disabled = true
+          button.innerHTML = `<span class="fa fa-spinner fa-spin"></span> ${t.changelogLoading}`
+
+          this.fetchChangelog()
+            .then(md => {
+              if (!md || !button.isConnected) {
+                if (button.isConnected && md === undefined) Notice.error(t.changelogNotFound)
+                resetButton()
+                return
+              }
+
+              const contentEl = html`<div class="typ-changelog-content"></div>`
+              changelogEl = html`<div class="typ-changelog collapsed"></div>`
+              changelogSection = html`<div class="typ-changelog-section with-changelog"></div>`
+              changelogEl.append(contentEl)
+              changelogSection.append(changelogEl!)
+              setting.containerEl.append(changelogSection)
+              this.mdRenderer.renderTo(md, contentEl)
+              button.disabled = false
+              requestAnimationFrame(() => {
+                changelogEl!.classList.remove('collapsed')
+                setToggleLabel()
+              })
+            })
+            .catch(resetButton)
+        }
       })
 
       setting.addButton(button => {
@@ -128,13 +185,11 @@ export class AboutTab extends SettingTab {
 
   updateCore() {
     const t = this.i18n.t.settingTabs.about
-    const name = 'typora-community-plugin'
-    const repo = `${name}/${name}`
-    return this.github.getReleaseInfo(repo)
+    return this.github.getReleaseInfo(CORE_REPO)
       .then(data => data.tag_name)
       .then(version => {
         if (versions.compare(coreVersion(), version) < 0) {
-          const url = this.github.getReleaseUrl(repo, version, `${name}.zip`)
+          const url = this.github.getReleaseUrl(CORE_REPO, version, `${CORE_NAME}.zip`)
           return this.installCore(url)
         }
         else {
@@ -145,6 +200,18 @@ export class AboutTab extends SettingTab {
         this.logger.error(error)
         Notice.error(error.message, 0)
       })
+  }
+
+  private fetchChangelog(): Promise<string | undefined> {
+    const locale = this.i18n.locale.toLowerCase()
+    const paths: string[] = []
+    if (locale) paths.push(`docs/${locale}/user-guide/CHANGELOG.md`)
+    paths.push('docs/en-us/user-guide/CHANGELOG.md')
+
+    const fetchNext = (i: number): Promise<string | undefined> =>
+      i >= paths.length ? Promise.resolve(undefined)
+        : this.github.getFileText(CORE_REPO, 'main', paths[i]).then(md => md || fetchNext(i + 1))
+    return fetchNext(0)
   }
 
   installCore(url: string) {
