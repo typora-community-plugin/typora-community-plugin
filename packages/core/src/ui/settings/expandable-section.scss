@@ -1,14 +1,13 @@
-
-.typ-setting-item:has(>.typ-changelog-section) {
+.typ-setting-item:has(>.typ-expandable-section) {
   flex-wrap: wrap;
   border-bottom: solid 1px rgb(var(--typ-border-color));
 }
 
-.typ-changelog-section.with-changelog {
+.typ-expandable-section {
   margin-top: .5rem;
   width: 100%;
 
-  >.typ-changelog {
+  >.typ-expandable-panel {
     max-height: 0;
     overflow: hidden;
     transition: max-height .2s ease-out;
@@ -19,7 +18,7 @@
       border-radius: .25rem;
       background-color: var(--rawblock-edit-panel-bd);
 
-      >.typ-changelog-content {
+      >.typ-expandable-content {
         padding: .75rem 1rem;
         max-height: 16rem;
         overflow-y: auto;

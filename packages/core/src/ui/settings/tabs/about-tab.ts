@@ -1,12 +1,11 @@
-import './about-tab.scss'
 import path from 'src/path'
 import { coreDir, coreVersion, isDebug } from 'src/common/constants'
 import { Notice } from 'src/ui/components/notice'
 import fs from 'src/io/fs/filesystem'
+import { ExpandableSection } from "src/ui/settings/expandable-section"
 import { SettingTab } from "src/ui/settings/setting-tab"
 import * as versions from 'src/utils/versions'
 import * as net from 'src/net/net'
-import { html } from 'src/utils'
 import { useService } from 'src/common/service'
 
 const CORE_NAME = 'typora-community-plugin'
@@ -72,56 +71,16 @@ export class AboutTab extends SettingTab {
         )
       })
 
-      let changelogSection: HTMLElement | undefined
-      let changelogEl: HTMLElement | undefined
-
-      setting.addButton(button => {
-        button.innerHTML = '<span class="fa fa-history"></span> ' + t.changelogView
-        button.title = t.changelogViewDesc
-
-        const resetButton = () => {
-          button.disabled = false
-          button.innerHTML = `<span class="fa fa-history"></span> ${t.changelogView}`
-        }
-
-        const setToggleLabel = () => {
-          button.innerHTML = `<span class="fa fa-history"></span> ${changelogEl?.classList.contains('collapsed') ? t.changelogView : t.changelogCollapse}`
-        }
-
-        button.onclick = () => {
-          if (changelogSection && changelogEl) {
-            changelogEl.classList.toggle('collapsed')
-            setToggleLabel()
-            return
-          }
-
-          button.disabled = true
-          button.innerHTML = `<span class="fa fa-spinner fa-spin"></span> ${t.changelogLoading}`
-
-          this.fetchChangelog()
-            .then(md => {
-              if (!md || !button.isConnected) {
-                if (button.isConnected && md === undefined) Notice.error(t.changelogNotFound)
-                resetButton()
-                return
-              }
-
-              const contentEl = html`<div class="typ-changelog-content"></div>`
-              changelogEl = html`<div class="typ-changelog collapsed"></div>`
-              changelogSection = html`<div class="typ-changelog-section with-changelog"></div>`
-              changelogEl.append(contentEl)
-              changelogSection.append(changelogEl!)
-              setting.containerEl.append(changelogSection)
-              this.mdRenderer.renderTo(md, contentEl)
-              button.disabled = false
-              requestAnimationFrame(() => {
-                changelogEl!.classList.remove('collapsed')
-                setToggleLabel()
-              })
-            })
-            .catch(resetButton)
-        }
-      })
+      new ExpandableSection({
+        iconClass: 'fa-history',
+        title: t.changelogViewDesc,
+        labelView: t.changelogView,
+        labelCollapse: t.changelogCollapse,
+        labelLoading: t.changelogLoading,
+        labelNotFound: t.changelogNotFound,
+        fetchContent: () => this.fetchChangelog(),
+        mdRenderer: this.mdRenderer,
+      }).addButtonTo(setting)
 
       setting.addButton(button => {
         button.classList.add('primary')

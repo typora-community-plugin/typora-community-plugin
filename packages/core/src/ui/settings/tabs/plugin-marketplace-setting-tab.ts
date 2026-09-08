@@ -1,10 +1,10 @@
-import './plugin-marketplace-setting-tab.scss'
 import { useService } from "src/common/service"
 import { platform } from "src/common/constants"
 import path from 'src/path'
 import type { PluginMarketInfo, PluginReadme } from "src/plugin/plugin-marketplace"
+import { ExpandableSection } from "src/ui/settings/expandable-section"
 import { SettingTab } from "../setting-tab"
-import { debounce, format, html } from "src/utils"
+import { debounce, format } from "src/utils"
 import { Downloader } from "src/net/net"
 import { File } from "typora"
 import { Notice } from "src/ui/components/notice"
@@ -137,7 +137,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
   }
 
   private removeRenderedReadmes() {
-    this.containerEl.querySelectorAll('.typ-plugin-item > .typ-plugin-readme-section')
+    this.containerEl.querySelectorAll('.typ-expandable-section')
       .forEach(el => el.remove())
   }
 
@@ -170,55 +170,16 @@ export class PluginMarketplaceSettingTab extends SettingTab {
       })
       setting.addDescription(info.description)
 
-      let readmeSection: HTMLElement | undefined
-      let readmeEl: HTMLElement | undefined
-      setting.addButton(button => {
-        button.innerHTML = '<span class="fa fa-book"></span> ' + t.readmeView
-        button.title = t.readmeViewDesc
-
-        const resetButton = () => {
-          button.disabled = false
-          button.innerHTML = `<span class="fa fa-book"></span> ${t.readmeView}`
-        }
-
-        const setToggleLabel = () => {
-          button.innerHTML = `<span class="fa fa-book"></span> ${readmeEl?.classList.contains('collapsed') ? t.readmeView : t.readmeCollapse}`
-        }
-
-        button.onclick = () => {
-          if (readmeSection && readmeEl) {
-            readmeEl.classList.toggle('collapsed')
-            setToggleLabel()
-            return
-          }
-
-          button.disabled = true
-          button.innerHTML = `<span class="fa fa-spinner fa-spin"></span> ${t.readmeLoading}`
-
-          this.marketplace.getPluginReadme(info)
-            .then(readme => {
-              if (!readme || !button.isConnected) {
-                if (button.isConnected && readme === undefined) Notice.error(t.readmeNotFound)
-                resetButton()
-                return
-              }
-
-              const contentEl = html`<div class="typ-plugin-readme-content"></div>`
-              readmeEl = html`<div class="typ-plugin-readme collapsed"></div>`
-              readmeSection = html`<div class="typ-plugin-readme-section with-readme"></div>`
-              readmeEl.append(contentEl)
-              readmeSection.append(readmeEl!)
-              setting.containerEl.append(readmeSection)
-              this.mdRenderer.renderTo(this.resolveReadmeUrls(info, readme), contentEl)
-              button.disabled = false
-              requestAnimationFrame(() => {
-                readmeEl!.classList.remove('collapsed')
-                setToggleLabel()
-              })
-            })
-            .catch(resetButton)
-        }
-      })
+      new ExpandableSection({
+        iconClass: 'fa-book',
+        title: t.readmeViewDesc,
+        labelView: t.readmeView,
+        labelCollapse: t.readmeCollapse,
+        labelLoading: t.readmeLoading,
+        labelNotFound: t.readmeNotFound,
+        fetchContent: () => this.marketplace.getPluginReadme(info).then(readme => readme && this.resolveReadmeUrls(info, readme)),
+        mdRenderer: this.mdRenderer,
+      }).addButtonTo(setting)
 
       if (!info.platforms.includes(platform())) return
       if (this.plugins.manifests[info.id]) return
