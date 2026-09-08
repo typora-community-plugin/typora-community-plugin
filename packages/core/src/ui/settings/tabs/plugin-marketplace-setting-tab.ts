@@ -292,7 +292,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
  * Returns true when the reference has a protocol (http:, https:, data:, mailto:, //cdn… etc.) and must not be rewritten.
  */
 function isProtocolRef(ref: string) {
-  return /^(?:[a-z][a-z\d+.-]*|\/\/)/i.test(ref)
+  return /^(?:[a-z][a-z\d+.-]*:|\/\/)/i.test(ref)
 }
 
 /**
