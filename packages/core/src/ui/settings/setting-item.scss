@@ -39,11 +39,17 @@
     &.postfix {
       display: flex;
       flex: 0 0 auto;
-      margin-left: .8rem;
 
       &>* {
         margin-left: .5rem;
       }
+      &>:first-child {
+        margin-left: unset;
+      }
+    }
+
+    &.prefix:not(:empty) + .typ-setting-info + .postfix {
+      margin-left: 1.3rem;
     }
   }
 
