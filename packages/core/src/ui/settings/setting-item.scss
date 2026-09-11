@@ -5,6 +5,7 @@
 
 .typ-setting-item {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   padding: .5rem;
   margin-right: 0;
@@ -15,7 +16,8 @@
 
   @at-root .typ-setting-info {
     align-self: flex-start;
-    flex: 1;
+    flex: 1 1 50%;
+    min-width: 0;
 
     @at-root .typ-setting-description {
       font-size: .75rem;
@@ -36,6 +38,8 @@
 
     &.postfix {
       display: flex;
+      flex: 0 0 auto;
+      margin-left: .8rem;
 
       &>* {
         margin-left: .5rem;
