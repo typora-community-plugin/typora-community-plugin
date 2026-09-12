@@ -64,6 +64,10 @@ app.commands.run('core.workspace.right-split:ensure-leaf', [path])
   }
 }
 
+class TestSidedockView2 extends TestSidedockView {
+  static type = 'TestSidedockView2'
+}
+
 
 // ── Registration (dev-only) ─────────────────────────────────────────────
 
@@ -84,4 +88,10 @@ export function registerTestSidedockView(
   )
 
   commands.run('core.workspace.right-split:ensure-leaf', [`typ://${TestSidedockView.type}/Test`])
+
+  viewManager.registerView(
+    TestSidedockView2.type,
+    (leaf) => new TestSidedockView2(leaf),
+  )
+  commands.run('core.workspace.right-split:ensure-leaf', [`typ://${TestSidedockView2.type}/Test2`])
 }

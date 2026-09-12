@@ -117,7 +117,7 @@ export function ensureRightSidedockLeaf(uri: string) {
   const existing = workspace.rightSplit.findLeaf(leaf => leaf.type === type)
   if (existing) return
 
-  const tabs = useService('workspace-tabs')
+  const tabs = workspace.rightSplit.findNode(leaf => leaf.type === 'tabs') as WorkspaceTabs ?? useService('workspace-tabs')
   const leaf = createCustomLeaf(uri)
 
   tabs.appendChild(leaf)
