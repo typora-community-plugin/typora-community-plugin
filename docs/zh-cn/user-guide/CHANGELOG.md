@@ -1,5 +1,21 @@
 # 更新日志
 
+## v2.10.21
+
+- refactor(core/ui/settings): 使用 `flex-wrap` 和 `min-width` 改善设置项布局弹性，修复调整大小时的内容换行问题
+- refactor(core/ui/settings): 优化 prefix/postfix 间距逻辑，统一前缀与后缀之间的视觉间隔
+- refactor(core/ui/layout/sidedock): 右侧栏的所有标签放到同一个标签组中
+
+- **插件市场**
+  - feat(core/ui/settings/tabs/plugin-marketplace): 支持按更新时间或下载量排序
+
+- **插件更新**
+  - [chat][]
+    - 完善供应商和模型设置界面
+    - 添加更多内置供应商
+  - [templater][]: 完善 i18n
+  - [wikilink][]: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+鼠标单击 在浮动窗口中预览链接的文件
+
 ## v2.10.18
 
 - **插件市场**
@@ -19,6 +35,9 @@
 
 - **工作区**
   - fix(core/ui/layout/floating): 修复调整视图大小时同时会选中内容的问题
+
+- **新增插件**
+  - [codeblock-previewer-plus][]: 代码块预览增强插件
 
 ## v2.10.12
 
@@ -802,6 +821,8 @@
 [collapsible-section]: https://github.com/typora-community-plugin/typora-plugin-collapsible-section
 
 [code-folding]: https://github.com/typora-community-plugin/typora-plugin-code-folding
+
+[codeblock-previewer-plus]: https://github.com/typora-community-plugin/typora-plugin-codeblock-previewer-plus
 
 [drakmode]: https://github.com/typora-community-plugin/typora-plugin-darkmode
 

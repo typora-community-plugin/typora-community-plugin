@@ -1,6 +1,6 @@
 {
   "name": "@typora-community-plugin/core",
-  "version": "2.10.18",
+  "version": "2.10.21",
   "description": "Typora Plugin Core's types for plugin development.",
   "type": "module",
   "main": "",

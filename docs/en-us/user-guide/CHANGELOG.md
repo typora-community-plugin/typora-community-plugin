@@ -1,5 +1,21 @@
 # Changelog
 
+## v2.10.21
+
+- refactor(core/ui/settings): use `flex-wrap` and `min-width` to improve the flexibility of setting item layout, fixing content wrapping issues when resizing
+- refactor(core/ui/settings): optimize prefix/postfix spacing logic to unify the visual gap between prefixes and suffixes
+- refactor(core/ui/layout/sidedock): all tab in right sidedock will put in a same tabs
+
+- **Plugin Marketplace**
+  - feat(core/ui/settings/tabs/plugin-marketplace): support sorting by update time or download count
+
+- **Plugin Updates**
+  - [chat][]
+    - Improve provider and model settings UI
+    - Add more built-in providers
+  - [templater][]: improve i18n
+  - [wikilink][]: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+mouse click to preview the linked file in a floating window
+
 ## v2.10.18
 
 - **Plugin Marketplace**
