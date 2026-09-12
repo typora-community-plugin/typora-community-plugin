@@ -95,6 +95,8 @@
       "githubProxyDesc": "用于加载插件列表和下载插件。",
       "searchPlugin": "搜索插件:",
       "pluginList": "插件列表",
+      "sortByLastUpdate": "按更新时间排序（从近到远）",
+      "sortByDownloads": "按下载量排序（从多到少）",
       "reloadPluginList": "重新加载插件列表",
       "author": "作者",
       "lastUpdate": "最后更新",

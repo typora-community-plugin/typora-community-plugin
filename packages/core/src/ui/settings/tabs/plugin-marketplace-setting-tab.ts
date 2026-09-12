@@ -94,11 +94,22 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     this.addSetting(setting => {
       setting.addTitle(t.pluginList)
       setting.addButton(button => {
+        button.title = t.sortByLastUpdate
+        button.innerHTML = '<span class="fa fa-clock-o"></span>'
+        button.onclick = () => this.toggleSort('updated')
+      })
+      setting.addButton(button => {
+        button.title = t.sortByDownloads
+        button.innerHTML = '<span class="fa fa-download"></span>'
+        button.onclick = () => this.toggleSort('downloads')
+      })
+      setting.addButton(button => {
         button.title = t.reloadPluginList
         button.innerHTML = '<span class="fa fa-refresh"></span>'
         button.onclick = () => this.loadPluginList()
       })
     })
+
   }
 
   onshow() {
@@ -107,6 +118,7 @@ export class PluginMarketplaceSettingTab extends SettingTab {
 
   private _loadPromise: Promise<void> | undefined
   private _pluginListVersion = 0
+  private _sortField: 'updated' | 'downloads' | null = null
 
   private loadPluginList() {
     const version = ++this._pluginListVersion
@@ -126,9 +138,28 @@ export class PluginMarketplaceSettingTab extends SettingTab {
 
   private renderPluginList(query: string = '') {
     query = query.toLowerCase()
-    this.marketplace.pluginList
+    const field = this._sortField
+    const list = this.marketplace.pluginList
       .filter(p => !query || (p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query)))
-      .forEach(p => this.renderPlugin(p))
+
+    if (field) {
+      list.sort((a, b) => {
+        const sa = this.marketplace.pluginStats[a.id]
+        const sb = this.marketplace.pluginStats[b.id]
+        return field === 'updated'
+          ? (sb?.updated || 0) - (sa?.updated || 0)
+          : (sb?.downloads || 0) - (sa?.downloads || 0)
+      })
+    }
+
+    list.forEach(p => this.renderPlugin(p))
+  }
+
+  private toggleSort(field: 'updated' | 'downloads') {
+    this._sortField = this._sortField === field ? null : field
+    const input = this.containerEl.querySelector('input[type="text"]') as HTMLInputElement | null
+    this.cleanPluginList()
+    this.renderPluginList(input?.value ?? '')
   }
 
   private cleanPluginList() {
