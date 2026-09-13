@@ -9,6 +9,9 @@
 - **Plugin Marketplace**
   - feat(core/ui/settings/tabs/plugin-marketplace): support sorting by update time or download count
 
+- **New Plugin**
+  - [git][]: Submit Git commits in Typora
+
 - **Plugin Updates**
   - [chat][]
     - Improve provider and model settings UI
@@ -35,6 +38,9 @@
 
 - **Workspace**
   - fix(core/ui/layout/floating): fix content selection when resizing view size
+
+- **New Plugin**
+  - [codeblock-previewer-plus][]: Code block preview enhancement plugin
 
 ## v2.10.12
 
@@ -818,11 +824,15 @@
 
 [code-folding]: https://github.com/typora-community-plugin/typora-plugin-code-folding
 
+[codeblock-previewer-plus]: https://github.com/typora-community-plugin/typora-plugin-codeblock-previewer-plus
+
 [drakmode]: https://github.com/typora-community-plugin/typora-plugin-darkmode
 
 [footnotes]: https://github.com/typora-community-plugin/typora-plugin-footnotes
 
 [front-matter]: https://github.com/typora-community-plugin/typora-plugin-front-matter
+
+[git]: https://github.com/typora-community-plugin/typora-plugin-git
 
 [image-location]: https://github.com/typora-community-plugin/typora-plugin-image-location
 

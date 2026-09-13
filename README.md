@@ -57,7 +57,7 @@ You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from
 | ------------------------------------ | --------------------------------------------------------- |
 | [abcjs][p12]                         | Use ABC music notation in codeblock.                      |
 | [callout][p1]                        | Support Obsidian-like Callout `> [!type]`.                |
-| [chat][p23]  <sup>`New`</sup>       | Collaborate with AI to write notes.                       |
+| [chat][p23] <sup>`New`</sup>       | Collaborate with AI to write notes.                       |
 | [code-folding][p14]                  | Make your codes foldable.                                 |
 | [codeblock-copy-button][p2]          | Add a copy button to each codeblock's top-right corner.   |
 | [codeblock-highlight-mapper][p3]     | Map language A to language B for highlighting it.         |
@@ -67,6 +67,7 @@ You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from
 | [file-icon][p5]                      | Show different icon for different file type in file tree. |
 | [footnotes][p18]                     | Footnote marker suggestion & Re-index the numerical footnotes. |
 | [front-matter][p6]                   | Auto edit front matter, including creation time, editing time, etc. |
+| [git][p25] <sup>`New`</sup>       | Commit Git commits within Typora.                         |
 | [image-location][p15]                | Resolve image's location relative to vault's root.        |
 | [image-viewer][p16]                  | View all the images in current Markdown.                  |
 | [markmap][p11]                       | Support Markmap in codeblock.                             |
@@ -141,3 +142,4 @@ If you have any problem or suggestion please open an issue [here](https://github
 [p22]: https://github.com/typora-community-plugin/typora-plugin-statistics
 [p23]: https://github.com/typora-community-plugin/typora-plugin-chat
 [p24]: https://github.com/typora-community-plugin/typora-plugin-codeblock-previewer-plus
+[p25]: https://github.com/typora-community-plugin/typora-plugin-git

@@ -9,6 +9,9 @@
 - **插件市场**
   - feat(core/ui/settings/tabs/plugin-marketplace): 支持按更新时间或下载量排序
 
+- **新增插件**
+  - [git][]: 在 Typora 中提交 Git commit
+
 - **插件更新**
   - [chat][]
     - 完善供应商和模型设置界面
@@ -829,6 +832,8 @@
 [footnotes]: https://github.com/typora-community-plugin/typora-plugin-footnotes
 
 [front-matter]: https://github.com/typora-community-plugin/typora-plugin-front-matter
+
+[git]: https://github.com/typora-community-plugin/typora-plugin-git
 
 [image-location]: https://github.com/typora-community-plugin/typora-plugin-image-location
 

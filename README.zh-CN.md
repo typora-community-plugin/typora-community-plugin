@@ -57,8 +57,9 @@
 | -------------------------------- | ------------------------------------------ |
 | [abcjs][p12]                     | 支持在多行代码块中使用 ABC 记谱法。              |
 | [callout][p1]                    | 支持标注块语法 `> [!type]`                    |
-| [chat][p23]  <sup>`新`</sup>    | 和 AI 协作编写笔记                              |
+| [chat][p23] <sup>`新`</sup>      | 和 AI 协作编写笔记                              |
 | [code-folding][p14]              | 令多行代码块中的代码可折叠。                     |
+| [git][p25] <sup>`新`</sup>       | 在 Typora 中提交 Git commit                    |
 | [codeblock-copy-button][p2]      | 在多行代码块右上角添加一个复制按钮。              |
 | [codeblock-highlight-mapper][p3] | 将语言 A 映射为语言 B，使用语言 B 的语法高亮代码。 |
 | [codeblock-previewer-plus][p24] <sup>`新`</sup> | 在悬浮视图中查看代码块预览（如 mermaid），支持缩放和拖动查看 |
@@ -140,3 +141,4 @@
 [p22]: https://github.com/typora-community-plugin/typora-plugin-statistics
 [p23]: https://github.com/typora-community-plugin/typora-plugin-chat
 [p24]: https://github.com/typora-community-plugin/typora-plugin-codeblock-previewer-plus
+[p25]: https://github.com/typora-community-plugin/typora-plugin-git
