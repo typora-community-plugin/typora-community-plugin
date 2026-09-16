@@ -20,6 +20,9 @@ import { PLUGIN_WORKSPACE_ID } from 'src/plugin-internal/plugins/plugin-workspac
 
 export type WorkspaceRootEvents = {
   'layout-changed'(): void
+
+  'split:resized'(split: WorkspaceSplit): void
+
   'leaf:open'(leaf: WorkspaceLeaf): void
   'leaf:active'(leaf: WorkspaceLeaf): void
   'leaf:will-deactive'(leaf: WorkspaceLeaf): void
@@ -48,6 +51,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
     $(this.containerEl).addClass('typ-workspace-root')
 
     this.registry.onload = () => {
+      this.on('split:resized', () => console.log(111))
       $(this.containerEl).insertBefore('content')
 
       this.registry.registerDomEvent(this.containerEl, 'click', e => {

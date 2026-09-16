@@ -117,6 +117,7 @@ export class WorkspaceSplit extends WorkspaceParent {
     document.onmouseup = () => {
       dragging = false
       document.onmousemove = document.onmouseup = null
+      this.getRoot().emit('split:resized', this)
     }
   }
 
