@@ -7,6 +7,8 @@ import { useEditingTabs } from './use-editing-tabs'
 import { memorize } from 'src/utils'
 
 
+const RESIZE_HANDLER_WIDTH = 7
+
 export class MdEditorMode implements ModeController {
 
   static getInstance = memorize(() => new MdEditorMode())
@@ -78,8 +80,8 @@ export class MdEditorMode implements ModeController {
     const targetEl = parent.tabContentEl
     const rect = targetEl.getBoundingClientRect()
     style.setProperty('--typ-editor-top', rect.top + 'px')
-    style.setProperty('--typ-editor-left', rect.left + 'px')
-    style.setProperty('--typ-editor-width', rect.width + 'px')
+    style.setProperty('--typ-editor-left', rect.left + RESIZE_HANDLER_WIDTH + 'px')
+    style.setProperty('--typ-editor-width', rect.width - RESIZE_HANDLER_WIDTH + 'px')
     style.setProperty('--typ-editor-height', rect.height + 'px')
   }
 }
