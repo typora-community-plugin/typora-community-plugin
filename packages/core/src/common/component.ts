@@ -64,9 +64,10 @@ export class Component implements Loadable {
   registerDomEvent(
     target: EventTarget,
     event: string,
-    listener: EventListenerOrEventListenerObject,
-    options?: AddEventListenerOptions
+    callback: (this: EventTarget, event: any) => void,
+    options?: boolean | AddEventListenerOptions
   ) {
+    const listener = callback as unknown as EventListener
     target.addEventListener(event, listener, options)
     this.register(() => target.removeEventListener(event, listener, options))
   }
