@@ -1,5 +1,13 @@
 # 更新日志
 
+## v2.10.23
+
+- **工作区**
+  - fix(core/ui/views/markdown-view/md-editor-mode): 修复 WorkspaceSplit 右侧 是 MarkdownView（编辑器模式）时，无法调整大小的问题
+
+- **开发者**
+  - feat(core/ui/layout/workspace-root): WorkspaceSplit 调整大小结束后触发 `split:resized` 事件
+
 ## v2.10.21
 
 - refactor(core/ui/settings): 使用 `flex-wrap` 和 `min-width` 改善设置项布局弹性，修复调整大小时的内容换行问题

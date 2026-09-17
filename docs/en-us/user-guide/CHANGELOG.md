@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.10.23
+
+- **Workspace**
+  - fix(core/ui/views/markdown-view/md-editor-mode): fix inability to resize when WorkspaceSplit right side is a MarkdownView (editor mode)
+
+- **Developer**
+  - feat(core/ui/layout/workspace-root): trigger `split:resized` event after WorkspaceSplit resizing ends
+
 ## v2.10.21
 
 - refactor(core/ui/settings): use `flex-wrap` and `min-width` to improve the flexibility of setting item layout, fixing content wrapping issues when resizing
