@@ -71,6 +71,7 @@
 | [image-location][p15]            | 相对于当前笔记目录的根目录解析图片路径             |
 | [image-viewer][p16]              | 查看当前文档所有图片                           |
 | [markmap][p11]                   | 支持在多行代码块中使用 Markmap                  |
+| [mini-outline][p26] <sup>`新`</sup> | 编辑器右侧的浮动大纲                        |
 | [note-refactor][p7]              | 提取选中文本到新文件                           |
 | [note-snippets][p8]              | 使用斜线指令输入笔记片段                        |
 | [statistics][p22]                | 显示文档统计信息                                   |
@@ -142,3 +143,4 @@
 [p23]: https://github.com/typora-community-plugin/typora-plugin-chat
 [p24]: https://github.com/typora-community-plugin/typora-plugin-codeblock-previewer-plus
 [p25]: https://github.com/typora-community-plugin/typora-plugin-git
+[p26]: https://github.com/typora-community-plugin/typora-plugin-mini-outline

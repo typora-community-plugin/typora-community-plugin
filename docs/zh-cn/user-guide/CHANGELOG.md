@@ -8,6 +8,9 @@
 - **开发者**
   - feat(core/ui/layout/workspace-root): WorkspaceSplit 调整大小结束后触发 `split:resized` 事件
 
+- **新增插件**
+  - [mini-outline][]: 编辑器右侧的浮动大纲
+
 ## v2.10.21
 
 - refactor(core/ui/settings): 使用 `flex-wrap` 和 `min-width` 改善设置项布局弹性，修复调整大小时的内容换行问题
@@ -848,6 +851,8 @@
 [image-viewer]: https://github.com/typora-community-plugin/typora-plugin-image-viewer
 
 [markmap]: https://github.com/typora-community-plugin/typora-plugin-markmap
+
+[mini-outline]: https://github.com/typora-community-plugin/typora-plugin-mini-outline
 
 [note-refactor]: https://github.com/typora-community-plugin/typora-plugin-note-refactor
 

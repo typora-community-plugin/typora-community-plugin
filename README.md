@@ -71,6 +71,7 @@ You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from
 | [image-location][p15]                | Resolve image's location relative to vault's root.        |
 | [image-viewer][p16]                  | View all the images in current Markdown.                  |
 | [markmap][p11]                       | Support Markmap in codeblock.                             |
+| [mini-outline][p26] <sup>`New`</sup> | Floating outline on the right side of the editor.        |
 | [note-refactor][p7]                  | Extract selection to new file.                            |
 | [note-snippets][p8]                  | Use slash command to autocomplete note snippets.          |
 | [statistics][p22]                    | Display document statistics.                              |
@@ -143,3 +144,4 @@ If you have any problem or suggestion please open an issue [here](https://github
 [p23]: https://github.com/typora-community-plugin/typora-plugin-chat
 [p24]: https://github.com/typora-community-plugin/typora-plugin-codeblock-previewer-plus
 [p25]: https://github.com/typora-community-plugin/typora-plugin-git
+[p26]: https://github.com/typora-community-plugin/typora-plugin-mini-outline

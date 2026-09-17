@@ -8,6 +8,9 @@
 - **Developer**
   - feat(core/ui/layout/workspace-root): trigger `split:resized` event after WorkspaceSplit resizing ends
 
+- **New Plugin**
+  - [mini-outline][]: Floating outline on the right side of the editor
+
 ## v2.10.21
 
 - refactor(core/ui/settings): use `flex-wrap` and `min-width` to improve the flexibility of setting item layout, fixing content wrapping issues when resizing
@@ -847,6 +850,8 @@
 [image-viewer]: https://github.com/typora-community-plugin/typora-plugin-image-viewer
 
 [markmap]: https://github.com/typora-community-plugin/typora-plugin-markmap
+
+[mini-outline]: https://github.com/typora-community-plugin/typora-plugin-mini-outline
 
 [note-refactor]: https://github.com/typora-community-plugin/typora-plugin-note-refactor
 
