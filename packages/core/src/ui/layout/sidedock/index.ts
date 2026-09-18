@@ -6,6 +6,10 @@ import { Component } from 'src/common/component'
 import { KEY_OF_ENABLED_PLUGINS } from 'src/plugin-internal/internal-plugin-manager'
 import { PLUGIN_WORKSPACE_ID } from 'src/plugin-internal/plugins/plugin-workspace'
 import { ensureRightSidedockLeaf } from '../workspace-utils'
+import type { Workspace } from 'src/ui/workspace'
+import type { PublicEvents } from 'src/common/events'
+import type { WorkspaceRootEvents } from '../workspace-root'
+import type { WorkspaceSplit } from '../split'
 
 
 /**
@@ -36,6 +40,7 @@ export class WorkspaceSidedock extends WorkspaceParent {
 
   constructor(
     side: 'right',
+    private workspace: Workspace,
     commands = useService('command-manager'),
     private settings = useService('settings'),
     i18n = useService('i18n'),
@@ -96,6 +101,7 @@ export class WorkspaceSidedock extends WorkspaceParent {
     this.collapsed = true
     $(this.containerEl).addClass('is-sidedock-collapsed')
     this.setSize(0)
+    this._onResizedEnd()
   }
 
   /** Expand the side dock to its configured size */
@@ -104,6 +110,7 @@ export class WorkspaceSidedock extends WorkspaceParent {
     this.collapsed = false
     $(this.containerEl).removeClass('is-sidedock-collapsed')
     this.setSize(this.size)
+    this._onResizedEnd()
   }
 
   /** Toggle collapse/expand state */
@@ -180,13 +187,19 @@ export class WorkspaceSidedock extends WorkspaceParent {
       dock.setSize(newSize)
     }
 
-    function onMouseUp() {
+    const onMouseUp = () => {
       dragging = false
       document.removeEventListener('mousemove', onMouseMove)
       document.removeEventListener('mouseup', onMouseUp)
+      this._onResizedEnd()
     }
 
     document.addEventListener('mousemove', onMouseMove)
     document.addEventListener('mouseup', onMouseUp)
+  }
+
+  private _onResizedEnd() {
+    const root = this.workspace.rootSplit as unknown as PublicEvents<WorkspaceRootEvents>
+    root.emit('split:resized', root as unknown as WorkspaceSplit)
   }
 }
