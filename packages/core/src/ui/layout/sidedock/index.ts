@@ -36,7 +36,6 @@ export class WorkspaceSidedock extends WorkspaceParent {
 
   constructor(
     side: 'right',
-    private onToggle?: (collapsed: boolean) => void,
     commands = useService('command-manager'),
     private settings = useService('settings'),
     i18n = useService('i18n'),
@@ -97,7 +96,6 @@ export class WorkspaceSidedock extends WorkspaceParent {
     this.collapsed = true
     $(this.containerEl).addClass('is-sidedock-collapsed')
     this.setSize(0)
-    this.onToggle?.(true)
   }
 
   /** Expand the side dock to its configured size */
@@ -106,7 +104,6 @@ export class WorkspaceSidedock extends WorkspaceParent {
     this.collapsed = false
     $(this.containerEl).removeClass('is-sidedock-collapsed')
     this.setSize(this.size)
-    this.onToggle?.(false)
   }
 
   /** Toggle collapse/expand state */

@@ -82,13 +82,7 @@ export class Workspace extends Events<WorkspaceEvents> {
     super('workspace')
 
     // Create right side dock with toggle callback
-    this.rightSplit = new WorkspaceSidedock('right', (collapsed) => {
-      if (collapsed) {
-        document.body.classList.remove('is-right-sidedock-open')
-      } else {
-        document.body.classList.add('is-right-sidedock-open')
-      }
-    })
+    this.rightSplit = new WorkspaceSidedock('right')
 
     app.once('load', () => this._emitMissingEvents())
 
