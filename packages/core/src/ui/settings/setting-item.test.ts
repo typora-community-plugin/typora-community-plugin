@@ -30,7 +30,7 @@ describe('SettingItem.addSidebarLayout', () => {
     captured.panel.addSetting(item => item.addDescription("desc 2"))
 
     const panelEl = setting.info.querySelector('.typ-setting-panel')! as HTMLElement
-    expect(panelEl.childElementCount).toBe(1)
+    expect(panelEl.childElementCount).toBe(2)
     const names = [...panelEl.querySelectorAll('.typ-setting-name')]
     expect(names.map(el => el.textContent)).toEqual(['Row 1 '])
     expect([...panelEl.querySelectorAll('.typ-setting-description')].map(el => el.textContent)).toEqual(['desc 2'])

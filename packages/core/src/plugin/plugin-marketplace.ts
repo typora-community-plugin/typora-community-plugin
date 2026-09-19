@@ -75,12 +75,17 @@ export class PluginMarketplace {
     for (const fileName of fileNames) {
       try {
         const list = await this.github.getJSON<PluginMarketInfo[]>(repo, branch, fileName);
-        this.pluginList = Array.isArray(list) ? list : [];
-        return;
+        if (Array.isArray(list) && list.length > 0) {
+          this.pluginList = list;
+          return;
+        }
+        this.logger.warn(`Failed to load ${fileName}.`);
       } catch (error) {
         this.logger.warn(`Failed to load ${fileName}.`);
       }
     }
+
+    this.logger.error('Failed to load community plugin list.');
   }
 
   private markUpdatesAvailable() {

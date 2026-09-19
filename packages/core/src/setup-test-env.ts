@@ -67,3 +67,12 @@ registerService('hotkey-manager', memorize(() => (
     addEditorHotkey: jest.fn().mockReturnValue(jest.fn()),
   } as any
 )))
+
+registerService('command-manager', memorize(() => ({
+  register: jest.fn().mockReturnValue(jest.fn()),
+} as any)))
+
+registerService('i18n', memorize(() => ({
+  locale: 'en',
+  t: { notice: { clearAll: '' } },
+} as any)))
