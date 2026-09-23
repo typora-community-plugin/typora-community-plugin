@@ -60,14 +60,14 @@ export class PostProcessor {
     group.append(buttonEl)
   }
 
-  setupButtonContainer(codeblock: HTMLElement) {
+  setupButtonContainer(codeblock: HTMLElement, position: InsertPosition = 'beforeend') {
     let group = codeblock.querySelector('.typ-buttons')
     if (group) return group
 
     group = document.createElement('div')
     group.className = 'typ-buttons'
     group.addEventListener('mouseup', event => event.stopPropagation())
-    codeblock.append(group)
+    codeblock.insertAdjacentElement(position, group)
 
     return group
   }

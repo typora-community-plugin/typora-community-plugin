@@ -59,6 +59,11 @@ export class CodeblockPostProcessor extends HtmlPostProcessor {
     return this.preview !== CodeblockPostProcessor.prototype.preview
   }
 
+  setupButtonContainer(codeblock: HTMLElement) {
+    // Prepend so the button group sticks to the top of the codeblock.
+    return super.setupButtonContainer(codeblock, 'afterbegin')
+  }
+
   renderButton(parent: HTMLElement, button: CodeBlockButtonOptions) {
     const btn = button as CodeBlockButtonOptions & { $button: ButtonOptions<void> }
     if (!btn.$button) {
