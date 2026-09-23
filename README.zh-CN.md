@@ -80,7 +80,7 @@
 | [templater][p19]                 | 从模板创建笔记                                 |
 | [trigger][p20]                   | 为命令设置一个触发器，以自动执行。               |
 | [wavedrom][p17]                  | 支持在多行代码块中使用 WaveDrom                 |
-| [wikilink][p10]                  | 支持通过 `[[text]]` 链接跳转，自动完成           |
+| [wikilink][p10]                  | 支持通过 `[[text]]` 链接跳转，自动完成，使用 `![[text]]` 嵌入 Markdown |
 
 
 ## 用户文档

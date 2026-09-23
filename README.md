@@ -80,7 +80,7 @@ You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from
 | [templater][p19]                     | Create notes from templates.                              |
 | [trigger][p20]                       | Set a trigger for the command to execute automatically.   |
 | [wavedrom][p17]                      | Support WaveDrom in codeblock.                            |
-| [wikilink][p10]                      | Support wikilink like `[[text]]`, with autocomplete.      |
+| [wikilink][p10]                      | Support wikilink like `[[text]]`, with autocomplete; embedding Markdown with syntax `![[wikilink]]` |
 
 
 

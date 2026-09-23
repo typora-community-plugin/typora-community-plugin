@@ -1,5 +1,20 @@
 # 更新日志
 
+## v2.10.26
+
+- **编辑器**
+  - feat(core/ui/editor/postprocessor): 代码块按钮组固定视口顶部（sticky）
+
+- **插件管理**
+  - fix(core/plugin/manager): 更新插件后启用复选框未自动勾选
+
+- **开发者**
+  - feat(core/ui/layout/sidedock): 侧栏调整大小结束后触发 `split:resized` 事件（与 workspace-root 中的版本一致）
+
+- **插件更新**
+  - [wikilink][]: 支持使用语法 `![[wikilink]]` 嵌入 Markdown
+
+
 ## v2.10.23
 
 - **工作区**

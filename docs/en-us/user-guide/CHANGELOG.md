@@ -1,5 +1,20 @@
 # Changelog
 
+## v2.10.26
+
+- **Editor**
+  - feat(core/ui/editor/postprocessor): code block button group fixed to viewport top (sticky)
+
+- **Plugin Management**
+  - fix(core/plugin/manager): checkbox not auto-checked after enabling a plugin update
+
+- **Developer**
+  - feat(core/ui/layout/sidedock): trigger `split:resized` event after sidedock resizing ends (consistent with workspace-root version)
+
+- **Plugin Updates**
+  - [wikilink][]: support embedding Markdown with syntax `![[wikilink]]`
+
+
 ## v2.10.23
 
 - **Workspace**
