@@ -48,23 +48,13 @@ export class FileLinkSettingTab extends SettingTab {
     this.addSetting(setting => {
       setting.addName(t.openLinkInCurrentWin)
       setting.addDescription(t.openLinkInCurrentWinDesc)
-      setting.addCheckbox(checkbox => {
-        checkbox.checked = settings.get('openLinkInCurrentWin')
-        checkbox.onclick = () => {
-          settings.set('openLinkInCurrentWin', checkbox.checked)
-        }
-      })
+      setting.addCheckbox({ settings, bindingKey: 'openLinkInCurrentWin' })
     })
 
     this.addSetting(setting => {
       setting.addName(t.mdLinkWithoutExtension)
       setting.addDescription(t.mdLinkWithoutExtensionDesc)
-      setting.addCheckbox(checkbox => {
-        checkbox.checked = settings.get('mdLinkWithoutExtension')
-        checkbox.onclick = () => {
-          settings.set('mdLinkWithoutExtension', checkbox.checked)
-        }
-      })
+      setting.addCheckbox({ settings, bindingKey: 'mdLinkWithoutExtension' })
     })
 
     this.addSettingTitle(t.quickOpen)
@@ -72,23 +62,13 @@ export class FileLinkSettingTab extends SettingTab {
     this.addSetting(setting => {
       setting.addName(t.quickOpenInCurrentWin)
       setting.addDescription(t.quickOpenInCurrentWinDesc)
-      setting.addCheckbox(checkbox => {
-        checkbox.checked = settings.get('quickOpenInCurrentWin')
-        checkbox.onclick = () => {
-          settings.set('quickOpenInCurrentWin', checkbox.checked)
-        }
-      })
+      setting.addCheckbox({ settings, bindingKey: 'quickOpenInCurrentWin' })
     })
 
     this.addSetting(setting => {
       setting.addName(t.ignoreFileGlob)
       setting.addDescription(t.ignoreFileGlobDesc)
-      setting.addCheckbox(checkbox => {
-        checkbox.checked = settings.get('ignoreFile')
-        checkbox.onclick = () => {
-          settings.set('ignoreFile', checkbox.checked)
-        }
-      })
+      setting.addCheckbox({ settings, bindingKey: 'ignoreFile' })
       setting.addText(input => {
         input.value = settings.get('ignoreFileGlob')
         input.onchange = debounce(() => {

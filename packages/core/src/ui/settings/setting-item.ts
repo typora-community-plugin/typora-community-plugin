@@ -2,6 +2,7 @@ import './setting-item.scss'
 import { EditableTable } from 'src/ui/components/editable-table'
 import { View } from "src/ui/common/view"
 import { html, noop } from 'src/utils'
+import type { Settings } from 'src/settings/settings'
 
 
 export class SettingContainer {
@@ -32,7 +33,7 @@ export class SettingItem extends View {
    */
   info: HTMLElement
 
-  name: HTMLElement
+  name: HTMLElement | undefined
 
   /**
    * Constrols before `info`.
@@ -75,7 +76,7 @@ export class SettingItem extends View {
     if (!this.name) {
       this.addName('')
     }
-    this.name.append(html` <code>${text}</code>`)
+    this.name!.append(html` <code>${text}</code>`)
   }
 
   addDescription(description: string): void
@@ -92,9 +93,24 @@ export class SettingItem extends View {
     this.info.append(el)
   }
 
-  addCheckbox(build: (checkbox: HTMLInputElement) => void) {
+  addCheckbox(options: { settings: Settings<any>, bindingKey: string }): void
+  addCheckbox(build: (checkbox: HTMLInputElement) => void): void
+  addCheckbox(param0: { settings: Settings<any>, bindingKey: string } | ((checkbox: HTMLInputElement) => void)) {
     const input = html`<input type="checkbox">` as HTMLInputElement
-    build(input)
+
+    if (typeof param0 === 'function') {
+      param0(input)
+    }
+    else {
+      const value = param0.settings.get(param0.bindingKey)
+      return this.addCheckbox(checkbox => {
+        checkbox.checked = value
+        checkbox.onclick = () => {
+          param0.settings.set(param0.bindingKey, checkbox.checked)
+        }
+      })
+    }
+
     this.controlsPrefix.append(input)
   }
 
@@ -134,7 +150,7 @@ export class SettingItem extends View {
     else {
       select.innerHTML = param0.options.map(o => `<option ${o === param0.selected ? 'selected' : ''}>${o}</option>`).join('')
 
-      select.onchange = param0.onchange
+      select.onchange = param0.onchange as any
     }
 
     this.controls.append(select)

@@ -46,56 +46,31 @@ export class AppearanceSettingTab extends SettingTab {
     this.addSetting(setting => {
       setting.addName(t.showNotSupportedFile)
       setting.addDescription(t.showNotSupportedFileDesc)
-      setting.addCheckbox(checkbox => {
-        checkbox.checked = settings.get('showNotSupportedFile')
-        checkbox.onclick = () => {
-          settings.set('showNotSupportedFile', checkbox.checked)
-        }
-      })
+      setting.addCheckbox({ settings, bindingKey: 'showNotSupportedFile' })
     })
 
     this.addSettingTitle(t.search)
     this.addSetting(setting => {
       setting.addName(t.keepSearchResult)
       setting.addDescription(t.keepSearchResultDesc)
-      setting.addCheckbox(checkbox => {
-        checkbox.checked = settings.get('keepSearchResult')
-        checkbox.onclick = () => {
-          settings.set('keepSearchResult', checkbox.checked)
-        }
-      })
+      setting.addCheckbox({ settings, bindingKey: 'keepSearchResult' })
     })
     this.addSetting(setting => {
       setting.addName(t.searchResultFullPath)
       setting.addDescription(t.searchResultFullPathDesc)
-      setting.addCheckbox(checkbox => {
-        checkbox.checked = settings.get('showSearchResultFullPath')
-        checkbox.onclick = () => {
-          settings.set('showSearchResultFullPath', checkbox.checked)
-        }
-      })
+      setting.addCheckbox({ settings, bindingKey: 'showSearchResultFullPath' })
     })
     this.addSetting(setting => {
       setting.addName(t.advancedSearchMode)
       setting.addDescription(t.advancedSearchModeDesc)
-      setting.addCheckbox(checkbox => {
-        checkbox.checked = settings.get('advancedSearchMode')
-        checkbox.onclick = () => {
-          settings.set('advancedSearchMode', checkbox.checked)
-        }
-      })
+      setting.addCheckbox({ settings, bindingKey: 'advancedSearchMode' })
     })
 
     this.addSettingTitle(t.advanced)
     this.addSetting(setting => {
       setting.addName(t.ribbon)
       setting.addDescription(t.ribbonDesc)
-      setting.addCheckbox(checkbox => {
-        checkbox.checked = settings.get('showRibbon')
-        checkbox.onclick = () => {
-          settings.set('showRibbon', checkbox.checked)
-        }
-      })
+      setting.addCheckbox({ settings, bindingKey: 'showRibbon' })
     })
   }
 }

@@ -41,33 +41,18 @@ export class WorkspaceSettingTab extends SettingTab {
     this.addSetting(setting => {
       setting.addName(t.hideExtensionInFileTab)
       setting.addDescription(t.hideExtensionInFileTabDesc)
-      setting.addCheckbox(checkbox => {
-        checkbox.checked = settings.get('hideExtensionInFileTab')
-        checkbox.onclick = () => {
-          settings.set('hideExtensionInFileTab', checkbox.checked)
-        }
-      })
+      setting.addCheckbox({ settings, bindingKey: 'hideExtensionInFileTab' })
     })
 
     this.addSetting(setting => {
       setting.addName(t.useBlankNewTab)
-      setting.addCheckbox(checkbox => {
-        checkbox.checked = settings.get('useBlankNewTab')
-        checkbox.onclick = () => {
-          settings.set('useBlankNewTab', checkbox.checked)
-        }
-      })
+      setting.addCheckbox({ settings, bindingKey: 'useBlankNewTab' })
     })
 
     this.addSetting(setting => {
       setting.addName(t.useAutoSwap)
       setting.addDescription(t.useAutoSwapDesc)
-      setting.addCheckbox(checkbox => {
-        checkbox.checked = settings.get('useAutoSwap')
-        checkbox.onclick = () => {
-          settings.set('useAutoSwap', checkbox.checked)
-        }
-      })
+      setting.addCheckbox({ settings, bindingKey: 'useAutoSwap' })
     })
   }
 }
