@@ -6,6 +6,7 @@ import { useService } from 'src/common/service'
 import { KEY_OF_ENABLED_PLUGINS } from 'src/plugin-internal/internal-plugin-manager'
 import { PLUGIN_WORKSPACE_ID } from 'src/plugin-internal/plugins/plugin-workspace'
 import { openFloatingLeaf } from '../workspace-utils'
+import { useSettingEffect } from 'src/settings/use-setting-effect'
 
 
 /**
@@ -21,7 +22,6 @@ export class WorkspaceFloating extends WorkspaceParent {
 
   constructor(
     commands = useService('command-manager'),
-    settings = useService('settings'),
   ) {
     super()
 
@@ -38,12 +38,9 @@ export class WorkspaceFloating extends WorkspaceParent {
         }))
     }
 
-    const USE_WORKSPACE = [KEY_OF_ENABLED_PLUGINS, PLUGIN_WORKSPACE_ID]
-    const onSwitchWorkspace = (_: string | string[], isEnabled: any) => {
-      isEnabled ? this.registry.load() : this.registry.unload()
-    }
-    settings.onChange(USE_WORKSPACE, onSwitchWorkspace)
-    setTimeout(() => onSwitchWorkspace(USE_WORKSPACE, settings.get(USE_WORKSPACE)))
+    useSettingEffect([KEY_OF_ENABLED_PLUGINS, PLUGIN_WORKSPACE_ID], (isEnabled) => {
+      setTimeout(() => isEnabled ? this.registry.load() : this.registry.unload())
+    })
   }
 
   /**

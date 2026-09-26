@@ -10,6 +10,7 @@ import type { Workspace } from 'src/ui/workspace'
 import type { PublicEvents } from 'src/common/events'
 import type { WorkspaceRootEvents } from '../workspace-root'
 import type { WorkspaceSplit } from '../split'
+import { useSettingEffect } from 'src/settings/use-setting-effect'
 
 
 /**
@@ -87,12 +88,9 @@ export class WorkspaceSidedock extends WorkspaceParent {
         }))
     }
 
-    const USE_WORKSPACE = [KEY_OF_ENABLED_PLUGINS, PLUGIN_WORKSPACE_ID]
-    const onSwitchWorkspace = (_: string | string[], isEnabled: any) => {
-      isEnabled ? this.registry.load() : this.registry.unload()
-    }
-    settings.onChange(USE_WORKSPACE, onSwitchWorkspace)
-    setTimeout(() => onSwitchWorkspace(USE_WORKSPACE, settings.get(USE_WORKSPACE)))
+    useSettingEffect([KEY_OF_ENABLED_PLUGINS, PLUGIN_WORKSPACE_ID], (isEnabled) => {
+      setTimeout(() => isEnabled ? this.registry.load() : this.registry.unload())
+    })
   }
 
   /** Collapse the side dock */

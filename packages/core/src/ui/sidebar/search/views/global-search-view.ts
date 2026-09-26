@@ -8,6 +8,7 @@ import { InternalSidebarPanel } from '../../sidebar-panel'
 import { SearchResultRenderer } from '../search-result-renderer'
 import { GlobalSearchProgressbar } from './global-search-progressbar'
 import { AdvancedSearchMode } from './advanced-search-mode'
+import { useSettingEffectedFeature } from 'src/settings/use-setting-effect'
 
 
 const SELECTOR_QUERY_INPUT = '#file-library-search-input'
@@ -74,19 +75,12 @@ class KeepSearchResult extends Component {
 
   constructor(
     private settings = useService('settings'),
-    private sidebar = useService('sidebar'),
   ) {
     super()
 
     const { SETTING_KEY } = this
 
-    if (settings.get(SETTING_KEY)) {
-      this.load()
-    }
-
-    settings.onChange(SETTING_KEY, (_, isEnabled) => {
-      isEnabled ? this.load() : this.unload()
-    })
+    useSettingEffectedFeature(SETTING_KEY, this)
   }
 
   onload() {
@@ -106,20 +100,10 @@ class ShowSearchResultFullPath extends Component {
 
   private observer = new MutationObserver(_ => this.appendTitle(_))
 
-  constructor(
-    settings = useService('settings'),
-  ) {
+  constructor() {
     super()
 
-    const SETTING_KEY = 'showSearchResultFullPath'
-
-    if (settings.get(SETTING_KEY)) {
-      this.load()
-    }
-
-    settings.onChange(SETTING_KEY, (_, isEnabled) => {
-      isEnabled ? this.load() : this.unload()
-    })
+    useSettingEffectedFeature('showSearchResultFullPath', this)
   }
 
   private appendTitle = (mutationsList: MutationRecord[]) => {

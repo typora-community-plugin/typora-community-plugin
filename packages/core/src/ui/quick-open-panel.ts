@@ -4,6 +4,7 @@ import decorate from '@plylrnsdy/decorate.js'
 import { Component } from "src/common/component"
 import { useService } from "src/common/service"
 import fs from 'src/io/fs/filesystem'
+import { useSettingEffect, useSettingEffectedFeature } from "src/settings/use-setting-effect"
 
 
 export class QuickOpenPanel extends Component {
@@ -28,27 +29,16 @@ class IgnoreFile extends Component {
 
   constructor(
     private vault = useService('vault'),
-    private settings = useService('settings'),
   ) {
     super()
 
-    const SETTING_KEY = 'ignoreFile'
-
-    if (settings.get(SETTING_KEY)) {
-      this.load()
-    }
-
-    settings.onChange(SETTING_KEY, (_, isEnabled) => {
-      isEnabled ? this.load() : this.unload()
-    })
+    useSettingEffectedFeature('ignoreFile', this)
   }
 
   onload() {
 
-    this._buildIgnoredFiles(this.settings.get('ignoreFileGlob'))
-
     this.register(
-      this.settings.onChange('ignoreFileGlob', (_, glob) =>
+      useSettingEffect('ignoreFileGlob', (glob) =>
         this._buildIgnoredFiles(glob)
       ))
 
@@ -98,20 +88,10 @@ class IgnoreFile extends Component {
 
 class QuickOpenInCurrentWin extends Component {
 
-  constructor(
-    settings = useService('settings'),
-  ) {
+  constructor() {
     super()
 
-    const SETTING_KEY = 'quickOpenInCurrentWin'
-
-    if (settings.get(SETTING_KEY)) {
-      this.load()
-    }
-
-    settings.onChange(SETTING_KEY, (_, isEnabled) => {
-      isEnabled ? this.load() : this.unload()
-    })
+    useSettingEffectedFeature('quickOpenInCurrentWin', this)
   }
 
   onload() {

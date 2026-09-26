@@ -8,6 +8,7 @@ import { html } from "src/utils"
 import { useService } from "src/common/service"
 import { InternalSidebarPanel } from './sidebar-panel'
 import { InternalContextMenu } from '../components/menu'
+import { useSettingEffectedFeature } from 'src/settings/use-setting-effect'
 
 
 export type FileExplorerEvents = {
@@ -66,20 +67,10 @@ export class FileExplorer extends InternalSidebarPanel {
 
 class ShowNotSupportedFile extends Component {
 
-  constructor(
-    settings = useService('settings'),
-  ) {
+  constructor() {
     super()
 
-    const SETTING_KEY = 'showNotSupportedFile'
-
-    if (settings.get(SETTING_KEY)) {
-      this.load()
-    }
-
-    settings.onChange(SETTING_KEY, (_, isEnabled) => {
-      isEnabled ? this.load() : this.unload()
-    })
+    useSettingEffectedFeature('showNotSupportedFile', this)
   }
 
   onload() {

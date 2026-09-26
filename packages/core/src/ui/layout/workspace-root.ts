@@ -16,6 +16,7 @@ import { useEditingTabs } from '../views/markdown-view/use-editing-tabs'
 import { usePreviewTabToSwap } from '../views/markdown-view/use-preview-tab-to-swap'
 import { KEY_OF_ENABLED_PLUGINS } from 'src/plugin-internal/internal-plugin-manager'
 import { PLUGIN_WORKSPACE_ID } from 'src/plugin-internal/plugins/plugin-workspace'
+import { useSettingEffect } from 'src/settings/use-setting-effect'
 
 
 export type WorkspaceRootEvents = {
@@ -43,7 +44,6 @@ export class WorkspaceRoot extends WorkspaceSplit {
     app = useService('app'),
     commands = useService('command-manager'),
     { t } = useService('i18n'),
-    settings = useService('settings'),
     vault = useEventBus('vault'),
   ) {
     super('vertical')
@@ -77,12 +77,10 @@ export class WorkspaceRoot extends WorkspaceSplit {
 
       this.registry.register(draggableTabs(this))
 
-      FileTabContainer.hideTabExtension(settings.get('hideExtensionInFileTab'))
       this.registry.register(
-        settings.onChange('hideExtensionInFileTab', (_, isHide) => {
+        useSettingEffect('hideExtensionInFileTab', (isHide) => {
           FileTabContainer.hideTabExtension(isHide)
-        })
-      )
+        }))
 
       this.registry.register(
         workspace.on('file:will-open', (file) => {
@@ -230,11 +228,8 @@ export class WorkspaceRoot extends WorkspaceSplit {
       setEditingTabs(null)
     }
 
-    const USE_WORKSPACE = [KEY_OF_ENABLED_PLUGINS, PLUGIN_WORKSPACE_ID]
-    const switchWorkspace = (_: string | string[], isEnabled: any) => {
-      isEnabled ? this.registry.load() : this.registry.unload()
-    }
-    settings.onChange(USE_WORKSPACE, switchWorkspace)
-    setTimeout(() => switchWorkspace(USE_WORKSPACE, settings.get(USE_WORKSPACE)))
+    useSettingEffect([KEY_OF_ENABLED_PLUGINS, PLUGIN_WORKSPACE_ID], (isEnabled) => {
+      setTimeout(() => isEnabled ? this.registry.load() : this.registry.unload())
+    })
   }
 }

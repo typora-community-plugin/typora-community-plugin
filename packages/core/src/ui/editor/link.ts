@@ -3,26 +3,17 @@ import { editor } from "typora"
 import { Component } from "src/common/component"
 import { useService } from "src/common/service"
 import path from "src/path"
+import { useSettingEffectedFeature } from "src/settings/use-setting-effect"
 
 
 const tryOpenUrl = editor.tryOpenUrl_ ? 'tryOpenUrl_' : 'tryOpenUrl'
 
 export class MarkdownLinkWitoutExtension extends Component {
 
-  constructor(
-    settings = useService('settings')
-  ) {
+  constructor() {
     super()
 
-    const SETTING_KEY = 'mdLinkWithoutExtension'
-
-    if (settings.get(SETTING_KEY)) {
-      this.load()
-    }
-
-    settings.onChange(SETTING_KEY, (_, isEnabled) => {
-      isEnabled ? this.load() : this.unload()
-    })
+    useSettingEffectedFeature('mdLinkWithoutExtension', this)
   }
 
   onload() {
@@ -43,20 +34,10 @@ export class MarkdownLinkWitoutExtension extends Component {
 
 export class OpenLinkInCurrentWin extends Component {
 
-  constructor(
-    settings = useService('settings')
-  ) {
+  constructor() {
     super()
 
-    const SETTING_KEY = 'openLinkInCurrentWin'
-
-    if (settings.get(SETTING_KEY)) {
-      this.load()
-    }
-
-    settings.onChange(SETTING_KEY, (_, isEnabled) => {
-      isEnabled ? this.load() : this.unload()
-    })
+    useSettingEffectedFeature('openLinkInCurrentWin', this)
   }
 
   onload() {

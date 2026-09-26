@@ -8,6 +8,7 @@ import type { MdEditorMode } from './md-editor-mode'
 import { useEditingTabs } from './use-editing-tabs'
 import { usePreviewTabToSwap } from './use-preview-tab-to-swap'
 import { useRecord } from './use-record'
+import { useSettingEffectedFeature } from 'src/settings/use-setting-effect'
 
 
 const KEY_OPENFILE = Symbol.for('openFile$original')
@@ -15,20 +16,11 @@ const KEY_OPENFILE = Symbol.for('openFile$original')
 export class SwapCommand extends Component {
 
   constructor(
-    private settings = useService('settings'),
     private workspace = useService('workspace'),
   ) {
     super()
 
-    const SETTING_KEY = 'useAutoSwap'
-
-    if (settings.get(SETTING_KEY)) {
-      this.load()
-    }
-
-    settings.onChange(SETTING_KEY, (_, isEnabled) => {
-      isEnabled ? this.load() : this.unload()
-    })
+    useSettingEffectedFeature('useAutoSwap', this)
   }
 
   execute(editorLeaf: WorkspaceLeaf<MarkdownView>, previewLeaf: WorkspaceLeaf<MarkdownView>) {

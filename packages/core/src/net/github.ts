@@ -3,6 +3,7 @@ import { useService } from 'src/common/service'
 import { Notice } from 'src/ui/components/notice'
 import { format } from "src/utils"
 import * as net from './net'
+import { useSettingEffect } from 'src/settings/use-setting-effect'
 
 
 interface GithubProxy {
@@ -61,7 +62,7 @@ export class GithubAPI {
     ghproxyHomeboycCn,
   ]
 
-  private uri: GithubProxy
+  private uri!: GithubProxy
 
   get rawUrl() {
     return this.uri.raw
@@ -89,9 +90,7 @@ export class GithubAPI {
       return uri
     }
 
-    this.uri = getUri(settings.get('githubProxy'))
-
-    settings.onChange('githubProxy', (_, id) => {
+    useSettingEffect('githubProxy', (id) => {
       this.uri = getUri(id)
     })
   }
