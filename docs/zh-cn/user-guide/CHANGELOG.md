@@ -1,5 +1,13 @@
 # 更新日志
 
+## v2.10.28
+
+- **设置**
+  - feat(core/ui/settings/tabs-plugin/workspace): 新增“主编辑器区域 → 使用文件标签页”设置项
+
+- **插件市场**
+  - feat(core/ui/settings/tabs/plugin-marketplace): 插件列表标题显示当前插件数量
+
 ## v2.10.26
 
 - **编辑器**
@@ -13,7 +21,6 @@
 
 - **插件更新**
   - [wikilink][]: 支持使用语法 `![[wikilink]]` 嵌入 Markdown
-
 
 ## v2.10.23
 

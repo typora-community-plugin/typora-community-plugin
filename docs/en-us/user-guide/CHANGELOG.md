@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.10.28
+
+- **Settings**
+  - feat(core/ui/settings/tabs-plugin/workspace): add "Main Editor Area → Use File Tabs" setting
+
+- **Plugin Marketplace**
+  - feat(core/ui/settings/tabs/plugin-marketplace): show current plugin count in the plugin list title
+
 ## v2.10.26
 
 - **Editor**
