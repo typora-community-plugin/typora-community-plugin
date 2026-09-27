@@ -97,7 +97,7 @@
       "githubProxy": "Github proxy",
       "githubProxyDesc": "Proxy of github for loading plugin list and downloading plugin.",
       "searchPlugin": "Search plugins:",
-      "pluginList": "Plugin List",
+      "pluginList": "Plugin List ({0} plugins)",
       "sortByLastUpdate": "Sort by last update (newest first)",
       "sortByDownloads": "Sort by downloads (most first)",
       "reloadPluginList": "Reload Plugin List",

@@ -59,14 +59,32 @@ export class SettingItem extends View {
     this.containerEl.remove()
   }
 
-  addTitle(text: string) {
-    this.info.append(
-      html`<h3 class="typ-setting-title">${text}</h3>`)
+  addTitle(text: string): void
+  addTitle(build: (el: HTMLElement) => void): void
+  addTitle(param0: string | ((el: HTMLElement) => void))  {
+    const el = html`<h3 class="typ-setting-title"></h3>`
+
+    if (typeof param0 === 'string') {
+      el.innerText = `${param0}`
+    } else {
+      param0(el)
+    }
+
+    this.info.append(el)
   }
 
-  addName(name: string) {
-    this.info.append(
-      this.name = html`<div class="typ-setting-name">${name} </div>`)
+  addName(name: string): void
+  addName(build: (el: HTMLElement) => void): void
+  addName(param0: string | ((el: HTMLElement) => void)) {
+    const el = html`<div class="typ-setting-name"></div>`
+
+    if (typeof param0 === 'string') {
+      el.innerText = `${param0} `
+    } else {
+      param0(el)
+    }
+
+    this.info.append(el)
   }
 
   /**

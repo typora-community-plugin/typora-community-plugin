@@ -51,7 +51,6 @@ export class WorkspaceRoot extends WorkspaceSplit {
     $(this.containerEl).addClass('typ-workspace-root')
 
     this.registry.onload = () => {
-      this.on('split:resized', () => console.log(111))
       $(this.containerEl).insertBefore('content')
 
       this.registry.registerDomEvent(this.containerEl, 'click', e => {

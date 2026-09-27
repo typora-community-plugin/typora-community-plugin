@@ -32,6 +32,8 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     return this.i18n.t.settingTabs.pluginMarketplace.name
   }
 
+  private titleEl!: HTMLElement
+
   constructor(
     private config = useService('config-repository'),
     private settings = useService('settings'),
@@ -92,7 +94,10 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     })
 
     this.addSetting(setting => {
-      setting.addTitle(t.pluginList)
+      setting.addTitle(title => {
+        title.innerText = format(t.pluginList, [this.marketplace.pluginList.length])
+        this.titleEl = title
+      })
       setting.addButton(button => {
         button.title = t.sortByLastUpdate
         button.innerHTML = '<span class="fa fa-clock-o"></span>'
@@ -131,9 +136,16 @@ export class PluginMarketplaceSettingTab extends SettingTab {
     }
 
     return this._loadPromise.then(() => {
-      if (version === this._pluginListVersion)
+      if (version === this._pluginListVersion) {
+        this.refreshTitle()
         this.renderPluginList()
+      }
     })
+  }
+
+  refreshTitle() {
+    const t = this.i18n.t.settingTabs.pluginMarketplace
+    this.titleEl.textContent = format(t.pluginList, [this.marketplace.pluginList.length])
   }
 
   private renderPluginList(query: string = '') {
