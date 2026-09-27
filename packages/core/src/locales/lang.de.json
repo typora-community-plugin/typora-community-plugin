@@ -22,6 +22,9 @@
       "name": "Arbeitsbereich",
       "description": "Unterstützt geteiltes und Tab-Layout. Bietet Arbeitsbereich, Dateitabs und zugehörige Funktionen. Besser, um \"App-Einstellungen → Allgemein → Speichern ohne Nachfrage beim Wechseln von Dateien im Seitenpanel\" zu aktivieren",
       "settings": {
+        "mainEditorArea": "Haupteditorbereich",
+        "useFileTabs": "Dateitabs verwenden",
+        "useFileTabsDesc": "Dateien als Tabs im Haupteditorbereich öffnen",
         "hideExtensionInFileTab": "Erweiterung im Dateitab ausblenden",
         "hideExtensionInFileTabDesc": "Zum Beispiel wird der Dateitab von \"Datei.md\" als \"Datei\" angezeigt.",
         "useBlankNewTab": "Leeren neuen Tab verwenden",

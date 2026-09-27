@@ -22,6 +22,9 @@
       "name": "Workspace",
       "description": "Support split & tabs layout. Provides workspace, file tabs, and related features. Better to enable \"App Setting → General → Save without asking when switch files on side panel\"",
       "settings": {
+        "mainEditorArea": "Main Editor Area",
+        "useFileTabs": "Use File Tabs",
+        "useFileTabsDesc": "Open files as tabs in the main editor area",
         "hideExtensionInFileTab": "Hide extension in file tab",
         "hideExtensionInFileTabDesc": "For example, file tab of \"File.md\" will be shown as \"File\".",
         "useBlankNewTab": "Use blank New Tab",

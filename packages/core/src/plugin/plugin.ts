@@ -29,7 +29,7 @@ interface StatusBarItemOptions {
 export abstract class Plugin<T extends Record<string, any> = {}>
   extends Component {
 
-  private _settings: PluginSettings<T>
+  private _settings: PluginSettings<T> | undefined
 
   get settings() {
     if (!this._settings) {
@@ -71,33 +71,21 @@ export abstract class Plugin<T extends Record<string, any> = {}>
       this.app.commands.register(command))
   }
 
-  /**
-   * @deprecated Use `this.register(app.features.markdownEditor.on(...))` instead.
-   */
   registerMarkdownEvent(...args: Parameters<MarkdownEditor['on']>) {
     this.register(
       useService('markdown-editor').on(...args))
   }
 
-  /**
-   * @deprecated Use `this.register(app.features.markdownEditor.preProcessor.register(...))` instead.
-   */
   registerMarkdownPreProcessor(processor: TPreProcessor) {
     this.register(
       useService('markdown-editor').preProcessor.register(processor))
   }
 
-  /**
-   * @deprecated Use `this.register(app.features.markdownEditor.postProcessor.register(...))` instead.
-   */
   registerMarkdownPostProcessor(processor: TPostProcessor) {
     this.register(
       useService('markdown-editor').postProcessor.register(processor))
   }
 
-  /**
-   * @deprecated Use `this.register(app.features.markdownEditor.suggestion.register(...))` instead.
-   */
   registerMarkdownSugguest(suggest: EditorSuggest<any>) {
     this.register(
       useService('markdown-editor').suggestion.register(

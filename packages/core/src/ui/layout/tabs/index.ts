@@ -6,21 +6,35 @@ import { WorkspaceNode } from '../workspace-node'
 import { FileTab, FileTabContainer, UntitledTab } from './file-tabs'
 import { useActiveLeaf } from '../use-active-leaf'
 import { EmptyView } from 'src/ui/views/empty-view'
+import { noop } from 'src/utils'
+import { useSettingEffect } from 'src/settings/use-setting-effect'
 
+
+function enabledFileTabsProps(tabs: WorkspaceTabs) {
+  return {
+    className: 'typ-workspace-tab-header',
+    onToggle: (tabId: string, tabEl: HTMLElement) => {
+      const leaf = tabs.toggleTab(tabId, tabEl)
+      const [, setActiveLeaf] = useActiveLeaf()
+      setActiveLeaf(leaf)
+    },
+    onClose: (tabId: string, tabEl: HTMLElement) => tabs.removeTab(tabId, tabEl),
+  }
+}
+
+function disabledFileTabsProps(tabs: WorkspaceTabs) {
+  return {
+    className: 'typ-workspace-tab-header',
+    onToggle: noop,
+    onClose: noop,
+  }
+}
 
 export class WorkspaceTabs extends WorkspaceParent {
 
   type = 'tabs'
 
-  tabHeader = new FileTabContainer({
-    className: 'typ-workspace-tab-header',
-    onToggle: (tabId, tabEl) => {
-      const leaf = this.toggleTab(tabId, tabEl)
-      const [, setActiveLeaf] = useActiveLeaf()
-      setActiveLeaf(leaf)
-    },
-    onClose: (tabId, tabEl) => this.removeTab(tabId, tabEl),
-  })
+  tabHeader = new FileTabContainer(enabledFileTabsProps(this))
 
   tabContentEl: HTMLElement
 
@@ -31,6 +45,19 @@ export class WorkspaceTabs extends WorkspaceParent {
       .addClass('typ-workspace-tabs')
       .append(this.tabHeader.containerEl)
       .append(this.tabContentEl = $('<div class="typ-workspace-tab-content">')[0])
+
+    useSettingEffect('useWorkspaceTabs', (isEnabled) => {
+      setTimeout(() => {
+        if (!this.containerEl.closest('.typ-workspace-root')) return
+
+        // @ts-ignore
+        this.tabHeader.props =
+          isEnabled ? enabledFileTabsProps(this) : disabledFileTabsProps(this)
+
+        $(this.tabHeader.containerEl)
+          .css({ display: isEnabled ? 'block' : 'none' })
+      })
+    })
   }
 
   insertChild(index: number, child: WorkspaceLeaf) {

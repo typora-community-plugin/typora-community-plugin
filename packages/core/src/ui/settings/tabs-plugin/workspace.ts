@@ -3,6 +3,7 @@ import { SettingTab } from "../setting-tab"
 
 
 export type WorkspaceSettings = {
+  useWorkspaceTabs: boolean
   hideExtensionInFileTab: boolean
   useBlankNewTab: boolean
   useAutoSwap: boolean
@@ -10,6 +11,7 @@ export type WorkspaceSettings = {
 }
 
 export const DEFAULT_WORKSPACE_SETTINGS: WorkspaceSettings = {
+  useWorkspaceTabs: true,
   hideExtensionInFileTab: false,
   useBlankNewTab: false,
   useAutoSwap: true,
@@ -37,6 +39,14 @@ export class WorkspaceSettingTab extends SettingTab {
   render() {
     const t = this.i18n.t.internalPlugins.workspace.settings
     const settings = this.settings
+
+    this.addSettingTitle(t.mainEditorArea)
+
+    this.addSetting(setting => {
+      setting.addName(t.useFileTabs)
+      setting.addDescription(t.useFileTabsDesc)
+      setting.addCheckbox({ settings, bindingKey: 'useWorkspaceTabs' })
+    })
 
     this.addSetting(setting => {
       setting.addName(t.hideExtensionInFileTab)

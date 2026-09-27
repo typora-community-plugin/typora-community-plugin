@@ -22,6 +22,9 @@
       "name": "工作区",
       "description": "支持分栏、多标签布局。提供工作区、文件标签等相关功能。推荐启用“应用设置 → 通用 → 切换文件时自动保存对上一个文件的更改”。",
       "settings": {
+        "mainEditorArea": "主编辑器区域",
+        "useFileTabs": "使用文件标签页",
+        "useFileTabsDesc": "在主编辑器区域中以标签页形式打开文件",
         "hideExtensionInFileTab": "隐藏文件标签的文件扩展名",
         "hideExtensionInFileTabDesc": "例如，文件标签 \"File.md\" 会显示为 \"File\"。",
         "useBlankNewTab": "显示空白 New Tab",
