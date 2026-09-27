@@ -58,7 +58,7 @@ export abstract class Plugin<T extends Record<string, any> = {}>
   registerSettingTab(tab: SettingTab) {
     this.register(
       this.app.workspace.getViewByType(SettingsModal)!
-        .addTab(tab))
+        .addGroupedTab(2, tab))
   }
 
   /**

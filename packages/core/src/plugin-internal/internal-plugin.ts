@@ -28,6 +28,6 @@ export class InternalPlugin extends Plugin<any> {
     setTimeout(() =>
       this.register(
         this.app.workspace.getViewByType(SettingsModal)!
-          .addCorePluginTab(tab)))
+          .addGroupedTab(1, tab)))
   }
 }

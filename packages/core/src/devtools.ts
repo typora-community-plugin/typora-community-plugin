@@ -65,8 +65,8 @@ export function devtools(
 
   function registerTestTab(app = useService('app')) {
     const modal = app.workspace.getViewByType(SettingsModal)!
-    modal.addTab(new SettingItemTestTab())
-    modal.addTab(new EditaleTableTestTab())
+    modal.addGroupedTab(2, new SettingItemTestTab())
+    modal.addGroupedTab(2, new EditaleTableTestTab())
   }
 
   function registerTestStatistic(app = useService('app')) {

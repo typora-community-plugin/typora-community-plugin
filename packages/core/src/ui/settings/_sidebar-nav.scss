@@ -1,13 +1,13 @@
 @mixin sidebar-container {
   overflow: auto;
 
+  .typ-nav__group:not(:first-child) {
+    margin: 1rem 0 .2rem 0;
+  }
+
   .typ-nav__group-title {
     color: var(--control-text-color);
     font-weight: 300;
-
-    &:not(:first-child) {
-      margin: 1rem 0 .2rem 0;
-    }
   }
 }
 

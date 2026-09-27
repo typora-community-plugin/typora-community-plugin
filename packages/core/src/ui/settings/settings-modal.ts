@@ -10,11 +10,11 @@ import { InternalPluginsManagerSettingTab } from './tabs/internal-plugin-manager
 import { PluginMarketplaceSettingTab } from './tabs/plugin-marketplace-setting-tab'
 import { PluginManagerSettingTab } from "./tabs/plugin-manager-setting-tab"
 import { AboutTab } from './tabs/about-tab'
-import { WorkspaceSettingTab } from './tabs-plugin/workspace'
 import { Component } from 'src/common/component'
 
 
 /**
+ * @private
  * @example
  *
  * ```js
@@ -27,9 +27,10 @@ export class SettingsModal extends Component {
   private modal!: Modal
 
   private sidebar!: HTMLElement
+  private allGroups: HTMLElement[] = []
   private main!: HTMLElement
 
-  activeTab: SettingTab
+  activeTab!: SettingTab
   private tabs: SettingTab[] = []
 
   constructor(
@@ -90,18 +91,18 @@ export class SettingsModal extends Component {
 
     super.onload()
 
-    this.addGroupTitle(t.groupCore)
-    this.addTab(new FileLinkSettingTab())
-    this.addTab(new AppearanceSettingTab())
-    this.addTab(new HotkeySettingTab())
-    this.addTab(new InternalPluginsManagerSettingTab())
-    this.addTab(new PluginMarketplaceSettingTab())
-    this.addTab(new PluginManagerSettingTab())
-    this.addTab(new AboutTab())
+    this.addGroup(t.groupCore)
+    this.addGroupedTab(0, new FileLinkSettingTab())
+    this.addGroupedTab(0, new AppearanceSettingTab())
+    this.addGroupedTab(0, new HotkeySettingTab())
+    this.addGroupedTab(0, new InternalPluginsManagerSettingTab())
+    this.addGroupedTab(0, new PluginMarketplaceSettingTab())
+    this.addGroupedTab(0, new PluginManagerSettingTab())
+    this.addGroupedTab(0, new AboutTab())
 
-    this.addGroupTitle(t.groupInternalPlugins)
+    this.addGroup(t.groupInternalPlugins)
 
-    this.addGroupTitle(t.groupPlugins)
+    this.addGroup(t.groupPlugins)
   }
 
   private onItemClick = (event: MouseEvent) => {
@@ -113,11 +114,18 @@ export class SettingsModal extends Component {
     this.openTab(tabs.find(tab => tab.name === name)!)
   }
 
-  private addGroupTitle(text: string) {
-    this.sidebar.append(html`<div class="typ-nav__group-title">${text}</div>`)
+  private addGroup(text: string) {
+    const group = html`<section class="typ-nav__group"></section>`
+    this.sidebar.append(group)
+    group.append(html`<div class="typ-nav__group-title">${text}</div>`)
+    this.allGroups.push(group)
+    return group
   }
 
-  addTab(tab: SettingTab) {
+  addGroupedTab(groupIndex: number, tab: SettingTab) {
+    const group = this.allGroups[groupIndex]
+    if (!group) throw new Error(`SettingsModal: group at index ${groupIndex} not found`)
+
     this.tabs.push(tab)
 
     // @deprecated
@@ -128,22 +136,7 @@ export class SettingsModal extends Component {
       setTimeout(() => this.openTab(this.activeTab))
     }
 
-    this.sidebar.append(
-      html`<div class="typ-nav__item" data-name="${tab.name}">${tab.name}</div>`
-    )
-
-    return () => this.removeTab(tab)
-  }
-
-  addCorePluginTab(tab: SettingTab) {
-    this.tabs.push(tab)
-
-    // @deprecated
-    tab.load()
-
-    const navItem = html`<div class="typ-nav__item" data-name="${tab.name}">${tab.name}</div>`
-    const pluginsGroups = Array.from(this.sidebar.querySelectorAll('.typ-nav__group-title'))
-    this.sidebar.insertBefore(navItem, pluginsGroups.pop()!)
+    group.append(html`<div class="typ-nav__item" data-name="${tab.name}">${tab.name}</div>`)
 
     return () => this.removeTab(tab)
   }
