@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.10.29
+
+- **Settings**
+  - fix(core/ui/settings/item): auto-create setting name when adding badge. Fix plugin list not displaying completely
+
 ## v2.10.28
 
 - **Settings**
