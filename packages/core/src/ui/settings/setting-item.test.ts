@@ -3,6 +3,29 @@ import { describe, it, expect, jest } from '@jest/globals'
 import { SettingItem } from './setting-item'
 
 
+describe('SettingItem.addBadge', () => {
+  it('auto-creates a name when none exists', () => {
+    const setting = new SettingItem()
+    document.body.append(setting.containerEl)
+
+    expect(() => setting.addBadge('v1.0.0')).not.toThrow()
+
+    const name = setting.info.querySelector('.typ-setting-name')! as HTMLElement
+    expect(name.textContent).toContain('v1.0.0')
+  })
+
+  it('appends a badge to the existing name', () => {
+    const setting = new SettingItem()
+    document.body.append(setting.containerEl)
+
+    setting.addName('Plugin')
+    setting.addBadge('local')
+
+    expect([...setting.info.querySelectorAll('.typ-setting-name')]).toHaveLength(1)
+    expect(setting.info.querySelector('.typ-setting-name')!.textContent).toContain('local')
+  })
+})
+
 describe('SettingItem.addSidebarLayout', () => {
   const getItems = (el: HTMLElement) => [...el.querySelectorAll('.typ-nav__item')]
 

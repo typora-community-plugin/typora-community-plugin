@@ -84,6 +84,7 @@ export class SettingItem extends View {
       param0(el)
     }
 
+    this.name = el
     this.info.append(el)
   }
 
