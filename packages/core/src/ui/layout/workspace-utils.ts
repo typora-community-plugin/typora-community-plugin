@@ -43,8 +43,18 @@ export function openFileInActiveTabs(file: string) {
     workspace.activeLeaf = activeTabs.toggleTab(file)
     return
   }
-  activeTabs.appendChild(createEditorLeaf(file))
+  activeTabs.appendChild(createLeafByPath(file))
   workspace.activeLeaf = activeTabs.activeLeaf
+}
+
+function createLeafByPath(filePath: string) {
+  const viewManager = useService('view-manager')
+  return createLeaf({
+    type: viewManager.getTypeByPath(filePath),
+    state: {
+      path: filePath,
+    }
+  })
 }
 
 export function createLeaf(state?: ViewState) {

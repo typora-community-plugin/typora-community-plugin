@@ -1,3 +1,4 @@
+import path from "src/path"
 import type { DisposeFunc } from "src/utils/types"
 import type { WorkspaceLeaf } from "./layout/workspace-leaf"
 import { WorkspaceView } from "./layout/workspace-view"
@@ -73,6 +74,17 @@ export class ViewManager {
 
   unregisterView(type: string) {
     delete this.viewByType[type]
+  }
+
+  getTypeByPath(filePath: string): string | undefined {
+    const base = path.basename(filePath)
+    const extParts: string[] = base.split('.')
+    for (let i = 1; i < extParts.length; i++) {
+      const ext = extParts.slice(i).join('.')
+      const type = this.getTypeByExtension(ext)
+      if (type) return type
+    }
+    return undefined
   }
 
   getTypeByExtension(extension: string): string {
