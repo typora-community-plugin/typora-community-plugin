@@ -57,17 +57,18 @@
 | -------------------------------- | ------------------------------------------ |
 | [abcjs][p12]                     | 支持在多行代码块中使用 ABC 记谱法。              |
 | [callout][p1]                    | 支持标注块语法 `> [!type]`                    |
-| [chat][p23] <sup>`新`</sup>      | 和 AI 协作编写笔记                              |
+| [chat][p23]                      | 和 AI 协作编写笔记                              |
 | [code-folding][p14]              | 令多行代码块中的代码可折叠。                     |
-| [git][p25] <sup>`新`</sup>       | 在 Typora 中提交 Git commit                    |
 | [codeblock-copy-button][p2]      | 在多行代码块右上角添加一个复制按钮。              |
 | [codeblock-highlight-mapper][p3] | 将语言 A 映射为语言 B，使用语言 B 的语法高亮代码。 |
 | [codeblock-previewer-plus][p24] <sup>`新`</sup> | 在悬浮视图中查看代码块预览（如 mermaid），支持缩放和拖动查看 |
+| [codeblock-runner][p27] <sup>`新`</sup> | 运行代码块中的代码并显示输出。                   |
 | [collapsible-section][p4]        | 折叠/展开 Markdown 章节、列表、代码块、表格、引用块、标注块 |
 | [darkmode][p13]                  | 适用于任意亮色主题的暗黑模式。                   |
 | [file-icon][p5]                  | 为不同类型文件显示不同图标                      |
 | [footnotes][p18]                 | 脚注标记自动完成 & 重新编号数字脚注               |
 | [front-matter][p6]               | 自动编辑 Front Matter，包括创建时间、编辑时间等   |
+| [git][p25] <sup>`新`</sup>       | 在 Typora 中提交 Git commit                    |
 | [image-location][p15]            | 相对于当前笔记目录的根目录解析图片路径             |
 | [image-viewer][p16]              | 查看当前文档所有图片                           |
 | [markmap][p11]                   | 支持在多行代码块中使用 Markmap                  |
@@ -144,3 +145,4 @@
 [p24]: https://github.com/typora-community-plugin/typora-plugin-codeblock-previewer-plus
 [p25]: https://github.com/typora-community-plugin/typora-plugin-git
 [p26]: https://github.com/typora-community-plugin/typora-plugin-mini-outline
+[p27]: https://github.com/typora-community-plugin/typora-plugin-codeblock-runner

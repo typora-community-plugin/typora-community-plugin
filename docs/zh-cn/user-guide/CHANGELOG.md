@@ -8,6 +8,9 @@
 - **插件市场**
   - feat(core/ui/settings/tabs/plugin-marketplace): 插件列表标题显示当前插件数量
 
+- **新增插件**
+  - [codeblock-runner][]: 运行代码块中的代码并显示输出。
+
 ## v2.10.26
 
 - **编辑器**
@@ -854,11 +857,13 @@
 
 [codeblock-highlight-mapper]: https://github.com/typora-community-plugin/typora-plugin-codeblock-highlight-mapper
 
-[collapsible-section]: https://github.com/typora-community-plugin/typora-plugin-collapsible-section
+[codeblock-previewer-plus]: https://github.com/typora-community-plugin/typora-plugin-codeblock-previewer-plus
+
+[codeblock-runner]: https://github.com/typora-community-plugin/typora-plugin-codeblock-runner
 
 [code-folding]: https://github.com/typora-community-plugin/typora-plugin-code-folding
 
-[codeblock-previewer-plus]: https://github.com/typora-community-plugin/typora-plugin-codeblock-previewer-plus
+[collapsible-section]: https://github.com/typora-community-plugin/typora-plugin-collapsible-section
 
 [drakmode]: https://github.com/typora-community-plugin/typora-plugin-darkmode
 

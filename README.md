@@ -57,11 +57,12 @@ You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from
 | ------------------------------------ | --------------------------------------------------------- |
 | [abcjs][p12]                         | Use ABC music notation in codeblock.                      |
 | [callout][p1]                        | Support Obsidian-like Callout `> [!type]`.                |
-| [chat][p23] <sup>`New`</sup>       | Collaborate with AI to write notes.                       |
+| [chat][p23]                      | Collaborate with AI to write notes.                       |
 | [code-folding][p14]                  | Make your codes foldable.                                 |
 | [codeblock-copy-button][p2]          | Add a copy button to each codeblock's top-right corner.   |
 | [codeblock-highlight-mapper][p3]     | Map language A to language B for highlighting it.         |
 | [codeblock-previewer-plus][p24] <sup>`New`</sup> | Preview codeblocks (e.g. mermaid) in floating view, with zoom and drag support |
+| [codeblock-runner][p27]                  | Run code in codeblocks and display the output.            |
 | [collapsible-section][p4]            | Fold/unfold markdown section. Supports headings, list, codeblock, table, quoteblock, callout. |
 | [darkmode][p13]                      | General dark mode for any theme.                          |
 | [file-icon][p5]                      | Show different icon for different file type in file tree. |
@@ -145,3 +146,4 @@ If you have any problem or suggestion please open an issue [here](https://github
 [p24]: https://github.com/typora-community-plugin/typora-plugin-codeblock-previewer-plus
 [p25]: https://github.com/typora-community-plugin/typora-plugin-git
 [p26]: https://github.com/typora-community-plugin/typora-plugin-mini-outline
+[p27]: https://github.com/typora-community-plugin/typora-plugin-codeblock-runner

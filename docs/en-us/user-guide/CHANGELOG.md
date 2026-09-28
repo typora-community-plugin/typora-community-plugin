@@ -8,6 +8,9 @@
 - **Plugin Marketplace**
   - feat(core/ui/settings/tabs/plugin-marketplace): show current plugin count in the plugin list title
 
+- **New Plugin**
+  - [codeblock-runner][]: Run code in codeblocks and display the output.
+
 ## v2.10.26
 
 - **Editor**
@@ -854,11 +857,13 @@
 
 [codeblock-highlight-mapper]: https://github.com/typora-community-plugin/typora-plugin-codeblock-highlight-mapper
 
-[collapsible-section]: https://github.com/typora-community-plugin/typora-plugin-collapsible-section
+[codeblock-previewer-plus]: https://github.com/typora-community-plugin/typora-plugin-codeblock-previewer-plus
+
+[codeblock-runner]: https://github.com/typora-community-plugin/typora-plugin-codeblock-runner
 
 [code-folding]: https://github.com/typora-community-plugin/typora-plugin-code-folding
 
-[codeblock-previewer-plus]: https://github.com/typora-community-plugin/typora-plugin-codeblock-previewer-plus
+[collapsible-section]: https://github.com/typora-community-plugin/typora-plugin-collapsible-section
 
 [drakmode]: https://github.com/typora-community-plugin/typora-plugin-darkmode
 
