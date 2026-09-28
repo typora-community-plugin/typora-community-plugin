@@ -138,7 +138,19 @@ export class SettingsModal extends Component {
 
     group.append(html`<div class="typ-nav__item" data-name="${tab.name}">${tab.name}</div>`)
 
+    if (groupIndex > 0) {
+      this.sortGroup(group)
+    }
+
     return () => this.removeTab(tab)
+  }
+
+  private sortGroup(group: HTMLElement) {
+    const items = Array.from(group.querySelectorAll('.typ-nav__item')) as HTMLElement[]
+    items.sort((a, b) => a.textContent!.localeCompare(b.textContent!))
+    for (const item of items) {
+      group.appendChild(item)
+    }
   }
 
   removeTab(tab: SettingTab) {
