@@ -22,6 +22,7 @@ import { useActiveLeaf } from './layout/use-active-leaf'
 import { createLeaf } from './layout/workspace-utils'
 import { EmptyView } from './views/empty-view'
 import { AudioView } from './views/audio-view'
+import { VideoView } from './views/video-view'
 import { ImageView } from './views/image-view'
 import { MarkdownView } from './views/markdown-view'
 import { WorkspaceSidedock } from './layout/sidedock'
@@ -112,6 +113,7 @@ export class Workspace extends Events<WorkspaceEvents> {
 
     viewManager.registerViewWithExtensions(['md', 'markdown'], MarkdownView.type, (leaf, s) => new MarkdownView(leaf))
     viewManager.registerViewWithExtensions(AudioView.extensions, AudioView.type, (leaf) => new AudioView(leaf))
+    viewManager.registerViewWithExtensions(VideoView.extensions, VideoView.type, (leaf) => new VideoView(leaf))
     viewManager.registerViewWithExtensions(ImageView.extensions, ImageView.type, (leaf) => new ImageView(leaf))
     viewManager.registerView(EmptyView.type, (leaf) => new EmptyView(leaf))
   }

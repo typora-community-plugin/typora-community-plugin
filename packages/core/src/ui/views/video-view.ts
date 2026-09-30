@@ -4,16 +4,16 @@ import type { WorkspaceLeaf } from '../layout/workspace-leaf'
 import { WorkspaceView } from '../layout/workspace-view'
 
 
-export class AudioView extends WorkspaceView {
+export class VideoView extends WorkspaceView {
 
-  static type = 'core.audio'
+  static type = 'core.video'
 
-  /** Common audio extensions registered to {@link AudioView} */
-  static extensions = ['flac', 'm4a', 'mp3', 'ogg', 'wav', 'webm', '3gp']
+  /** Common video extensions registered to {@link VideoView} */
+  static extensions = ['mkv', 'mov', 'mp4', 'ogv', 'webm']
 
-  icon = 'fa-file-audio-o'
+  icon = 'fa-file-video-o'
 
-  containerEl = $('<div class="typ-audio-view"></div>')[0]
+  containerEl = $('<div class="typ-vidio-view"></div>')[0]
 
   constructor(leaf: WorkspaceLeaf) {
     super(leaf)
@@ -25,11 +25,11 @@ export class AudioView extends WorkspaceView {
 
   /** @override */
   onload() {
-    const audio = $('<audio controls></audio>')[0] as HTMLAudioElement
-    audio.src = toFileUrl(this.filePath)
-    audio.textContent = path.basename(this.filePath)
+    const video = $('<video controls></video>')[0] as HTMLVideoElement
+    video.src = toFileUrl(this.filePath)
+    video.textContent = path.basename(this.filePath)
     this.containerEl.innerHTML = ''
-    this.containerEl.appendChild(audio)
+    this.containerEl.appendChild(video)
   }
 }
 

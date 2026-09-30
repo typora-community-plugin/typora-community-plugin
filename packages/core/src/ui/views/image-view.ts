@@ -25,7 +25,7 @@ export class ImageView extends WorkspaceView {
 
   /** @override */
   onload() {
-    const img = $('<img class="typ-image-view-img">')[0] as HTMLImageElement
+    const img = $('<img>')[0] as HTMLImageElement
     img.src = toFileUrl(this.filePath)
     img.alt = path.basename(this.filePath)
     this.containerEl.innerHTML = ''

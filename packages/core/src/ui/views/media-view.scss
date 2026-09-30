@@ -1,4 +1,5 @@
-.typ-audio-view {
+.typ-audio-view,
+.typ-vidio-view {
   display: flex;
   width: 100%;
   height: 100%;
@@ -7,7 +8,8 @@
   overflow: hidden;
   background-color: var(--bg-color);
 
-  .typ-audio-view-audio {
+  audio,
+  video {
     max-width: 90%;
     width: 100%;
   }
