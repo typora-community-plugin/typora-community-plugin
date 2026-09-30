@@ -21,6 +21,7 @@ import type { WorkspaceLeaf } from './layout/workspace-leaf'
 import { useActiveLeaf } from './layout/use-active-leaf'
 import { createLeaf } from './layout/workspace-utils'
 import { EmptyView } from './views/empty-view'
+import { ImageView } from './views/image-view'
 import { MarkdownView } from './views/markdown-view'
 import { WorkspaceSidedock } from './layout/sidedock'
 
@@ -109,6 +110,7 @@ export class Workspace extends Events<WorkspaceEvents> {
     document.body.appendChild(this.rightSplit.containerEl)
 
     viewManager.registerViewWithExtensions(['md', 'markdown'], MarkdownView.type, (leaf, s) => new MarkdownView(leaf))
+    viewManager.registerViewWithExtensions(ImageView.extensions, ImageView.type, (leaf) => new ImageView(leaf))
     viewManager.registerView(EmptyView.type, (leaf) => new EmptyView(leaf))
   }
 

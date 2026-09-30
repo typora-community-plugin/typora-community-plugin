@@ -6,5 +6,5 @@ allowBuilds:
   core-js: true
   esbuild: true
 
-git-checks: false
+gitChecks: false
 

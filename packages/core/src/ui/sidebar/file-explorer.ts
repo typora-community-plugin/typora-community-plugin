@@ -3,6 +3,7 @@ import decorate from "@plylrnsdy/decorate.js"
 import { editor, File } from "typora"
 import { Component } from 'src/common/component'
 import path from 'src/path'
+import { openFileInActiveTabs } from 'src/ui/layout/workspace-utils'
 import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
 import { html } from "src/utils"
 import { useService } from "src/common/service"
@@ -74,6 +75,8 @@ class ShowNotSupportedFile extends Component {
   }
 
   onload() {
+    const viewManager = useService('view-manager')
+
     File.SupportedFiles.indexOf = () => 1
     $(document)
       .on('drop', () => {
@@ -87,7 +90,11 @@ class ShowNotSupportedFile extends Component {
       decorate(editor.library, 'openFile', fn => (file, callback) => {
         const ext = path.extname(file).slice(1)
         if (ext && !File.SupportedFiles.includes(ext)) {
-          useService('app').openFileWithDefaultApp(file)
+          if (viewManager.isExtensionRegistered(ext)) {
+            openFileInActiveTabs(file)
+          } else {
+            useService('app').openFileWithDefaultApp(file)
+          }
           return
         }
         fn(file, callback)
