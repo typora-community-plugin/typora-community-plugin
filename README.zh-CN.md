@@ -40,8 +40,9 @@
   - [x] [工作区](./docs/zh-cn/user-guide/4a-workspace.md)
     - [x] (模拟的) 多文件标签页
     - [x] 分屏视图
-    - [x] 右侧栏面板 <sup>`新`</sup>
-    - [x] 浮动视图 <sup>`新`</sup>
+    - [x] 右侧栏面板
+    - [x] 浮动视图
+    - [x] 自定义文件视图 <sup>`新`</sup>：图片、音频、视频 视图
 - [x] 自定义命令的[快捷键](./docs/zh-cn/user-guide/3c-hotkey.md)
 - [x] [多国语言](./docs/zh-cn/user-guide/5-i18n.md): 跟随系统或手动配置，现在支持英语、中文和德语
 - [x] 兼容 macOS
@@ -61,7 +62,7 @@
 | [code-folding][p14]              | 令多行代码块中的代码可折叠。                     |
 | [codeblock-copy-button][p2]      | 在多行代码块右上角添加一个复制按钮。              |
 | [codeblock-highlight-mapper][p3] | 将语言 A 映射为语言 B，使用语言 B 的语法高亮代码。 |
-| [codeblock-previewer-plus][p24] <sup>`新`</sup> | 在悬浮视图中查看代码块预览（如 mermaid），支持缩放和拖动查看 |
+| [codeblock-previewer-plus][p24]  | 在悬浮视图中查看代码块预览（如 mermaid），支持缩放和拖动查看 |
 | [codeblock-runner][p27] <sup>`新`</sup> | 运行代码块中的代码并显示输出。                   |
 | [collapsible-section][p4]        | 折叠/展开 Markdown 章节、列表、代码块、表格、引用块、标注块 |
 | [darkmode][p13]                  | 适用于任意亮色主题的暗黑模式。                   |

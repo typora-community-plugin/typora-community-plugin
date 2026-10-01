@@ -1,5 +1,15 @@
 # 更新日志
 
+## v2.10.33
+
+- **工作区**
+  - feat(core/ui/views/image-view): 新增 ImageView，支持在标签页中查看图片
+  - feat(core/ui/views/audio-view): 新增 AudioView，支持音频播放
+  - feat(core/ui/views/video-view): 新增 VideoView，支持视频播放
+
+- **设置**
+  - feat(core/ui/settings/modal): 侧栏的插件设置标签按字母顺序排序
+
 ## v2.10.29
 
 - **设置**

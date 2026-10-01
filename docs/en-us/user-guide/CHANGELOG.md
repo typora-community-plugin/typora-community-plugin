@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.10.33
+
+- **Workspace**
+  - feat(core/ui/views/image-view): add ImageView for viewing images in tabs
+  - feat(core/ui/views/audio-view): add AudioView for audio playback
+  - feat(core/ui/views/video-view): add VideoView for video playback
+
+- **Settings**
+  - feat(core/ui/settings/modal): sort plugin settings tabs alphabetically in sidebar
+
 ## v2.10.29
 
 - **Settings**
@@ -29,7 +39,6 @@
 
 - **Plugin Updates**
   - [wikilink][]: support embedding Markdown with syntax `![[wikilink]]`
-
 
 ## v2.10.23
 
@@ -93,7 +102,6 @@
   - feat(core/ui/layout/floating): add window theme with titlebar
   - feat(core/ui/layout/floating): add `closable` mixin with `onClose` support for floating views
   - refactor(core/ui/layout/floating): add `openFloatingLeaf` command & utility function
-
 
 ## v2.10.10
 

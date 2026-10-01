@@ -40,8 +40,9 @@ To be on the safe side, install an open source plugin that can review the source
   - [x] [Workspace](./docs/en-us/user-guide/4a-workspace.md)
     - [x] (Virtual) Multi File Tabs
     - [x] Split View
-    - [x] Side Panel <sup>`New`</sup>
-    - [x] Floating View <sup>`New`</sup>
+    - [x] Side Panel
+    - [x] Floating View
+    - [x] Custom File Views <sup>`New`</sup>: Image, Audio, Video
 - [x] Custom command [hotkeys](./docs/en-us/user-guide/3c-hotkey.md)
 - [x] [I18n](./docs/en-us/user-guide/5-i18n.md): follow system or manual configure, now support English, Chinese and German
 - [x] Compatible with macOS
@@ -61,7 +62,7 @@ You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from
 | [code-folding][p14]                  | Make your codes foldable.                                 |
 | [codeblock-copy-button][p2]          | Add a copy button to each codeblock's top-right corner.   |
 | [codeblock-highlight-mapper][p3]     | Map language A to language B for highlighting it.         |
-| [codeblock-previewer-plus][p24] <sup>`New`</sup> | Preview codeblocks (e.g. mermaid) in floating view, with zoom and drag support |
+| [codeblock-previewer-plus][p24]      | Preview codeblocks (e.g. mermaid) in floating view, with zoom and drag support |
 | [codeblock-runner][p27] <sup>`New`</sup> | Run code in codeblocks and display the output.        |
 | [collapsible-section][p4]            | Fold/unfold markdown section. Supports headings, list, codeblock, table, quoteblock, callout. |
 | [darkmode][p13]                      | General dark mode for any theme.                          |
