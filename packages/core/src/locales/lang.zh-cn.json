@@ -29,7 +29,14 @@
         "hideExtensionInFileTabDesc": "例如，文件标签 \"File.md\" 会显示为 \"File\"。",
         "useBlankNewTab": "显示空白 New Tab",
         "useAutoSwap": "单击预览区域时切换编辑器和预览",
-        "useAutoSwapDesc": "单击预览区域会将其切换为 Typora 编辑器，同时将当前编辑器切换为预览。"
+        "useAutoSwapDesc": "单击预览区域会将其切换为 Typora 编辑器，同时将当前编辑器切换为预览。",
+        "mainEditorAreaFileViews": "主编辑区：文件视图",
+        "enableAudioView": "启用音频查看",
+        "enableAudioViewDesc": "使用内置的音频查看器打开音频文件。",
+        "enableVideoView": "启用视频查看",
+        "enableVideoViewDesc": "使用内置的视频查看器打开视频文件。",
+        "enableImageView": "启用图片查看",
+        "enableImageViewDesc": "使用内置的图片查看器打开图片文件。"
       }
     }
   },

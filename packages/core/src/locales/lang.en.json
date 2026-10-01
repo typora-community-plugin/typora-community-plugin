@@ -29,7 +29,14 @@
         "hideExtensionInFileTabDesc": "For example, file tab of \"File.md\" will be shown as \"File\".",
         "useBlankNewTab": "Use blank New Tab",
         "useAutoSwap": "Swap editor and preview on click",
-        "useAutoSwapDesc": "Click on previewer content area to swap the current Typora editor with the clicked preview tab."
+        "useAutoSwapDesc": "Click on previewer content area to swap the current Typora editor with the clicked preview tab.",
+        "mainEditorAreaFileViews": "Main Editor Area: File Views",
+        "enableAudioView": "Enable Audio View",
+        "enableAudioViewDesc": "Open audio files in the built-in Audio View.",
+        "enableVideoView": "Enable Video View",
+        "enableVideoViewDesc": "Open video files in the built-in Video View.",
+        "enableImageView": "Enable Image View",
+        "enableImageViewDesc": "Open image files in the built-in Image View."
       }
     }
   },

@@ -8,6 +8,9 @@ export type WorkspaceSettings = {
   useBlankNewTab: boolean
   useAutoSwap: boolean
   rightSplitWidth: number
+  useAudioView: boolean
+  useVideoView: boolean
+  useImageView: boolean
 }
 
 export const DEFAULT_WORKSPACE_SETTINGS: WorkspaceSettings = {
@@ -16,6 +19,9 @@ export const DEFAULT_WORKSPACE_SETTINGS: WorkspaceSettings = {
   useBlankNewTab: false,
   useAutoSwap: true,
   rightSplitWidth: 280,
+  useAudioView: true,
+  useVideoView: true,
+  useImageView: true,
 }
 
 export class WorkspaceSettingTab extends SettingTab {
@@ -63,6 +69,26 @@ export class WorkspaceSettingTab extends SettingTab {
       setting.addName(t.useAutoSwap)
       setting.addDescription(t.useAutoSwapDesc)
       setting.addCheckbox({ settings, bindingKey: 'useAutoSwap' })
+    })
+
+    this.addSettingTitle(t.mainEditorAreaFileViews)
+
+    this.addSetting(setting => {
+      setting.addName(t.enableAudioView)
+      setting.addDescription(t.enableAudioViewDesc)
+      setting.addCheckbox({ settings, bindingKey: 'useAudioView' })
+    })
+
+    this.addSetting(setting => {
+      setting.addName(t.enableVideoView)
+      setting.addDescription(t.enableVideoViewDesc)
+      setting.addCheckbox({ settings, bindingKey: 'useVideoView' })
+    })
+
+    this.addSetting(setting => {
+      setting.addName(t.enableImageView)
+      setting.addDescription(t.enableImageViewDesc)
+      setting.addCheckbox({ settings, bindingKey: 'useImageView' })
     })
   }
 }

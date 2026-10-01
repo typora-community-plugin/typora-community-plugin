@@ -29,7 +29,14 @@
         "hideExtensionInFileTabDesc": "Zum Beispiel wird der Dateitab von \"Datei.md\" als \"Datei\" angezeigt.",
         "useBlankNewTab": "Leeren neuen Tab verwenden",
         "useAutoSwap": "Editor und Vorschau beim Klicken tauschen",
-        "useAutoSwapDesc": "Klicken Sie auf den Vorschau-Inhaltsbereich, um den aktuellen Typora-Editor mit dem angeklickten Vorschau-Tab zu tauschen."
+        "useAutoSwapDesc": "Klicken Sie auf den Vorschau-Inhaltsbereich, um den aktuellen Typora-Editor mit dem angeklickten Vorschau-Tab zu tauschen.",
+        "mainEditorAreaFileViews": "Haupteditorbereich: Dateiansichten",
+        "enableAudioView": "Audioransicht aktivieren",
+        "enableAudioViewDesc": "Audiodateien in der integrierten Audioransicht öffnen.",
+        "enableVideoView": "Videoansicht aktivieren",
+        "enableVideoViewDesc": "Videodateien in der integrierten Videoansicht öffnen.",
+        "enableImageView": "Bildansicht aktivieren",
+        "enableImageViewDesc": "Bilddateien in der integrierten Bildansicht öffnen."
       }
     }
   },

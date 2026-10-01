@@ -2,7 +2,23 @@ import './video-view.scss'
 import path from 'src/path'
 import type { WorkspaceLeaf } from '../layout/workspace-leaf'
 import { WorkspaceView } from '../layout/workspace-view'
+import { Component } from 'src/common/component'
+import type { DisposeFunc } from 'src/utils/types'
+import { useService } from 'src/common/service'
 
+
+export class UseVideoView extends Component {
+
+  private _dispose!: DisposeFunc
+
+  onload(viewManager = useService('view-manager')) {
+    this._dispose = viewManager.registerViewWithExtensions(VideoView.extensions, VideoView.type, (leaf) => new VideoView(leaf))
+  }
+
+  onunload(): void {
+    this._dispose()
+  }
+}
 
 export class VideoView extends WorkspaceView {
 

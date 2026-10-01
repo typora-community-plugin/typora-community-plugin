@@ -21,11 +21,12 @@ import type { WorkspaceLeaf } from './layout/workspace-leaf'
 import { useActiveLeaf } from './layout/use-active-leaf'
 import { createLeaf } from './layout/workspace-utils'
 import { EmptyView } from './views/empty-view'
-import { AudioView } from './views/audio-view'
-import { VideoView } from './views/video-view'
-import { ImageView } from './views/image-view'
+import { AudioView, UseAudioView } from './views/audio-view'
+import { UseVideoView, VideoView } from './views/video-view'
+import { ImageView, UseImageView } from './views/image-view'
 import { MarkdownView } from './views/markdown-view'
 import { WorkspaceSidedock } from './layout/sidedock'
+import { useSettingEffectedFeature } from 'src/settings/use-setting-effect'
 
 
 export type WorkspaceEvents = {
@@ -112,10 +113,10 @@ export class Workspace extends Events<WorkspaceEvents> {
     document.body.appendChild(this.rightSplit.containerEl)
 
     viewManager.registerViewWithExtensions(MarkdownView.extensions, MarkdownView.type, (leaf) => new MarkdownView(leaf))
-    viewManager.registerViewWithExtensions(AudioView.extensions, AudioView.type, (leaf) => new AudioView(leaf))
-    viewManager.registerViewWithExtensions(VideoView.extensions, VideoView.type, (leaf) => new VideoView(leaf))
-    viewManager.registerViewWithExtensions(ImageView.extensions, ImageView.type, (leaf) => new ImageView(leaf))
     viewManager.registerView(EmptyView.type, (leaf) => new EmptyView(leaf))
+    useSettingEffectedFeature('useAudioView', new UseAudioView())
+    useSettingEffectedFeature('useImageView', new UseImageView())
+    useSettingEffectedFeature('useVideoView', new UseVideoView())
   }
 
   createLeaf = createLeaf

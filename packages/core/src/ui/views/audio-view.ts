@@ -2,7 +2,23 @@ import './audio-view.scss'
 import path from 'src/path'
 import type { WorkspaceLeaf } from '../layout/workspace-leaf'
 import { WorkspaceView } from '../layout/workspace-view'
+import { Component } from 'src/common/component'
+import { useService } from 'src/common/service'
+import type { DisposeFunc } from 'src/utils/types'
 
+
+export class UseAudioView extends Component {
+
+  private _dispose!: DisposeFunc
+
+  onload(viewManager = useService('view-manager')) {
+    this._dispose = viewManager.registerViewWithExtensions(AudioView.extensions, AudioView.type, (leaf) => new AudioView(leaf))
+  }
+
+  onunload(): void {
+    this._dispose()
+  }
+}
 
 export class AudioView extends WorkspaceView {
 
