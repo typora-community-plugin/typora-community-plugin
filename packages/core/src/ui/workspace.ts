@@ -111,7 +111,7 @@ export class Workspace extends Events<WorkspaceEvents> {
     // Insert rightSplit into DOM (position: fixed, so it floats independently)
     document.body.appendChild(this.rightSplit.containerEl)
 
-    viewManager.registerViewWithExtensions(['md', 'markdown'], MarkdownView.type, (leaf, s) => new MarkdownView(leaf))
+    viewManager.registerViewWithExtensions(MarkdownView.extensions, MarkdownView.type, (leaf) => new MarkdownView(leaf))
     viewManager.registerViewWithExtensions(AudioView.extensions, AudioView.type, (leaf) => new AudioView(leaf))
     viewManager.registerViewWithExtensions(VideoView.extensions, VideoView.type, (leaf) => new VideoView(leaf))
     viewManager.registerViewWithExtensions(ImageView.extensions, ImageView.type, (leaf) => new ImageView(leaf))

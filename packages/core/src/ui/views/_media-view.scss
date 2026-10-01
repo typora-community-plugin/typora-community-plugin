@@ -1,5 +1,4 @@
-.typ-audio-view,
-.typ-vidio-view {
+@mixin media-view {
   display: flex;
   width: 100%;
   height: 100%;
@@ -7,10 +6,5 @@
   justify-content: center;
   overflow: hidden;
   background-color: var(--bg-color);
-
-  audio,
-  video {
-    max-width: 90%;
-    width: 100%;
-  }
+  user-select: none;
 }

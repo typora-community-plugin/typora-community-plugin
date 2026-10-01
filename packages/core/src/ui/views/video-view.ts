@@ -1,4 +1,4 @@
-import './media-view.scss'
+import './video-view.scss'
 import path from 'src/path'
 import type { WorkspaceLeaf } from '../layout/workspace-leaf'
 import { WorkspaceView } from '../layout/workspace-view'

@@ -1,11 +1,7 @@
+@import "_media-view";
+
 .typ-image-view {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  background-color: var(--bg-color);
+  @include media-view;
 
   img {
     max-width: 100%;

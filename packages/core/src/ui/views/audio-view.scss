@@ -1,0 +1,10 @@
+@import "_media-view";
+
+.typ-audio-view {
+  @include media-view;
+
+  audio {
+    max-width: 90%;
+    width: 100%;
+  }
+}

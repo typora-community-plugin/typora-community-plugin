@@ -1,0 +1,10 @@
+@import "_media-view";
+
+.typ-vidio-view {
+  @include media-view;
+
+  video {
+    max-width: 90%;
+    width: 100%;
+  }
+}

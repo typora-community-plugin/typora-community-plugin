@@ -23,6 +23,9 @@ export class MarkdownView extends WorkspaceView {
 
   static type = 'core.markdown'
 
+  /** Common audio extensions registered to {@link MarkdownView} */
+  static extensions = ['md', 'markdown']
+
   /** @override */
   containerEl = $('<div class="typ-markdown-view"></div>')[0]
 
