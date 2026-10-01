@@ -89,6 +89,7 @@ export interface FileStats {
   isDirectory(): boolean
   isFile(): boolean
   mtimeMs: number
+  size: number
 }
 
 export type ListFilesOptions = {

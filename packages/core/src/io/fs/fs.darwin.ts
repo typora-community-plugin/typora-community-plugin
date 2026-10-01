@@ -22,6 +22,11 @@ class MacFileStats implements FileStats {
     const date = new Date(modifyStr)
     return date.getTime()
   }
+
+  get size() {
+    const match = this.info.match(/Size:\s+(\d+)/)
+    return match ? parseInt(match[1], 10) : 0
+  }
 }
 
 export class MacFS extends FileAdapter {
