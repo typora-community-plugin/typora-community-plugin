@@ -1,5 +1,20 @@
 # Changelog
 
+## v2.10.35
+
+- **Metadata**
+  - feat(core/metadata): extend metadata providers for image indexing
+  - refactor(core/metadata): deep merge (1-layer) metadata results
+
+- **Workspace**
+  - refactor(core/ui/layout/workspace-root): route custom view files to workspace instead of native Typora editor
+
+- **Settings**
+  - feat(core/ui/settings/tabs-plugin/workspace): add audio/video/image viewer toggle settings
+
+- **Developer**
+  - feat(core/io/fs): add `size` field support to macOS filesystem API
+
 ## v2.10.33
 
 - **Workspace**

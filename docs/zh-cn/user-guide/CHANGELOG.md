@@ -1,5 +1,20 @@
 # 更新日志
 
+## v2.10.35
+
+- **元数据**
+  - feat(core/metadata): 扩展 metadata providers 以支持图片索引
+  - refactor(core/metadata): deep merge（1 层）metadata 结果
+
+- **工作区**
+  - refactor(core/ui/layout/workspace-root): 自定义视图文件路由到 workspace 而非 Typora 原生编辑器
+
+- **设置**
+  - feat(core/ui/settings/tabs-plugin/workspace): 新增音频/视频/图片查看器的开关设置项
+
+- **开发者**
+  - feat(core/io/fs): macOS 文件系统补充 `size` 字段支持
+
 ## v2.10.33
 
 - **工作区**
