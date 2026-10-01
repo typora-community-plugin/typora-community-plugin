@@ -29,7 +29,7 @@ export function createTabs(path?: string) {
   const newLeaf = path
     ? path.startsWith('typ://')
       ? createCustomLeaf(path)
-      : createEditorLeaf(path)
+      : createLeafByPath(path)
     : createEmptyLeaf()
   tabs.appendChild(newLeaf)
   workspace.activeLeaf = newLeaf
