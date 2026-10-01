@@ -26,13 +26,18 @@ export type MetadataEvents = {
 class MetadataProviderContext {
   constructor(
     readonly filePath: string,
-    private textContent?: string
+    private _textContent?: string,
+    private _stats?: Awaited<ReturnType<typeof fs.stat>>
   ) { }
 
   text(): Promise<string> {
-    return this.textContent
-      ? Promise.resolve(this.textContent)
-      : fs.readText(this.filePath).then(text => this.textContent = text)
+    return this._textContent
+      ? Promise.resolve(this._textContent)
+      : fs.readText(this.filePath).then(text => this._textContent = text)
+  }
+
+  fileStats(): Awaited<ReturnType<typeof fs.stat>> {
+    return this._stats!
   }
 }
 
@@ -185,7 +190,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
         return
       }
 
-      const context = new MetadataProviderContext(filePath, content)
+      const context = new MetadataProviderContext(filePath, content, stats)
 
       const results = await Promise.all(
         providers.map(async (p) => {
@@ -201,11 +206,25 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
 
       signal?.throwIfAborted()
 
-      const mergedMetadata = results.reduce((acc, curr) => ({ ...acc, ...curr }), {})
-      indexingCache[relativePath] = {
-        mtime,
-        metadata: mergedMetadata as any,
-      }
+      const mergedMetadata = results.reduce((acc, curr) => {
+        for (const key of Object.keys(curr)) {
+          if (
+            curr[key]
+            && typeof curr[key] === 'object'
+            && !Array.isArray(curr[key])
+            && acc[key]
+            && typeof acc[key] === 'object'
+            && !Array.isArray(acc[key])
+          ) {
+            acc[key] = { ...acc[key], ...curr[key] }
+          } else {
+            acc[key] = curr[key]
+          }
+        }
+        return acc
+      }, {})
+
+      indexingCache[relativePath] = mergedMetadata as any
     } catch (error) {
       if (error instanceof IndexAbortedError) throw error
       console.error(`Failed to process ${filePath}:`, error)
