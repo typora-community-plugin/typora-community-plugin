@@ -12,6 +12,7 @@ import { draggableTabs } from './tabs/draggable'
 import { createTabs, createUntitledTabs, openFileInActiveTabs, splitDown, splitRight } from './workspace-utils'
 import { onTabsContextMenu } from './tabs/contextmenu'
 import { FileTabContainer } from './tabs/file-tabs'
+import { MarkdownView } from '../views/markdown-view'
 import { useEditingTabs } from '../views/markdown-view/use-editing-tabs'
 import { usePreviewTabToSwap } from '../views/markdown-view/use-preview-tab-to-swap'
 import { KEY_OF_ENABLED_PLUGINS } from 'src/plugin-internal/internal-plugin-manager'
@@ -45,6 +46,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
     commands = useService('command-manager'),
     { t } = useService('i18n'),
     vault = useEventBus('vault'),
+    private viewManager = useService('view-manager'),
   ) {
     super('vertical')
 
@@ -97,6 +99,18 @@ export class WorkspaceRoot extends WorkspaceSplit {
 
       this.registry.register(
         decorate(editor.library, 'openFile', fn => (file, callback) => {
+          // A file that resolves to a registered custom view — including compound
+          // extensions such as `*.kanban.md` whose last extension (`md`) is a
+          // Typora-supported one — must be opened by the workspace. Otherwise
+          // Typora's native editor opens the file while the previous markdown view
+          // is being closed, which tears down the workspace binding
+          // (`MdEditorMode.exit` removes `.typ-workspace-binding` from `<content>`).
+          const viewType = this.viewManager.getTypeByPath(file)
+          if (viewType && viewType !== MarkdownView.type) {
+            openFileInActiveTabs(file)
+            return
+          }
+
           const { editingTabs, isEditingTabs } = useEditingTabs()
           const activeTabs = workspace.activeLeaf?.parent as WorkspaceTabs | undefined
           if (

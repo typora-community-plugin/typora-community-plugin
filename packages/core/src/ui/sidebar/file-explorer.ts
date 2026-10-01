@@ -7,6 +7,7 @@ import { openFileInActiveTabs } from 'src/ui/layout/workspace-utils'
 import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
 import { html } from "src/utils"
 import { useService } from "src/common/service"
+import { MarkdownView } from 'src/ui/views/markdown-view'
 import { InternalSidebarPanel } from './sidebar-panel'
 import { InternalContextMenu } from '../components/menu'
 import { useSettingEffectedFeature } from 'src/settings/use-setting-effect'
@@ -88,13 +89,19 @@ class ShowNotSupportedFile extends Component {
 
     this.register(
       decorate(editor.library, 'openFile', fn => (file, callback) => {
+        // Registered custom views open in the workspace instead of Typora's native
+        // editor or the default app. `getTypeByPath` also matches compound
+        // extensions such as `*.kanban.md`, whose last extension (`md`) would
+        // otherwise be treated as a Typora-supported file by the check below.
+        const viewType = viewManager.getTypeByPath(file)
+        if (viewType && viewType !== MarkdownView.type) {
+          openFileInActiveTabs(file)
+          return
+        }
+
         const ext = path.extname(file).slice(1)
         if (ext && !File.SupportedFiles.includes(ext)) {
-          if (viewManager.isExtensionRegistered(ext)) {
-            openFileInActiveTabs(file)
-          } else {
-            useService('app').openFileWithDefaultApp(file)
-          }
+          useService('app').openFileWithDefaultApp(file)
           return
         }
         fn(file, callback)
