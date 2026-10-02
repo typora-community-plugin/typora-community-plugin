@@ -78,20 +78,31 @@ class TestSidedockView2 extends TestSidedockView {
  * The status-bar button that opens/closes this view is registered by
  * the workspace plugin (`plugin-workspace.ts`).
  */
-export function registerTestSidedockView(
+export function setupTestSidedockView(
   commands = useService('command-manager'),
   viewManager = useService('view-manager'),
+  workspace = useService('workspace')
 ) {
-  viewManager.registerView(
+  const dispose1 = viewManager.registerView(
     TestSidedockView.type,
     (leaf) => new TestSidedockView(leaf),
   )
 
-  commands.run('core.workspace.right-split:ensure-leaf', [`typ://${TestSidedockView.type}/Test`])
+  const p1 = `typ://${TestSidedockView.type}/Test`
+  commands.run('core.workspace.right-split:ensure-leaf', [p1])
 
-  viewManager.registerView(
+  const dispose2 = viewManager.registerView(
     TestSidedockView2.type,
     (leaf) => new TestSidedockView2(leaf),
   )
-  commands.run('core.workspace.right-split:ensure-leaf', [`typ://${TestSidedockView2.type}/Test2`])
+
+  const p2 = `typ://${TestSidedockView.type}/Test2`
+  commands.run('core.workspace.right-split:ensure-leaf', [p2])
+
+  return () => {
+    dispose1(),
+    dispose2(),
+    workspace.rightSplit.findLeaf(l => l.state.path === p1)?.detach(),
+    workspace.rightSplit.findLeaf(l => l.state.path === p2)?.detach()
+  }
 }

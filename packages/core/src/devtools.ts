@@ -2,45 +2,11 @@ import path from 'src/path'
 import { ClientCommand, File, JSBridge, reqnode } from 'typora'
 import { globalRootDir } from 'src/common/constants'
 import fs from 'src/io/fs/filesystem'
-import { BUILT_IN } from 'src/ui/ribbon/workspace-ribbon'
-import { html } from 'src/utils'
-import { useService } from './common/service'
-import { useEventBus } from './common/eventbus'
-import { SettingsModal } from './ui/settings/settings-modal'
-import { EditaleTableTestTab } from './ui/components/editable-table-test'
-import { SettingItemTestTab } from './ui/settings/setting-item-test'
-import { TEST_SELECTION_STATS, TEST_STATS } from './ui/statusbar/statistics-test'
-import { FooSlashSuggest, BarSlashSuggest } from './ui/editor/suggestion/suggest-test'
-import { registerTestFloatingView } from './ui/layout/floating/index-test'
-import { registerTestSidedockView } from './ui/layout/sidedock/index-test'
 
 
-export function devtools(
-  app = useEventBus('app'),
-) {
+export function devtools() {
 
   ClientCommand.toggleDevTools()
-
-  app.once('load', () => {
-    const ribbon = useService('ribbon')
-
-    ribbon.addButton({
-      [BUILT_IN]: true,
-      group: 'bottom',
-      id: 'core.devtools',
-      title: 'Devtools',
-      icon: html`<div><i class="fa fa-wrench"></i></div>`,
-      onclick() {
-        JSBridge.invoke("window.toggleDevTools")
-      }
-    })
-
-    registerTestTab()
-    registerTestStatistic()
-    registerTestSuggest()
-    registerTestFloatingView()
-    registerTestSidedockView()
-  })
 
   if (File.isNode) {
     createLocker()
@@ -61,21 +27,5 @@ export function devtools(
           JSBridge.invoke("window.close")
         }
       }))
-  }
-
-  function registerTestTab(app = useService('app')) {
-    const modal = app.workspace.getViewByType(SettingsModal)!
-    modal.addGroupedTab(2, new SettingItemTestTab())
-    modal.addGroupedTab(2, new EditaleTableTestTab())
-  }
-
-  function registerTestStatistic(app = useService('app')) {
-    app.features.statistics.registerStatistic(TEST_STATS)
-    app.features.statistics.registerSelectionStatistic(TEST_SELECTION_STATS)
-  }
-
-  function registerTestSuggest(app = useService('app')) {
-    app.features.markdownEditor.suggestion.register(new FooSlashSuggest())
-    app.features.markdownEditor.suggestion.register(new BarSlashSuggest())
   }
 }

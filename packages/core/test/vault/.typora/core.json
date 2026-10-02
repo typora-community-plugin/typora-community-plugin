@@ -22,7 +22,8 @@
     },
     "internalPlugin.enabledPlugins": {
       "internal.metadata": true,
-      "internal.workspace": true
+      "internal.workspace": true,
+      "internal.test": true
     },
     "advancedSearchMode": true,
     "useAutoSwap": false,

@@ -48,11 +48,11 @@ export class TestFloatingView extends WorkspaceView {
  * - Open: creates a leaf under `WorkspaceTabs`, then appends it to `workspace.floatingSplit`;
  * - Close: iterates over `floatingSplit` and detaches all leaves (empty tabs cascade-removes).
  */
-export function registerTestFloatingView(
+export function setupTestFloatingView(
   workspace = useService('workspace'),
   viewManager = useService('view-manager'),
 ) {
-  viewManager.registerView(
+  const dispose = viewManager.registerView(
     TestFloatingView.type,
     (leaf) => new TestFloatingView(leaf),
   )
@@ -61,7 +61,7 @@ export function registerTestFloatingView(
   const btnSelector = '.footer-btn-float-test'
 
   // Guard against duplicate registration (e.g. devtools hot-reload)
-  if ($(btnSelector).length > 0) return
+  if ($(btnSelector).length > 0) return dispose
 
   const $btn = $(`<div class="footer-item footer-item-right footer-btn footer-btn-float-test" style="padding: 0 8px;" ty-hint="Toggle floating test view" aria-label="Toggle floating test view">`)
     .on('click', toggle)
@@ -99,5 +99,7 @@ export function registerTestFloatingView(
 
     floatingTabs = null
   }
+
+  return () => { dispose(); $btn.remove() }
 }
 
