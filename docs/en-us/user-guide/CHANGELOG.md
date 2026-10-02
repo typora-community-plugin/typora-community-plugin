@@ -7,7 +7,7 @@
   - feat(core/ui/editor): add editor context menu extension (via `editor-menu` event)
 
 - **Settings**
-  - feat(core/ui/settings-modal): settings sidebar tabs support badges (pill); the "Installed Plugins" tab shows the number of updatable plugins
+  - feat(core/ui/settings-modal): settings sidebar tabs support badges (pill); the "Installed Plugins" tab shows the number of updatable plugins ([#103](https://github.com/typora-community-plugin/typora-community-plugin/issues/103)). Thanks to @jprisant ([#99](https://github.com/typora-community-plugin/typora-community-plugin/discussions/99))
 
 - **Developer**
   - refactor(core/plugin-internal/test): extract functional test example from devtools into standalone internal plugin with proper lifecycle management

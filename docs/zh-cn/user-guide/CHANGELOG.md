@@ -7,7 +7,7 @@
   - feat(core/ui/editor): 新增编辑器右键菜单扩展（通过 `editor-menu` 事件）
 
 - **设置**
-  - feat(core/ui/settings-modal): 设置侧栏标签支持徽章（pill），“已安装插件”标签显示可更新插件数量
+  - feat(core/ui/settings-modal): 设置侧栏标签支持徽章（pill），“已安装插件”标签显示可更新插件数量([#103](https://github.com/typora-community-plugin/typora-community-plugin/issues/103))。感谢 @jprisant ([#99](https://github.com/typora-community-plugin/typora-community-plugin/discussions/99))
 
 - **开发者**
   - refactor(core/plugin-internal/test): 将功能测试示例从 devtools 抽离为独立内部插件，支持正常生命周期管理
