@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.10.38
+
+- **Editor**
+  - feat(core/ui/editor/postprocessor): add `HighlightedTextPostprocessor` for inline text highlighting
+  - feat(core/ui/editor): add editor context menu extension (via `editor-menu` event)
+
+- **Settings**
+  - feat(core/ui/settings-modal): settings sidebar tabs support badges (pill); the "Installed Plugins" tab shows the number of updatable plugins
+
+- **Developer**
+  - refactor(core/plugin-internal/test): extract functional test example from devtools into standalone internal plugin with proper lifecycle management
+  - refactor(core/ui/view-manager): add duplicate custom view registration protection
+
 ## v2.10.35
 
 - **Metadata**
