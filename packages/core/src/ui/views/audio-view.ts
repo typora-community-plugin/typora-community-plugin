@@ -25,7 +25,7 @@ export class AudioView extends WorkspaceView {
   static type = 'core.audio'
 
   /** Common audio extensions registered to {@link AudioView} */
-  static extensions = ['flac', 'm4a', 'mp3', 'ogg', 'wav', 'webm', '3gp']
+  static extensions = ['flac', 'm4a', 'mp3', 'ogg', 'wav', '3gp']
 
   icon = 'fa-file-audio-o'
 

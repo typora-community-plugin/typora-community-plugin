@@ -36,6 +36,9 @@ export class ViewManager {
   }
 
   registerExtension(extension: string, type: string): DisposeFunc {
+    if (this.typeByExtension[extension])
+      throw Error(`[ViewManager] This extension "${extension}" is already registered with a view type.`)
+
     this.typeByExtension[extension] = type
     return () => this.unregisterExtension(extension)
   }
@@ -55,6 +58,9 @@ export class ViewManager {
   }
 
   registerView(type: string, viewFactory: ViewFactory): DisposeFunc {
+    if (this.viewByType[type])
+      throw Error(`[ViewManager] This view type "${type}" is already registered with a view factory function.`)
+
     if (process.env.IS_DEV) {
       this.viewByType[type] = (leaf: WorkspaceLeaf, state?: ViewState) => {
         const view = viewFactory(leaf, state)
