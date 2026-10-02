@@ -9,7 +9,6 @@ import { Sidebar } from './sidebar/sidebar'
 import { GlobalSearchView } from './sidebar/search/views/global-search-view'
 import type { FileExplorerEvents } from './sidebar/file-explorer'
 import { Outline } from './sidebar/outline'
-import { SettingsModal } from './settings/settings-modal'
 import { CommandModal } from './commands/command-modal'
 import { QuickOpenPanel } from './quick-open-panel'
 import type { Component } from 'src/common/component'
@@ -94,7 +93,7 @@ export class Workspace extends Events<WorkspaceEvents> {
     this._registerEventHooks()
 
     this._children.push(noticeContainer)
-    this._children.push(new SettingsModal())
+    this._children.push(useService('settings-modal'))
     this._children.push(this.ribbon = useService('ribbon'))
     this._children.push(this.sidebar = new Sidebar(() => [
       new GlobalSearchView(),

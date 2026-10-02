@@ -10,6 +10,12 @@ export abstract class SettingTab extends View {
 
   abstract get name(): string
 
+  /**
+   * Optional pill/badge text displayed next to the tab name in the settings sidebar.
+   * Use `SettingsModal.setTabPill()` to modify it later.
+   */
+  pill?: string | number
+
   constructor() {
     super()
     this.containerEl = html`<div class="typ-setting-tab"></div>`

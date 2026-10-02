@@ -28,6 +28,7 @@ import type { WorkspaceTabs } from "src/ui/layout/tabs"
 import type { Notice } from "src/ui/components/notice"
 import { isDebug } from "./constants"
 import { wrapWithLoggingProxy } from "src/io/logger/service-logger"
+import type { SettingsModal } from "src/ui/settings/settings-modal"
 
 
 type ServiceMap = {
@@ -49,6 +50,7 @@ type ServiceMap = {
 
   'view-manager'(): ViewManager
   'workspace'(): Workspace
+  'settings-modal'(): SettingsModal
   'markdown-editor'(): MarkdownEditor
   'markdown-renderer'(): MarkdownRenderer
   'ribbon'(): WorkspaceRibbon

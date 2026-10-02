@@ -106,12 +106,11 @@ export class SettingsModal extends Component {
   }
 
   private onItemClick = (event: MouseEvent) => {
-    const el = event.target as HTMLElement
-    if (!el.classList.contains("typ-nav__item")) return
+    const item = (event.target as HTMLElement).closest('.typ-nav__item') as HTMLElement | null
+    if (!item) return
 
-    const tabs = this.tabs as SettingTab[]
-    const name = el.dataset.name!
-    this.openTab(tabs.find(tab => tab.name === name)!)
+    const name = item.dataset.name!
+    this.openTab(this.tabs.find(tab => tab.name === name)!)
   }
 
   private addGroup(text: string) {
@@ -136,7 +135,7 @@ export class SettingsModal extends Component {
       setTimeout(() => this.openTab(this.activeTab))
     }
 
-    group.append(html`<div class="typ-nav__item" data-name="${tab.name}">${tab.name}</div>`)
+    group.append(this.createNavItem(tab))
 
     if (groupIndex > 0) {
       this.sortGroup(group)
@@ -145,9 +144,44 @@ export class SettingsModal extends Component {
     return () => this.removeTab(tab)
   }
 
+  private createNavItem(tab: SettingTab) {
+    const item = html`<div class="typ-nav__item" data-name="${tab.name}"></div>`
+    item.append(html`<span class="typ-nav__item-name">${tab.name}</span>`)
+
+    if (tab.pill !== undefined && tab.pill !== '') {
+      item.append(html`<span class="typ-nav__badge">${tab.pill}</span>`)
+    }
+
+    return item
+  }
+
+  /**
+   * Set (or remove with `undefined`/`''`) the pill/badge of a tab's nav item.
+   */
+  setTabPill(tab: SettingTab, pill?: string | number) {
+    const item = this.sidebar.querySelector(`.typ-nav__item[data-name="${tab.name}"]`)
+    if (!item) return
+
+    const badge = item.querySelector('.typ-nav__badge')
+    if (pill === undefined || pill === '') {
+      badge?.remove()
+      return
+    }
+
+    if (badge) {
+      badge.textContent = String(pill)
+    } else {
+      item.append(html`<span class="typ-nav__badge">${pill}</span>`)
+    }
+  }
+
   private sortGroup(group: HTMLElement) {
     const items = Array.from(group.querySelectorAll('.typ-nav__item')) as HTMLElement[]
-    items.sort((a, b) => a.textContent!.localeCompare(b.textContent!))
+    items.sort((a, b) => {
+      const nameA = a.querySelector('.typ-nav__item-name')?.textContent ?? ''
+      const nameB = b.querySelector('.typ-nav__item-name')?.textContent ?? ''
+      return nameA.localeCompare(nameB)
+    })
     for (const item of items) {
       group.appendChild(item)
     }

@@ -16,6 +16,7 @@ export class PluginManagerSettingTab extends SettingTab {
     config = useService('config-repository'),
     private i18n = useService('i18n'),
     private plugins = useService('plugin-manager'),
+    private settingsModal = useService('settings-modal'),
   ) {
     super()
 
@@ -68,11 +69,22 @@ export class PluginManagerSettingTab extends SettingTab {
         }
       }
 
+      this.refreshTabPill()
+
       Object.values(this.plugins.manifests)
         .filter(p => !query || (p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query)))
         .sort((a, b) => a.name.localeCompare(b.name))
         .forEach(p => this.renderPlugin(p))
     })
+  }
+
+  private refreshTabPill() {
+    const { manifests, marketplace } = this.plugins
+    const count = Object.keys(manifests)
+      .filter(id => marketplace.getPlugin(id)?.newestVersion)
+      .length
+
+    this.settingsModal.setTabPill(this, count || undefined)
   }
 
   private cleanPluginList() {
@@ -146,7 +158,10 @@ export class PluginManagerSettingTab extends SettingTab {
         button.innerHTML = '<span class="fa fa-trash-o"></span>'
         button.onclick = () => {
           plugins.uninstallPlugin(manifest.id)
-            .then(() => setting.containerEl.remove())
+            .then(() => {
+              setting.containerEl.remove()
+              this.refreshTabPill()
+            })
         }
       })
     })

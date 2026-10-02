@@ -34,6 +34,7 @@ import { registerDefaultMetadataProviders } from "./metadata/metadata-providers"
 import { DEFAULT_INTERNAL_PLUGIN_SETTINGS, InternalPluginManager } from "./plugin-internal/internal-plugin-manager"
 import { DEFAULT_WORKSPACE_SETTINGS } from "./ui/settings/tabs-plugin/workspace"
 import { createSettingsMigration } from "./settings/settings-migration"
+import { SettingsModal } from "./ui/settings/settings-modal"
 
 
 // ── DEV ONLY: Attach logging listener to ServiceLogger._fire() output ──
@@ -115,6 +116,7 @@ registerService('plugin-marketplace', memorize(() => new PluginMarketplace()))
 
 registerService('view-manager', memorize(() => new ViewManager()))
 registerService('workspace', memorize(() => new Workspace()))
+registerService('settings-modal', memorize(() => new SettingsModal()))
 registerService('markdown-editor', memorize(() => new MarkdownEditor()))
 registerService('markdown-renderer', memorize(() => new MarkdownRenderer()))
 registerService('ribbon', memorize(() => new WorkspaceRibbon()))
