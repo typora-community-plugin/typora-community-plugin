@@ -33,7 +33,7 @@ export { SettingItem } from './ui/settings/setting-item'
 export { PostProcessor } from './ui/editor/postprocessor/postprocessor'
 export { HtmlPostProcessor } from './ui/editor/postprocessor/html-postprocessor'
 export { CodeblockPostProcessor } from './ui/editor/postprocessor/codeblock-postprocessor'
-export { DecoratedTextPostprocessor, type DecoratedTextMatch } from './ui/editor/postprocessor/decorated-text-postprocessor'
+export { DecoratedTextPostprocessor } from './ui/editor/postprocessor/decorated-text-postprocessor'
 
 export { EditorSuggest } from './ui/editor/suggestion/suggest'
 export { TextSuggest } from './ui/editor/suggestion/text-suggest'
