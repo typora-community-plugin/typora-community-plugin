@@ -3,7 +3,13 @@
   min-width: 224px;
 }
 
-.typ-menuitem .fa {
-  position: relative;
-  left: -.75rem;
+.typ-menuitem {
+  a {
+    margin-left: -.2rem;
+  }
+
+  .fa {
+    position: relative;
+    left: -.55rem;
+  }
 }

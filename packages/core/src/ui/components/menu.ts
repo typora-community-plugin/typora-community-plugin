@@ -135,7 +135,7 @@ class MenuItem {
    */
   protected constructor(protected menu: Menu) {
     this.containerEl = html`<li data-action="" data-key="" class="typ-menuitem"></li>`
-    this.anchorEl = html`<a role="menuitem" data-localize="" data-lg="" class="state-off"></a>`
+    this.anchorEl = html`<a role="menuitem" data-localize="" data-lg=""></a>`
 
     this.containerEl.append(this.anchorEl)
   }
