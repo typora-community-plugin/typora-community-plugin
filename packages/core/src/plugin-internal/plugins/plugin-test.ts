@@ -66,6 +66,24 @@ export class TestPlugin extends InternalPlugin {
 
     // Test FloatingView
     this.register(setupTestFloatingView())
+
+    // Test File Explorer Context Menu
+    this.register(
+      app.workspace.on('file-menu', ({ menu }) => {
+        menu.addItem(item =>
+          item
+            .setTitle('Test File Menu')
+            .onClick(() => useService('notice', ['Run Test File Menu Success!']).show()))
+      }))
+
+    // Test Editor Context Menu
+    this.register(
+      app.workspace.on('editor-menu', ({ menu }) => {
+        menu.addItem(item =>
+          item
+            .setTitle('Test ContextMenu')
+            .onClick(() => useService('notice', ['Run Test ContextMenu Success!']).show()))
+      }))
   }
 
   onunload() {

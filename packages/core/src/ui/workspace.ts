@@ -3,7 +3,7 @@ import decorate from '@plylrnsdy/decorate.js'
 import { File, editor } from 'typora'
 import { Events } from 'src/common/events'
 import { noticeContainer } from './components/notice'
-import type { MarkdownEditor } from './editor/markdown-editor'
+import type { MarkdownEditor, MarkdownEditorEvents } from './editor/markdown-editor'
 import type { WorkspaceRibbon } from './ribbon/workspace-ribbon'
 import { Sidebar } from './sidebar/sidebar'
 import { GlobalSearchView } from './sidebar/search/views/global-search-view'
@@ -21,9 +21,9 @@ import type { WorkspaceLeaf } from './layout/workspace-leaf'
 import { useActiveLeaf } from './layout/use-active-leaf'
 import { createLeaf } from './layout/workspace-utils'
 import { EmptyView } from './views/empty-view'
-import { AudioView, UseAudioView } from './views/audio-view'
-import { UseVideoView, VideoView } from './views/video-view'
-import { ImageView, UseImageView } from './views/image-view'
+import { UseAudioView } from './views/audio-view'
+import { UseVideoView } from './views/video-view'
+import { UseImageView } from './views/image-view'
 import { MarkdownView } from './views/markdown-view'
 import { WorkspaceSidedock } from './layout/sidedock'
 import { useSettingEffectedFeature } from 'src/settings/use-setting-effect'
@@ -37,6 +37,7 @@ export type WorkspaceEvents = {
   'file:will-save'(path: string): void
 
   'file-menu': FileExplorerEvents['contextmenu']
+  'editor-menu': MarkdownEditorEvents['contextmenu']
 }
 
 
@@ -207,9 +208,13 @@ export class Workspace extends Events<WorkspaceEvents> {
         })
       })()
 
-    setTimeout(() =>
+    setTimeout(() => {
       useService('file-explorer')._onContextMenu(params => {
         this.emit('file-menu', params)
-      }))
+      })
+      useService('markdown-editor')._onContextMenu(params => {
+        this.emit('editor-menu', params)
+      })
+    })
   }
 }

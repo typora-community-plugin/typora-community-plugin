@@ -8,12 +8,14 @@ import { EditorSuggestManager } from "./suggestion/suggest-manager"
 import { MarkdownLinkWitoutExtension, OpenLinkInCurrentWin } from "./link"
 import { debounce, until } from "src/utils"
 import type { FileURL } from "src/utils/types"
+import { InternalContextMenu } from "../components/menu"
 
 
 export type MarkdownEditorEvents = {
   'load'(editorEl: HTMLElement): void
   'edit'(): void
   'scroll'(): void
+  'contextmenu'(params: { menu: InternalContextMenu }): void
 }
 
 
@@ -27,6 +29,7 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
 
   suggestion = new EditorSuggestManager()
 
+  private _contextmenu = new InternalContextMenu('#context-menu')
   private _openLinkInCurrentWin!: OpenLinkInCurrentWin
   private _markdownLinkWitoutExtension!: MarkdownLinkWitoutExtension
 
@@ -77,6 +80,16 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
 
   setMarkdown(markdown: string) {
     File.reloadContent(markdown, false, true, false, true)
+  }
+
+  _onContextMenu(callback: MarkdownEditorEvents['contextmenu']) {
+    $(editor.writingArea).on('mousedown', event => {
+      if (event.button === 2) {
+        this._contextmenu.removeExtendedMenuItem()
+
+        callback({ menu: this._contextmenu })
+      }
+    })
   }
 }
 
