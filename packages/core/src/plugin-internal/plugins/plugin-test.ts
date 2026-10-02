@@ -1,3 +1,4 @@
+import './plugin-test.scss'
 import { useService } from "src/common/service"
 import { InternalPlugin, InternalPluginManifest } from "src/plugin-internal/internal-plugin"
 import { EditaleTableTestTab } from "src/ui/components/editable-table-test"
@@ -9,7 +10,8 @@ import { SettingItemTestTab } from "src/ui/settings/setting-item-test"
 import { SettingsModal } from "src/ui/settings/settings-modal"
 import { TEST_SELECTION_STATS, TEST_STATS } from "src/ui/statusbar/statistics-test"
 import { html } from "src/utils"
-import { JSBridge } from "typora"
+import { editor, JSBridge } from "typora"
+import { HighlightedTextPostprocessor, type HighlightMatch } from "src/ui/editor/postprocessor/highlighted-text-postprocessor"
 
 
 export const PLUGIN_TEST_ID = 'internal.test'
@@ -84,6 +86,22 @@ export class TestPlugin extends InternalPlugin {
             .setTitle('Test ContextMenu')
             .onClick(() => useService('notice', ['Run Test ContextMenu Success!']).show()))
       }))
+
+    // Test Wikilink Highlight Postprocessor
+    const tagMatches: HighlightMatch[] = [
+      {
+        regexp: /(^|\s)(#[^\u2000-\u206F\u2E00-\u2E7F'!"#$%&()*+,.:;<=>?@^`{|}~\[\]\\\s]+)/g,
+        classname: 'typ-tag__test',
+        onClick: (_event, element) => {
+          useService('notice', [element.textContent ?? ''])
+        },
+      },
+    ]
+    this.register(
+      app.features.markdownEditor.postProcessor.register(
+        HighlightedTextPostprocessor.from({
+          matches: tagMatches,
+        })))
   }
 
   onunload() {
