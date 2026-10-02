@@ -5,7 +5,11 @@
 
 .typ-menuitem {
   a {
-    margin-left: -.2rem;
+    margin-left: .5rem;
+
+    &:has(.fa) {
+      margin-left: -.15rem;
+    }
   }
 
   .fa {

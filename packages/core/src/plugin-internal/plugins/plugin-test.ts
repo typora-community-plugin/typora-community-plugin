@@ -10,7 +10,7 @@ import { SettingItemTestTab } from "src/ui/settings/setting-item-test"
 import { SettingsModal } from "src/ui/settings/settings-modal"
 import { TEST_SELECTION_STATS, TEST_STATS } from "src/ui/statusbar/statistics-test"
 import { html } from "src/utils"
-import { editor, JSBridge } from "typora"
+import { JSBridge } from "typora"
 import { HighlightedTextPostprocessor, type HighlightMatch } from "src/ui/editor/postprocessor/highlighted-text-postprocessor"
 
 
@@ -77,6 +77,15 @@ export class TestPlugin extends InternalPlugin {
             .setTitle('Test File Menu')
             .onClick(() => useService('notice', ['Run Test File Menu Success!']).show()))
       }))
+    this.register(
+      app.workspace.on('file-menu', ({ menu }) => {
+        menu.addItem(item =>
+          item
+            .setIcon('info-circle')
+            .setTitle('Test File Menu with Icon')
+            .onClick(() => useService('notice', ['Run Test File Menu Success!']).show()))
+      }))
+
 
     // Test Editor Context Menu
     this.register(
