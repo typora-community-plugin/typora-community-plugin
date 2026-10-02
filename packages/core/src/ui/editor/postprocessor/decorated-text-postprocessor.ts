@@ -3,7 +3,7 @@ import { HtmlPostProcessor } from './html-postprocessor'
 import type { PostProcessorContext } from './postprocessor'
 
 
-export interface HighlightMatch {
+export interface DecoratedTextMatch {
   /** RegExp with global flag */
   regexp: RegExp
   /** CSS class name to apply on matched <span> */
@@ -12,15 +12,15 @@ export interface HighlightMatch {
   onClick?: (event: MouseEvent, highlightedEl: HTMLElement) => void
 }
 
-interface HighlightedTextPostprocessorOptions {
-  matches?: HighlightMatch[]
+interface DecoratedTextPostprocessorOptions {
+  matches?: DecoratedTextMatch[]
   selector?: string
 }
 
 
-export class HighlightedTextPostprocessor extends HtmlPostProcessor {
+export class DecoratedTextPostprocessor extends HtmlPostProcessor {
 
-  private _matches: HighlightMatch[] = []
+  private _matches: DecoratedTextMatch[] = []
 
   private _textSelector = 'p>span'
 
@@ -30,7 +30,7 @@ export class HighlightedTextPostprocessor extends HtmlPostProcessor {
     return this._matches
   }
 
-  set matches(value: HighlightMatch[]) {
+  set matches(value: DecoratedTextMatch[]) {
     this._matches = value
   }
 
@@ -100,8 +100,8 @@ export class HighlightedTextPostprocessor extends HtmlPostProcessor {
     })
   }
 
-  static from(options: HighlightedTextPostprocessorOptions = {}) {
-    const processor = new HighlightedTextPostprocessor()
+  static from(options: DecoratedTextPostprocessorOptions = {}) {
+    const processor = new DecoratedTextPostprocessor()
     processor.matches = options.matches || []
     if (options.selector) {
       processor.selector = options.selector
@@ -113,7 +113,7 @@ export class HighlightedTextPostprocessor extends HtmlPostProcessor {
 
 function getAllMatchPositions(
   str: string,
-  matches: HighlightMatch[],
+  matches: DecoratedTextMatch[],
 ): { classname: string, start: number, end: number }[] {
   const result: { classname: string, start: number, end: number }[] = []
 

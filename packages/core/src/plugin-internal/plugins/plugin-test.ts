@@ -11,7 +11,7 @@ import { SettingsModal } from "src/ui/settings/settings-modal"
 import { TEST_SELECTION_STATS, TEST_STATS } from "src/ui/statusbar/statistics-test"
 import { html } from "src/utils"
 import { JSBridge } from "typora"
-import { HighlightedTextPostprocessor, type HighlightMatch } from "src/ui/editor/postprocessor/highlighted-text-postprocessor"
+import { DecoratedTextPostprocessor, type DecoratedTextMatch } from "src/ui/editor/postprocessor/decorated-text-postprocessor"
 
 
 export const PLUGIN_TEST_ID = 'internal.test'
@@ -97,7 +97,7 @@ export class TestPlugin extends InternalPlugin {
       }))
 
     // Test Wikilink Highlight Postprocessor
-    const tagMatches: HighlightMatch[] = [
+    const tagMatches: DecoratedTextMatch[] = [
       {
         regexp: /(^|\s)(#[^\u2000-\u206F\u2E00-\u2E7F'!"#$%&()*+,.:;<=>?@^`{|}~\[\]\\\s]+)/g,
         classname: 'typ-tag__test',
@@ -108,7 +108,7 @@ export class TestPlugin extends InternalPlugin {
     ]
     this.register(
       app.features.markdownEditor.postProcessor.register(
-        HighlightedTextPostprocessor.from({
+        DecoratedTextPostprocessor.from({
           matches: tagMatches,
         })))
   }
