@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.10.39
+
+- **Developer**
+  - refactor(core/ui/editor/postprocessor): `HighlightedTextPostprocessor` renamed to `DecoratedTextPostprocessor`
+
 ## v2.10.38
 
 - **Editor**

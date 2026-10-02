@@ -1,17 +1,20 @@
 # 更新日志
 
-## v2.10.38
+## v2.10.39
 
-- **编辑器**
-  - feat(core/ui/editor/postprocessor): 新增 `HighlightedTextPostprocessor`，支持内联文本高亮
-  - feat(core/ui/editor): 新增编辑器右键菜单扩展（通过 `editor-menu` 事件）
+- **开发者**
+  - refactor(core/ui/editor/postprocessor): `HighlightedTextPostprocessor` 重命名为 `DecoratedTextPostprocessor`
+
+## v2.10.38
 
 - **设置**
   - feat(core/ui/settings-modal): 设置侧栏标签支持徽章（pill），“已安装插件”标签显示可更新插件数量([#103](https://github.com/typora-community-plugin/typora-community-plugin/issues/103))。感谢 @jprisant ([#99](https://github.com/typora-community-plugin/typora-community-plugin/discussions/99))
 
 - **开发者**
-  - refactor(core/plugin-internal/test): 将功能测试示例从 devtools 抽离为独立内部插件，支持正常生命周期管理
+  - feat(core/ui/editor): 新增编辑器右键菜单扩展（通过 `editor-menu` 事件）
+  - feat(core/ui/editor/postprocessor): 新增 `HighlightedTextPostprocessor`，支持内联文本高亮
   - refactor(core/ui/view-manager): 添加自定义视图重复注册保护
+  - refactor(core/plugin-internal/test): 将功能测试示例从 devtools 抽离为独立内部插件，支持正常生命周期管理
 
 ## v2.10.35
 
