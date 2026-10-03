@@ -1,3 +1,5 @@
+@import '_sidebar-nav';
+
 .typ-modal.typ-settings-modal {
   width: 90vw;
   height: 85vh;
@@ -15,8 +17,6 @@
   }
 }
 
-@import '_sidebar-nav';
-
 .typ-sidebar {
   @include sidebar-container;
 
@@ -24,5 +24,18 @@
 
   .typ-nav__item {
     @include nav-item;
+  }
+}
+
+.typ-main {
+  input,
+  select,
+  textarea {
+    border: 1px solid rgb(var(--typ-border-color));
+
+    &:focus {
+      border-color: var(--primary-color);
+      outline: none;
+    }
   }
 }
