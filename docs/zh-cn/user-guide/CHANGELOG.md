@@ -5,6 +5,9 @@
 - **开发者**
   - refactor(core/ui/editor/postprocessor): `HighlightedTextPostprocessor` 重命名为 `DecoratedTextPostprocessor`
 
+- **新增插件**
+  - [kanban][]: 渲染 Markdown 文件为交互式看板
+
 ## v2.10.38
 
 - **设置**
@@ -922,6 +925,8 @@
 [image-location]: https://github.com/typora-community-plugin/typora-plugin-image-location
 
 [image-viewer]: https://github.com/typora-community-plugin/typora-plugin-image-viewer
+
+[kanban]: https://github.com/typora-community-plugin/typora-plugin-kanban
 
 [markmap]: https://github.com/typora-community-plugin/typora-plugin-markmap
 

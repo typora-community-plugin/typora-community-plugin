@@ -63,13 +63,14 @@ You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from
 | [codeblock-copy-button][p2]          | Add a copy button to each codeblock's top-right corner.   |
 | [codeblock-highlight-mapper][p3]     | Map language A to language B for highlighting it.         |
 | [codeblock-previewer-plus][p24]      | Preview codeblocks (e.g. mermaid) in floating view, with zoom and drag support |
+| [kanban][p28] <sup>`New`</sup>           | Kanban view for task management                         |
 | [codeblock-runner][p27] <sup>`New`</sup> | Run code in codeblocks and display the output.        |
 | [collapsible-section][p4]            | Fold/unfold markdown section. Supports headings, list, codeblock, table, quoteblock, callout. |
 | [darkmode][p13]                      | General dark mode for any theme.                          |
 | [file-icon][p5]                      | Show different icon for different file type in file tree. |
 | [footnotes][p18]                     | Footnote marker suggestion & Re-index the numerical footnotes. |
 | [front-matter][p6]                   | Auto edit front matter, including creation time, editing time, etc. |
-| [git][p25] <sup>`New`</sup>          | Commit Git commits within Typora.                         |
+| [git][p25]                           | Commit Git commits within Typora.                         |
 | [image-location][p15]                | Resolve image's location relative to vault's root.        |
 | [image-viewer][p16]                  | View all the images in current Markdown.                  |
 | [markmap][p11]                       | Support Markmap in codeblock.                             |
@@ -148,3 +149,4 @@ If you have any problem or suggestion please open an issue [here](https://github
 [p25]: https://github.com/typora-community-plugin/typora-plugin-git
 [p26]: https://github.com/typora-community-plugin/typora-plugin-mini-outline
 [p27]: https://github.com/typora-community-plugin/typora-plugin-codeblock-runner
+[p28]: https://github.com/typora-community-plugin/typora-plugin-kanban

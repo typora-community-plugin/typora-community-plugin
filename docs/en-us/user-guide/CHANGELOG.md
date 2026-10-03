@@ -5,6 +5,9 @@
 - **Developer**
   - refactor(core/ui/editor/postprocessor): `HighlightedTextPostprocessor` renamed to `DecoratedTextPostprocessor`
 
+- **New Plugin**
+  - [kanban][]: Render Markdown files as an interactive Kanban board.
+
 ## v2.10.38
 
 - **Editor**
@@ -922,6 +925,8 @@
 [image-location]: https://github.com/typora-community-plugin/typora-plugin-image-location
 
 [image-viewer]: https://github.com/typora-community-plugin/typora-plugin-image-viewer
+
+[kanban]: https://github.com/typora-community-plugin/typora-plugin-kanban
 
 [markmap]: https://github.com/typora-community-plugin/typora-plugin-markmap
 
