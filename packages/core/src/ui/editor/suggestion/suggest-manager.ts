@@ -26,11 +26,20 @@ export class EditorSuggestManager {
       if (this._currentSuggest?.isUsing) {
         const range = editor.selection.getRangy()
         const { anchor } = editor.autoComplete.state
-        const textNode = anchor.containerNode.firstChild! as Element
         const suggest = this._currentSuggest!
-        // @ts-ignore
-        range.setStart(textNode, anchor.start - suggest.lengthOfTextBeforeToBeReplaced(suggest._query))
-        range.setEnd(textNode, anchor.end)
+        // @ts-ignore `_query` is private
+        const start = anchor.start - suggest.lengthOfTextBeforeToBeReplaced(suggest._query)
+        const end = anchor.end
+        // `containerNode`'s text may be split across several child nodes (e.g.
+        // by a `DecoratedTextPostprocessor`), so map the text offsets onto the
+        // text nodes that actually contain them instead of assuming a single
+        // `firstChild`.
+        const startPos = textOffsetToPosition(anchor.containerNode, start)
+        const endPos = textOffsetToPosition(anchor.containerNode, end)
+        // @ts-ignore rangy accepts text nodes
+        range.setStart(startPos.node, startPos.offset)
+        // @ts-ignore rangy accepts text nodes
+        range.setEnd(endPos.node, endPos.offset)
         editor.selection.setRange(range, true)
         editor.UserOp.pasteHandler(editor, suggest._beforeApply(text), true)
         editor.autoComplete.hide()
@@ -94,4 +103,41 @@ export class EditorSuggestManager {
       break
     }
   }
+}
+
+
+// `NodeFilter.SHOW_TEXT`, written as a literal because Typora overrides some
+// DOM globals (e.g. `Node`).
+const SHOW_TEXT = 4
+
+
+/**
+ * Map a character offset in the text content of `container` to the text node
+ * that contains it and the offset within that node.
+ */
+function textOffsetToPosition(
+  container: Node,
+  offset: number,
+): { node: Node, offset: number } {
+  if (container.nodeType === /* Node.TEXT_NODE */ 3) {
+    const length = container.textContent?.length ?? 0
+    return { node: container, offset: Math.min(Math.max(offset, 0), length) }
+  }
+
+  const walker = document.createTreeWalker(container, SHOW_TEXT, null)
+  let accumulated = 0
+  let lastText: Node | null = null
+
+  let node: Node | null
+  while ((node = walker.nextNode())) {
+    const length = node.textContent?.length ?? 0
+    if (offset <= accumulated + length)
+      return { node, offset: Math.max(offset - accumulated, 0) }
+    accumulated += length
+    lastText = node
+  }
+
+  return lastText
+    ? { node: lastText, offset: lastText.textContent?.length ?? 0 }
+    : { node: container, offset: 0 }
 }
