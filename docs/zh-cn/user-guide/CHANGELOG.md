@@ -1,5 +1,15 @@
 # 更新日志
 
+## v2.10.42
+
+- fix(core/ui/components/menu): 修复自定义菜单边距问题
+
+- **设置**
+  - feat(core/ui/settings/tabs/about): 新增自动检查更新功能
+
+- **开发者**
+  - feat(core/ui/editor/codeblock): 引入代码块语言注册与图表渲染支持
+
 ## v2.10.39
 
 - **开发者**

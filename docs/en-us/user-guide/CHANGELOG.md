@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.10.42
+
+- fix(core/ui/components/menu): fix custom menu margin issue
+
+- **Settings**
+  - feat(core/ui/settings/tabs/about): add auto update check feature with badge display
+
+- **Developer**
+  - feat(core/ui/editor/codeblock): introduce code block language registration and chart rendering support
+
 ## v2.10.39
 
 - **Developer**
