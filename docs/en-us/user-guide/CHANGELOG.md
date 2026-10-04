@@ -10,6 +10,16 @@
 - **Developer**
   - feat(core/ui/editor/codeblock): introduce code block language registration and chart rendering support
 
+- **Plugin Updates**
+  - [abcjs][]: add syntax highlighting support
+  - [kanban][]
+    - simplify adding new cards
+    - unify tag colors to match the [tag][] plugin styling
+    - fix inability to scroll vertically
+  - [tag][]: `#tag` syntax highlighting no longer requires wrapping with `<a>`
+  - [wavedrom][]: add syntax highlighting support
+  - [wikilink][]: `[[wikilink]]` syntax highlighting no longer requires wrapping with `<a>`
+
 ## v2.10.39
 
 - **Developer**
