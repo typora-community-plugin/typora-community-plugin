@@ -30,6 +30,9 @@ export { WorkspaceView } from './ui/layout/workspace-view'
 export { SettingTab } from './ui/settings/setting-tab'
 export { SettingItem } from './ui/settings/setting-item'
 
+export type { CodeblockModeOptions } from './ui/editor/codeblock'
+export type { CodeblockRenderer } from './ui/editor/codeblock'
+
 export { PostProcessor } from './ui/editor/postprocessor/postprocessor'
 export { HtmlPostProcessor } from './ui/editor/postprocessor/html-postprocessor'
 export { CodeblockPostProcessor } from './ui/editor/postprocessor/codeblock-postprocessor'

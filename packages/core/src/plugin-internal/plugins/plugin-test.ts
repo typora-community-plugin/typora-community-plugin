@@ -2,6 +2,7 @@ import './plugin-test.scss'
 import { useService } from "src/common/service"
 import { InternalPlugin, InternalPluginManifest } from "src/plugin-internal/internal-plugin"
 import { EditaleTableTestTab } from "src/ui/components/editable-table-test"
+import { setupTestCodeblock } from "src/ui/editor/codeblock/codeblock-test"
 import { BarSlashSuggest, FooSlashSuggest } from "src/ui/editor/suggestion/suggest-test"
 import { setupTestFloatingView } from "src/ui/layout/floating/index-test"
 import { setupTestSidedockView } from "src/ui/layout/sidedock/index-test"
@@ -62,6 +63,9 @@ export class TestPlugin extends InternalPlugin {
       app.features.markdownEditor.suggestion.register(new FooSlashSuggest()))
     this.register(
       app.features.markdownEditor.suggestion.register(new BarSlashSuggest()))
+
+    // Test Codeblock
+    this.register(setupTestCodeblock())
 
     // Test Right SidedockView
     this.register(setupTestSidedockView())

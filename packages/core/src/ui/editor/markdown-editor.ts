@@ -9,6 +9,7 @@ import { MarkdownLinkWitoutExtension, OpenLinkInCurrentWin } from "./link"
 import { debounce, until } from "src/utils"
 import type { FileURL } from "src/utils/types"
 import { InternalContextMenu } from "../components/menu"
+import { Codeblock } from "./codeblock"
 
 
 export type MarkdownEditorEvents = {
@@ -28,6 +29,8 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
   selection = new EditorSelection()
 
   suggestion = new EditorSuggestManager()
+
+  codeblock = new Codeblock()
 
   private _contextmenu = new InternalContextMenu('#context-menu')
   private _openLinkInCurrentWin!: OpenLinkInCurrentWin

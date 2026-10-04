@@ -112,6 +112,23 @@ interface TClientCommand {
  */
 export declare function CodeMirror(containerElement: HTMLElement, options: any, parentEditor: any, cid: string): OriginalCodeMirror.Editor
 
+export declare namespace CodeMirror {
+  /** Register a syntax highlighting mode. */
+  function defineMode(id: string, modefactory: OriginalCodeMirror.ModeFactory<any>): void
+  /** Mapping mode name to mode factory. */
+  var modes: OriginalCodeMirror.ModeMap
+
+  type Editor = OriginalCodeMirror.Editor
+  type StringStream = OriginalCodeMirror.StringStream
+  type Mode<T = any> = OriginalCodeMirror.Mode<T>
+  type ModeFactory<T = any> = OriginalCodeMirror.ModeFactory<T>
+  type ModeMap = OriginalCodeMirror.ModeMap
+}
+
+export type CodeMirrorStringStream = OriginalCodeMirror.StringStream
+export type CodeMirrorMode<T = any> = OriginalCodeMirror.Mode<T>
+export type CodeMirrorModeFactory<T = any> = OriginalCodeMirror.ModeFactory<T>
+
 
 export declare var debugMode: boolean
 
@@ -230,6 +247,7 @@ export declare var editor: Editor
 interface Editor {
   autoComplete: AutoComplete
   brush: Brush
+  diagrams: Diagram
   docMenu: DocMenu
   EditHelper: EditHelper
   export: Export
@@ -251,6 +269,8 @@ interface Editor {
   writingArea: HTMLElement
 
   getNode(cid: string): Node
+
+  findElemById(cid: string): JQuery<HTMLElement>
 
   /**
    * Get current note's markdown string.
@@ -304,6 +324,30 @@ interface Brush {
   inline: {
     output(md: string): string
   }
+}
+
+/**
+ * Typora's native diagram engine, managing diagram codeblocks (mermaid, etc.).
+ */
+export interface Diagram {
+  constructor: DiagramClass
+
+  /**
+   * Build the `.md-diagram-panel` of the diagram codeblock and start preview.
+   */
+  startPreview(cid: string, ...args: any[]): any
+
+  /**
+   * Update the diagram preview of the codeblock `cid`.
+   */
+  updateDiagram(cid: string, ...args: any[]): any
+}
+
+export interface DiagramClass {
+  /** Diagram language list. */
+  MODES: string[]
+  /** Whether `lang` is a diagram type. */
+  isDiagramType(lang: string): boolean
 }
 
 interface DocMenu {
@@ -412,11 +456,16 @@ interface Export {
   exportToHTML(options: any): string
 }
 
-interface Fences {
+export interface Fences {
   /**
    * Mapping cid to CodeMirror instance
    */
   queue: Record<string, OriginalCodeMirror.Editor>
+
+  /**
+   * All code fence languages, for autocomplete.
+   */
+  ALL: string[]
 
   /**
    * Create a new CodeMirror instance on the `<pre>` element and add it to queue.
