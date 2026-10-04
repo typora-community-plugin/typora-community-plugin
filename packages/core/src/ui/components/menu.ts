@@ -19,7 +19,7 @@ export class Menu extends View implements Closeable {
 
   constructor() {
     super()
-    this.containerEl = $(`<ul class="dropdown-menu context-menu" role="menu">`)
+    this.containerEl = $(`<ul class="dropdown-menu context-menu typ-menu" role="menu">`)
       .on('click', () => this.close())
       .get(0)
 
