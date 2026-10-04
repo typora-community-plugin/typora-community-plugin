@@ -1,3 +1,4 @@
+import './about-tab.scss'
 import path from 'src/path'
 import { coreDir, coreVersion, isDebug } from 'src/common/constants'
 import { Notice } from 'src/ui/components/notice'
@@ -11,10 +12,13 @@ import { useService } from 'src/common/service'
 const CORE_NAME = 'typora-community-plugin'
 const CORE_REPO = `${CORE_NAME}/${CORE_NAME}`
 
+const THREE_DAYS = process.env.IS_DEV ? 0 : 3 * 24 * 60 * 60 * 1000
+
 
 export type CoreSettings = {
   displayLang: string
   debugDownloadUrl: string
+  autoCheckForUpdates: boolean
 }
 
 const LANG_NAMES: Record<string, string> = {
@@ -26,6 +30,10 @@ const LANG_NAMES: Record<string, string> = {
 
 export class AboutTab extends SettingTab {
 
+  private updateAvailable = false
+  private latestVersion: string | undefined
+  private updateBadgeEl: HTMLElement | undefined
+
   get name() {
     return this.i18n.t.settingTabs.about.name
   }
@@ -36,16 +44,26 @@ export class AboutTab extends SettingTab {
     private settings = useService('settings'),
     private i18n = useService('i18n'),
     private github = useService('github'),
-    private mdRenderer = useService('markdown-renderer')
+    private mdRenderer = useService('markdown-renderer'),
+    private settingsModal = useService('settings-modal'),
   ) {
     super()
 
-    settings.setDefault({ displayLang: i18n.locale })
+    settings.setDefault({
+      displayLang: i18n.locale,
+      autoCheckForUpdates: true,
+    })
 
     this.render()
     config.on('switch', () => {
       this.containerEl.innerHTML = ''
       this.render()
+    })
+
+    settingsModal.once('open', () => this.checkUpdateDaily())
+
+    settings.onChange('autoCheckForUpdates', enabled => {
+      enabled ? this.checkUpdateDaily() : this.setUpdateState(false)
     })
   }
 
@@ -56,6 +74,11 @@ export class AboutTab extends SettingTab {
 
     this.addSetting(setting => {
       setting.addName('Typora Community Plugin')
+      setting.addBadge(el => {
+        el.className = 'typ-update-badge'
+        this.updateBadgeEl = el
+        this.refreshUpdateBadge()
+      })
 
       setting.addDescription(el => {
         const typoraUrl = '<a href="https://typora.io">Typora</a>'
@@ -121,6 +144,11 @@ export class AboutTab extends SettingTab {
         })
       })
 
+    this.addSetting(setting => {
+      setting.addName(t.autoCheckForUpdates)
+      setting.addCheckbox({ settings: this.settings, bindingKey: 'autoCheckForUpdates' })
+    })
+
     this.addSetting(async setting => {
       setting.addName(t.lang)
       setting.addDescription(t.langDesc)
@@ -184,5 +212,31 @@ export class AboutTab extends SettingTab {
         const t = this.i18n.t.settingTabs.about
         Notice.success(t.coreUpdateSuccessful)
       })
+  }
+
+  private checkUpdateDaily() {
+    if (!this.settings.get('autoCheckForUpdates')) return
+
+    this.github.getReleaseInfo(CORE_REPO)
+      .then(data => {
+        const publishedAt = new Date(data.published_at).getTime()
+        const isNewer = versions.compare(coreVersion(), data.tag_name) < 0
+        this.setUpdateState(isNewer && (Date.now() - publishedAt > THREE_DAYS), data.tag_name)
+      })
+      .catch(error => this.logger.error(error))
+  }
+
+  private setUpdateState(available: boolean, version?: string) {
+    this.updateAvailable = available
+    this.latestVersion = version
+    this.settingsModal.setTabPill(this, available ? 'New' : undefined)
+    this.refreshUpdateBadge()
+  }
+
+  private refreshUpdateBadge() {
+    if (!this.updateBadgeEl) return
+
+    this.updateBadgeEl.textContent = this.updateAvailable ? this.i18n.t.settingTabs.about.hasUpdate : ''
+    this.updateBadgeEl.title = this.latestVersion ? `v${this.latestVersion}` : ''
   }
 }

@@ -61,7 +61,7 @@ export class SettingItem extends View {
 
   addTitle(text: string): void
   addTitle(build: (el: HTMLElement) => void): void
-  addTitle(param0: string | ((el: HTMLElement) => void))  {
+  addTitle(param0: string | ((el: HTMLElement) => void)) {
     const el = html`<h3 class="typ-setting-title"></h3>`
 
     if (typeof param0 === 'string') {
@@ -91,11 +91,22 @@ export class SettingItem extends View {
   /**
    * Add badge to `name` element.
    */
-  addBadge(text: string) {
+  addBadge(text: string): void
+  addBadge(build: (el: HTMLElement) => void): void
+  addBadge(param0: string | ((el: HTMLElement) => void)) {
     if (!this.name) {
       this.addName('')
     }
-    this.name!.append(html` <code>${text}</code>`)
+
+    const el = html` <code></code>`
+
+    if (typeof param0 === 'string') {
+      el.innerText = param0
+    } else {
+      param0(el)
+    }
+
+    this.name!.append(el)
   }
 
   addDescription(description: string): void

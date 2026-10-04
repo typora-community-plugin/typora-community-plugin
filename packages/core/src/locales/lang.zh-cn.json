@@ -148,7 +148,9 @@
       "langDesc": "Typora Community Plugin 的显示语言。(需要重启 Typora)",
       "debugDownloadUrl": "调试下载 URL",
       "debugDownloadUrlDesc": "输入 Core 更新包的下载链接，用于开发调试",
-      "debugDownloadEmpty": "请先输入下载 URL"
+      "debugDownloadEmpty": "请先输入下载 URL",
+      "autoCheckForUpdates": "自动检查更新",
+      "hasUpdate": "有更新"
     }
   },
   "ribbon": {

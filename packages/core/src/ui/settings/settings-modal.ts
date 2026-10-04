@@ -11,7 +11,12 @@ import { PluginMarketplaceSettingTab } from './tabs/plugin-marketplace-setting-t
 import { PluginManagerSettingTab } from "./tabs/plugin-manager-setting-tab"
 import { AboutTab } from './tabs/about-tab'
 import { Component } from 'src/common/component'
+import { PublicEvents } from 'src/common/events'
 
+
+export type SettingsModalEvents = {
+  'open'(): void
+}
 
 /**
  * @private
@@ -32,6 +37,8 @@ export class SettingsModal extends Component {
 
   activeTab!: SettingTab
   private tabs: SettingTab[] = []
+
+  private _events = new PublicEvents<SettingsModalEvents>('settings-modal')
 
   constructor(
     private config = useService('config-repository'),
@@ -59,7 +66,10 @@ export class SettingsModal extends Component {
         title: t.commandOpen,
         scope: 'global',
         hotkey: 'Ctrl+.',
-        callback: () => this.modal.open(),
+        callback: () => {
+          this._events.emit('open')
+          this.modal.open()
+        },
       }))
 
     this.modal = new Modal({
@@ -203,5 +213,13 @@ export class SettingsModal extends Component {
 
     this.main.append(tab.containerEl)
     this.activeTab.show()
+  }
+
+  on(...args: Parameters<PublicEvents<SettingsModalEvents>['on']>) {
+    return this._events.on(...args)
+  }
+
+  once(...args: Parameters<PublicEvents<SettingsModalEvents>['once']>) {
+    return this._events.once(...args)
   }
 }

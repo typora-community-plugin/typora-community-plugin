@@ -148,7 +148,9 @@
       "langDesc": "Display language of Typora Community Plugin. (Need to relaunch Typora)",
       "debugDownloadUrl": "Debug Download URL",
       "debugDownloadUrlDesc": "Enter the download URL for the Core update package, for development debugging",
-      "debugDownloadEmpty": "Please enter a download URL first"
+      "debugDownloadEmpty": "Please enter a download URL first",
+      "autoCheckForUpdates": "Automatically Check for Updates",
+      "hasUpdate": "Update available"
     }
   },
   "ribbon": {
