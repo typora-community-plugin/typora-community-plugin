@@ -22,7 +22,7 @@ export class DecoratedTextPostprocessor extends HtmlPostProcessor {
 
   private _matches: DecoratedTextMatch[] = []
 
-  private _textSelector = 'p>span'
+  private _textSelector = '.md-end-block .md-plain'
 
   private _clickContainers = new WeakSet<HTMLElement>()
 
