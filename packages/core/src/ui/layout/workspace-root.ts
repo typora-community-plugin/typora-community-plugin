@@ -145,8 +145,8 @@ export class WorkspaceRoot extends WorkspaceSplit {
 
       this.registry.register(
         vault.on('file:rename', (oldPath, newPath) => {
-          const tabs = this.findLeaf(leaf => leaf.state.path === oldPath)?.parent as WorkspaceTabs
-          tabs.renameTab(oldPath, newPath)
+          const tabs = this.findLeaf(leaf => leaf.state.path === oldPath)?.parent as WorkspaceTabs | undefined
+          tabs?.renameTab(oldPath, newPath)
         }))
 
       this.registry.register(
