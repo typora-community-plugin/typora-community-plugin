@@ -4,20 +4,21 @@
 }
 
 .typ-menuitem {
-  a {
-    margin-left: .5rem;
 
-    &:has(.fa) {
-      margin-left: -.15rem;
+  a::before {
+    display: none;
+
+    .ext-context-menu & {
+      content: ' ';
+      display: inline-block;
+      width: .5rem;
     }
   }
 
   .fa {
-    position: relative;
-    left: -.55rem;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: .8rem;
   }
-}
-
-.typ-menu .typ-menuitem a {
-  margin-left: 0;
 }
