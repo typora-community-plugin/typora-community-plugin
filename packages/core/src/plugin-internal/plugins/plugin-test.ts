@@ -78,6 +78,7 @@ export class TestPlugin extends InternalPlugin {
       app.workspace.on('file-menu', ({ menu }) => {
         menu.addItem(item =>
           item
+            .setKey('test.file.menu')
             .setTitle('Test File Menu')
             .onClick(() => useService('notice', ['Run Test File Menu Success!']).show()))
       }))
@@ -85,6 +86,7 @@ export class TestPlugin extends InternalPlugin {
       app.workspace.on('file-menu', ({ menu }) => {
         menu.addItem(item =>
           item
+            .setKey('test.file.menu.icon')
             .setIcon('info-circle')
             .setTitle('Test File Menu with Icon')
             .onClick(() => useService('notice', ['Run Test File Menu Success!']).show()))

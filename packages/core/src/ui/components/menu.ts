@@ -1,4 +1,5 @@
 import './menu.scss'
+import { useService } from "src/common/service"
 import { getElementPagePosition, html } from "src/utils"
 import { Closeable, View } from '../common/view'
 import { Component } from 'src/common/component'
@@ -209,7 +210,16 @@ export class InternalContextMenu extends Menu {
     this._registerEvent()
 
     $(this.containerEl).on('mousedown', '[data-action]', event => {
-      const key = event.target.closest('[data-action]').getAttribute('data-key')
+      const itemEl = event.target.closest('[data-action]')!
+      const action = itemEl.getAttribute('data-action')
+      const key = itemEl.getAttribute('data-key')
+
+      // built-in contextmenu item
+      if (action) return
+
+      // custom contextmenu item without data-key
+      if (!key) throw Error(`菜单项 "${itemEl.textContent}" 缺少 data-key，请检查插件代码。`)
+
       const listener = this._mousedownListeners[key]
       if (listener) listener(event)
     })
@@ -260,6 +270,7 @@ class InternalMenuItem extends MenuItem {
   }
 
   onClick(callback: (evt: MouseEvent | KeyboardEvent) => any): this {
+    if (!this.containerEl.dataset.key) return this
     const menu = this.menu as InternalContextMenu
     menu._onMouseDown(this.containerEl.dataset.key, callback)
     return this
