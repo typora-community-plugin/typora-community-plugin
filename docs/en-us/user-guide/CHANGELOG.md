@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.10.45
+
+- **Developer**
+  - fix(core/ui/editor/postprocessor): fix inability to decorate text in headings and tables
+
 ## v2.10.44
 
 - **Editor**
