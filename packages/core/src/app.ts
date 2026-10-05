@@ -29,7 +29,7 @@ import { MarkdownRenderer } from './ui/editor/markdown-renderer'
 import type { RibbonSettings } from 'src/ui/ribbon/workspace-ribbon'
 import { GlobalSearch } from './ui/sidebar/search/global-search'
 import { Statistics } from './ui/statusbar/statistics'
-import { isMarkdownUrl } from 'src/utils'
+import { isCustomProtocolUrl, isMarkdownUrl } from 'src/utils'
 import type { FileURL } from 'src/utils/types'
 import { ConfigRepository } from './io/config-repository'
 import { ExportManager } from './export-manager'
@@ -163,7 +163,7 @@ export class App extends Events<AppEvents> {
    * @param link HTTP url or file path
    */
   openLink(link: string) {
-    if (link.startsWith('http') || link.startsWith('#')) {
+    if (link.startsWith('http') || link.startsWith('#') || isCustomProtocolUrl(link)) {
       editor.tryOpenUrl(link)
     }
     else {

@@ -10,6 +10,7 @@ export * from './schedule/throttle'
 
 export * from './string/capitalize'
 export * from './string/format'
+export * from './string/is-custom-protocol-url'
 export * from './string/is-markdown-url'
 export * from './string/markdown'
 export * from './string/random-string'

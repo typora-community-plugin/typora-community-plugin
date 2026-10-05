@@ -3,6 +3,7 @@ import { editor } from "typora"
 import { Component } from "src/common/component"
 import { useService } from "src/common/service"
 import path from "src/path"
+import { isCustomProtocolUrl } from "src/utils"
 import { useSettingEffectedFeature } from "src/settings/use-setting-effect"
 
 
@@ -45,7 +46,7 @@ export class OpenLinkInCurrentWin extends Component {
       decorate(editor, tryOpenUrl, fn => (url, param1) => {
 
         // handle: file path
-        if (!(url.startsWith('#') || url.startsWith('http'))) {
+        if (!(url.startsWith('#') || url.startsWith('http') || isCustomProtocolUrl(url))) {
           useService('app').openFile(decodeURIComponent(url))
           return
         }
