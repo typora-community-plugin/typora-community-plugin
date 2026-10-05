@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.10.44
+
+- **Editor**
+  - feat(core): support custom protocol URL link handling (e.g., `vscode://`)
+
+- **Developer**
+  - feat(core/ui/components/menu): add data-key attribute validation for context menu items
+
 ## v2.10.42
 
 - fix(core/ui/components/menu): fix custom menu margin issue

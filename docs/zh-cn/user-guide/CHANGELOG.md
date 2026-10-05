@@ -1,5 +1,13 @@
 # 更新日志
 
+## v2.10.44
+
+- **编辑器**
+  - feat(core): 支持自定义协议 URL 链接处理（如 `vscode://` 等）
+
+- **开发者**
+  - feat(core/ui/components/menu): 右键菜单项新增 data-key 属性验证
+
 ## v2.10.42
 
 - fix(core/ui/components/menu): 修复自定义菜单边距问题
