@@ -12,8 +12,6 @@ import { useService } from 'src/common/service'
 const CORE_NAME = 'typora-community-plugin'
 const CORE_REPO = `${CORE_NAME}/${CORE_NAME}`
 
-const THREE_DAYS = process.env.IS_DEV ? 0 : 3 * 24 * 60 * 60 * 1000
-
 
 export type CoreSettings = {
   displayLang: string
@@ -219,9 +217,8 @@ export class AboutTab extends SettingTab {
 
     this.github.getReleaseInfo(CORE_REPO)
       .then(data => {
-        const publishedAt = new Date(data.published_at).getTime()
         const isNewer = versions.compare(coreVersion(), data.tag_name) < 0
-        this.setUpdateState(isNewer && (Date.now() - publishedAt > THREE_DAYS), data.tag_name)
+        this.setUpdateState(isNewer, data.tag_name)
       })
       .catch(error => this.logger.error(error))
   }
