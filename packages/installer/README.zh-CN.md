@@ -6,7 +6,7 @@
 
 ### Windows
 
-需要使用管理员权限运行
+Typora 如果安装到 `C:\Program Files\Typora` 或 `C:\Program Files (x86)\Typora` 需要使用管理员权限运行，其他安装目录则不需要管理员权限
 
 ```powershell
 # 自动查找 Typora 安装路径
@@ -44,7 +44,7 @@ chmod +x install-macos.sh
 
 ### Windows
 
-需要使用管理员权限运行
+Typora 如果安装到 `C:\Program Files\Typora` 或 `C:\Program Files (x86)\Typora` 需要使用管理员权限运行，其他安装目录则不需要管理员权限
 
 ```powershell
 # 自动查找 Typora 安装路径
