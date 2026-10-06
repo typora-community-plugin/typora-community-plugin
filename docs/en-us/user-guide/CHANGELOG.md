@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.10.50
+
+- feat(command): add "Recent Commands" tracking in command palette, displayed by separator group
+
+- **Settings**
+  - refactor(core/ui/settings/tab/about): remove update check delay from About tab
+
+- **Installer**
+  - feat(installer): add Typora process check to Windows installer script
+  - fix(installer): fix inability to remove `<script>` tag from loader.js in Windows installer script
+  - refactor(installer): use junction link pointing to plugins directory in Windows installer, custom installation path no longer requires admin privileges [#105](https://github.com/typora-community-plugin/typora-community-plugin/issues/105)
+
 ## v2.10.45
 
 - **Developer**

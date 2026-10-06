@@ -1,5 +1,17 @@
 # 更新日志
 
+## v2.10.50
+
+- feat(command): 命令面板新增“最近命令”追踪，按分隔组展示
+
+- **设置**
+  - refactor(core/ui/settings/tab/about): 移除"关于"标签页的检查更新延迟
+
+- **安装脚本**
+  - feat(installer): Windows 安装脚本新增 Typora 进程检查
+  - fix(installer): Windows 安装脚本修复无法移除 loader.js 的 `<script>` 标签
+  - refactor(installer): Windows 安装脚本改用 junction link 指向 plugins 目录，自定义安装位置的 Typora 不需要管理员权限安装插件 [#105](https://github.com/typora-community-plugin/typora-community-plugin/issues/105)
+
 ## v2.10.45
 
 - **开发者**
