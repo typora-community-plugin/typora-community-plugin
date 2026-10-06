@@ -11,12 +11,13 @@ If ($html -notmatch "<script src=""$userDataPath/plugins/loader\.js"" type=""mod
   [System.IO.File]::WriteAllLines($htmlPath, $html, $utf8NoBom)
 }
 
-If (-not (Test-Path "$env:USERPROFILE/AppData/Roaming/Typora/plugins")) {
-  Invoke-Expression "cmd /c mklink /d %UserProfile%\\AppData\\Roaming\\Typora\\plugins %UserProfile%\\.typora\\community-plugins"
+$pluginsPath = "$env:USERPROFILE/AppData/Roaming/Typora/plugins"
+$communityPath = "$env:USERPROFILE/.typora/community-plugins"
+If (-not (Test-Path $pluginsPath)) {
+  New-Item -ItemType Junction -Path $pluginsPath -Target $communityPath | Out-Null
 }
-
-If (-not (Test-Path "$env:USERPROFILE/.typora/community-plugins")) {
-  Copy-Item '.' -Destination "$env:UserProfile/.typora/community-plugins" -Recurse
+If (-not (Test-Path $communityPath)) {
+  Copy-Item '.' -Destination $communityPath -Recurse
 }
 
 Write-Host "`nInstallation succeeded."
