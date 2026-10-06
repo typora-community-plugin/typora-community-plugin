@@ -5,6 +5,8 @@ param (
     [string] $Path = ''
 )
 
+# @import "./check-process.ps1"
+
 $typoraHome = $Path
 
 # use Windows Operating System Registry
