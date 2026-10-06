@@ -51,11 +51,27 @@ export class PluginManagerSettingTab extends SettingTab {
     this.renderPluginList()
   }
 
-  private renderPluginList(query: string = '') {
-    query = query.toLowerCase()
-    this.cleanPluginList()
+  private _loadPromise: Promise<void> | undefined
+  private _renderVersion = 0
 
-    this.plugins.marketplace.loadCommunityPlugins().then(() => {
+  private renderPluginList(query: string = '') {
+    const version = ++this._renderVersion
+    query = query.toLowerCase()
+
+    this.renderPluginItems(query)
+    this.refreshTabPill()
+
+    if (!this._loadPromise) {
+      this._loadPromise = this.plugins.marketplace.loadCommunityPlugins()
+        .catch(() => { })
+        .finally(() => {
+          this._loadPromise = undefined
+        })
+    }
+
+    this._loadPromise.then(() => {
+      if (version !== this._renderVersion) return
+
       const { manifests, marketplace } = this.plugins
       for (const id of Object.keys(manifests)) {
         const info = marketplace.getPlugin(id)
@@ -69,13 +85,18 @@ export class PluginManagerSettingTab extends SettingTab {
         }
       }
 
+      this.renderPluginItems(query)
       this.refreshTabPill()
-
-      Object.values(this.plugins.manifests)
-        .filter(p => !query || (p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query)))
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .forEach(p => this.renderPlugin(p))
     })
+  }
+
+  private renderPluginItems(query: string) {
+    this.cleanPluginList()
+
+    Object.values(this.plugins.manifests)
+      .filter(p => !query || (p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query)))
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .forEach(p => this.renderPlugin(p))
   }
 
   private refreshTabPill() {
