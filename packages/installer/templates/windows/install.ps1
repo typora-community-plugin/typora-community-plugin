@@ -1,8 +1,9 @@
 # @import "./find-home.ps1"
 # @import "./find-window-html.ps1"
 # @import "./find-userdata.ps1"
+# @import "./find-loader-js.ps1"
 
-If ($html -notmatch "<script src=""$userDataPath/plugins/loader\.js"" type=""module""></script>") {
+If ($html -notmatch $loaderJsPattern) {
   Write-Host "Editing File: $htmlPath"
 
   $html = $html -replace '</body></html>$', "<script src=""$userDataPath/plugins/loader.js"" type=""module""></script>$&"

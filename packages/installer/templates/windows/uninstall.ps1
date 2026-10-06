@@ -1,11 +1,11 @@
 # @import "./find-home.ps1"
 # @import "./find-window-html.ps1"
-# @import "./find-userdata.ps1"
+# @import "./find-loader-js.ps1"
 
-If ($html -match '/plugins/loader\.js" type="module"></script>') {
+If ([regex]::IsMatch($html, $loaderJsPattern)) {
   echo "Editing File: $htmlPath"
 
-  $html = $html -replace "<script src=""$userDataPath/plugins/loader\.js"" type=""module""></script>", ''
+  $html = [regex]::Replace($html, $loaderJsPattern, '')
 
   $utf8NoBom = New-Object System.Text.UTF8Encoding $False
   [System.IO.File]::WriteAllLines($htmlPath, $html, $utf8NoBom)
