@@ -63,9 +63,10 @@ You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from
 | [codeblock-copy-button][p2]          | Add a copy button to each codeblock's top-right corner.   |
 | [codeblock-highlight-mapper][p3]     | Map language A to language B for highlighting it.         |
 | [codeblock-previewer-plus][p24]      | Preview codeblocks (e.g. mermaid) in floating view, with zoom and drag support |
-| [kanban][p28] <sup>`New`</sup>           | Kanban view for task management                         |
+| [kanban][p28] <sup>`New`</sup>       | Kanban view for task management                           |
 | [codeblock-runner][p27] <sup>`New`</sup> | Run code in codeblocks and display the output.        |
 | [collapsible-section][p4]            | Fold/unfold markdown section. Supports headings, list, codeblock, table, quoteblock, callout. |
+| [csv][p29] <sup>`New`</sup>          | Support viewing and editing CSV data in a table format.   |
 | [darkmode][p13]                      | General dark mode for any theme.                          |
 | [file-icon][p5]                      | Show different icon for different file type in file tree. |
 | [footnotes][p18]                     | Footnote marker suggestion & Re-index the numerical footnotes. |
@@ -74,7 +75,7 @@ You can [install plugins](./docs/en-us/user-guide/2-plugin-installation.md) from
 | [image-location][p15]                | Resolve image's location relative to vault's root.        |
 | [image-viewer][p16]                  | View all the images in current Markdown.                  |
 | [markmap][p11]                       | Support Markmap in codeblock.                             |
-| [mini-outline][p26] <sup>`New`</sup> | Floating outline on the right side of the editor.         |
+| [mini-outline][p26]                  | Floating outline on the right side of the editor.         |
 | [note-refactor][p7]                  | Extract selection to new file.                            |
 | [note-snippets][p8]                  | Use slash command to autocomplete note snippets.          |
 | [statistics][p22]                    | Display document statistics.                              |
@@ -150,3 +151,4 @@ If you have any problem or suggestion please open an issue [here](https://github
 [p26]: https://github.com/typora-community-plugin/typora-plugin-mini-outline
 [p27]: https://github.com/typora-community-plugin/typora-plugin-codeblock-runner
 [p28]: https://github.com/typora-community-plugin/typora-plugin-kanban
+[p29]: https://github.com/typora-community-plugin/typora-plugin-csv

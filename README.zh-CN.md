@@ -66,6 +66,7 @@
 | [kanban][p28] <sup>`新`</sup>    | 支持看板视图管理任务                             |
 | [codeblock-runner][p27] <sup>`新`</sup> | 运行代码块中的代码并显示输出。                   |
 | [collapsible-section][p4]        | 折叠/展开 Markdown 章节、列表、代码块、表格、引用块、标注块 |
+| [csv][p29] <sup>`新`</sup>       | 支持以表格形式查看和编辑 CSV 数据。               |
 | [darkmode][p13]                  | 适用于任意亮色主题的暗黑模式。                   |
 | [file-icon][p5]                  | 为不同类型文件显示不同图标                      |
 | [footnotes][p18]                 | 脚注标记自动完成 & 重新编号数字脚注               |
@@ -74,7 +75,7 @@
 | [image-location][p15]            | 相对于当前笔记目录的根目录解析图片路径             |
 | [image-viewer][p16]              | 查看当前文档所有图片                           |
 | [markmap][p11]                   | 支持在多行代码块中使用 Markmap                  |
-| [mini-outline][p26] <sup>`新`</sup> | 编辑器右侧的浮动大纲                        |
+| [mini-outline][p26]              | 编辑器右侧的浮动大纲                        |
 | [note-refactor][p7]              | 提取选中文本到新文件                           |
 | [note-snippets][p8]              | 使用斜线指令输入笔记片段                        |
 | [statistics][p22]                | 显示文档统计信息                                   |
@@ -149,3 +150,4 @@
 [p26]: https://github.com/typora-community-plugin/typora-plugin-mini-outline
 [p27]: https://github.com/typora-community-plugin/typora-plugin-codeblock-runner
 [p28]: https://github.com/typora-community-plugin/typora-plugin-kanban
+[p29]: https://github.com/typora-community-plugin/typora-plugin-csv

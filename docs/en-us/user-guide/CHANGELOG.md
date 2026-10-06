@@ -5,6 +5,9 @@
 - **Developer**
   - fix(core/ui/editor/postprocessor): fix inability to decorate text in headings and tables
 
+- **New Plugin**
+  - [csv][]: CSV file rendering and editing
+
 ## v2.10.44
 
 - **Editor**
@@ -946,6 +949,8 @@
 [code-folding]: https://github.com/typora-community-plugin/typora-plugin-code-folding
 
 [collapsible-section]: https://github.com/typora-community-plugin/typora-plugin-collapsible-section
+
+[csv]: https://github.com/typora-community-plugin/typora-plugin-csv
 
 [drakmode]: https://github.com/typora-community-plugin/typora-plugin-darkmode
 

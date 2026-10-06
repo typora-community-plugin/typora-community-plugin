@@ -5,6 +5,9 @@
 - **开发者**
   - fix(core/ui/editor/postprocessor): 修复在标题、表格中无法装饰文本的问题
 
+- **新增插件**
+  - [csv][]: CSV 文件渲染与编辑
+
 ## v2.10.44
 
 - **编辑器**
@@ -946,6 +949,8 @@
 [code-folding]: https://github.com/typora-community-plugin/typora-plugin-code-folding
 
 [collapsible-section]: https://github.com/typora-community-plugin/typora-plugin-collapsible-section
+
+[csv]: https://github.com/typora-community-plugin/typora-plugin-csv
 
 [drakmode]: https://github.com/typora-community-plugin/typora-plugin-darkmode
 
