@@ -101,7 +101,7 @@ export class SettingItem extends View {
     const el = html` <code></code>`
 
     if (typeof param0 === 'string') {
-      el.innerText = param0
+      el.innerHTML = param0
     } else {
       param0(el)
     }
