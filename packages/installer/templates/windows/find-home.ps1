@@ -30,8 +30,8 @@ if (-not ($typoraHome -and (Test-Path $typoraHome))) {
 # use Candidates
 if (-not ($typoraHome -and (Test-Path $typoraHome))) {
     $typoraCandidates = @(
-        'C:\Program Files\Typora'
-        'C:\Program Files (x86)\Typora'
+        "$env:ProgramFiles\Typora",
+        "${env:ProgramFiles(x86)}\Typora",
         "$env:LOCALAPPDATA\Programs\Typora"
         "$env:USERPROFILE\scoop\apps\typora\current"
     )
