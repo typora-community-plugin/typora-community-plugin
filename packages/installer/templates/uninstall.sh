@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# {{ FIND_TYPORA_HOME }}
-# {{ FIND_WINDOW_HTML }}
-# {{ FIND_USERDATA_DIR }}
+# @import "./find-home.sh"
+# @import "./find-window-html.sh"
+# @import "./find-userdata.sh"
 
 escape_for_sed() {
   echo "$1" | sed -E 's/[]\/$*.^|[]/\\&/g'

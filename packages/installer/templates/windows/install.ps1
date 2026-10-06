@@ -1,6 +1,6 @@
-# {{ FIND_TYPORA_HOME }}
-# {{ FIND_WINDOW_HTML }}
-# {{ FIND_USERDATA_DIR }}
+# @import "./find-home.ps1"
+# @import "./find-window-html.ps1"
+# @import "./find-userdata.ps1"
 
 If ($html -notmatch "<script src=""$userDataPath/plugins/loader\.js"" type=""module""></script>") {
   Write-Host "Editing File: $htmlPath"
