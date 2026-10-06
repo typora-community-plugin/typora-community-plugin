@@ -1,7 +1,9 @@
 {
   "commandModal": {
     "commandOpen": "Open Command Panel",
-    "placeholder": "Filter commands by text input"
+    "placeholder": "Filter commands by text input",
+    "recentlyUsed": "Recently Used",
+    "otherCommands": "Other Commands"
   },
   "config": {
     "commandUseGlobalConfig": "Use global settings (remove `.typora` from vault)",

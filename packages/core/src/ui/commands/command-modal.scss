@@ -61,6 +61,21 @@
   padding: .2rem .6rem;
 }
 
+.typ-command-modal__group {
+  padding: .2rem .3rem;
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  color: gray;
+  text-transform: uppercase;
+  cursor: default;
+
+  &:not(:first-child) {
+    margin-top: .2rem;
+    border-top: 1px solid rgba(0, 0, 0, .1);
+  }
+}
+
 .typ-command-modal__item {
   &:hover,
   &.active {

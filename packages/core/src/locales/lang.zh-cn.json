@@ -1,7 +1,9 @@
 {
   "commandModal": {
     "commandOpen": "打开命令面板",
-    "placeholder": "输入文本过滤命令"
+    "placeholder": "输入文本过滤命令",
+    "recentlyUsed": "最近使用",
+    "otherCommands": "其他命令"
   },
   "config": {
     "commandUseGlobalConfig": "使用全局设置 (从本地删除 `.typora`)",

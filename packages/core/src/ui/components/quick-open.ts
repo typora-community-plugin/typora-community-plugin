@@ -22,8 +22,20 @@ export function openInputBox(options?: InputBoxOptions): Promise<string | undefi
   })
 }
 
-interface QuickPickItem {
+export enum QuickPickItemKind {
+  Separator = -1,
+  Default = 0,
+}
+
+export interface QuickPickItem {
   label: string;
+  /**
+   * The kind of this item. Use `QuickPickItemKind.Separator` to render a
+   * named group. The `label` is displayed as the group title.
+   *
+   * @default QuickPickItemKind.Default
+   */
+  kind?: QuickPickItemKind;
   // description?: string;
   // details?: string;
 }
@@ -229,19 +241,7 @@ export class QuickPick extends Component {
   private onKeyup = (event: KeyboardEvent) => {
     let { key } = event;
     if (key.startsWith("Arrow")) {
-      if (key === "ArrowDown") {
-        if (this.selected < this.filteredItems.length - 1) {
-          this.selected++
-        } else {
-          this.selected = 0
-        }
-      } else if (key === "ArrowUp") {
-        if (this.selected > 0) {
-          this.selected--
-        } else {
-          this.selected = this.filteredItems.length - 1
-        }
-      }
+      this.moveSelection(key === "ArrowDown" ? 1 : -1)
       this.renderItems()
       return
     }
@@ -250,15 +250,36 @@ export class QuickPick extends Component {
       return
     }
     this.selected = -1
-    this.filteredItems = this.items.filter((c) =>
-      c.label.toLowerCase().includes(this.input.value.toLowerCase())
-    )
+    const query = this.input.value.toLowerCase()
+    this.filteredItems = query
+      ? this.items.filter((c) =>
+          c.kind !== QuickPickItemKind.Separator
+          && c.label.toLowerCase().includes(query)
+        )
+      : this.items
     this.renderItems()
+  }
+
+  private moveSelection(direction: 1 | -1) {
+    const length = this.filteredItems.length
+    if (!length) return
+
+    let index = this.selected
+    for (let i = 0; i < length; i++) {
+      index = (index + direction + length) % length
+      if (this.filteredItems[index].kind !== QuickPickItemKind.Separator) {
+        this.selected = index
+        return
+      }
+    }
   }
 
   private renderItems() {
     this.results.innerHTML = ''
     this.results.append(...this.filteredItems.map((item, i) => {
+      if (item.kind === QuickPickItemKind.Separator) {
+        return $(`<div class="typ-command-modal__group">${item.label}</div>`).get(0)
+      }
       const active = (i === this.selected) ? 'active' : ''
       return $(`<div class="typ-command-modal__item ${active}" data-index=${i}>${item.label}</div>`)
         .prepend(this.options.canPickMany ? `<input type="checkbox" ${this.picked[i] ? 'checked' : ''}> ` : '')

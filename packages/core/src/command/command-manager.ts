@@ -40,9 +40,13 @@ export class CommandManager {
 
   protected defaultCommandMap: Record<string, Command> = {}
 
-  commandMap: Record<string, Command> = {}
+  commandMap: Record<string, Command & { showInCommandPanel: boolean }> = {}
+
+  private recentCommands: string[] = []
 
   protected disposableMap: Record<string, DisposeFunc[]> = {}
+
+  private static readonly RECENT_COMMANDS_STORAGE_KEY = 'typora-plugin-core@v2.recent-commands'
 
   constructor(
     app = useEventBus('app'),
@@ -50,6 +54,8 @@ export class CommandManager {
     private config = useService('config-repository'),
     private hotkeyManager = useService('hotkey-manager'),
   ) {
+    this.recentCommands = this.loadRecentCommands()
+
     // after plugin loaded (command registered), load command hotkeys
     app.on('load', () => this.loadConfig())
   }
@@ -108,6 +114,45 @@ export class CommandManager {
     }
     catch (error) {
       this.logger.error(`run:${commandId}`, error)
+    }
+  }
+
+  addToRecent(commandId: string) {
+    const idx = this.recentCommands.indexOf(commandId)
+    if (idx > -1) {
+      this.recentCommands.splice(idx, 1)
+    }
+    this.recentCommands.unshift(commandId)
+    if (this.recentCommands.length > 5) {
+      this.recentCommands.pop()
+    }
+    this.saveRecentCommands()
+  }
+
+  getRecentCommandIds(): string[] {
+    return this.recentCommands
+  }
+
+  private loadRecentCommands(): string[] {
+    try {
+      const value = localStorage.getItem(CommandManager.RECENT_COMMANDS_STORAGE_KEY)
+      const ids = value ? JSON.parse(value) : []
+      return Array.isArray(ids) ? ids.filter(id => typeof id === 'string') : []
+    }
+    catch (error) {
+      this.logger.error('loadRecentCommands', error)
+      return []
+    }
+  }
+
+  private saveRecentCommands() {
+    try {
+      localStorage.setItem(
+        CommandManager.RECENT_COMMANDS_STORAGE_KEY,
+        JSON.stringify(this.recentCommands))
+    }
+    catch (error) {
+      this.logger.error('saveRecentCommands', error)
     }
   }
 
