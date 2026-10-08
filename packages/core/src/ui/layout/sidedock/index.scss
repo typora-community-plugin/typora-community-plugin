@@ -21,6 +21,7 @@
   // Collapsed state
   &.is-sidedock-collapsed {
     width: 0;
+    border: 0;
 
     .sidedock-content,
     .workspace-sidedock-empty-state {

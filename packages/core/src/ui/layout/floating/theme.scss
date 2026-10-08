@@ -1,6 +1,6 @@
 .typ-workspace-floating {
-  background: #fff;
-  border: 1px solid #ddd;
+  background: var(--bg-color);
+  border: 1px solid rgb(var(--typ-border-color));
   border-radius: 8px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, .15);
   font-size: 13px;
@@ -24,13 +24,13 @@
       gap: 8px;
       height: 36px;
       padding: 0 12px;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid rgb(var(--typ-border-color));
       user-select: none;
 
       .typ-titlebar-icon {
         display: flex;
         align-items: center;
-        color: #888;
+        color: var(--item-hover-text-color);
         font-size: 14px;
       }
 
@@ -41,7 +41,6 @@
         white-space: nowrap;
         font-size: 13px;
         font-weight: 500;
-        color: #333;
       }
     }
   }

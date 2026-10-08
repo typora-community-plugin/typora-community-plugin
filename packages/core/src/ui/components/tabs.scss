@@ -1,17 +1,17 @@
 :root {
   --typ-tabs-height: 2rem;
+  --typ-tab-text-color: rgb(var(--typ-color-gray-4));
+  --typ-tab-border-color: rgb(var(--typ-border-color));
+
+  @media (prefers-color-scheme: dark) {
+    --typ-tab-text-color: rgb(var(--typ-color-gray-3));
+  }
 }
 
 .typ-tabs-wrapper {
-  --typ-tab-border-color: rgba(0, 0, 0, 0.07);
-
   background: var(--bg-color);
   overflow-x: auto;
   overflow-y: hidden;
-
-  @media (prefers-color-scheme: dark) {
-    --typ-tab-border-color: #555;
-  }
 
   &::-webkit-scrollbar {
     height: 6px;
@@ -23,7 +23,7 @@
   padding: 7px 6px 0 8px;
   height: 100%;
   border-bottom: 1px solid var(--typ-tab-border-color);
-  color: #777;
+  color: var(--typ-tab-text-color);
   white-space: nowrap;
 }
 

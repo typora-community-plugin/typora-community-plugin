@@ -14,6 +14,7 @@
   --typ-color-gray-2: 200, 200, 200;
   --typ-color-gray-3: 150, 150, 150;
   --typ-color-gray-4: 100, 100, 100;
+  --typ-color-gray-4b: 70, 75, 80;
   --typ-color-gray-5: 50, 50, 50;
 
   --typ-indicator-width: 2px;
@@ -32,6 +33,8 @@
     --typ-light-bg-color: var(--typ-color-gray-5);
 
     --typ-shadow-color: var(--typ-color-gray-5);
+
+    --typ-border-color: var(--typ-color-gray-4b);
   }
 }
 
