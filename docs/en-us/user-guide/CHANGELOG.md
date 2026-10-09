@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.10.52
+
+- refactor(core/ui): improve border and text color display in dark theme
+
+- **Settings**
+  - feat(core/ui/settings/tabs/hotkey): add search functionality to hotkey settings page
+
 ## v2.10.50
 
 - feat(command): add "Recent Commands" tracking in command palette, displayed by separator group

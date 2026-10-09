@@ -1,5 +1,12 @@
 # 更新日志
 
+## v2.10.52
+
+- refactor(core/ui): 暗色主题下优化边框与文字颜色的显示效果
+
+- **设置**
+  - feat(core/ui/settings/tabs/hotkey): 快捷键设置页新增搜索功能
+
 ## v2.10.50
 
 - feat(command): 命令面板新增“最近命令”追踪，按分隔组展示
