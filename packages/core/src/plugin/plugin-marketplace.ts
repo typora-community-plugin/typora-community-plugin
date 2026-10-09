@@ -1,5 +1,6 @@
 import path from 'src/path'
 import { useService } from 'src/common/service'
+import { Events } from 'src/common/events'
 import { Notice } from 'src/ui/components/notice'
 import fs from 'src/io/fs/filesystem'
 import type { PluginManifest, PluginPosition } from "./plugin-manifest"
@@ -23,7 +24,7 @@ export type PluginReadme = {
   filepath: string
 }
 
-export class PluginMarketplace {
+export class PluginMarketplace extends Events<{ 'stats:loaded'(): void }> {
 
   pluginList: PluginMarketInfo[] = []
   pluginStats: Record<string, PluginStat> = {}
@@ -35,11 +36,12 @@ export class PluginMarketplace {
   }
 
   constructor(
-    private logger = useService('logger', ['PluginMarketplace']),
+    protected logger = useService('logger', ['PluginMarketplace']),
     private i18n = useService('i18n'),
     private github = useService('github'),
     private plugins = useService('plugin-manager'),
   ) {
+    super()
   }
 
   getPlugin(id: string) {
@@ -159,6 +161,7 @@ export class PluginMarketplace {
     return this.github.getJSON('typora-community-plugin/typora-plugin-releases', 'main', 'community-plugin-stats.json')
       .then(res => this.pluginStats = res ?? {} as any)
       .catch(() => this.pluginStats = {})
+      .finally(() => this.emit('stats:loaded'))
   }
 
   installPlugin(info: PluginMarketInfo, position: PluginPosition) {

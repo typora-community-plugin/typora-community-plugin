@@ -25,6 +25,10 @@ export class PluginManagerSettingTab extends SettingTab {
       this.containerEl.innerHTML = ''
       this.render()
     })
+
+    this.plugins.marketplace.on('stats:loaded', () => {
+      this.refreshTabPill()
+    })
   }
 
   onshow() {
