@@ -94,6 +94,7 @@
     },
     "hotkey": {
       "name": "快捷键",
+      "searchHotkey": "搜索快捷键:",
       "waitHotkey": "请按下快捷键..."
     },
     "internalPlugins": {

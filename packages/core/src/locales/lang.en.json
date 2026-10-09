@@ -94,6 +94,7 @@
     },
     "hotkey": {
       "name": "Hotkey",
+      "searchHotkey": "Search hotkeys:",
       "waitHotkey": "Press hotkey..."
     },
     "internalPlugins": {

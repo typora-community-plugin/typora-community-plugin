@@ -2,7 +2,7 @@ import { useService } from "src/common/service"
 import { SettingTab } from "../setting-tab"
 import type { Command } from "src/command/command-manager"
 import { useEventBus } from "src/common/eventbus"
-import { html } from "src/utils"
+import { debounce, html } from "src/utils"
 import { eventToHotkey, readableHotkey } from "src/hotkey-manager"
 import type { SettingItem } from "../setting-item"
 
@@ -31,13 +31,39 @@ export class HotkeySettingTab extends SettingTab {
   }
 
   render() {
+    const t = this.i18n.t.settingTabs.hotkey
+
+    this.addSetting(setting => {
+      setting.addName(t.searchHotkey)
+      setting.addText(input => {
+        input.oninput = debounce(() => {
+          this.renderHotkeyList(input.value)
+        }, 300)
+      })
+    })
+
+    this.addSettingTitle(t.name)
+    this.renderHotkeyList()
+  }
+
+  private renderHotkeyList(query: string = '') {
+    this.cleanHotkeyList()
+    query = query.toLowerCase()
+
     Object.values(this.commands.commandMap)
+      .filter(cmd => !query || cmd.title.toLowerCase().includes(query))
       .forEach(cmd => this.renderHotkey(cmd))
+  }
+
+  private cleanHotkeyList() {
+    this.containerEl.querySelectorAll('.typ-hotkey-item')
+      .forEach(el => el.remove())
   }
 
   private renderHotkey(cmd: Command) {
     this.addSetting(setting => {
       setting.addName(cmd.title)
+      setting.containerEl.classList.add('typ-hotkey-item')
 
       if (cmd.hotkey) {
         this.addHotkey(setting, cmd.id, cmd.hotkey)

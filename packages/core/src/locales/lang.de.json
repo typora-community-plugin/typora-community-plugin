@@ -94,6 +94,7 @@
     },
     "hotkey": {
       "name": "Tastenkürzel",
+      "searchHotkey": "Tastenkürzel suchen:",
       "waitHotkey": "Tastenkürzel drücken..."
     },
     "internalPlugins": {
