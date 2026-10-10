@@ -18,20 +18,31 @@ interface DiagramTarget {
 const renderers = new Map<string, CodeblockRenderer>()
 
 
+/**
+ * Normalize a fence `lang`/`mode` value into a renderer key.
+ *
+ * Typora may call `isDiagramType()` with non-string values (e.g. an object mode
+ * like `{ name: "javascript", json: true }`), its native implementation guards
+ * with `typeof lang === "string"`, so do the same here.
+ */
+function normalizeLang(lang: unknown): string {
+  return typeof lang === 'string' ? lang.toLowerCase().trim() : ''
+}
+
 function getDiagramModes(): string[] {
   return editor.diagrams.constructor.MODES
 }
 
 function findRenderer(cid: string): DiagramTarget | undefined {
   const node = editor.getNode(cid)
-  const lang = ((node ? node.get('lang') : '') || '').toLowerCase().trim()
+  const lang = normalizeLang(node ? node.get('lang') : '')
   if (lang) {
     const render = renderers.get(lang)
     if (render) return { lang, render }
   }
 
   const cm = editor.fences.getCm(cid)
-  const mode = `${cm?.getOption('mode') ?? ''}`.toLowerCase().trim()
+  const mode = normalizeLang(cm?.getOption('mode'))
   if (mode) {
     const render = renderers.get(mode)
     if (render) return { lang: mode, render }
@@ -92,9 +103,10 @@ export function hookDiagramEngine() {
   const diagrams = editor.diagrams
   const DiagramClass = diagrams.constructor
 
-  decorate.returnValue(DiagramClass, 'isDiagramType', ([lang], result) =>
-    renderers.has((lang ?? '').toLowerCase().trim()) || result
-  )
+  decorate.returnValue(DiagramClass, 'isDiagramType', ([lang], result) => {
+    const normalized = normalizeLang(lang)
+    return (!!normalized && renderers.has(normalized)) || result
+  })
 
   decorate(diagrams, 'updateDiagram', fn =>
     async function (cid: string, ...args: any[]) {
