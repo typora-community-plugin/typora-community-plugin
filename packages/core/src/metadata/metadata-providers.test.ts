@@ -1,7 +1,9 @@
 import { jest } from '@jest/globals'
 import 'src/setup-test-env'
-import { registerDefaultMetadataProviders, markdown } from './metadata-providers'
+import { registerDefaultMetadataProviders, basicMeta, markdown } from './metadata-providers'
 import type { MetadataManager, MetadataProvider } from './metadata-manager'
+import { MarkdownView } from 'src/ui/views/markdown-view'
+import { ImageView } from 'src/ui/views/image-view'
 
 function createMockManager(): jest.Mocked<MetadataManager> {
   return {
@@ -12,20 +14,26 @@ function createMockManager(): jest.Mocked<MetadataManager> {
 
 describe('registerDefaultMetadataProviders', () => {
 
-  it('should register the markdown provider for .md extension', () => {
+  it('should register the markdown and basic providers for markdown extensions', () => {
     const mock = createMockManager()
     registerDefaultMetadataProviders(mock)
 
-    expect(mock.register).toHaveBeenCalledWith('md', expect.any(Function))
-    expect(mock.register).toHaveBeenCalledTimes(1)
+    for (const ext of MarkdownView.extensions) {
+      expect(mock.register).toHaveBeenCalledWith(ext, markdown)
+      expect(mock.register).toHaveBeenCalledWith(ext, basicMeta)
+    }
   })
 
-  it('should not register providers for other extensions', () => {
+  it('should register the basic provider for image extensions', () => {
     const mock = createMockManager()
     registerDefaultMetadataProviders(mock)
 
-    // Only 'md' is registered, verify count is exactly 1
-    expect(mock.register).toHaveBeenCalledTimes(1)
+    for (const ext of ImageView.extensions) {
+      expect(mock.register).toHaveBeenCalledWith(ext, basicMeta)
+    }
+
+    const expectedCalls = MarkdownView.extensions.length * 2 + ImageView.extensions.length
+    expect(mock.register).toHaveBeenCalledTimes(expectedCalls)
   })
 })
 
@@ -47,7 +55,7 @@ author: Test Author
 ---
 Some content here`)
 
-    const result = await markdown(ctx)
+    const { metadata: result } = await markdown(ctx)
 
     expect(result.frontmatter).toEqual({
       title: 'Test Title',
@@ -66,7 +74,7 @@ tags:
 ---
 body text`)
 
-    const result = await markdown(ctx)
+    const { metadata: result } = await markdown(ctx)
 
     expect(result.frontmatter.tags).toEqual(['tagA', 'tagB', 'nested/tag'])
   })
@@ -77,7 +85,7 @@ tags: [urgent, meeting]
 ---
 body text`)
 
-    const result = await markdown(ctx)
+    const { metadata: result } = await markdown(ctx)
 
     expect(result.tags).toHaveLength(2)
     expect(result.tags[0].name).toBe('urgent')
@@ -92,7 +100,7 @@ tags: standalone
 ---
 body text`)
 
-    const result = await markdown(ctx)
+    const { metadata: result } = await markdown(ctx)
 
     expect(result.tags).toHaveLength(1)
     expect(result.tags[0].name).toBe('standalone')
@@ -104,7 +112,7 @@ title: No Tags
 ---
 body text`)
 
-    const result = await markdown(ctx)
+    const { metadata: result } = await markdown(ctx)
 
     expect(result.tags).toEqual([])
   })
@@ -122,7 +130,7 @@ More text.
 
 `)
 
-    const result = await markdown(ctx)
+    const { metadata: result } = await markdown(ctx)
 
     expect(result.titles).toHaveLength(4)
     expect(result.titles[0].name).toBe('Main Title')
@@ -140,7 +148,7 @@ title: Flat
 ---
 No headings here, just plain text.`)
 
-    const result = await markdown(ctx)
+    const { metadata: result } = await markdown(ctx)
 
     expect(result.titles).toEqual([])
   })
@@ -150,7 +158,7 @@ No headings here, just plain text.`)
 
 Just plain markdown without YAML frontmatter.`)
 
-    const result = await markdown(ctx)
+    const { metadata: result } = await markdown(ctx)
 
     expect(result.frontmatter).toEqual({})
     expect(result.tags).toEqual([])
@@ -164,7 +172,7 @@ title: # Not A Heading
 ---
 # Real Heading`)
 
-    const result = await markdown(ctx)
+    const { metadata: result } = await markdown(ctx)
 
     expect(result.titles).toHaveLength(1)
     expect(result.titles[0].name).toBe('Real Heading')
@@ -176,7 +184,7 @@ title: Test
 ---
 # Heading [with] (brackets) & "quotes"`)
 
-    const result = await markdown(ctx)
+    const { metadata: result } = await markdown(ctx)
 
     expect(result.titles).toHaveLength(1)
     expect(result.titles[0].name).toBe('Heading [with] (brackets) & "quotes"')
@@ -189,7 +197,7 @@ title: Test
 # First Heading at Line 6
 ## Second at Line 7`)
 
-    const result = await markdown(ctx)
+    const { metadata: result } = await markdown(ctx)
 
     expect(result.titles[0].lineNumber).toBeGreaterThanOrEqual(1)
     expect(result.titles[1].lineNumber).toBeGreaterThan(result.titles[0].lineNumber)
@@ -208,7 +216,7 @@ title: Types Test
 ---
 content`)
 
-    const result = await markdown(ctx)
+    const { metadata: result } = await markdown(ctx)
 
     expect(result.frontmatter.count).toBe('42')
     expect(result.frontmatter.active).toBe('true')
@@ -222,7 +230,7 @@ title: Deep File
 ---
 content`)
 
-    const result = await markdown(ctx)
+    const { metadata: result } = await markdown(ctx)
 
     expect(result.frontmatter.title).toBe('Deep File')
   })
