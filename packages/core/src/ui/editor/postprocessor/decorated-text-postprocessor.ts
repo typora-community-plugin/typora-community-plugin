@@ -43,6 +43,13 @@ export class DecoratedTextPostprocessor extends HtmlPostProcessor {
   }
 
   process(textEl: HTMLElement, context: PostProcessorContext) {
+    // Skip while an IME composition (e.g. Chinese pinyin) is active. Mutating
+    // the DOM via `markRange` replaces the text node and breaks the ongoing
+    // composition, which makes the browser re-insert the composing text and
+    // duplicates the input (e.g. `#nih` -> `#ninih`). The `edit` event fired
+    // after `compositionend` will process the committed text.
+    if (editor.isIME) return
+
     this._bindClick(context.containerEl)
 
     // `markRange` replaces the text node, which makes the browser move the

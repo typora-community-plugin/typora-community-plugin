@@ -254,6 +254,8 @@ interface Editor {
   fences: Fences
   focusCid: string
   imgEdit: ImageEdit
+  /** Whether an IME composition is currently active. */
+  isIME: boolean
   library: Library
   localSettingBridge: LocalSettingBridge
   nodeMap: NodeMap
