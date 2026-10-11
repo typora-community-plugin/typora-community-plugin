@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.10.56
+
+- feat(core/metadata): Metadata API add file change methods (update/remove/rename)
+- refactor(core/metadata): keep metadata cache synchronized with file changes
+- fix(core/ui/quick-open-panel): recent files cache not updated when opening a file
+
+- **Editor**
+  - fix(core/ui/editor/codeblock): fix some code blocks unable to render
+  - fix(core/ui/editor/postprocessor): prevent decorated text from being post-processed during IME input
+
 ## v2.10.52
 
 - refactor(core/ui): improve border and text color display in dark theme

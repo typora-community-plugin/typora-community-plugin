@@ -1,5 +1,15 @@
 # 更新日志
 
+## v2.10.56
+
+- feat(core/metadata): Metadata API 新增文件变更方法（update/remove/rename）
+- refactor(core/metadata): 保持元数据缓存与文件变更同步
+- fix(core/ui/quick-open-panel): 打开文件时没有更新“最近打开”缓存
+
+- **编辑器**
+  - fix(core/ui/editor/codeblock): 修复部分代码块无法渲染的问题
+  - fix(core/ui/editor/postprocessor): 防止 IME 输入期间装饰文本被后处理
+
 ## v2.10.52
 
 - refactor(core/ui): 暗色主题下优化边框与文字颜色的显示效果
