@@ -6,6 +6,7 @@ import { StickyEvents } from 'src/common/events'
 import { useService } from 'src/common/service'
 import { MiniDexie } from 'src/utils/indexed-db'
 import { TagObject } from 'src/utils'
+import type { DisposeFunc } from 'src/utils/types'
 
 
 class IndexAbortedError extends Error {
@@ -154,6 +155,10 @@ function isPlainObject(value: any): boolean {
   return value !== null && typeof value === 'object' && !Array.isArray(value)
 }
 
+function normalizeExtension(ext: string): string {
+  return ext.startsWith('.') ? ext.toLowerCase() : `.${ext.toLowerCase()}`
+}
+
 interface Cache {
   [filePath: string]: CacheEntry
 }
@@ -252,11 +257,32 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
 
   /**
    * Register a metadata provider for a file extension (without the leading `.`).
+   *
+   * @returns A dispose function that unregisters the provider.
    */
-  register(ext: string, provider: MetadataProvider, opts?: RegisterOptions): void {
-    const key = ext.startsWith('.') ? ext.toLowerCase() : `.${ext.toLowerCase()}`
+  register(ext: string, provider: MetadataProvider, opts?: RegisterOptions): DisposeFunc {
+    const key = normalizeExtension(ext)
     if (!this.providers[key]) this.providers[key] = []
     this.providers[key].push({ provider, merge: opts?.merge })
+    return () => this.unregister(ext, provider)
+  }
+
+  /**
+   * Unregister a previously registered metadata provider.
+   *
+   * Note: this only affects future processing. Metadata already merged into the
+   * cache keeps the removed provider's data until the file is re-indexed.
+   */
+  unregister(ext: string, provider: MetadataProvider): void {
+    const key = normalizeExtension(ext)
+    const entries = this.providers[key]
+    if (!entries) return
+
+    const index = entries.findIndex(entry => entry.provider === provider)
+    if (index === -1) return
+
+    entries.splice(index, 1)
+    if (entries.length === 0) delete this.providers[key]
   }
 
   /**
