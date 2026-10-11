@@ -102,8 +102,13 @@ class QuickOpenInCurrentWin extends Component {
           (await fs.stat(args[1])).isFile() &&
           !args[2].forceCreateWindow
         ) {
-          editor.library.openFile(args[1])
+          const filePath = args[1] as string
+          editor.library.openFile(filePath)
           editor.library.refreshPanelCommand()
+          fn('app.sendEvent', 'updateQuickOpenCache', {
+            toAdd: filePath,
+            group: 'recentFiles',
+          })
           return
         }
         return fn(...args)
