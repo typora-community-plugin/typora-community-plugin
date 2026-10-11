@@ -1,5 +1,7 @@
 import fs from 'src/io/fs/filesystem'
 import path from 'src/path'
+import { editor, File } from 'typora'
+import decorate from '@plylrnsdy/decorate.js'
 import { StickyEvents } from 'src/common/events'
 import { useService } from 'src/common/service'
 import { MiniDexie } from 'src/utils/indexed-db'
@@ -66,13 +68,14 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
 
   private concurrencyLimit: number
   private isIndexing: boolean = false
+  private _quickOpenWorker: Worker | undefined
 
   /**
    * @param options.concurrency Number of files processed simultaneously, default 10
    */
   constructor(
     options: { concurrency?: number } = {},
-    editor = useService('markdown-editor'),
+    markdownEditor = useService('markdown-editor'),
     workspace = useService('workspace'),
     private vault = useService('vault'),
   ) {
@@ -82,13 +85,60 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
     this.setSticky('index:done')
 
     workspace.on('file:will-save', (file) => {
-      this.processFile(this.cache, this.vault.path, file, editor.getMarkdown())
+      this.processFile(this.cache, this.vault.path, file, markdownEditor.getMarkdown())
         .then(() => {
           const relativePath = path.relative(this.vault.path, file)
           this.emit('index:update', relativePath)
         })
         .catch(() => { })
     })
+
+    // Keep the cache in sync with changes of the file system.
+    this.vault.on('file:delete', (filePath) => this.remove(filePath))
+    this.vault.on('file:rename', (oldPath, newPath) => this.rename(oldPath, newPath))
+    this.vault.on('directory:rename', (oldPath, newPath) => this.rename(oldPath, newPath))
+
+    // Keep the cache in sync with the native Quick Open worker.
+    this._interceptQuickOpenWorker()
+
+    // The worker is created lazily along with the panel, so re-attach on use.
+    decorate.afterCall(editor.quickOpenPanel, 'initFileCache', () =>
+      this._interceptQuickOpenWorker())
+  }
+
+  /**
+   * Intercept the native Quick Open worker so that the files it adds or removes
+   * (e.g. new files) are reflected in the metadata cache.
+   *
+   * Only the metadata cache is kept in sync; every message is still forwarded
+   * to the original handler, so the native panel is not affected.
+   */
+  private _interceptQuickOpenWorker(): void {
+    if (!File.isNode) return
+
+    const worker = (editor.quickOpenPanel as any)?.worker as Worker | undefined
+    if (!worker || worker === this._quickOpenWorker) return
+
+    const original = worker.onmessage
+    worker.onmessage = (event: MessageEvent) => {
+      switch (event.data?.type) {
+        case 'addInitFiles': {
+          const [filePaths] = event.data.detail as [string[]]
+          for (const filePath of filePaths) {
+            this.update(filePath).catch(() => { })
+          }
+          break
+        }
+        case 'removeInitFiles': {
+          const [prefix] = event.data.detail as [string]
+          if (prefix) this.remove(prefix)
+          break
+        }
+      }
+      original?.call(worker, event)
+    }
+
+    this._quickOpenWorker = worker
   }
 
   /**
