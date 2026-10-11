@@ -8,11 +8,14 @@ escape_for_sed() {
   echo "$1" | sed -E 's/[]\/$*.^|[]/\\&/g'
 }
 
-plugin_script=$(escape_for_sed "<script src=\"$userdata_url/plugins/loader.js\" type=\"module\"></script>")
+plugin_script="<script src=\"$userdata_url/plugins/loader.js\" type=\"module\"></script>"
 
+# Compare against the raw tag; the escaped form is only for sed.
 if [[ "$html" == *"$plugin_script"* ]]; then
-  # Remove script
-  new_html=$(echo "$html" | sed "s|$plugin_script||")
+  echo "Editing File: $html_path"
+
+  # Remove script (every copy, in case an older installer inserted it more than once)
+  new_html=$(echo "$html" | sed "s|$(escape_for_sed "$plugin_script")||g")
 
   # Update html
   echo "$new_html" > "$html_path"
