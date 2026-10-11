@@ -239,6 +239,61 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
   }
 
   /**
+   * Re-index a single file (absolute path) and keep the cache up to date.
+   */
+  async update(filePath: string): Promise<void> {
+    await this.processFile(this.cache, this.vault.path, filePath)
+
+    const relativePath = path.relative(this.vault.path, filePath)
+    if (relativePath in this.cache) {
+      this.emit('index:update', relativePath)
+    }
+  }
+
+  /**
+   * Remove a file or a folder subtree (absolute path) from the cache.
+   */
+  remove(filePath: string): void {
+    const relativePath = path.relative(this.vault.path, filePath)
+    if (!relativePath) return
+
+    const prefix = relativePath + path.sep
+    let changed = false
+    for (const key of Object.keys(this.cache)) {
+      if (key === relativePath || key.startsWith(prefix)) {
+        delete this.cache[key]
+        changed = true
+      }
+    }
+
+    if (changed) {
+      this.emit('index:update', relativePath)
+    }
+  }
+
+  /**
+   * Move a file or a folder subtree (absolute paths) in the cache.
+   */
+  rename(oldPath: string, newPath: string): void {
+    const oldRelative = path.relative(this.vault.path, oldPath)
+    const newRelative = path.relative(this.vault.path, newPath)
+    if (!oldRelative) return
+
+    const prefix = oldRelative + path.sep
+    for (const key of Object.keys(this.cache)) {
+      if (key === oldRelative) {
+        this.cache[newRelative] = this.cache[key]
+        delete this.cache[key]
+      } else if (key.startsWith(prefix)) {
+        this.cache[newRelative + key.slice(oldRelative.length)] = this.cache[key]
+        delete this.cache[key]
+      }
+    }
+
+    this.emit('index:update', newRelative)
+  }
+
+  /**
    * Clear all cache
    */
   clear(): void {
