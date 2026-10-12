@@ -107,7 +107,15 @@ export class Workspace extends Events<WorkspaceEvents> {
 
     this.activeEditor = useService('markdown-editor')
 
-    setTimeout(() => this._children.forEach(child => child.load()))
+    setTimeout(() => {
+      for (const child of this._children) {
+        try {
+          child.load()
+        } catch (error) {
+          this.logger.error('Failed to load workspace child.', error)
+        }
+      }
+    })
 
     // Insert rightSplit into DOM (position: fixed, so it floats independently)
     document.body.appendChild(this.rightSplit.containerEl)
