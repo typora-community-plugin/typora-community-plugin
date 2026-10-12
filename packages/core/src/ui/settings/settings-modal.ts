@@ -11,11 +11,17 @@ import { PluginMarketplaceSettingTab } from './tabs/plugin-marketplace-setting-t
 import { PluginManagerSettingTab } from "./tabs/plugin-manager-setting-tab"
 import { AboutTab } from './tabs/about-tab'
 import { Component } from 'src/common/component'
-import { PublicEvents } from 'src/common/events'
+import { PublicStickyEvents } from 'src/common/events'
 
 
 export type SettingsModalEvents = {
   'open'(): void
+
+  /**
+   * Emitted once the modal has loaded and its setting groups exist.
+   * Sticky: subscribers registered after loading are invoked immediately.
+   */
+  'load'(): void
 }
 
 /**
@@ -38,7 +44,7 @@ export class SettingsModal extends Component {
   activeTab!: SettingTab
   private tabs: SettingTab[] = []
 
-  private _events = new PublicEvents<SettingsModalEvents>('settings-modal')
+  private _events = new PublicStickyEvents<SettingsModalEvents>('settings-modal')
 
   constructor(
     private config = useService('config-repository'),
@@ -46,6 +52,8 @@ export class SettingsModal extends Component {
     private commands = useService('command-manager'),
   ) {
     super()
+
+    this._events.setSticky('load')
 
     config.on('switch', () => {
       const t = i18n.t.settingModal
@@ -113,6 +121,8 @@ export class SettingsModal extends Component {
     this.addGroup(t.groupInternalPlugins)
 
     this.addGroup(t.groupPlugins)
+
+    this._events.emit('load')
   }
 
   private onItemClick = (event: MouseEvent) => {
@@ -215,11 +225,11 @@ export class SettingsModal extends Component {
     this.activeTab.show()
   }
 
-  on(...args: Parameters<PublicEvents<SettingsModalEvents>['on']>) {
+  on(...args: Parameters<PublicStickyEvents<SettingsModalEvents>['on']>) {
     return this._events.on(...args)
   }
 
-  once(...args: Parameters<PublicEvents<SettingsModalEvents>['once']>) {
+  once(...args: Parameters<PublicStickyEvents<SettingsModalEvents>['once']>) {
     return this._events.once(...args)
   }
 }

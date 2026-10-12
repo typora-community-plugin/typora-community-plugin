@@ -1,7 +1,7 @@
 import 'src/setup-test-env'
 import { jest } from '@jest/globals'
 import { Events } from './events'
-import { EventListener, EventDefination, PublicEvents } from './events'
+import { EventListener, EventDefination, PublicEvents, PublicStickyEvents } from './events'
 
 // Define test event types
 type TestEvents = {
@@ -285,5 +285,59 @@ describe('PublicEvents', () => {
 
     expect(listener).toHaveBeenCalledWith('test', 1)
     expect(publicEvents.getEventNames()).toEqual(['test-event'])
+  })
+})
+
+describe('PublicStickyEvents', () => {
+  let events: PublicStickyEvents<TestEvents>
+
+  beforeEach(() => {
+    events = new PublicStickyEvents<TestEvents>(`public-sticky-scope-${Date.now()}-${Math.random()}`)
+  })
+
+  test('should not replay a non-sticky event to late subscribers', () => {
+    events.emit('another-event')
+
+    const listener = jest.fn()
+    events.on('another-event', listener)
+
+    expect(listener).not.toHaveBeenCalled()
+  })
+
+  test('should replay a sticky event to late subscribers', () => {
+    events.setSticky('another-event')
+    events.emit('another-event')
+
+    const listener = jest.fn()
+    events.on('another-event', listener)
+
+    expect(listener).toHaveBeenCalledTimes(1)
+  })
+
+  test('once() should invoke immediately without registering when sticky already emitted', () => {
+    events.setSticky('test-event')
+    events.emit('test-event', 'ready', 1)
+
+    const listener = jest.fn()
+    events.once('test-event', listener)
+
+    expect(listener).toHaveBeenCalledWith('ready', 1)
+
+    events.emit('test-event', 'again', 2)
+    expect(listener).toHaveBeenCalledTimes(1)
+  })
+
+  test('once() should fire once on the next emit when not yet emitted', () => {
+    events.setSticky('test-event')
+
+    const listener = jest.fn()
+    events.once('test-event', listener)
+    expect(listener).not.toHaveBeenCalled()
+
+    events.emit('test-event', 'ready', 1)
+    expect(listener).toHaveBeenCalledTimes(1)
+
+    events.emit('test-event', 'again', 2)
+    expect(listener).toHaveBeenCalledTimes(1)
   })
 })

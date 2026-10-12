@@ -49,8 +49,10 @@ export class TestPlugin extends InternalPlugin {
 
     // Test SettingTab
     const modal = app.workspace.getViewByType(SettingsModal)!
-    setTimeout(() => this.register(modal.addGroupedTab(2, new SettingItemTestTab())))
-    setTimeout(() => this.register(modal.addGroupedTab(2, new EditaleTableTestTab())))
+    modal.once('load', () => {
+      this.register(modal.addGroupedTab(2, new SettingItemTestTab()))
+      this.register(modal.addGroupedTab(2, new EditaleTableTestTab()))
+    })
 
     // Test Statistic
     this.register(

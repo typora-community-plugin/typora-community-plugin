@@ -3,11 +3,13 @@ import { jest, describe, expect, test } from '@jest/globals'
 import { registerService } from 'src/common/service'
 import { PluginManager } from './plugin-manager'
 
-// `PluginManager` 构造时会用 setTimeout 懒加载一个真实的 `PluginMarketplace`，
-// 这里注册它构造时需要的服务，避免定时器回调抛异常。
+// `PluginManager.marketplace` 会在首次访问时懒加载 `plugin-marketplace` 服务，
+// 这里注册它可能间接依赖的服务，避免测试中抛异常。
+const marketplaceStub = { marker: 'plugin-marketplace' } as any
 registerService('i18n', () => ({ locale: 'en', t: { notice: { clearAll: '' } } }) as any)
 registerService('github', () => ({}) as any)
 registerService('plugin-manager', () => ({ manifests: {} }) as any)
+registerService('plugin-marketplace', () => marketplaceStub)
 
 // Patch $ AFTER importing PluginManager so the Notice class (which uses $ internally
 // via its constructor) gets our patched version when .then() callbacks execute.
@@ -112,5 +114,27 @@ describe('PluginManager.updatePlugin()', () => {
 
     expect(enableFinished).toBe(true)
     expect(manager.enabledPlugins[ID]).toBe(true)
+  })
+})
+
+describe('PluginManager.marketplace', () => {
+  test('should resolve synchronously from the plugin-marketplace service', () => {
+    const logger = { debug() { }, info() { }, warn() { }, error() { } } as any
+    const config = {
+      configDir: '/config',
+      readConfigJson: jest.fn(() => ({})),
+      writeConfigJson: jest.fn(),
+      on: jest.fn(),
+    } as any
+    const vault = { path: '/vault' } as any
+    const i18n = { t: {} } as any
+    const env = { PLUGIN_GLOBAL_DIR: '' } as any
+
+    const manager = new PluginManager(logger, config, vault, i18n, env)
+
+    // 修复前 `marketplace` 由构造函数里的 `setTimeout` 赋值，此处会是 `undefined`；
+    // 修复后是同步解析的服务实例。
+    expect(manager.marketplace).toBe(marketplaceStub)
+    expect(manager.marketplace).toBe(marketplaceStub)
   })
 })

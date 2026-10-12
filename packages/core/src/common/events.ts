@@ -84,6 +84,18 @@ export class Events<E extends EventDefination> {
 }
 
 
+export class PublicEvents<E extends EventDefination> extends Events<E> {
+
+  constructor(scope: string) {
+    super(scope)
+  }
+
+  public emit<K extends keyof E>(event: K, ...args: Parameters<E[K]>) {
+    return super.emit(event, ...args)
+  }
+}
+
+
 export class StickyEvents<E extends EventDefination> extends Events<E> {
   protected _stickyEvents: Record<keyof E, boolean> = {} as any
   protected _lastArgs: Record<keyof E, any[]> = {} as any
@@ -137,7 +149,7 @@ export class StickyEvents<E extends EventDefination> extends Events<E> {
 }
 
 
-export class PublicEvents<E extends EventDefination> extends Events<E> {
+export class PublicStickyEvents<E extends EventDefination> extends StickyEvents<E> {
 
   constructor(scope: string) {
     super(scope)
@@ -145,5 +157,9 @@ export class PublicEvents<E extends EventDefination> extends Events<E> {
 
   public emit<K extends keyof E>(event: K, ...args: Parameters<E[K]>) {
     return super.emit(event, ...args)
+  }
+
+  public setSticky<K extends keyof E>(event: K) {
+    return super.setSticky(event)
   }
 }

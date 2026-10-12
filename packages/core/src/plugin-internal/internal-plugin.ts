@@ -25,9 +25,7 @@ export class InternalPlugin extends Plugin<any> {
   registerSettings() { }
 
   registerSettingTab(tab: SettingTab) {
-    setTimeout(() =>
-      this.register(
-        this.app.workspace.getViewByType(SettingsModal)!
-          .addGroupedTab(1, tab)))
+    const settingsModal = this.app.workspace.getViewByType(SettingsModal)!
+    settingsModal.once('load', () => this.register(settingsModal.addGroupedTab(1, tab)))
   }
 }

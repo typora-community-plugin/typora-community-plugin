@@ -22,7 +22,23 @@ export class PluginManager {
   instances: Record<string, Plugin> = {}
   styles: Record<string, string> = {}
 
-  marketplace!: PluginMarketplace
+  private _marketplace?: PluginMarketplace
+
+  /**
+   * Lazily resolve the shared `plugin-marketplace` service.
+   *
+   * Resolving synchronously (instead of in a `setTimeout`) keeps `marketplace`
+   * available as soon as the manager is constructed, so consumers such as
+   * `PluginManagerSettingTab` can subscribe during `SettingsModal.onload`
+   * without racing the manager's initialization.
+   */
+  get marketplace(): PluginMarketplace {
+    return this._marketplace ??= useService('plugin-marketplace')
+  }
+
+  set marketplace(marketplace: PluginMarketplace) {
+    this._marketplace = marketplace
+  }
 
   constructor(
     private logger = useService('logger', ['PluginManager']),
@@ -30,11 +46,7 @@ export class PluginManager {
     private vault = useService('vault'),
     private i18n = useService('i18n'),
     private env = useService('env'),
-  ) {
-    setTimeout(() => {
-      this.marketplace = new PluginMarketplace()
-    })
-  }
+  ) { }
 
   get pluginsDataDir() {
     return path.join(this.config.configDir, 'data')
