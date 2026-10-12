@@ -4,9 +4,9 @@ import { editor, File } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
 import { StickyEvents } from 'src/common/events'
 import { useService } from 'src/common/service'
-import { MiniDexie } from 'src/utils/indexed-db'
-import { TagObject } from 'src/utils'
 import type { DisposeFunc } from 'src/utils/types'
+import { mergeMetadata, type MergeSpec } from './metadata-merge'
+import { deleteCacheEntries, loadCache, saveCache, type Cache, type CacheEntry } from './metadata-store'
 
 
 class IndexAbortedError extends Error {
@@ -46,15 +46,6 @@ class MetadataProviderContext {
 
 export type MetadataProvider = (ctx: MetadataProviderContext) => Promise<Record<string, any>>
 
-export type MergeStrategy =
-  | 'replace'
-  | 'deep'
-  | 'concat'
-  | 'concatUnique'
-
-/** A merge declaration keyed by dot-path, e.g. `{ 'metadata.tags': 'concatUnique' }`. `'*'` is the fallback. */
-export type MergeSpec = Record<string, MergeStrategy>
-
 export interface RegisterOptions {
   merge?: MergeSpec
 }
@@ -64,115 +55,8 @@ interface ProviderEntry {
   merge?: MergeSpec
 }
 
-/**
- * Merge the results of multiple metadata providers into a single object.
- *
- * The strategy for each key is resolved from the provider's {@link MergeSpec}
- * by dot-path (`spec[keyPath]`), falling back to `spec['*']` for array values,
- * and finally to a default: plain objects are merged deeply, everything else is
- * replaced.
- */
-export function mergeMetadata(
-  entries: { data: Record<string, any>; spec?: MergeSpec }[],
-): Record<string, any> {
-  return entries.reduce(
-    (acc, { data, spec }) => mergeInto(acc, data, spec ?? {}, ''),
-    {} as Record<string, any>,
-  )
-}
-
-function mergeInto(
-  target: Record<string, any>,
-  source: Record<string, any>,
-  spec: MergeSpec,
-  path: string,
-): Record<string, any> {
-  for (const key of Object.keys(source)) {
-    const keyPath = path ? `${path}.${key}` : key
-    const value = source[key]
-    const isArray = Array.isArray(value) || Array.isArray(target[key])
-    // `'*'` only acts as the fallback for array values; objects always merge
-    // deeply so intermediate namespaces (e.g. `metadata`) are not clobbered.
-    const strategy = spec[keyPath]
-      ?? (isArray ? spec['*'] : undefined)
-      ?? defaultStrategy(target[key], value)
-
-    target[key] = applyStrategy(strategy, target[key], value, spec, keyPath)
-  }
-  return target
-}
-
-function defaultStrategy(existing: any, incoming: any): MergeStrategy {
-  return isPlainObject(existing) && isPlainObject(incoming) ? 'deep' : 'replace'
-}
-
-function applyStrategy(
-  strategy: MergeStrategy,
-  existing: any,
-  incoming: any,
-  spec: MergeSpec,
-  keyPath: string,
-): any {
-  switch (strategy) {
-    case 'deep':
-      if (isPlainObject(existing) && isPlainObject(incoming)) {
-        return mergeInto({ ...existing }, incoming, spec, keyPath)
-      }
-      return incoming
-    case 'concat':
-      return (Array.isArray(existing) ? existing : []).concat(
-        Array.isArray(incoming) ? incoming : [incoming],
-      )
-    case 'concatUnique':
-      return uniqueConcat(
-        Array.isArray(existing) ? existing : [],
-        Array.isArray(incoming) ? incoming : [incoming],
-      )
-    case 'replace':
-    default:
-      return incoming
-  }
-}
-
-function uniqueConcat(existing: any[], incoming: any[]): any[] {
-  const seen = new Set<string>()
-  const result: any[] = []
-  for (const item of [...existing, ...incoming]) {
-    const key = dedupeKey(item)
-    if (seen.has(key)) continue
-    seen.add(key)
-    result.push(item)
-  }
-  return result
-}
-
-function dedupeKey(item: any): string {
-  if (isPlainObject(item) && typeof item.name === 'string') return `name:${item.name}`
-  return `json:${JSON.stringify(item)}`
-}
-
-function isPlainObject(value: any): boolean {
-  return value !== null && typeof value === 'object' && !Array.isArray(value)
-}
-
 function normalizeExtension(ext: string): string {
   return ext.startsWith('.') ? ext.toLowerCase() : `.${ext.toLowerCase()}`
-}
-
-interface Cache {
-  [filePath: string]: CacheEntry
-}
-
-interface CacheEntry {
-  mtime: number // Last modification timestamp
-  metadata: Record<string, any> & {
-    frontmatter: Record<string, any>
-    tags: TagObject[]
-  }
-}
-
-const DB_SCHEMA = {
-  files: 'path, metadata'
 }
 
 export class MetadataManager extends StickyEvents<MetadataEvents> {
@@ -311,7 +195,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
 
       signal.throwIfAborted()
       const vaultId = this.vault.id
-      const indexingCache = await this.loadFromIndexedDb(vaultId)
+      const indexingCache = await loadCache(vaultId)
 
       signal.throwIfAborted()
       await this.processQueue(indexingCache, vaultPath, allFiles, signal)
@@ -321,7 +205,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
 
       this.cache = indexingCache
       this.emit('index:done')
-      this.saveToIndexedDb(vaultId, indexingCache)
+      saveCache(vaultId, indexingCache)
 
     } catch (error: any) {
       if (error.name === 'AbortError') {
@@ -500,10 +384,8 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
     }
 
     if (removed.length > 0) {
-      new MiniDexie(`metadata:${this.vault.id}`)
-        .version(1).stores(DB_SCHEMA)
-        .files.bulkDelete(removed)
-        .catch((e: unknown) => console.error('[Metadata] Failed to delete from IndexedDB:', e))
+      deleteCacheEntries(this.vault.id, removed).catch((e: unknown) =>
+        console.error('[Metadata] Failed to delete from IndexedDB:', e))
       this.emit('index:update', relativePath)
     }
   }
@@ -540,45 +422,5 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
    */
   clear(): void {
     this.cache = {}
-  }
-
-  async loadFromIndexedDb(vaultId: string): Promise<Cache> {
-    const loadedCache: Cache = {}
-
-    try {
-      const db = new MiniDexie(`metadata:${vaultId}`)
-        .version(1).stores(DB_SCHEMA)
-
-      const records = await db.files.toArray()
-      for (const record of records) {
-        const { path, metadata } = record
-        loadedCache[path] = metadata as CacheEntry
-      }
-
-      console.log(`[Metadata] Loaded ${records.length} items from IndexedDB.`)
-    } catch (e) {
-      console.error('[Metadata] Failed to load IndexedDB:', e)
-    }
-
-    return loadedCache
-  }
-
-  async saveToIndexedDb(vaultId: string, cache: Cache): Promise<void> {
-    try {
-      const db = new MiniDexie(`metadata:${vaultId}`)
-        .version(1).stores(DB_SCHEMA)
-
-      const rows = Object.entries(cache).map(([filePath, metadata]) => ({
-        path: filePath,
-        metadata,
-      }))
-
-      // Replace the whole store so entries removed from the cache do not linger.
-      await db.files.clear()
-      await db.files.bulkPut(rows)
-      console.log(`[Metadata] Saved ${rows.length} items to IndexedDB.`)
-    } catch (e) {
-      console.error('[Metadata] Failed to save IndexedDB:', e)
-    }
   }
 }
