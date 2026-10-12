@@ -183,6 +183,8 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
   private concurrencyLimit: number
   private isIndexing: boolean = false
   private _quickOpenWorker: Worker | undefined
+  private _pendingUpdates: Array<() => Promise<void>> = []
+  private _drainingUpdates = false
 
   /**
    * @param options.concurrency Number of files processed simultaneously, default 10
@@ -199,12 +201,14 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
     this.setSticky('index:done')
 
     workspace.on('file:will-save', (file) => {
-      this.processFile(this.cache, this.vault.path, file, markdownEditor.getMarkdown())
-        .then(() => {
-          const relativePath = path.relative(this.vault.path, file)
-          this.emit('index:update', relativePath)
-        })
-        .catch(() => { })
+      const content = markdownEditor.getMarkdown()
+      this.enqueueUpdate(() =>
+        this.processFile(this.cache, this.vault.path, file, content)
+          .then(() => {
+            const relativePath = path.relative(this.vault.path, file)
+            this.emit('index:update', relativePath)
+          })
+      ).catch(() => { })
     })
 
     // Keep the cache in sync with changes of the file system.
@@ -312,6 +316,9 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
       signal.throwIfAborted()
       await this.processQueue(indexingCache, vaultPath, allFiles, signal)
 
+      signal.throwIfAborted()
+      this.pruneCache(indexingCache, vaultPath, allFiles)
+
       this.cache = indexingCache
       this.emit('index:done')
       this.saveToIndexedDb(vaultId, indexingCache)
@@ -324,9 +331,57 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
         throw error
       }
     } finally {
-      this.isIndexing = false
       dispose()
+      this.isIndexing = false
+      await this.drainPendingUpdates()
       console.log('[Metadata] Indexing completed.')
+    }
+  }
+
+  /**
+   * Drop cache entries that no longer correspond to an existing file with a
+   * registered provider, so that deleted files do not resurrect from IndexedDB.
+   */
+  private pruneCache(cache: Cache, vaultPath: string, filePaths: string[]): void {
+    const keep = new Set<string>()
+    for (const filePath of filePaths) {
+      const ext = path.extname(filePath).toLowerCase()
+      if (this.providers[ext]?.length) {
+        keep.add(path.relative(vaultPath, filePath))
+      }
+    }
+
+    for (const key of Object.keys(cache)) {
+      if (!keep.has(key)) delete cache[key]
+    }
+  }
+
+  /**
+   * Queue an incremental update while indexing so it is applied to the final
+   * cache instead of being clobbered when `index()` publishes its result.
+   */
+  private enqueueUpdate(task: () => Promise<void>): Promise<void> {
+    if (!this.isIndexing) return task()
+
+    return new Promise<void>((resolve, reject) => {
+      this._pendingUpdates.push(() => task().then(resolve, reject))
+    })
+  }
+
+  private async drainPendingUpdates(): Promise<void> {
+    if (this._drainingUpdates) return
+    this._drainingUpdates = true
+    try {
+      while (this._pendingUpdates.length > 0) {
+        const task = this._pendingUpdates.shift()!
+        try {
+          await task()
+        } catch {
+          // individual update failures are already logged by processFile
+        }
+      }
+    } finally {
+      this._drainingUpdates = false
     }
   }
 
@@ -365,7 +420,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
       const mtime = stats.mtimeMs
       const relativePath = path.relative(vaultPath, filePath)
 
-      const cached = this.cache[relativePath]
+      const cached = indexingCache[relativePath]
       // When content is provided (from file:will-save with editor content),
       // skip the mtime check — the file hasn't been written to disk yet so
       // mtime is still old. Without this, the provider never processes the
@@ -413,31 +468,42 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
    * Re-index a single file (absolute path) and keep the cache up to date.
    */
   async update(filePath: string): Promise<void> {
-    await this.processFile(this.cache, this.vault.path, filePath)
+    await this.enqueueUpdate(async () => {
+      await this.processFile(this.cache, this.vault.path, filePath)
 
-    const relativePath = path.relative(this.vault.path, filePath)
-    if (relativePath in this.cache) {
-      this.emit('index:update', relativePath)
-    }
+      const relativePath = path.relative(this.vault.path, filePath)
+      if (relativePath in this.cache) {
+        this.emit('index:update', relativePath)
+      }
+    })
   }
 
   /**
    * Remove a file or a folder subtree (absolute path) from the cache.
    */
   remove(filePath: string): void {
+    if (this.isIndexing) {
+      this._pendingUpdates.push(async () => this.remove(filePath))
+      return
+    }
+
     const relativePath = path.relative(this.vault.path, filePath)
     if (!relativePath) return
 
     const prefix = relativePath + path.sep
-    let changed = false
+    const removed: string[] = []
     for (const key of Object.keys(this.cache)) {
       if (key === relativePath || key.startsWith(prefix)) {
         delete this.cache[key]
-        changed = true
+        removed.push(key)
       }
     }
 
-    if (changed) {
+    if (removed.length > 0) {
+      new MiniDexie(`metadata:${this.vault.id}`)
+        .version(1).stores(DB_SCHEMA)
+        .files.bulkDelete(removed)
+        .catch((e: unknown) => console.error('[Metadata] Failed to delete from IndexedDB:', e))
       this.emit('index:update', relativePath)
     }
   }
@@ -446,6 +512,11 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
    * Move a file or a folder subtree (absolute paths) in the cache.
    */
   rename(oldPath: string, newPath: string): void {
+    if (this.isIndexing) {
+      this._pendingUpdates.push(async () => this.rename(oldPath, newPath))
+      return
+    }
+
     const oldRelative = path.relative(this.vault.path, oldPath)
     const newRelative = path.relative(this.vault.path, newPath)
     if (!oldRelative) return
@@ -488,9 +559,8 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
     } catch (e) {
       console.error('[Metadata] Failed to load IndexedDB:', e)
     }
-    finally {
-      return loadedCache
-    }
+
+    return loadedCache
   }
 
   async saveToIndexedDb(vaultId: string, cache: Cache): Promise<void> {
@@ -503,6 +573,8 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
         metadata,
       }))
 
+      // Replace the whole store so entries removed from the cache do not linger.
+      await db.files.clear()
       await db.files.bulkPut(rows)
       console.log(`[Metadata] Saved ${rows.length} items to IndexedDB.`)
     } catch (e) {

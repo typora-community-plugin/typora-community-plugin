@@ -93,6 +93,20 @@ class Table<T, TKey = any> {
   }
 
   /**
+   * Delete records by primary keys
+   */
+  async bulkDelete(ids: TKey[]): Promise<void> {
+    return this._transaction('readwrite', store => ids.forEach(id => store.delete(id as any)))
+  }
+
+  /**
+   * Remove all records from the table
+   */
+  async clear(): Promise<void> {
+    return this._transaction('readwrite', store => store.clear())
+  }
+
+  /**
    * Basic filter implementation
    * Use index if available, otherwise fallback to manual filter
    */
