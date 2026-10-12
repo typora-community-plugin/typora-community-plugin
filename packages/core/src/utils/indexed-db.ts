@@ -132,8 +132,13 @@ export class MiniDexie {
 
   private dbName: string
   private _db: IDBDatabase | null = null
+  private _dbPromise: Promise<IDBDatabase> | null = null
+  private _generation = 0
   private _schema: Schema = {}
   private _version: number = 1;
+
+  /** Called when the underlying connection is closed externally (e.g. version change). */
+  onEvict?: () => void
 
   // Dynamic table access: db.friends
   [key: string]: any
@@ -169,8 +174,11 @@ export class MiniDexie {
    */
   async _getDb(): Promise<IDBDatabase> {
     if (this._db) return this._db
+    if (this._dbPromise) return this._dbPromise
 
-    return new Promise((resolve, reject) => {
+    const generation = this._generation
+
+    this._dbPromise = new Promise<IDBDatabase>((resolve, reject) => {
       const request = indexedDB.open(this.dbName, this._version)
 
       // Handle schema creation and migration
@@ -195,10 +203,58 @@ export class MiniDexie {
       }
 
       request.onsuccess = () => {
-        this._db = request.result
-        resolve(this._db)
+        const db = request.result
+
+        // The instance was closed while the connection was opening; discard it.
+        if (generation !== this._generation) {
+          db.close()
+          reject(new Error('MiniDexie: connection closed while opening'))
+          return
+        }
+
+        db.onclose = () => this._handleClosed(db)
+        // Close proactively so a pending upgrade in another context is not blocked.
+        db.onversionchange = () => {
+          db.close()
+          this._handleClosed(db)
+        }
+
+        this._db = db
+        resolve(db)
       }
-      request.onerror = () => reject(request.error)
+      request.onerror = () => {
+        if (generation === this._generation) this._dbPromise = null
+        reject(request.error)
+      }
     })
+
+    return this._dbPromise
+  }
+
+  private _handleClosed(db: IDBDatabase): void {
+    if (this._db !== db) return
+
+    this._db = null
+    this._dbPromise = null
+    this.onEvict?.()
+  }
+
+  /**
+   * Close the connection and invalidate any in-flight open so a later call
+   * reopens a fresh connection.
+   */
+  close(): void {
+    this._generation++
+
+    const db = this._db
+    const pending = this._dbPromise
+    this._db = null
+    this._dbPromise = null
+
+    if (db) {
+      db.close()
+    } else if (pending) {
+      pending.then(d => d.close()).catch(() => { })
+    }
   }
 }

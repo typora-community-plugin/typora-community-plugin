@@ -5,13 +5,9 @@ import { parseMarkdown, parseSimplifiedYAML, parseTagsWithPositionsFromYAML, par
 
 
 export function registerDefaultMetadataProviders(metadata: MetadataManager) {
-  MarkdownView.extensions.forEach(ext => {
-    metadata.register(ext, basicMeta)
-    metadata.register(ext, markdown)
-  })
-  ImageView.extensions.forEach(ext => {
-    metadata.register(ext, basicMeta)
-  })
+  const extensions = new Set([...MarkdownView.extensions, ...ImageView.extensions])
+  extensions.forEach(ext => metadata.register(ext, basicMeta))
+  MarkdownView.extensions.forEach(ext => metadata.register(ext, markdown))
 }
 
 export const markdown: MetadataProvider = async (ctx) => {

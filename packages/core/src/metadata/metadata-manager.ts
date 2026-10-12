@@ -1,20 +1,17 @@
 import fs from 'src/io/fs/filesystem'
 import path from 'src/path'
-import { editor, File } from 'typora'
+import { editor } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
 import { StickyEvents } from 'src/common/events'
 import { useService } from 'src/common/service'
 import type { DisposeFunc } from 'src/utils/types'
-import { mergeMetadata, type MergeSpec } from './metadata-merge'
-import { deleteCacheEntries, loadCache, saveCache, type Cache, type CacheEntry } from './metadata-store'
+import { mergeMetadata } from './metadata-merge'
+import { closeCache, deleteCacheEntries, loadCache, saveCache, type Cache, type CacheEntry } from './metadata-store'
+import { MetadataProviderContext, MetadataProviderRegistry, type MetadataProvider, type RegisterOptions } from './metadata-provider-registry'
+import { interceptQuickOpenWorker } from './metadata-worker-sync'
 
+export type { MetadataProvider, RegisterOptions } from './metadata-provider-registry'
 
-class IndexAbortedError extends Error {
-  constructor() {
-    super('Indexing process was aborted.')
-    this.name = 'IndexAbortedError'
-  }
-}
 
 export type MetadataEvents = {
   // initial
@@ -26,42 +23,9 @@ export type MetadataEvents = {
   'index:update'(filePath: string): void
 }
 
-class MetadataProviderContext {
-  constructor(
-    readonly filePath: string,
-    private _textContent?: string,
-    private _stats?: Awaited<ReturnType<typeof fs.stat>>
-  ) { }
-
-  text(): Promise<string> {
-    return this._textContent
-      ? Promise.resolve(this._textContent)
-      : fs.readText(this.filePath).then(text => this._textContent = text)
-  }
-
-  fileStats(): Awaited<ReturnType<typeof fs.stat>> {
-    return this._stats!
-  }
-}
-
-export type MetadataProvider = (ctx: MetadataProviderContext) => Promise<Record<string, any>>
-
-export interface RegisterOptions {
-  merge?: MergeSpec
-}
-
-interface ProviderEntry {
-  provider: MetadataProvider
-  merge?: MergeSpec
-}
-
-function normalizeExtension(ext: string): string {
-  return ext.startsWith('.') ? ext.toLowerCase() : `.${ext.toLowerCase()}`
-}
-
 export class MetadataManager extends StickyEvents<MetadataEvents> {
 
-  private providers: { [ext: string]: ProviderEntry[] } = {}
+  private providerRegistry = new MetadataProviderRegistry()
   cache: Cache = {}
 
   private concurrencyLimit: number
@@ -69,6 +33,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
   private _quickOpenWorker: Worker | undefined
   private _pendingUpdates: Array<() => Promise<void>> = []
   private _drainingUpdates = false
+  private _activeVaultId: string
 
   /**
    * @param options.concurrency Number of files processed simultaneously, default 10
@@ -78,9 +43,11 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
     markdownEditor = useService('markdown-editor'),
     workspace = useService('workspace'),
     private vault = useService('vault'),
+    config = useService('config-repository'),
   ) {
     super('metadata')
     this.concurrencyLimit = options.concurrency ?? 10
+    this._activeVaultId = this.vault.id
 
     this.setSticky('index:done')
 
@@ -89,7 +56,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
       this.enqueueUpdate(() =>
         this.processFile(this.cache, this.vault.path, file, content)
           .then(() => {
-            const relativePath = path.relative(this.vault.path, file)
+            const relativePath = this.toRelative(file)
             this.emit('index:update', relativePath)
           })
       ).catch(() => { })
@@ -100,6 +67,9 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
     this.vault.on('file:rename', (oldPath, newPath) => this.rename(oldPath, newPath))
     this.vault.on('directory:rename', (oldPath, newPath) => this.rename(oldPath, newPath))
 
+    // Rebind the cache/connection when the workspace (vault) is switched.
+    config.on('switch', () => this._onConfigSwitch())
+
     // Keep the cache in sync with the native Quick Open worker.
     this._interceptQuickOpenWorker()
 
@@ -109,38 +79,39 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
   }
 
   /**
+   * Convert an absolute path to a vault-relative path.
+   */
+  private toRelative(absPath: string): string {
+    return path.relative(this.vault.path, absPath)
+  }
+
+  /**
+   * Drop the previous vault's connection and in-memory cache so a fresh
+   * connection is opened lazily for the new vault.
+   */
+  private _onConfigSwitch(): void {
+    const vaultId = this.vault.id
+    if (vaultId === this._activeVaultId) return
+
+    closeCache(this._activeVaultId)
+    this._activeVaultId = vaultId
+    this.cache = {}
+  }
+
+  /**
    * Intercept the native Quick Open worker so that the files it adds or removes
    * (e.g. new files) are reflected in the metadata cache.
-   *
-   * Only the metadata cache is kept in sync; every message is still forwarded
-   * to the original handler, so the native panel is not affected.
    */
   private _interceptQuickOpenWorker(): void {
-    if (!File.isNode) return
+    const worker = interceptQuickOpenWorker(
+      {
+        onFileAdded: filePath => { this.update(filePath).catch(() => { }) },
+        onPathRemoved: prefix => this.remove(prefix),
+      },
+      w => w === this._quickOpenWorker,
+    )
 
-    const worker = (editor.quickOpenPanel as any)?.worker as Worker | undefined
-    if (!worker || worker === this._quickOpenWorker) return
-
-    const original = worker.onmessage
-    worker.onmessage = (event: MessageEvent) => {
-      switch (event.data?.type) {
-        case 'addInitFiles': {
-          const [filePaths] = event.data.detail as [string[]]
-          for (const filePath of filePaths) {
-            this.update(filePath).catch(() => { })
-          }
-          break
-        }
-        case 'removeInitFiles': {
-          const [prefix] = event.data.detail as [string]
-          if (prefix) this.remove(prefix)
-          break
-        }
-      }
-      original?.call(worker, event)
-    }
-
-    this._quickOpenWorker = worker
+    if (worker) this._quickOpenWorker = worker
   }
 
   /**
@@ -149,10 +120,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
    * @returns A dispose function that unregisters the provider.
    */
   register(ext: string, provider: MetadataProvider, opts?: RegisterOptions): DisposeFunc {
-    const key = normalizeExtension(ext)
-    if (!this.providers[key]) this.providers[key] = []
-    this.providers[key].push({ provider, merge: opts?.merge })
-    return () => this.unregister(ext, provider)
+    return this.providerRegistry.register(ext, provider, opts)
   }
 
   /**
@@ -162,15 +130,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
    * cache keeps the removed provider's data until the file is re-indexed.
    */
   unregister(ext: string, provider: MetadataProvider): void {
-    const key = normalizeExtension(ext)
-    const entries = this.providers[key]
-    if (!entries) return
-
-    const index = entries.findIndex(entry => entry.provider === provider)
-    if (index === -1) return
-
-    entries.splice(index, 1)
-    if (entries.length === 0) delete this.providers[key]
+    this.providerRegistry.unregister(ext, provider)
   }
 
   /**
@@ -230,7 +190,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
     const keep = new Set<string>()
     for (const filePath of filePaths) {
       const ext = path.extname(filePath).toLowerCase()
-      if (this.providers[ext]?.length) {
+      if (this.providerRegistry.get(ext)?.length) {
         keep.add(path.relative(vaultPath, filePath))
       }
     }
@@ -250,6 +210,17 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
     return new Promise<void>((resolve, reject) => {
       this._pendingUpdates.push(() => task().then(resolve, reject))
     })
+  }
+
+  /**
+   * Defer a synchronous cache mutation while indexing, so it is applied to the
+   * published cache. Returns `true` when the task was deferred.
+   */
+  private deferWhileIndexing(task: () => void): boolean {
+    if (!this.isIndexing) return false
+
+    this._pendingUpdates.push(async () => task())
+    return true
   }
 
   private async drainPendingUpdates(): Promise<void> {
@@ -295,7 +266,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
     signal?.throwIfAborted()
 
     const ext = path.extname(filePath).toLowerCase()
-    const providers = this.providers[ext]
+    const providers = this.providerRegistry.get(ext)
 
     if (!providers || providers.length === 0) return
 
@@ -336,7 +307,6 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
 
       indexingCache[relativePath] = mergedMetadata as any
     } catch (error) {
-      if (error instanceof IndexAbortedError) throw error
       console.error(`Failed to process ${filePath}:`, error)
     }
   }
@@ -355,7 +325,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
     await this.enqueueUpdate(async () => {
       await this.processFile(this.cache, this.vault.path, filePath)
 
-      const relativePath = path.relative(this.vault.path, filePath)
+      const relativePath = this.toRelative(filePath)
       if (relativePath in this.cache) {
         this.emit('index:update', relativePath)
       }
@@ -366,12 +336,9 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
    * Remove a file or a folder subtree (absolute path) from the cache.
    */
   remove(filePath: string): void {
-    if (this.isIndexing) {
-      this._pendingUpdates.push(async () => this.remove(filePath))
-      return
-    }
+    if (this.deferWhileIndexing(() => this.remove(filePath))) return
 
-    const relativePath = path.relative(this.vault.path, filePath)
+    const relativePath = this.toRelative(filePath)
     if (!relativePath) return
 
     const prefix = relativePath + path.sep
@@ -394,13 +361,10 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
    * Move a file or a folder subtree (absolute paths) in the cache.
    */
   rename(oldPath: string, newPath: string): void {
-    if (this.isIndexing) {
-      this._pendingUpdates.push(async () => this.rename(oldPath, newPath))
-      return
-    }
+    if (this.deferWhileIndexing(() => this.rename(oldPath, newPath))) return
 
-    const oldRelative = path.relative(this.vault.path, oldPath)
-    const newRelative = path.relative(this.vault.path, newPath)
+    const oldRelative = this.toRelative(oldPath)
+    const newRelative = this.toRelative(newPath)
     if (!oldRelative) return
 
     const prefix = oldRelative + path.sep
@@ -422,5 +386,6 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
    */
   clear(): void {
     this.cache = {}
+    closeCache(this._activeVaultId)
   }
 }
