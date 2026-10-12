@@ -1,5 +1,18 @@
 # 更新日志
 
+## v2.10.61
+
+- **安装脚本**
+  - fix(installer/windows): Windows 下始终从脚本目录复制插件文件，不再受已安装状态影响
+  - fix(installer): 修复 bash 安装脚本重复写入 `<script>` 并跳过复制的问题。by @asgeirtj [#109](https://github.com/typora-community-plugin/typora-community-plugin/pull/109)
+
+- **工作区**
+  - fix(core): 修复启动竞态导致功能区与侧边栏未加载 [#110](https://github.com/typora-community-plugin/typora-community-plugin/issues/110)
+
+- **开发者**
+  - feat(core/metadata): 元数据提供者支持可配置的合并策略
+  - feat(core/metadata): 新增提供者 `unregister` 方法，`register` 返回 dispose 函数
+
 ## v2.10.56
 
 - feat(core/metadata): Metadata API 新增文件变更方法（update/remove/rename）

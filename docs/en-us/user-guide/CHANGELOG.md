@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.10.61
+
+- **Installer**
+  - fix(installer/windows): always copy plugin files from the script directory on Windows, no longer affected by installed state
+  - fix(installer): fix bash installer script writing `<script>` repeatedly and skipping copying. by @asgeirtj [#109](https://github.com/typora-community-plugin/typora-community-plugin/pull/109)
+
+- **Workspace**
+  - fix(core): fix startup race causing ribbon and sidebar not to load [#110](https://github.com/typora-community-plugin/typora-community-plugin/issues/110)
+
+- **Developer**
+  - feat(core/metadata): metadata providers support configurable merge strategy
+  - feat(core/metadata): add provider `unregister` method, `register` returns a dispose function
+
 ## v2.10.56
 
 - feat(core/metadata): Metadata API add file change methods (update/remove/rename)
