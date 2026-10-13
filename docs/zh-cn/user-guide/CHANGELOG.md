@@ -1,5 +1,14 @@
 # 更新日志
 
+## v2.10.64
+
+- **设置**
+  - fix(core/ui/settings/tab/hotkey): 快捷键设置页仅列出在命令面板中显示的命令
+
+- **开发者**
+  - fix(core/metadata): 修复无法索引任何文件的问题
+  - refactor(core/metadata): 删除或重命名文件时发送 `index:remove` 事件
+
 ## v2.10.61
 
 - **安装脚本**

@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.10.64
+
+- **Settings**
+  - fix(core/ui/settings/tab/hotkey): hotkey settings page only lists commands shown in the command palette
+
+- **Developer**
+  - fix(core/metadata): fix inability to index any file
+  - refactor(core/metadata): emit `index:remove` event when deleting or renaming files
+
 ## v2.10.61
 
 - **Installer**
