@@ -51,7 +51,7 @@ export class HotkeySettingTab extends SettingTab {
     query = query.toLowerCase()
 
     Object.values(this.commands.commandMap)
-      .filter(cmd => !query || cmd.title.toLowerCase().includes(query))
+      .filter(cmd => cmd.showInCommandPanel && (!query || cmd.title.toLowerCase().includes(query)))
       .forEach(cmd => this.renderHotkey(cmd))
   }
 
