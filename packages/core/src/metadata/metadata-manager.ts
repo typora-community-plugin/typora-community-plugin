@@ -21,6 +21,7 @@ export type MetadataEvents = {
 
   // update
   'index:update'(filePath: string): void
+  'index:remove'(filePath: string): void
 }
 
 export class MetadataManager extends StickyEvents<MetadataEvents> {
@@ -355,7 +356,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
     if (removed.length > 0) {
       deleteCacheEntries(this.vault.id, removed).catch((e: unknown) =>
         console.error('[Metadata] Failed to delete from IndexedDB:', e))
-      this.emit('index:update', relativePath)
+      this.emit('index:remove', relativePath)
     }
   }
 
@@ -380,6 +381,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
       }
     }
 
+    this.emit('index:remove', oldRelative)
     this.emit('index:update', newRelative)
   }
 
