@@ -4,6 +4,8 @@ import { TagObject } from 'src/utils'
 
 export interface CacheEntry {
   mtime: number // Last modification timestamp
+  /** Number of providers that produced this entry (detects provider-set changes). */
+  providerCount?: number
   metadata: Record<string, any> & {
     frontmatter: Record<string, any>
     tags: TagObject[]

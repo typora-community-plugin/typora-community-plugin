@@ -32,7 +32,7 @@ export interface ProviderEntry {
   merge?: MergeSpec
 }
 
-function normalizeExtension(ext: string): string {
+export function normalizeExtension(ext: string): string {
   return ext.startsWith('.') ? ext.toLowerCase() : `.${ext.toLowerCase()}`
 }
 

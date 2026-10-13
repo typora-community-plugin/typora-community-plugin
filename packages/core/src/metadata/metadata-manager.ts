@@ -7,7 +7,7 @@ import { useService } from 'src/common/service'
 import type { DisposeFunc } from 'src/utils/types'
 import { mergeMetadata } from './metadata-merge'
 import { closeCache, deleteCacheEntries, loadCache, saveCache, type Cache, type CacheEntry } from './metadata-store'
-import { MetadataProviderContext, MetadataProviderRegistry, type MetadataProvider, type RegisterOptions } from './metadata-provider-registry'
+import { MetadataProviderContext, MetadataProviderRegistry, normalizeExtension, type MetadataProvider, type RegisterOptions } from './metadata-provider-registry'
 import { interceptQuickOpenWorker } from './metadata-worker-sync'
 
 export type { MetadataProvider, RegisterOptions } from './metadata-provider-registry'
@@ -121,7 +121,10 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
    * @returns A dispose function that unregisters the provider.
    */
   register(ext: string, provider: MetadataProvider, opts?: RegisterOptions): DisposeFunc {
-    return this.providerRegistry.register(ext, provider, opts)
+    const hadProviders = !!this.providerRegistry.get(ext)?.length
+    const dispose = this.providerRegistry.register(ext, provider, opts)
+    this._onProviderRegistered(ext, hadProviders)
+    return dispose
   }
 
   /**
@@ -132,6 +135,43 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
    */
   unregister(ext: string, provider: MetadataProvider): void {
     this.providerRegistry.unregister(ext, provider)
+  }
+
+  /**
+   * Invalidate cached metadata that was produced without a just-registered
+   * provider.
+   *
+   * A provider registered after `index()` (e.g. a community plugin that loads
+   * later) would otherwise never run: `processFile` skips files whose mtime is
+   * unchanged, so the cache keeps the provider-less result forever. Drop the
+   * affected entries from the cache/IndexedDB and reprocess them.
+   */
+  private _onProviderRegistered(ext: string, hadProviders: boolean): void {
+    // While indexing, defer so the invalidation runs against the published cache.
+    if (this.isIndexing) {
+      this._pendingUpdates.push(async () => this._onProviderRegistered(ext, hadProviders))
+      return
+    }
+
+    const key = normalizeExtension(ext)
+    const cachedPaths = Object.keys(this.cache)
+      .filter(p => path.extname(p).toLowerCase() === key)
+
+    if (cachedPaths.length === 0) {
+      // Nothing cached to fix. If this is the extension's first provider and the
+      // vault has already been indexed, run a full index to pick up its files.
+      if (!hadProviders && Object.keys(this.cache).length > 0)
+        this.index().catch(() => { })
+      return
+    }
+
+    for (const relativePath of cachedPaths) delete this.cache[relativePath]
+
+    deleteCacheEntries(this.vault.id, cachedPaths).catch((e: unknown) =>
+      console.error('[Metadata] Failed to delete from IndexedDB:', e))
+
+    for (const relativePath of cachedPaths)
+      this.update(path.join(this.vault.path, relativePath)).catch(() => { })
   }
 
   /**
@@ -283,7 +323,12 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
       // skip the mtime check — the file hasn't been written to disk yet so
       // mtime is still old. Without this, the provider never processes the
       // new content and the cache stays stale.
-      if (!content && cached && cached.mtime === mtime) {
+      //
+      // The cache is also treated as stale when the number of providers for the
+      // extension changed, so metadata produced before a provider was registered
+      // is re-processed instead of being reused by mtime.
+      if (!content && cached && cached.mtime === mtime
+        && cached.providerCount === providers.length) {
         indexingCache[relativePath] = cached
         return
       }
@@ -306,9 +351,10 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
 
       const mergedMetadata = mergeMetadata(
         results.map((data, i) => ({ data, spec: providers[i].merge })),
-      )
+      ) as CacheEntry
 
-      indexingCache[relativePath] = mergedMetadata as any
+      mergedMetadata.providerCount = providers.length
+      indexingCache[relativePath] = mergedMetadata
     } catch (error) {
       console.error(`Failed to process ${filePath}:`, error)
     }

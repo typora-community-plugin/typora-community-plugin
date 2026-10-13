@@ -40,7 +40,10 @@ export class MetadataPlugin extends InternalPlugin {
     this.register(
       metadata.on('index:done', () => this.progressEl.remove()))
 
-    metadata.index()
+    // Community plugins register their metadata providers while they load —
+    // after this internal plugin's `onload`. Defer the initial index until the
+    // app has finished loading so those providers are included from the start.
+    this.app.once('load', () => metadata.index().catch(() => { }))
   }
 
   onunload() {

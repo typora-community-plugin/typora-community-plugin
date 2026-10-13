@@ -4,7 +4,7 @@ import path from 'src/path'
 import { JSBridge, _options, editor } from 'typora'
 import * as Core from '.'
 import { coreDir, coreVersion, platform } from 'src/common/constants'
-import { Events } from 'src/common/events'
+import { StickyEvents } from 'src/common/events'
 import { useService } from 'src/common/service'
 import type { GithubAPI } from 'src/net/github'
 import type { HotkeyManager } from 'src/hotkey-manager'
@@ -71,7 +71,7 @@ export type AppPlugin = (app: App) => void
  * @example const { app } = pliginInstance
  * @example import { app } from '@typora-community-plugin/core'
  */
-export class App extends Events<AppEvents> {
+export class App extends StickyEvents<AppEvents> {
 
   private _isReady = false
 
@@ -108,6 +108,8 @@ export class App extends Events<AppEvents> {
 
   constructor() {
     super('app')
+
+    this.setSticky('load')
 
     // @ts-ignore
     window[Symbol.for(process.env.CORE_NS)] = {
