@@ -158,7 +158,9 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
       const indexingCache = await loadCache(vaultId)
 
       signal.throwIfAborted()
-      await this.processQueue(indexingCache, vaultPath, allFiles, signal)
+      // `processQueue` drains its list via `pop()`, so hand it a copy to keep
+      // `allFiles` intact for `pruneCache` below.
+      await this.processQueue(indexingCache, vaultPath, [...allFiles], signal)
 
       signal.throwIfAborted()
       this.pruneCache(indexingCache, vaultPath, allFiles)
