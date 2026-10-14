@@ -31,6 +31,23 @@ const FAKE_EDITOR = {
 
 const MarkdownParser = memorize(() => editor.nodeMap.allNodes.first()!.__proto__.constructor)
 
+/**
+ * Prefix applied to every `cid` of the rendered preview.
+ *
+ * Typora identifies nodes by `cid` in its document-wide lookups, e.g.
+ * `$("[cid='"+cid+"']")` in `editor.fences.getCm()` / `addCodeBlock()` /
+ * `fences.focus()`. It resets the node-id counter whenever a document is
+ * switched (`nodeMap.reset(!1, !0)`), so a preview rendered earlier can share
+ * ids with the currently edited document. Such collisions make Typora resolve
+ * a codeblock `cid` to a preview node: it then attaches/focuses a CodeMirror on
+ * the wrong element, leaving the codeblock empty and throwing
+ * `Cannot read properties of undefined (reading 'insertChildAtIndex')`.
+ *
+ * Namespacing the preview ids keeps them out of Typora's editor lookups while
+ * `getCodeMirrorInstance()` still finds them (callers read the attribute).
+ */
+const PREVIEW_CID_PREFIX = 'typ-preview-'
+
 export class MarkdownRenderer {
 
   private _cmInstances: WeakMap<HTMLElement, CodeMirror.Editor> = new WeakMap()
@@ -53,6 +70,7 @@ export class MarkdownRenderer {
     const [contentHtml] = MarkdownParser().parseFrom(content)
     targetEl.classList.add('typ-markdown-preview')
     targetEl.innerHTML = frontMattersHtml + contentHtml
+    this._namespaceCids(targetEl)
     $('[contenteditable="true"]', targetEl).attr('contenteditable', 'false')
 
     // handle: code block highlight
@@ -86,5 +104,15 @@ export class MarkdownRenderer {
   getCodeMirrorInstance(cid: string): CodeMirror.Editor {
     const el = $('.typ-workspace-root').find(`[cid="${cid}"]`)[0]
     return this._cmInstances.get(el)
+  }
+
+  /**
+   * Prefix the `cid` of every rendered node so Typora's document-wide `[cid]`
+   * lookups never resolve to preview nodes. See {@link PREVIEW_CID_PREFIX}.
+   */
+  private _namespaceCids(targetEl: HTMLElement): void {
+    $(`[cid]`, targetEl).each((_, el) => {
+      el.setAttribute('cid', PREVIEW_CID_PREFIX + el.getAttribute('cid'))
+    })
   }
 }
