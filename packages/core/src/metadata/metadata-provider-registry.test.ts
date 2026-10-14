@@ -64,4 +64,46 @@ describe('MetadataProviderRegistry', () => {
     expect(registry.get('.md')).toHaveLength(1)
     expect(registry.get('png')).toBeUndefined()
   })
+
+  describe('getSignature', () => {
+    it('returns an empty string when no provider is registered', () => {
+      const registry = createRegistry()
+
+      expect(registry.getSignature('md')).toBe('')
+    })
+
+    it('changes when a provider is added', () => {
+      const registry = createRegistry()
+      registry.register('md', provider)
+      const before = registry.getSignature('md')
+
+      const other: MetadataProvider = async () => ({})
+      registry.register('md', other)
+
+      expect(registry.getSignature('md')).not.toBe(before)
+    })
+
+    it('changes when a provider is replaced by another with the same count', () => {
+      const registry = createRegistry()
+      registry.register('md', provider)
+      const before = registry.getSignature('md')
+
+      registry.unregister('md', provider)
+      const replacement: MetadataProvider = async () => ({ replaced: true })
+      registry.register('md', replacement)
+
+      expect(registry.getSignature('md')).not.toBe(before)
+    })
+
+    it('is stable across identical provider sets', () => {
+      const a = createRegistry()
+      const b = createRegistry()
+      const shared: MetadataProvider = async (ctx) => ({ text: await ctx.text() })
+
+      a.register('md', shared)
+      b.register('md', shared)
+
+      expect(a.getSignature('md')).toBe(b.getSignature('md'))
+    })
+  })
 })

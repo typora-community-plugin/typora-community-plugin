@@ -123,33 +123,34 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
   register(ext: string, provider: MetadataProvider, opts?: RegisterOptions): DisposeFunc {
     const hadProviders = !!this.providerRegistry.get(ext)?.length
     const dispose = this.providerRegistry.register(ext, provider, opts)
-    this._onProviderRegistered(ext, hadProviders)
+    this._invalidateExtension(ext, hadProviders)
     return dispose
   }
 
   /**
    * Unregister a previously registered metadata provider.
    *
-   * Note: this only affects future processing. Metadata already merged into the
-   * cache keeps the removed provider's data until the file is re-indexed.
+   * Cached metadata produced with the removed provider is dropped and, if other
+   * providers remain for the extension, reprocessed.
    */
   unregister(ext: string, provider: MetadataProvider): void {
+    const hadProviders = !!this.providerRegistry.get(ext)?.length
     this.providerRegistry.unregister(ext, provider)
+    this._invalidateExtension(ext, hadProviders)
   }
 
   /**
-   * Invalidate cached metadata that was produced without a just-registered
-   * provider.
+   * Invalidate cached metadata that was produced with a different provider set.
    *
-   * A provider registered after `index()` (e.g. a community plugin that loads
-   * later) would otherwise never run: `processFile` skips files whose mtime is
-   * unchanged, so the cache keeps the provider-less result forever. Drop the
+   * A provider registered/removed after `index()` (e.g. a community plugin that
+   * loads later) would otherwise never run: `processFile` skips files whose
+   * mtime is unchanged, so the cache keeps the stale result forever. Drop the
    * affected entries from the cache/IndexedDB and reprocess them.
    */
-  private _onProviderRegistered(ext: string, hadProviders: boolean): void {
+  private _invalidateExtension(ext: string, hadProviders: boolean): void {
     // While indexing, defer so the invalidation runs against the published cache.
     if (this.isIndexing) {
-      this._pendingUpdates.push(async () => this._onProviderRegistered(ext, hadProviders))
+      this._pendingUpdates.push(async () => this._invalidateExtension(ext, hadProviders))
       return
     }
 
@@ -324,11 +325,11 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
       // mtime is still old. Without this, the provider never processes the
       // new content and the cache stays stale.
       //
-      // The cache is also treated as stale when the number of providers for the
-      // extension changed, so metadata produced before a provider was registered
-      // is re-processed instead of being reused by mtime.
+      // The cache is also treated as stale when the provider set for the
+      // extension changed, so metadata produced before a provider was added,
+      // removed or replaced is re-processed instead of being reused by mtime.
       if (!content && cached && cached.mtime === mtime
-        && cached.providerCount === providers.length) {
+        && cached.providerSignature === this.providerRegistry.getSignature(ext)) {
         indexingCache[relativePath] = cached
         return
       }
@@ -353,7 +354,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
         results.map((data, i) => ({ data, spec: providers[i].merge })),
       ) as CacheEntry
 
-      mergedMetadata.providerCount = providers.length
+      mergedMetadata.providerSignature = this.providerRegistry.getSignature(ext)
       indexingCache[relativePath] = mergedMetadata
     } catch (error) {
       console.error(`Failed to process ${filePath}:`, error)
