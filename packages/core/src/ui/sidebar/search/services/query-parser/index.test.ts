@@ -450,4 +450,25 @@ describe('collectInlineTagPatterns', () => {
     expect(tags.has('urgent')).toBe(true)
     expect(tags.has('project')).toBe(true)
   })
+
+  it('extracts digit-leading tags that contain a non-digit char', () => {
+    const matches: SearchMatch[] = [
+      { lineNumber: 1, lineText: 'hello #2D #100days #2024-project #y1984', matchedText: '#2D' },
+    ]
+    const tags = collectInlineTagPatterns(matches)
+    expect(tags.has('2d')).toBe(true)
+    expect(tags.has('100days')).toBe(true)
+    expect(tags.has('2024-project')).toBe(true)
+    expect(tags.has('y1984')).toBe(true)
+  })
+
+  it('ignores pure-numeric tags (Obsidian rule)', () => {
+    const matches: SearchMatch[] = [
+      { lineNumber: 1, lineText: 'issue #1984 and #42', matchedText: '#1984' },
+    ]
+    const tags = collectInlineTagPatterns(matches)
+    expect(tags.has('1984')).toBe(false)
+    expect(tags.has('42')).toBe(false)
+    expect(tags.size).toBe(0)
+  })
 })
