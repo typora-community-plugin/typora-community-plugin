@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.10.67
+
+- **Settings**
+  - feat(core/ui/settings): add a filter input box to the settings modal sidebar
+
+- **Developer**
+  - feat(core/metadata): add provider signature; automatically rebuild the index when the cached signature is inconsistent
+  - fix(core/ui/editor/renderer): use a separate cid namespace for preview rendering to avoid conflicts with editor lookups
+
 ## v2.10.64
 
 - **Settings**
