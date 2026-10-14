@@ -38,6 +38,7 @@ export class SettingsModal extends Component {
   private modal!: Modal
 
   private sidebar!: HTMLElement
+  private filterInput!: HTMLInputElement
   private allGroups: HTMLElement[] = []
   private main!: HTMLElement
 
@@ -105,6 +106,10 @@ export class SettingsModal extends Component {
         )
 
         this.sidebar.addEventListener('click', this.onItemClick)
+
+        this.filterInput = html`<input class="typ-nav__filter" type="text" placeholder="${t.filterPlaceholder}">` as HTMLInputElement
+        this.filterInput.addEventListener('input', this.onFilterInput)
+        this.sidebar.append(this.filterInput)
       })
 
     super.onload()
@@ -133,6 +138,28 @@ export class SettingsModal extends Component {
     this.openTab(this.tabs.find(tab => tab.name === name)!)
   }
 
+  private onFilterInput = () => {
+    this.applyFilter()
+  }
+
+  private applyFilter() {
+    const keyword = this.filterInput.value.trim().toLowerCase()
+
+    for (const group of this.allGroups) {
+      const items = Array.from(group.querySelectorAll<HTMLElement>('.typ-nav__item'))
+      let visible = 0
+
+      for (const item of items) {
+        const name = item.querySelector('.typ-nav__item-name')?.textContent?.toLowerCase() ?? ''
+        const matched = keyword === '' || name.includes(keyword)
+        item.style.display = matched ? '' : 'none'
+        if (matched) visible++
+      }
+
+      group.style.display = keyword === '' || visible > 0 ? '' : 'none'
+    }
+  }
+
   private addGroup(text: string) {
     const group = html`<section class="typ-nav__group"></section>`
     this.sidebar.append(group)
@@ -159,6 +186,10 @@ export class SettingsModal extends Component {
 
     if (groupIndex > 0) {
       this.sortGroup(group)
+    }
+
+    if (this.filterInput?.value) {
+      this.applyFilter()
     }
 
     return () => this.removeTab(tab)
@@ -210,6 +241,9 @@ export class SettingsModal extends Component {
   removeTab(tab: SettingTab) {
     this.sidebar.querySelector(`.typ-nav__item[data-name="${tab.name}"]`)?.remove()
     this.tabs = this.tabs.filter(t => t !== tab)
+    if (this.filterInput?.value) {
+      this.applyFilter()
+    }
   }
 
   openTab(tab: SettingTab) {

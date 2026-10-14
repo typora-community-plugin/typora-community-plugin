@@ -22,6 +22,25 @@
 
   border-right: 1px solid rgb(var(--typ-border-color));
 
+  .typ-nav__filter {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: block;
+    box-sizing: border-box;
+    width: 93%;
+    padding: .3rem;
+    border: 1px solid rgb(var(--typ-border-color));
+    font-size: .75rem;
+    color: var(--control-text-color);
+    background: var(--bg-color);
+
+    &:focus {
+      border-color: var(--primary-color);
+      outline: none;
+    }
+  }
+
   .typ-nav__item {
     @include nav-item;
   }

@@ -56,6 +56,7 @@
   },
   "settingModal": {
     "commandOpen": "Open Plugin Settings Modal",
+    "filterPlaceholder": "Filter settings...",
     "titleGlobal": "Global Settings",
     "titleVault": "Vault Settings",
     "groupCore": "Core",
