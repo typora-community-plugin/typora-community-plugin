@@ -37,6 +37,15 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
   private _activeVaultId: string
 
   /**
+   * Concurrency gate for incremental updates. A whole-vault event (e.g. the
+   * Quick Open worker reporting every file at once, or a provider being
+   * registered) would otherwise spawn one `processFile` per file and exhaust
+   * the OS file-descriptor limit (`EMFILE`).
+   */
+  private _activeUpdates = 0
+  private _updateQueue: Array<() => void> = []
+
+  /**
    * @param options.concurrency Number of files processed simultaneously, default 10
    */
   constructor(
@@ -369,15 +378,40 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
   }
 
   /**
+   * Acquire a slot from the update concurrency gate. Pair with
+   * {@link _releaseUpdateSlot} in a `finally` block.
+   */
+  private _acquireUpdateSlot(): Promise<void> {
+    if (this._activeUpdates < this.concurrencyLimit) {
+      this._activeUpdates++
+      return Promise.resolve()
+    }
+    return new Promise<void>(resolve => this._updateQueue.push(resolve))
+  }
+
+  private _releaseUpdateSlot(): void {
+    const next = this._updateQueue.shift()
+    // Hand the slot over to the next waiter instead of releasing it, so a
+    // queued caller cannot race past the limit.
+    if (next) next()
+    else this._activeUpdates--
+  }
+
+  /**
    * Re-index a single file (absolute path) and keep the cache up to date.
    */
   async update(filePath: string): Promise<void> {
     await this.enqueueUpdate(async () => {
-      await this.processFile(this.cache, this.vault.path, filePath)
+      await this._acquireUpdateSlot()
+      try {
+        await this.processFile(this.cache, this.vault.path, filePath)
 
-      const relativePath = this.toRelative(filePath)
-      if (relativePath in this.cache) {
-        this.emit('index:update', relativePath)
+        const relativePath = this.toRelative(filePath)
+        if (relativePath in this.cache) {
+          this.emit('index:update', relativePath)
+        }
+      } finally {
+        this._releaseUpdateSlot()
       }
     })
   }
