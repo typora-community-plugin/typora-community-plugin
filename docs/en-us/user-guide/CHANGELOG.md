@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.10.70
+
+- fix(core/metadata): add concurrency limit to incremental updates to avoid EMFILE
+- fix(core/ui/sidebar/search): support tags starting with digits, reject pure numeric tags (e.g. `#100`)
+- fix(core/ui/settings/tabs/hotkey): update wording on the hotkey settings page
+
 ## v2.10.67
 
 - **Settings**
@@ -8,6 +14,9 @@
 - **Developer**
   - feat(core/metadata): add provider signature; automatically rebuild the index when the cached signature is inconsistent
   - fix(core/ui/editor/renderer): use a separate cid namespace for preview rendering to avoid conflicts with editor lookups
+
+- **Plugin Update**
+  - [tag][]: support displaying tag count
 
 ## v2.10.64
 

@@ -1,5 +1,11 @@
 # 更新日志
 
+## v2.10.70
+
+- fix(core/metadata): 增量更新增加并发限制，避免 EMFILE
+- fix(core/ui/sidebar/search): 支持以数字开头的标签，拒绝纯数字标签（如 `#100`）
+- fix(core/ui/settings/tabs/hotkey): 快捷键设置页更新文案
+
 ## v2.10.67
 
 - **设置**
@@ -8,6 +14,9 @@
 - **开发者**
   - feat(core/metadata): 新增提供者签名，缓存签名不一致时自动重建索引
   - fix(core/ui/editor/renderer): 预览渲染使用独立 cid 命名空间，避免与编辑器查找冲突
+
+- **插件更新**
+  - [tag][]: 支持显示标签数量
 
 ## v2.10.64
 
