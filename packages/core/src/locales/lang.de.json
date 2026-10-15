@@ -95,7 +95,8 @@
     },
     "hotkey": {
       "name": "Tastenkürzel",
-      "searchHotkey": "Tastenkürzel suchen:",
+      "searchHotkey": "Befehle suchen",
+      "commands": "Tastenkürzel der Befehle",
       "waitHotkey": "Tastenkürzel drücken..."
     },
     "internalPlugins": {

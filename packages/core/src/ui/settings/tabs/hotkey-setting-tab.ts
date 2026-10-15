@@ -42,7 +42,7 @@ export class HotkeySettingTab extends SettingTab {
       })
     })
 
-    this.addSettingTitle(t.name)
+    this.addSettingTitle(t.commands)
     this.renderHotkeyList()
   }
 

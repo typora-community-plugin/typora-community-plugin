@@ -95,7 +95,8 @@
     },
     "hotkey": {
       "name": "Hotkey",
-      "searchHotkey": "Search hotkeys:",
+      "searchHotkey": "Search commands",
+      "commands": "Hotkeys of Commands",
       "waitHotkey": "Press hotkey..."
     },
     "internalPlugins": {
