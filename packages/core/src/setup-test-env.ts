@@ -76,3 +76,17 @@ registerService('i18n', memorize(() => ({
   locale: 'en',
   t: { notice: { clearAll: '' } },
 } as any)))
+
+registerService('vault', memorize(() => ({
+  id: 'test-vault',
+  path: '/vault',
+  on: jest.fn(() => jest.fn()),
+} as any)))
+
+registerService('workspace', memorize(() => ({
+  on: jest.fn(() => jest.fn()),
+} as any)))
+
+registerService('markdown-editor', memorize(() => ({
+  getMarkdown: jest.fn(() => ''),
+} as any)))

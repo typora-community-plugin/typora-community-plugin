@@ -2,8 +2,8 @@ import fs from 'src/io/fs/filesystem'
 import { runConcurrent } from 'src/utils/schedule/concurrency'
 import { DeferredQueue } from 'src/utils/schedule/deferred-queue'
 import type { Vault } from 'src/io/vault'
-import type { MetadataProcessor } from './metadata-processor'
-import { loadCache, saveCache, type Cache } from './metadata-store'
+import type { MetadataProcessor } from './processor'
+import { loadCache, saveCache, type Cache } from 'src/metadata/store/store'
 
 
 export interface MetadataIndexEvents {

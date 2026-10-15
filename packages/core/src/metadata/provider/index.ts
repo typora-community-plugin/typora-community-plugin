@@ -1,0 +1,5 @@
+export { MetadataProviderRegistry, MetadataProviderContext, normalizeExtension, providerId } from './registry'
+export type { MetadataProvider, RegisterOptions, ProviderEntry } from './registry'
+export { mergeMetadata } from './merge'
+export type { MergeSpec, MergeStrategy } from './merge'
+export { registerDefaultMetadataProviders, markdown, basicMeta } from './builtin'

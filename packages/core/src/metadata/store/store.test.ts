@@ -41,20 +41,20 @@ class FakeMiniDexie {
   close = jest.fn(() => { state.closed.push(this) })
 }
 
-async function setup(): Promise<typeof import('src/metadata/metadata-store')> {
+async function setup(): Promise<typeof import('./store')> {
   jest.resetModules()
   state.instances = []
   state.closed = []
   state.failOpen = false
 
   await jest.unstable_mockModule('src/utils/indexed-db', () => ({ MiniDexie: FakeMiniDexie }))
-  return import('src/metadata/metadata-store')
+  return import('./store')
 }
 
 const entry = (mtime: number) => ({ mtime, metadata: { frontmatter: {}, tags: [] } })
 
 
-describe('metadata-store', () => {
+describe('store', () => {
 
   it('round-trips the cache through IndexedDB', async () => {
     const store = await setup()

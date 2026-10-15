@@ -21,7 +21,7 @@ async function loadManager(): Promise<typeof MetadataManager> {
   storeMock.loadCache.mockResolvedValue({})
 
   await jest.unstable_mockModule('src/io/fs/filesystem', () => ({ default: fsMock }))
-  await jest.unstable_mockModule('src/metadata/metadata-store', () => ({ ...storeMock }))
+  await jest.unstable_mockModule('src/metadata/store/store', () => ({ ...storeMock }))
 
   return (await import('./metadata-manager')).MetadataManager
 }
@@ -31,19 +31,15 @@ function createManager(
   opts: { concurrency?: number } = {},
 ) {
   const vault = { id: 'vault-1', path: '/vault', on: jest.fn(() => jest.fn()) }
-  const workspace = { on: jest.fn(() => jest.fn()) }
-  const markdownEditor = { getMarkdown: jest.fn(() => '') }
   const config = { on: jest.fn(() => jest.fn()) }
 
   const manager = new Manager(
     { concurrency: opts.concurrency ?? 10 },
-    markdownEditor as any,
-    workspace as any,
     vault as any,
     config as any,
   )
 
-  return { manager, vault, workspace, markdownEditor, config }
+  return { manager, vault, config }
 }
 
 const entry = (mtime = 1) => ({ mtime, metadata: { frontmatter: {}, tags: [] } })

@@ -13,7 +13,7 @@ import type { Vault } from "src/io/vault"
 import type { CommandManager } from 'src/command/command-manager'
 import type { I18n } from 'src/locales/i18n'
 import * as Locale from 'src/locales/lang.en.json'
-import type { MetadataManager } from './metadata/metadata-manager'
+import type { MetadataManager } from './metadata'
 import type { PluginManager } from "src/plugin/plugin-manager"
 import type { InternalPluginManager, InternalPluginSettings } from './plugin-internal/internal-plugin-manager'
 import type { Settings } from 'src/settings/settings'

@@ -6,7 +6,7 @@ import type { HotkeyManager } from "src/hotkey-manager"
 import type { ILogger } from "src/io/logger/logger"
 import type { Vault } from "src/io/vault"
 import type { I18n } from "src/locales/i18n"
-import type { MetadataManager } from "src/metadata/metadata-manager"
+import type { MetadataManager } from "src/metadata"
 import type { InputBox, QuickPick } from "src/ui/components/quick-open"
 import * as Locale from 'src/locales/lang.en.json'
 import type { GithubAPI } from "src/net/github"

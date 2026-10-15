@@ -12,8 +12,8 @@ async function setup() {
   jest.clearAllMocks()
   await jest.unstable_mockModule('src/io/fs/filesystem', () => ({ default: fsMock }))
 
-  const { MetadataProcessor } = await import('./metadata-processor')
-  const { MetadataProviderRegistry } = await import('./metadata-provider-registry')
+  const { MetadataProcessor } = await import('./processor')
+  const { MetadataProviderRegistry } = await import('src/metadata/provider/registry')
 
   return { MetadataProcessor, MetadataProviderRegistry }
 }

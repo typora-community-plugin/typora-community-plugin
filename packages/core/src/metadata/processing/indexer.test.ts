@@ -20,11 +20,11 @@ async function setup() {
   storeMock.loadCache.mockResolvedValue({})
 
   await jest.unstable_mockModule('src/io/fs/filesystem', () => ({ default: fsMock }))
-  await jest.unstable_mockModule('src/metadata/metadata-store', () => ({ ...storeMock }))
+  await jest.unstable_mockModule('src/metadata/store/store', () => ({ ...storeMock }))
 
-  const { MetadataIndexer } = await import('./metadata-indexer')
-  const { MetadataProcessor } = await import('./metadata-processor')
-  const { MetadataProviderRegistry } = await import('./metadata-provider-registry')
+  const { MetadataIndexer } = await import('./indexer')
+  const { MetadataProcessor } = await import('./processor')
+  const { MetadataProviderRegistry } = await import('src/metadata/provider/registry')
   const { DeferredQueue } = await import('src/utils/schedule/deferred-queue')
 
   return { MetadataIndexer, MetadataProcessor, MetadataProviderRegistry, DeferredQueue }

@@ -6,13 +6,14 @@ import { useService } from 'src/common/service'
 import { DeferredQueue } from 'src/utils/schedule/deferred-queue'
 import { Semaphore } from 'src/utils/schedule/semaphore'
 import type { DisposeFunc } from 'src/utils/types'
-import { MetadataIndexer } from './metadata-indexer'
-import { MetadataProcessor } from './metadata-processor'
-import { MetadataProviderRegistry, normalizeExtension, type MetadataProvider, type RegisterOptions } from './metadata-provider-registry'
-import { closeCache, deleteCacheEntries, type Cache, type CacheEntry } from './metadata-store'
-import { interceptQuickOpenWorker } from './metadata-worker-sync'
+import { MetadataIndexer } from 'src/metadata/processing/indexer'
+import { MetadataProcessor } from 'src/metadata/processing/processor'
+import { MetadataProviderRegistry, normalizeExtension, type MetadataProvider, type RegisterOptions } from 'src/metadata/provider/registry'
+import { closeCache, deleteCacheEntries, type Cache, type CacheEntry } from 'src/metadata/store/store'
+import { syncFileEvents } from 'src/metadata/sync/file-sync'
+import { interceptQuickOpenWorker } from 'src/metadata/sync/worker-sync'
 
-export type { MetadataProvider, RegisterOptions } from './metadata-provider-registry'
+export type { MetadataProvider, RegisterOptions } from 'src/metadata/provider/registry'
 
 
 export type MetadataEvents = {
@@ -33,7 +34,6 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
   cache: Cache = {}
 
   private concurrencyLimit: number
-  private _quickOpenWorker: Worker | undefined
   private _activeVaultId: string
 
   /**
@@ -58,8 +58,6 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
    */
   constructor(
     options: { concurrency?: number } = {},
-    markdownEditor = useService('markdown-editor'),
-    workspace = useService('workspace'),
     private vault = useService('vault'),
     config = useService('config-repository'),
   ) {
@@ -83,31 +81,18 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
 
     this.setSticky('index:done')
 
-    workspace.on('file:will-save', (file) => {
-      const content = markdownEditor.getMarkdown()
-      this._indexingWork.run(() =>
-        this.processor.processFile(this.cache, this.vault.path, file, content)
-          .then(() => {
-            const relativePath = this.toRelative(file)
-            this.emit('index:update', relativePath)
-          })
-      ).catch(() => { })
-    })
-
     // Keep the cache in sync with changes of the file system.
-    this.vault.on('file:delete', (filePath) => this.remove(filePath))
-    this.vault.on('file:rename', (oldPath, newPath) => this.rename(oldPath, newPath))
-    this.vault.on('directory:rename', (oldPath, newPath) => this.rename(oldPath, newPath))
+    syncFileEvents(this)
 
     // Rebind the cache/connection when the workspace (vault) is switched.
     config.on('switch', () => this._onConfigSwitch())
 
     // Keep the cache in sync with the native Quick Open worker.
-    this._interceptQuickOpenWorker()
+    interceptQuickOpenWorker(this)
 
     // The worker is created lazily along with the panel, so re-attach on use.
     decorate.afterCall(editor.quickOpenPanel, 'initFileCache', () =>
-      this._interceptQuickOpenWorker())
+      interceptQuickOpenWorker(this))
   }
 
   /**
@@ -128,22 +113,6 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
     closeCache(this._activeVaultId)
     this._activeVaultId = vaultId
     this.cache = {}
-  }
-
-  /**
-   * Intercept the native Quick Open worker so that the files it adds or removes
-   * (e.g. new files) are reflected in the metadata cache.
-   */
-  private _interceptQuickOpenWorker(): void {
-    const worker = interceptQuickOpenWorker(
-      {
-        onFileAdded: filePath => { this.update(filePath).catch(() => { }) },
-        onPathRemoved: prefix => this.remove(prefix),
-      },
-      w => w === this._quickOpenWorker,
-    )
-
-    if (worker) this._quickOpenWorker = worker
   }
 
   /**
@@ -219,11 +188,14 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
 
   /**
    * Re-index a single file (absolute path) and keep the cache up to date.
+   *
+   * @param content Unsaved editor content. When provided the file's on-disk
+   * state is ignored and metadata is derived from this content instead.
    */
-  async update(filePath: string): Promise<void> {
+  async update(filePath: string, content?: string): Promise<void> {
     await this._indexingWork.run(() =>
       this._updateLimiter.run(async () => {
-        await this.processor.processFile(this.cache, this.vault.path, filePath)
+        await this.processor.processFile(this.cache, this.vault.path, filePath, content)
 
         const relativePath = this.toRelative(filePath)
         if (relativePath in this.cache) {

@@ -1,8 +1,8 @@
 import fs from 'src/io/fs/filesystem'
 import path from 'src/path'
-import { mergeMetadata } from './metadata-merge'
-import { MetadataProviderContext, MetadataProviderRegistry } from './metadata-provider-registry'
-import type { Cache, CacheEntry } from './metadata-store'
+import { mergeMetadata } from 'src/metadata/provider/merge'
+import { MetadataProviderContext, MetadataProviderRegistry } from 'src/metadata/provider/registry'
+import type { Cache, CacheEntry } from 'src/metadata/store/store'
 
 
 /**

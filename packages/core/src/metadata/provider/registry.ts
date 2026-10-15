@@ -1,6 +1,6 @@
 import fs from 'src/io/fs/filesystem'
 import type { DisposeFunc } from 'src/utils/types'
-import type { MergeSpec } from './metadata-merge'
+import type { MergeSpec } from './merge'
 
 
 export class MetadataProviderContext {

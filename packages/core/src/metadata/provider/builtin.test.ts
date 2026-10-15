@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals'
 import 'src/setup-test-env'
-import { registerDefaultMetadataProviders, basicMeta, markdown } from './metadata-providers'
-import type { MetadataManager, MetadataProvider } from './metadata-manager'
+import { registerDefaultMetadataProviders, basicMeta, markdown } from './builtin'
+import type { MetadataManager, MetadataProvider } from 'src/metadata/metadata-manager'
 import { MarkdownView } from 'src/ui/views/markdown-view'
 import { ImageView } from 'src/ui/views/image-view'
 

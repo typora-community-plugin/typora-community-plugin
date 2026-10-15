@@ -1,4 +1,4 @@
-import type { MetadataManager, MetadataProvider } from "./metadata-manager"
+import type { MetadataManager, MetadataProvider } from "src/metadata/metadata-manager"
 import { ImageView } from "src/ui/views/image-view"
 import { MarkdownView } from "src/ui/views/markdown-view"
 import { parseMarkdown, parseSimplifiedYAML, parseTagsWithPositionsFromYAML, parseTitles } from "src/utils"
