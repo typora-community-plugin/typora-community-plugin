@@ -1,13 +1,15 @@
-import fs from 'src/io/fs/filesystem'
 import path from 'src/path'
 import { editor } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
 import { StickyEvents } from 'src/common/events'
 import { useService } from 'src/common/service'
+import { DeferredQueue } from 'src/utils/schedule/deferred-queue'
+import { Semaphore } from 'src/utils/schedule/semaphore'
 import type { DisposeFunc } from 'src/utils/types'
-import { mergeMetadata } from './metadata-merge'
-import { closeCache, deleteCacheEntries, loadCache, saveCache, type Cache, type CacheEntry } from './metadata-store'
-import { MetadataProviderContext, MetadataProviderRegistry, normalizeExtension, type MetadataProvider, type RegisterOptions } from './metadata-provider-registry'
+import { MetadataIndexer } from './metadata-indexer'
+import { MetadataProcessor } from './metadata-processor'
+import { MetadataProviderRegistry, normalizeExtension, type MetadataProvider, type RegisterOptions } from './metadata-provider-registry'
+import { closeCache, deleteCacheEntries, type Cache, type CacheEntry } from './metadata-store'
 import { interceptQuickOpenWorker } from './metadata-worker-sync'
 
 export type { MetadataProvider, RegisterOptions } from './metadata-provider-registry'
@@ -27,23 +29,29 @@ export type MetadataEvents = {
 export class MetadataManager extends StickyEvents<MetadataEvents> {
 
   private providerRegistry = new MetadataProviderRegistry()
+  private processor = new MetadataProcessor(this.providerRegistry)
   cache: Cache = {}
 
   private concurrencyLimit: number
-  private isIndexing: boolean = false
   private _quickOpenWorker: Worker | undefined
-  private _pendingUpdates: Array<() => Promise<void>> = []
-  private _drainingUpdates = false
   private _activeVaultId: string
 
   /**
-   * Concurrency gate for incremental updates. A whole-vault event (e.g. the
+   * Queue for incremental work issued while indexing. The work is deferred so
+   * it is applied to the published cache instead of being clobbered when
+   * `index()` publishes its result.
+   */
+  private _indexingWork = new DeferredQueue()
+
+  /**
+   * Limits concurrent incremental updates. A whole-vault event (e.g. the
    * Quick Open worker reporting every file at once, or a provider being
    * registered) would otherwise spawn one `processFile` per file and exhaust
    * the OS file-descriptor limit (`EMFILE`).
    */
-  private _activeUpdates = 0
-  private _updateQueue: Array<() => void> = []
+  private _updateLimiter: Semaphore
+
+  private indexer: MetadataIndexer
 
   /**
    * @param options.concurrency Number of files processed simultaneously, default 10
@@ -57,14 +65,28 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
   ) {
     super('metadata')
     this.concurrencyLimit = options.concurrency ?? 10
+    this._updateLimiter = new Semaphore(this.concurrencyLimit)
     this._activeVaultId = this.vault.id
+
+    this.indexer = new MetadataIndexer({
+      vault,
+      processor: this.processor,
+      concurrency: this.concurrencyLimit,
+      indexingWork: this._indexingWork,
+      events: {
+        start: total => this.emit('index:start', total),
+        progress: current => this.emit('index:progress', current),
+        done: () => this.emit('index:done'),
+      },
+      publish: cache => { this.cache = cache },
+    })
 
     this.setSticky('index:done')
 
     workspace.on('file:will-save', (file) => {
       const content = markdownEditor.getMarkdown()
-      this.enqueueUpdate(() =>
-        this.processFile(this.cache, this.vault.path, file, content)
+      this._indexingWork.run(() =>
+        this.processor.processFile(this.cache, this.vault.path, file, content)
           .then(() => {
             const relativePath = this.toRelative(file)
             this.emit('index:update', relativePath)
@@ -158,10 +180,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
    */
   private _invalidateExtension(ext: string, hadProviders: boolean): void {
     // While indexing, defer so the invalidation runs against the published cache.
-    if (this.isIndexing) {
-      this._pendingUpdates.push(async () => this._invalidateExtension(ext, hadProviders))
-      return
-    }
+    if (this._indexingWork.defer(() => this._invalidateExtension(ext, hadProviders))) return
 
     const key = normalizeExtension(ext)
     const cachedPaths = Object.keys(this.cache)
@@ -188,186 +207,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
    * Index files in the vault
    */
   async index() {
-    if (this.isIndexing) {
-      throw new Error("Indexing is already in progress.")
-    }
-
-    this.isIndexing = true
-    console.log('[Metadata] Start indexing...')
-
-    const abortController = new AbortController()
-    const dispose = this.vault.on('change', () => abortController.abort())
-
-    try {
-      const { signal } = abortController
-      const vaultPath = this.vault.path
-      const allFiles = await fs.listFiles(vaultPath, { recursive: true, signal })
-      this.emit('index:start', allFiles.length)
-
-      signal.throwIfAborted()
-      const vaultId = this.vault.id
-      const indexingCache = await loadCache(vaultId)
-
-      signal.throwIfAborted()
-      // `processQueue` drains its list via `pop()`, so hand it a copy to keep
-      // `allFiles` intact for `pruneCache` below.
-      await this.processQueue(indexingCache, vaultPath, [...allFiles], signal)
-
-      signal.throwIfAborted()
-      this.pruneCache(indexingCache, vaultPath, allFiles)
-
-      this.cache = indexingCache
-      this.emit('index:done')
-      saveCache(vaultId, indexingCache)
-
-    } catch (error: any) {
-      if (error.name === 'AbortError') {
-        console.log('[Metadata] Indexing stopped, temporary cache discarded')
-      } else {
-        console.error('[Metadata] Indexing failed due to error:', error)
-        throw error
-      }
-    } finally {
-      dispose()
-      this.isIndexing = false
-      await this.drainPendingUpdates()
-      console.log('[Metadata] Indexing completed.')
-    }
-  }
-
-  /**
-   * Drop cache entries that no longer correspond to an existing file with a
-   * registered provider, so that deleted files do not resurrect from IndexedDB.
-   */
-  private pruneCache(cache: Cache, vaultPath: string, filePaths: string[]): void {
-    const keep = new Set<string>()
-    for (const filePath of filePaths) {
-      const ext = path.extname(filePath).toLowerCase()
-      if (this.providerRegistry.get(ext)?.length) {
-        keep.add(path.relative(vaultPath, filePath))
-      }
-    }
-
-    for (const key of Object.keys(cache)) {
-      if (!keep.has(key)) delete cache[key]
-    }
-  }
-
-  /**
-   * Queue an incremental update while indexing so it is applied to the final
-   * cache instead of being clobbered when `index()` publishes its result.
-   */
-  private enqueueUpdate(task: () => Promise<void>): Promise<void> {
-    if (!this.isIndexing) return task()
-
-    return new Promise<void>((resolve, reject) => {
-      this._pendingUpdates.push(() => task().then(resolve, reject))
-    })
-  }
-
-  /**
-   * Defer a synchronous cache mutation while indexing, so it is applied to the
-   * published cache. Returns `true` when the task was deferred.
-   */
-  private deferWhileIndexing(task: () => void): boolean {
-    if (!this.isIndexing) return false
-
-    this._pendingUpdates.push(async () => task())
-    return true
-  }
-
-  private async drainPendingUpdates(): Promise<void> {
-    if (this._drainingUpdates) return
-    this._drainingUpdates = true
-    try {
-      while (this._pendingUpdates.length > 0) {
-        const task = this._pendingUpdates.shift()!
-        try {
-          await task()
-        } catch {
-          // individual update failures are already logged by processFile
-        }
-      }
-    } finally {
-      this._drainingUpdates = false
-    }
-  }
-
-  private async processQueue(indexingCache: Cache, vaultPath: string, filePaths: string[], signal: AbortSignal): Promise<void> {
-    const allCount = filePaths.length
-    const worker = async () => {
-      while (filePaths.length > 0) {
-        signal.throwIfAborted()
-        const filePath = filePaths.pop()
-        if (filePath) {
-          await this.processFile(indexingCache, vaultPath, filePath, undefined, signal)
-          this.emit('index:progress', allCount - filePaths.length - 1)
-        }
-      }
-    }
-
-    const count = Math.min(this.concurrencyLimit, filePaths.length)
-    const workers = Array.from({ length: count }, () => worker())
-
-    await Promise.all(workers)
-  }
-
-  /**
-   * Process a single file: with cache check and providers
-   */
-  private async processFile(indexingCache: Cache, vaultPath: string, filePath: string, content?: string, signal?: AbortSignal): Promise<void> {
-    signal?.throwIfAborted()
-
-    const ext = path.extname(filePath).toLowerCase()
-    const providers = this.providerRegistry.get(ext)
-
-    if (!providers || providers.length === 0) return
-
-    try {
-      const stats = await fs.stat(filePath)
-      const mtime = stats.mtimeMs
-      const relativePath = path.relative(vaultPath, filePath)
-
-      const cached = indexingCache[relativePath]
-      // When content is provided (from file:will-save with editor content),
-      // skip the mtime check — the file hasn't been written to disk yet so
-      // mtime is still old. Without this, the provider never processes the
-      // new content and the cache stays stale.
-      //
-      // The cache is also treated as stale when the provider set for the
-      // extension changed, so metadata produced before a provider was added,
-      // removed or replaced is re-processed instead of being reused by mtime.
-      if (!content && cached && cached.mtime === mtime
-        && cached.providerSignature === this.providerRegistry.getSignature(ext)) {
-        indexingCache[relativePath] = cached
-        return
-      }
-
-      const context = new MetadataProviderContext(filePath, content, stats)
-
-      const results = await Promise.all(
-        providers.map(async ({ provider }) => {
-          signal?.throwIfAborted()
-          try {
-            return await provider(context)
-          } catch (e) {
-            console.warn(`Provider error in ${filePath}:`, e)
-            return {}
-          }
-        })
-      )
-
-      signal?.throwIfAborted()
-
-      const mergedMetadata = mergeMetadata(
-        results.map((data, i) => ({ data, spec: providers[i].merge })),
-      ) as CacheEntry
-
-      mergedMetadata.providerSignature = this.providerRegistry.getSignature(ext)
-      indexingCache[relativePath] = mergedMetadata
-    } catch (error) {
-      console.error(`Failed to process ${filePath}:`, error)
-    }
+    await this.indexer.index()
   }
 
   /**
@@ -378,49 +218,26 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
   }
 
   /**
-   * Acquire a slot from the update concurrency gate. Pair with
-   * {@link _releaseUpdateSlot} in a `finally` block.
-   */
-  private _acquireUpdateSlot(): Promise<void> {
-    if (this._activeUpdates < this.concurrencyLimit) {
-      this._activeUpdates++
-      return Promise.resolve()
-    }
-    return new Promise<void>(resolve => this._updateQueue.push(resolve))
-  }
-
-  private _releaseUpdateSlot(): void {
-    const next = this._updateQueue.shift()
-    // Hand the slot over to the next waiter instead of releasing it, so a
-    // queued caller cannot race past the limit.
-    if (next) next()
-    else this._activeUpdates--
-  }
-
-  /**
    * Re-index a single file (absolute path) and keep the cache up to date.
    */
   async update(filePath: string): Promise<void> {
-    await this.enqueueUpdate(async () => {
-      await this._acquireUpdateSlot()
-      try {
-        await this.processFile(this.cache, this.vault.path, filePath)
+    await this._indexingWork.run(() =>
+      this._updateLimiter.run(async () => {
+        await this.processor.processFile(this.cache, this.vault.path, filePath)
 
         const relativePath = this.toRelative(filePath)
         if (relativePath in this.cache) {
           this.emit('index:update', relativePath)
         }
-      } finally {
-        this._releaseUpdateSlot()
-      }
-    })
+      })
+    )
   }
 
   /**
    * Remove a file or a folder subtree (absolute path) from the cache.
    */
   remove(filePath: string): void {
-    if (this.deferWhileIndexing(() => this.remove(filePath))) return
+    if (this._indexingWork.defer(() => this.remove(filePath))) return
 
     const relativePath = this.toRelative(filePath)
     if (!relativePath) return
@@ -445,7 +262,7 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
    * Move a file or a folder subtree (absolute paths) in the cache.
    */
   rename(oldPath: string, newPath: string): void {
-    if (this.deferWhileIndexing(() => this.rename(oldPath, newPath))) return
+    if (this._indexingWork.defer(() => this.rename(oldPath, newPath))) return
 
     const oldRelative = this.toRelative(oldPath)
     const newRelative = this.toRelative(newPath)
