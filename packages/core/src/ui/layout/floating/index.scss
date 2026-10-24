@@ -3,10 +3,24 @@
   top: 80px;
   right: 24px;
   z-index: 999;
+  // width is set inline by `openFloatingLeaf()`; border-box keeps padding
+  // inside the floating box and keeps drag-resizing from jumping.
+  box-sizing: border-box;
 
   & > .typ-workspace-node {
     min-width: 0;
     min-height: 0;
+  }
+
+  // Mounted layout children (e.g. WorkspaceTabs) should fill the floating box.
+  &:has(> .typ-workspace-tabs) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  & > .typ-workspace-tabs {
+    flex: 1;
+    min-width: 0;
   }
 
   // Resize handle

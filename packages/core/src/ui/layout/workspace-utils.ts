@@ -144,6 +144,15 @@ export function openFloatingLeaf(arg0: string | WorkspaceLeaf) {
   const { containerEl } = view
   let titlebar: HTMLElement | null
 
+  // A floating box is `position: fixed`, so a view's own percentage size
+  // (e.g. `width: 100%`) resolves against the viewport instead of the window.
+  // Pin the window size inline (inline styles beat view styles) so the
+  // floating window keeps its intended size and its content fills it.
+  // `width` / `height` in leaf state accept a number (px) or any CSS length,
+  // e.g. `{ width: 480 }` for a fixed-width window.
+  containerEl.style.width ||= toSize(state.width) ?? '480px'
+  containerEl.style.height ||= toSize(state.height) ?? 'auto'
+
   containerEl.classList.add('typ-workspace-floating')
   decorate.afterCall(view, 'onload', () => {
     state.theme === 'default' && defaultTheme(containerEl)
@@ -158,4 +167,9 @@ export function openFloatingLeaf(arg0: string | WorkspaceLeaf) {
 
   tabs.appendChild(leaf)
   workspace.floatingSplit.appendChild(tabs)
+}
+
+function toSize(value: unknown) {
+  if (typeof value === 'number') return `${value}px`
+  return typeof value === 'string' && value.trim() ? value : undefined
 }

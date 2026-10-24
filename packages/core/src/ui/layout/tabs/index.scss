@@ -6,6 +6,9 @@
 .typ-workspace-tabs {
   display: flex;
   flex-direction: column;
+  // fill the workspace node / sidedock content instead of shrink-wrapping to content width
+  flex: 1;
+  min-width: 0;
 
   border-left: solid 1px rgb(var(--typ-border-color));
 
