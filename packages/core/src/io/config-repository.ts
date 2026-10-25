@@ -30,14 +30,21 @@ export class ConfigRepository extends Events<ConfigEvents> {
     vault.on('change', () => this._autoSelectConfig())
   }
 
+  /** whether config is currently read from the global config directory instead of the vault's local one */
   get isUsingGlobalConfig() {
     return this._isUsingGlobalConfig
   }
 
+  /**
+   * Currently active config directory. It is one of:
+   * - the global config directory: shared by all vaults, used when the vault has no local config;
+   * - the vault's local config directory: stored inside the vault, used when it exists.
+   */
   get configDir() {
     return this._configDir
   }
 
+  /** data directory inside the active config directory (global or vault-local) */
   get dataDir() {
     return path.join(this.configDir, 'data')
   }
@@ -106,6 +113,7 @@ export class ConfigRepository extends Events<ConfigEvents> {
    * Read json in `configDir`
    *
    * @param filename File name without extension name `.json`
+   * @param defaultValue value returned when the file cannot be read or parsed
    * @returns JSON Object
    */
   readConfigJson(filename: string, defaultValue: any = {}): any {
@@ -119,6 +127,12 @@ export class ConfigRepository extends Events<ConfigEvents> {
     }
   }
 
+  /**
+   * Write json into `configDir`, creating its parent directory when needed
+   *
+   * @param filename File name without extension name `.json`
+   * @param config JSON serializable object
+   */
   writeConfigJson(filename: string, config: any) {
     const configPath = path.join(this.configDir, filename + '.json')
     const dirname = path.dirname(configPath)
