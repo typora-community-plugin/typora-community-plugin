@@ -1,10 +1,10 @@
 # Changelog
 
-## v2.10.71
+## v2.10.73
 
 - fix(core/ui/sidebar/advanced-search): negated words exclude the whole file; a match anywhere in the body excludes it
 - fix(core/ui/sidebar/advanced-search): fix parenthesized groups losing OR semantics
-- refactor(i18n): remove the incorrect regex claim from advanced search mode descriptions
+- refactor(core/ui/sidebar/advanced-search): remove the incorrect regex claim from advanced search mode descriptions
 - docs(user-guide): rewrite and expand the user guide with new settings, workspace, file views and command palette docs
 
 - **Workspace**
@@ -15,7 +15,6 @@
 
 - **Developer**
   - refactor(core/plugin): rename `registerMarkdownSugguest` to `registerMarkdownSuggest`, keeping a deprecated alias
-  - docs(core/io/config): document config repository methods and properties
   - docs(dev-guide): expand and refresh the API documentation in English and Chinese
 
 ## v2.10.70
