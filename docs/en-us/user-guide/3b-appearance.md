@@ -32,7 +32,7 @@ Leave "Show not supported file" off.
 
 ## Notes and limitations
 
-- The description of "Advanced Search Mode" says it supports regular expressions, but the actual search engine matches **fixed strings** and does not support regex. See [Advanced search limitations](./4c-advanced-search.md#notes-and-limitations).
+- Advanced Search Mode does not support regular expressions; `/foo/` is searched as plain characters. See [Advanced search limitations](./4c-advanced-search.md#notes-and-limitations).
 - "Show not supported file" makes the file tree longer; keep it off if your vault contains many files.
 - "Keep search results" only prevents the panel from clearing results when you switch away; it does not save search content.
 

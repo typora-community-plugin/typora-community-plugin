@@ -134,7 +134,7 @@ The following describes how the current implementation actually behaves. Where i
 5. **`tag:#foo` does not work**; the `#` is not stripped. Write `tag:foo`.
 6. **`title:` is case-sensitive**; `title:meeting` does not find `Meeting`. `filename:` is case-insensitive.
 7. **Frontmatter tag matching is case-sensitive; inline body tags are not.**
-8. **Regular expressions are not supported.** The "supports regular expressions" description in the settings UI is inaccurate; `/foo/` is searched as plain characters.
+8. **Regular expressions are not supported.** `/foo/` is searched as plain characters.
 9. **Body search limits: 2 MiB per file, at most 10 matching lines returned per file.** Large files or files with too many matches may have missing results.
 10. **Body search skips hidden files and files ignored by `.gitignore`**, but `filename:` and `title:` can still match them.
 11. **Only Markdown and image files are indexed**; other file types are not matched by structured queries.

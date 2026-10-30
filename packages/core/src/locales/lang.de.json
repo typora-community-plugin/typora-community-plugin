@@ -88,7 +88,7 @@
       "searchResultFullPath": "Vollständigen Suchergebnispfad anzeigen",
       "searchResultFullPathDesc": "Bewegen Sie den Cursor über den Pfad, um den vollständigen Pfad in einem Tooltip anzuzeigen.",
       "advancedSearchMode": "Erweiterter Suchmodus",
-      "advancedSearchModeDesc": "Ersetzt die native Dateisuche durch eine benutzerdefinierte ripgrep-basierte Engine, die Regex-Muster unterstützt. Eine Umschaltfläche erscheint neben der Regex-Schaltfläche in der Suchleiste.",
+      "advancedSearchModeDesc": "Ersetzt die native Dateisuche durch die benutzerdefinierte Engine mit tag:/title:/filename:-Feldern und booleschen Kombinationen. Erfordert das interne Plugin \"Metadaten (Beta)\". Über dem Suchfeld erscheint eine Umschaltzeile.",
       "advanced": "Erweitert",
       "ribbon": "Ribbon anzeigen",
       "ribbonDesc": "Aktiviert auch benutzerdefiniertes Seitenleisten-Panel"

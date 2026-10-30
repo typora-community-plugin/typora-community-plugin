@@ -88,7 +88,7 @@
       "searchResultFullPath": "Show search result full path",
       "searchResultFullPathDesc": "Hover your cursor over the path and it will show full path in a tooltip.",
       "advancedSearchMode": "Advanced Search Mode",
-      "advancedSearchModeDesc": "Replace native file search with custom ripgrep-based engine that supports regex patterns. A toggle button appears next to the regex button in the search bar.",
+      "advancedSearchModeDesc": "Replace native file search with the custom engine, supporting tag:/title:/filename: fields and boolean combinations. Requires the built-in \"Metadata (beta)\" plugin. A toggle row appears above the search box.",
       "advanced": "Advanced",
       "ribbon": "Show Ribbon",
       "ribbonDesc": "Also enable Custom Sidebar Panel"
