@@ -26,15 +26,18 @@ export class HtmlPostProcessor extends PostProcessor {
   }
 
   _process(el: HTMLElement) {
-    try {
-      const elements = this.selector
-        ? $(this.selector, el).toArray()
-        : [el]
-      elements.forEach(selected => this.process(selected, { containerEl: el }), this)
-    }
-    catch (error) {
-      this.logger.error(error)
-    }
+    const elements = this.selector
+      ? $(this.selector, el).toArray()
+      : [el]
+
+    elements.forEach(selected => {
+      try {
+        this.process(selected, { containerEl: el })
+      }
+      catch (error) {
+        this.logger.error(error)
+      }
+    }, this)
   }
 
   static from(options: Pick<HtmlPostProcessor, 'selector' | 'process'>) {
