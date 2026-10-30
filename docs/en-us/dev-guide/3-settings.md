@@ -1,106 +1,148 @@
 # Settings
 
-Configure the plugin on the settings page, with persistence used for configuration to the configuration file.
+Configure plugins on a settings page and persist the configuration to a settings file.
 
-Shortcut keys do not need to add their own settings interface, unified in "Settings" > "Shortcuts".
+Hotkeys do not need their own settings UI; they are all configured in "Settings > Hotkeys".
+
 
 
 ## Storage
 
-Use the Plugin's `registerSettings()` to register a `PluginSettings` instance.
+Use `PluginSettings` to manage plugin configuration. It extends `Settings` and provides reading, writing, change listening, and auto-saving.
 
-Then you can automatically access the `PluginSettings` instance through the Plugin's `settings`.
+### Create and Register
 
+Call `registerSettings()` in `onload()`:
 
-### Creation and Registration
-
-```typescript
+```ts
 import { Plugin, PluginSettings } from '@typora-community-plugin/core'
 
-export class MyPlugin extends Plugin {
-  registerSettings() {
-    this.registerSettings(new PluginSettings(this.app, this.manifest, {
+type MySettings = {
+  enabled: boolean
+  theme: 'light' | 'dark' | 'auto'
+  network: {
+    timeout: number
+  }
+}
+
+export default class extends Plugin {
+  onload() {
+    this.registerSettings(new PluginSettings<MySettings>(this.app, this.manifest, {
       version: 1,
     }))
   }
 }
 ```
 
+Constructor signature:
 
-### Reading and Writing Configuration
+```ts
+new PluginSettings(app, manifest, {
+  version: number,
+})
+```
 
-Read with `settings.get()` and write with `settings.set()`.
+The settings file is always `data/<manifest.id>`; you neither need to nor can specify `filename` yourself.
 
-```typescript
-// Read (supports nested paths)
-const theme = this.settings.get('theme')        // 'light'
-const timeout = this.settings.get(['network', 'timeout'])  // 30
+> **Note**: `Plugin.settings` is a getter. Accessing `this.settings` without calling `registerSettings()` throws immediately.
 
-// Write (automatically triggers persistence)
+
+
+### Read and Write Configuration
+
+Read with `settings.get()` and write with `settings.set()`. Both support nested paths:
+
+```ts
+// read
+const theme = this.settings.get('theme')                  // 'light' (when a default is set)
+const timeout = this.settings.get(['network', 'timeout']) // 30
+
+// write (persisting is triggered automatically)
 this.settings.set('theme', 'dark')
 this.settings.set(['network', 'timeout'], 60)
 ```
 
+> **Note**: `set()` does not fire a change or save when the value is equal. Writing the same object reference also does not fire; to modify nested fields, use a nested path or write a new object.
+
+
+
+### Default Values
+
+You can set defaults after registration:
+
+```ts
+this.registerSettings(new PluginSettings<MySettings>(this.app, this.manifest, { version: 1 }))
+this.settings.setDefault({
+  enabled: true,
+  theme: 'auto',
+  network: { timeout: 30 },
+})
+```
+
+Missing keys resolve to their default values when read.
+
+
 
 ### Listening for Changes
 
-Use `onChange()` or `addChangeListener()` to listen for changes on specific keys or all keys.
+Use `onChange()` to listen to a specific key or all keys:
 
-```typescript
-// Listen to a single key
+```ts
+// listen to a single key
 const dispose = this.settings.onChange('theme', (key, value) => {
   console.log(`${key} changed to ${value}`)
 })
 
-// Listen to nested paths
+// listen to a nested path
 this.settings.onChange(['network', 'timeout'], (key, value) => {
   // ...
 })
 
-// Listen to all keys
+// listen to all keys
 this.settings.onChange('*', (key, value) => {
   // ...
 })
 
-// Remove listener
+// stop listening
 dispose()
 ```
 
 
+
 ### Persistence Mechanism
 
-- **Storage location**: `<configDir>/data/<pluginId>.json` (`<configDir>` is the global config directory or vault-level `.typora/`)
-- **File format**: JSON, containing `version` and `settings` two-level structure
-- **Auto-save**: Each `set()` call triggers a debounced save (1 second delay), no manual call needed
+- **Storage location**: `<configDir>/data/<pluginId>.json`
+  - By default the global config directory is used: `<Typora userData>/plugins/settings`;
+  - If `.typora/` exists under the current notes folder, it automatically switches to the vault-level config `<vault>/.typora`.
+- **File format**:
 
-
-### Version Migration
-
-When the configuration structure has breaking changes, increment `version` and use `SettingMigrations` for data migration.
-
-```typescript
-import { Plugin, PluginSettings, SettingMigrations } from '@typora-community-plugin/core'
-
-const migrations = new SettingMigrations()
-  .addMigration(1, 2, (old) => ({
-    theme: old.settings.theme === 'dark' ? 'night' : 'day',
-    apiKey: old.settings.apiKey,
-  }))
-
-export class MyPlugin extends Plugin {
-  registerSettings() {
-    this.registerSettings(new PluginSettings(this.app, this.manifest, {
-      version: 2,
-      migrations,
-    }))
+  ```json
+  {
+    "version": 1,
+    "settings": {
+      "enabled": true,
+      "theme": "auto"
+    }
   }
-}
-```
+  ```
+
+- **Auto-save**: each `set()` triggers a debounced save (1 second delay); no manual `save()` is needed.
+- **Path**: `this.dataPath` returns the full path of this settings file.
 
 
-## Interface
 
-See [3-settings-ui](./3-settings-ui).
+### Version Field
+
+`version` represents the structure version of the settings file. Core currently writes it to the file and reads it back on load, but `SettingMigrations` for automatic migration is not yet exported from the package entry, so third-party plugins cannot use migrations for now.
+
+> When changing the settings structure, make your code tolerate old fields or perform a one-time conversion after loading.
+
+
+
+## UI
+
+See [Settings UI](./3-settings-ui.md) for how to build the settings UI.
+
 
 
 ## Examples

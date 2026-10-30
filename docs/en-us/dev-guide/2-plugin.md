@@ -2,38 +2,43 @@
 
 ## Structure
 
-A plugin installation package is a zip file that contains 3 parts:
+A plugin installation package is a zip file containing the following files:
 
-| File          | Description                      |
-| ------------- | ------------------------------- |
-| manifest.json | Plugin's [metadata](#metadata). |
-| main.js       | Plugin's [function implementation](#function-implementation). |
-| style.css     | Plugin's UI style.              |
+| File | Required | Description |
+| --- | --- | --- |
+| `manifest.json` | Yes | The plugin's [metadata](#metadata). |
+| `main.js` | Yes | The plugin's [implementation](#implementation). |
+| `style.css` | No | The plugin's UI styles. If missing, no error is raised; styles are simply not injected. |
 
 
 
 ## Metadata
 
-manifest.json contains information used to display in the plugin market and to determine whether the plugin can run based on version and platform.
+`manifest.json` contains the information used to display the plugin in the marketplace and to decide whether the plugin can run based on version and platform.
 
-| Metadata Name       | Type                                 | Description                                                     |
-| ------------------- | ------------------------------------ | ------------------------------------------------------------- |
-| `id`                | `string`                             | Unique identifier for the plugin. Can use a namespace `author.name` separated by periods as `id`, where punctuation and spaces are replaced with hyphens. |
-| `name`              | `string`                             | Display name of the plugin. Shown in the plugin market and installed plugin list. |
-| `description`       | `string`                             | Description of the plugin.                                    |
-| `author`            | `string`                             | Author of the plugin.                                        |
-| `authorUrl`         | `string`                             | Author's homepage. Can use GitHub homepage.                  |
-| `repo`              | `string`                             | GitHub repository address. Does not include GitHub hostname, e.g.: `typora-community-plugin/typora-plugin-example`. |
-| `version`           | `string`                             | Plugin version number.                                       |
-| `minAppVersion`     | `string`                             | Minimum Typora version supported by the plugin.              |
-| `minCoreVersion`    | `string`                             | Minimum typora-community-plugin version supported by the plugin. |
-| `platforms`         | Array\<"win32" \| "linux" \| "darwin"> | Operating systems supported by the plugin.                  |
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | Unique identifier of the plugin. You may use a dot-separated namespace such as `author.name`, replacing punctuation and whitespace with hyphens. |
+| `name` | `string` | Display name of the plugin. Shown in the marketplace and in the installed plugins list. |
+| `description` | `string` | Plugin description. |
+| `author` | `string` | Plugin author. |
+| `authorUrl` | `string` | Author's homepage. A GitHub profile works. |
+| `repo` | `string` | GitHub repository address, without the GitHub host name, e.g. `typora-community-plugin/typora-plugin-example`. |
+| `version` | `string` | Plugin version. |
+| `minAppVersion` | `string` | Minimum Typora version supported by the plugin. |
+| `minCoreVersion` | `string` | Minimum typora-community-plugin version supported by the plugin. |
+| `platforms` | `Array<"win32" \| "linux" \| "darwin">` | Operating systems supported by the plugin. |
+
+> **Notes**
+>
+> - `position` (`"global" | "vault"`) and `dir` (absolute path of the plugin directory) are runtime fields injected by core when loading. Do not put them in `manifest.json`.
+> - Currently core only strictly validates `minCoreVersion` when enabling a plugin; `minAppVersion` and `platforms` are mainly used by the plugin marketplace.
 
 
 
-## Function Implementation
+## Implementation
 
-main.js exports a plugin implementation class that inherits from the Plugin class, which will be instantiated when loaded.
+`main.js` exports a plugin implementation class extending `Plugin`, which is instantiated by the plugin manager when the plugin is loaded:
 
 ```ts
 import { Plugin } from '@typora-community-plugin/core'
@@ -42,11 +47,11 @@ import { Plugin } from '@typora-community-plugin/core'
 export default class extends Plugin {
 
   onload() {
-    // Initialization
+    // initialization
   }
 
   onunload() {
-    // Resource release
+    // resource disposal (optional; prefer this.register())
   }
 }
 ```
@@ -55,18 +60,89 @@ export default class extends Plugin {
 
 ### Lifecycle
 
-Plugin implementation class
+The lifecycle of the plugin implementation class is managed by the `Plugin` base class (`Component`):
 
-- When loading, the `onload()` method will be called for initialization;
-- When unloading, the `onunload()` method will be called for resource release.
+- `onload()` is called when loading;
+- `onunload()` is called when unloading, followed by the cleanup functions collected via `this.register()`, and finally child components are unloaded.
+
+Prefer the `register` family of methods to manage resources automatically:
+
+```ts
+export default class extends Plugin {
+  onload() {
+    this.registerDomEvent(window, 'resize', () => { /* ... */ })
+    this.registerInterval(setInterval(() => { /* ... */ }, 1000))
+    this.register(this.app.vault.on('mounted', path => { /* ... */ }))
+  }
+}
+```
+
+
+
+### Component
+
+`Plugin` extends `Component`, so the following lifecycle and resource management methods are also available:
+
+| Method | Description |
+| --- | --- |
+| `load()` / `unload()` | Load / unload the component. Usually called by the plugin manager. |
+| `addChild(component)` | Add a child component; if the current component is already loaded, `load()` is called on the child immediately. Returns a removal function. |
+| `removeChild(component)` | Unload and remove a child component. |
+| `register(disposable)` | Register a cleanup function. |
+| `unregister(disposable)` | Run and remove a cleanup function immediately. |
+| `registerDomEvent(target, event, callback, options?)` | Register a DOM event. |
+| `registerInterval(intervalId)` | Register a timer. |
+
+If your plugin contains objects that should follow the plugin lifecycle (for example panes, views, or editor extensions), make them extend `Component` and manage them with `addChild()`:
+
+```ts
+import { Component, Plugin } from '@typora-community-plugin/core'
+
+class MyFeature extends Component {
+  onload() { /* ... */ }
+  onunload() { /* ... */ }
+}
+
+export default class extends Plugin {
+  onload() {
+    this.addChild(new MyFeature())
+  }
+}
+```
+
+
+
+### Plugin Members
+
+| Member | Type | Description |
+| --- | --- | --- |
+| `app` | `App` | The core `App` instance, giving access to all extension points. |
+| `manifest` | `PluginManifest` | Metadata of the current plugin; at runtime it includes `dir` and `position`. |
+| `settings` | `PluginSettings<T>` | Readable and writable after registering via `registerSettings()`. Accessing it without registration throws. |
+| `dataPath` | `string` | Settings file path: `<configDir>/data/<manifest.id>.json`. Note that this is not the plugin directory. |
+| `registerSettings(settings)` | `void` | Register a `PluginSettings` instance and load the settings file. |
+| `registerSettingTab(tab)` | `void` | Register a settings page, shown under the "Plugins" group of the settings modal. |
+| `registerCommand(command)` | `void` | Register a command, automatically prefixing id/title with the plugin. |
+| `registerMarkdownEvent(event, listener)` | `void` | Listen to `MarkdownEditor` events and unbind automatically. |
+| `registerMarkdownPreProcessor(processor)` | `void` | Register a [Markdown preprocessor](./3-md-preprocessor.md). |
+| `registerMarkdownPostProcessor(processor)` | `void` | Register a [Markdown postprocessor](./3-md-postprocessor.md). |
+| `registerMarkdownSuggest(suggest)` | `void` | Register a [suggestion](./3-suggestion.md). The old spelling `registerMarkdownSugguest` (three `g`s) is still kept as a compatibility alias. |
+| `registerScript(relativePath)` / `importScript(relativePath)` | `void` / `DisposeFunc` | Insert a `<script>` using a path relative to the plugin directory. |
+| `registerCss(relativePath)` / `importCss(relativePath)` | `void` / `DisposeFunc` | Insert a `<link rel="stylesheet">` using a path relative to the plugin directory. |
+| `addStatusBarItem(options?)` | `HTMLElement` | Add an element to the bottom status bar; removed automatically on unload. |
+| `register(disposable)` | `void` | Register a cleanup function, run on unload. |
+| `registerDomEvent(target, event, callback, options?)` | `void` | Register a DOM event listener, unbound automatically on unload. |
+| `registerInterval(intervalId)` | `void` | Register a timer, `clearInterval`-ed automatically on unload. |
+
+> **Note**: The `Plugin` base class has **no** `i18n` member. All `this.i18n` usages in these docs are fields declared by the plugin itself; see [I18n](./3-locales.md).
 
 
 
 ### API
 
-The Typora native API can be accessed through `typora` (an alias for the module [`@typora-community-plugin/typora-types`](https://www.npmjs.com/package/@typora-community-plugin/typora-types)).
+Typora's native API can be accessed through `typora` (an alias of the [`@typora-community-plugin/typora-types`](https://www.npmjs.com/package/@typora-community-plugin/typora-types) module).
 
-> It can actually be accessed directly from the global variable, but this module provides type definitions (the official has no type definitions, but some debug-derived type definitions exist).
+> It can in fact be accessed directly via globals, but this module provides type definitions (Typora has no official ones, though some were reverse-engineered).
 
 ```js
 import { editor } from "typora"
@@ -74,9 +150,9 @@ import { editor } from "typora"
 
 
 
-The API encapsulated by typora-community-plugin can be accessed through the module [`@typora-community-plugin/core`][^core].
+The APIs wrapped by typora-community-plugin can be accessed through the [`@typora-community-plugin/core`][^core] module.
 
-> This module provides type definitions and a development version of the core package for debugging.
+> This module provides type definitions and the development build of core for debugging.
 
 ```js
 import { Plugin } from "@typora-community-plugin/core"
@@ -84,41 +160,55 @@ import { Plugin } from "@typora-community-plugin/core"
 
 
 
-These two modules have already been imported in the template project, just make sure to update as needed.
+Both modules are already included in the template project; just remember to keep them updated.
 
 
 
-#### Extension Points
+### Extension Points
 
-Extension points refer to a set of pre-defined APIs that can receive data and functions for configuration to achieve predefined functions and interfaces.
+An extension point is a set of predefined APIs where you pass data or functions to configure and achieve predefined features or UI.
 
 > Similar concepts include Eclipse's [Extension Points](https://wiki.eclipse.org/Extension_points) and VSCode's [Contribution Points](https://code.visualstudio.com/api/references/contribution-points).
 
 
 
-The extension points currently provided by the module [`@typora-community-plugin/core`][^core]:
+Extension points currently provided by the [`@typora-community-plugin/core`][^core] module:
 
-| Extension Point                                         | Description                               |
-| ------------------------------------------------------ | ----------------------------------------- |
-| [Commands](./3-command.md)                             | Call plugin functions from the command panel |
-| [Events](./3-events.md)                                | Trigger plugin functions by Typora or DOM events |
-| [Hotkeys](./3-hotkey.md)                               | Trigger plugin functions via hotkeys     |
-| UI.Editor.[Markdown Preprocessor](./3-md-preprocessor.md)  | Replace text using functions before rendering Markdown |
-| UI.Editor.[Markdown Postprocessor](./3-md-postprocessor.md) | Modify editor DOM after rendering Markdown |
-| UI.Editor.[Autocomplete](./3-suggestion.md)            | Trigger autocomplete list with specified punctuation |
-| UI.[Sidebar](./3-sidebar.md)                           | Pressing the active bar icon can display a specified panel in the sidebar |
-| UI.[Settings Page](./3-settings.md)                    | Configure the plugin on the settings page |
-| [Multilingual](./3-locales.md)                         | Load strings for the UI from JSON       |
+| Extension Point | Description |
+| --- | --- |
+| [Command](./3-command.md) | Invoke plugin features from the command palette. |
+| [Event](./3-events.md) | Listen to Typora, workspace, editor, and DOM events. |
+| [Hotkey](./3-hotkey.md) | Trigger plugin features via keyboard shortcuts. |
+| [Settings Storage](./3-settings.md) | Read, write, and persist plugin configuration. |
+| [Settings Page](./3-settings-ui.md) | Configure the plugin in the settings modal. |
+| [Sidebar](./3-sidebar.md) | Show custom panes in the activity bar/sidebar. |
+| [Statistics](./3-statistics.md) | Show custom statistics in the word-count panel. |
+| [Markdown Preprocessor](./3-md-preprocessor.md) | Replace text with functions before Markdown is rendered. |
+| [Markdown Postprocessor](./3-md-postprocessor.md) | Modify the editor DOM after Markdown is rendered. |
+| [Suggestion](./3-suggestion.md) | Trigger the suggestion list with a given punctuation character. |
+| [I18n](./3-locales.md) | Load UI strings from JSON files or code. |
+| [Export](./3-export.md) | Modify exported HTML. |
+| [Workspace and Custom Views](./4-workspace.md) | Register custom views opened by specific file extensions, and manipulate tabs and splits. |
+| [General UI](./4-ui.md) | `Notice`, `Modal`, quick input, quick pick, and the status bar. |
+| [Metadata API](./4-metadata.md) | Build a queryable, persistent metadata index for files. |
 
 
 
-#### Compatibility Layer
+### Compatibility Layer
 
-To accommodate Typora versions for Windows/Linux (which provide Node.js) and macOS (which does not provide Node.js), the module [`@typora-community-plugin/core`][^core] provides a cross-platform version of Node.js modules `fs` and `path`.
+To be compatible with both Typora on Windows/Linux (which provides Node.js) and macOS (which does not), the [`@typora-community-plugin/core`][^core] module provides cross-platform versions of `fs`, `path`, and `os`.
 
 ```js
-import { fs, path } from "@typora-community-plugin/core"
+import { fs, path, os } from "@typora-community-plugin/core"
 ```
+
+They are not full implementations of the Node.js modules:
+
+- `fs` is a `FileAdapter` instance providing common asynchronous file operations;
+- `path` only implements `sep`, `isAbsolute`, `basename`, `extname`, `dirname`, `join`, and `relative`;
+- `os` only implements `arch`, `homedir`, `hostname`, `platform`, and `type`.
+
+See [Utilities and Cross-Platform Compatibility Layer](./4-utils.md) for details.
 
 
 

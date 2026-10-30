@@ -1,321 +1,339 @@
 # 设置界面
 
-使用 Plugin 的 `registerSettingTab()` 注册继承自 `PluginSettingTab` 的类。
+使用 `registerSettingTab()` 注册继承自 `SettingTab` 的设置页。
 
-在子类中重写 `onshow()` 方法用于显示/刷新设置表单。
+在子类中重写 `onshow()` 方法构建/刷新设置表单，通过 `addSetting()` 添加设置行。
 
-通过 `addSetting()` 方法为设置表单添加设置字段。
 
 
 ## 创建设置页
 
-插件需要创建一个继承自 `PluginSettingTab` 的类，并重写 `name` getter：
+`SettingTab` 的构造函数没有参数，也不持有 `app` / `plugin` / `settings`。推荐通过自定义构造函数把插件实例传进去：
 
-```typescript
-class MyPluginSettingsTab extends PluginSettingTab {
+```ts
+import { SettingTab } from '@typora-community-plugin/core'
+
+class MySettingsTab extends SettingTab {
+
+  constructor(private plugin: MyPlugin) {
+    super()
+  }
+
   get name() {
-    return "我的插件"
+    return this.plugin.manifest.name
   }
 
   onshow() {
-    // 构建设置表单
+    this.containerEl.innerHTML = ''
+    this.render()
+  }
+
+  private render() {
+    this.addSettingTitle('常规')
+
+    this.addSetting(setting => {
+      setting.addName('启用功能')
+      setting.addDescription('开启这个功能')
+    })
   }
 }
 ```
 
-然后在 Plugin 中注册：
+然后在 `onload()` 中注册：
 
-```typescript
-export class MyPlugin extends Plugin {
-  registerSettings() {
-    this.registerSettingTab(new MyPluginSettingsTab(this.app, this))
+```ts
+import { Plugin, PluginSettings } from '@typora-community-plugin/core'
+
+export default class MyPlugin extends Plugin {
+  onload() {
+    this.registerSettings(new PluginSettings(this.app, this.manifest, { version: 1 }))
+    this.registerSettingTab(new MySettingsTab(this))
   }
 }
 ```
 
+注册后设置页会显示在设置弹窗的「插件」分组中。
 
-## SettingTab API
 
-### `addSettingTitle(text: string)`
 
-添加一个分组标题（`<h3>`）。
+## SettingTab
 
-```typescript
-this.addSettingTitle("常规设置")
+```ts
+abstract class SettingTab extends View {
+  abstract get name(): string
+  pill?: string | number
+  containerEl: HTMLElement
+
+  constructor()
+
+  addSettingTitle(text: string): void
+  addSetting(build: (setting: SettingItem) => void): void
+
+  show(): void
+  onshow(): void
+  hide(): void
+  onhide(): void
+}
 ```
 
-### `addSetting(build: (setting: SettingItem) => void)`
+| 成员 | 说明 |
+| --- | --- |
+| `name` | 设置页在侧边栏显示的名称，必须实现。 |
+| `pill` | 显示在名称旁的小徽标，可选。 |
+| `containerEl` | 设置页根元素（`.typ-setting-tab`）。刷新时用 `innerHTML = ''` 清空。 |
+| `addSettingTitle(text)` | 添加分组标题（`<h3>`）。 |
+| `addSetting(build)` | 创建一行设置，并交给 `build` 配置。 |
+| `onshow()` | 设置页显示时调用，在这里构建或刷新表单。 |
+| `onhide()` | 设置页隐藏时调用，可用于清理。 |
 
-核心方法，创建一个设置行并通过 builder 回调配置字段。
+> 注册设置页时，core 仍会调用兼容旧版 API 的 `onload()`；新代码应使用 `onshow()` / `onhide()` 构建与清理界面。
 
-```typescript
+
+
+## SettingItem
+
+每个 `addSetting()` 回调接收一个 `SettingItem`：
+
+| 方法 | 说明 |
+| --- | --- |
+| `addTitle(text \| build)` | 在信息区添加标题。通常用 `SettingTab.addSettingTitle()`。 |
+| `addName(text \| build)` | 添加设置名称。 |
+| `addBadge(text \| build)` | 在名称后追加 `<code>` 徽标；未调用 `addName()` 时会自动创建空名称。 |
+| `addDescription(text \| build)` | 添加描述文字，支持字符串或自定义 HTML。 |
+| `addCheckbox(build)` | 添加复选框，位于名称前的控制区。 |
+| `addCheckbox({ settings, bindingKey })` | 绑定式复选框：自动读取并写回指定配置键。 |
+| `addButton(build)` | 在名称后的控制区添加按钮。 |
+| `addInput(type, build)` | 添加指定类型的输入框。 |
+| `addText(build)` | 等价于 `addInput('text', build)`。 |
+| `addTextArea(build)` | 在信息区添加多行文本域。 |
+| `addSelect(options \| build)` | 添加下拉框（`@beta`）。 |
+| `addTag(text, build?)` | 添加标签，位于名称后的控制区最前面。 |
+| `addRemovableTag(text, onClose?)` | 添加带关闭按钮的标签。 |
+| `addTable(build)` | 添加可编辑表格（`@beta`）。 |
+| `addSidebarLayout(options, onSelect)` | 添加「侧边栏 + 面板」布局（`@beta`）。 |
+
+
+
+### 输入控件
+
+```ts
 this.addSetting(setting => {
-  setting.addName("启用功能")
-  setting.addDescription("开启这个功能")
-  setting.addCheckbox(cb => {
-    cb.checked = this.settings.get('enabled')
-    cb.onclick = () => this.settings.set('enabled', cb.checked)
+  setting.addName('API 密钥')
+  setting.addText(input => {
+    input.type = 'password'
+    input.value = this.plugin.settings.get('apiKey') ?? ''
+    input.onchange = () => this.plugin.settings.set('apiKey', input.value)
+  })
+})
+
+this.addSetting(setting => {
+  setting.addName('超时（秒）')
+  setting.addInput('number', input => {
+    input.value = String(this.plugin.settings.get('timeout') ?? 30)
+    input.onchange = () => this.plugin.settings.set('timeout', Number(input.value))
   })
 })
 ```
 
 
-## SettingItem API
 
-每个 `addSetting()` 回调接收一个 `SettingItem` 实例，提供以下方法：
+### 绑定式复选框
 
-### `addName(name: string)`
+最常见的开关配置可以直接绑定：
 
-添加设置名称（显示在信息区域）。
-
-### `addBadge(text: string)`
-
-在名称后添加一个徽章标签（`<code>`）。如果尚未调用 `addName()`，会自动创建一个空名称。
-
-```typescript
-setting.addName("版本")
-setting.addBadge("v1.0.0")
-// 或等价地：
-setting.addBadge("v1.0.0") // 自动创建空名称
-```
-
-### `addDescription(description: string | ((div: HTMLElement) => void))`
-
-添加描述文字，支持字符串或自定义 HTML builder。
-
-```typescript
-// 纯文本描述
-setting.addDescription("这是一个说明")
-
-// 自定义 HTML
-setting.addDescription(div => {
-  div.innerHTML = "<a href='https://example.com'>链接</a>"
+```ts
+this.addSetting(setting => {
+  setting.addName('启用功能')
+  setting.addDescription('关闭后不再处理文档')
+  setting.addCheckbox({
+    settings: this.plugin.settings,
+    bindingKey: 'enabled',
+  })
 })
 ```
 
-### `addCheckbox(build: (checkbox: HTMLInputElement) => void)`
+等价于手动读写：
 
-添加复选框，放置在名称**之前**的控制区域。
-
-```typescript
+```ts
 setting.addCheckbox(cb => {
-  cb.checked = this.settings.get('feature')
-  cb.onchange = () => this.settings.set('feature', cb.checked)
+  cb.checked = this.plugin.settings.get('enabled') ?? false
+  cb.onchange = () => this.plugin.settings.set('enabled', cb.checked)
 })
 ```
 
-### `addText(build: (input: HTMLInputElement) => void)`
 
-添加单行文本输入框，放置在名称**之后**的控制区域。等价于 `addInput('text', ...)`。
 
-```typescript
-setting.addText(input => {
-  input.value = this.settings.get('apiKey')
-  input.onchange = () => this.settings.set('apiKey', input.value)
-})
-```
+### 下拉框
 
-### `addInput(type: string, build: (input: HTMLInputElement) => void)`
+> **@beta**
 
-添加任意类型的输入框（如 `password`、`number` 等）。
+声明式写法只支持字符串选项，`selected` 必填：
 
-```typescript
-setting.addInput('number', input => {
-  input.value = this.settings.get('timeout').toString()
-  input.onchange = () => this.settings.set('timeout', parseInt(input.value))
-})
-```
-
-### `addTextArea(build: (input: HTMLTextAreaElement) => void)`
-
-添加多行文本域，放置在信息区域。
-
-```typescript
-setting.addTextArea(textarea => {
-  textarea.value = this.settings.get('template')
-  textarea.onchange = () => this.settings.set('template', textarea.value)
-})
-```
-
-### `addSelect(options: SelectOptions | ((select: HTMLSelectElement) => void))`
-
-添加下拉选择框，支持声明式选项对象或 builder 回调。
-
-**声明式：**
-
-```typescript
+```ts
 setting.addSelect({
-  options: ["light", "dark", "auto"],
-  selected: this.settings.get('theme'),
-  onchange: e => this.settings.set('theme', e.target.value)
+  options: ['light', 'dark', 'auto'],
+  selected: this.plugin.settings.get('theme') ?? 'auto',
+  onchange: event => this.plugin.settings.set('theme', event.target.value),
 })
 ```
 
-**Builder（动态选项）：**
+需要动态选项或自定义值/文本时使用 builder：
 
-```typescript
+```ts
 setting.addSelect(select => {
   for (const folder of folders) {
-    const opt = document.createElement('option')
-    opt.value = folder.path
-    opt.textContent = folder.name
-    select.append(opt)
+    const option = document.createElement('option')
+    option.value = folder.path
+    option.textContent = folder.name
+    select.append(option)
   }
+  select.value = this.plugin.settings.get('folder') ?? ''
+  select.onchange = () => this.plugin.settings.set('folder', select.value)
 })
 ```
 
-### `addButton(build: (button: HTMLButtonElement) => void)`
 
-添加按钮，放置在名称**之后**的控制区域。
 
-```typescript
-setting.addButton(btn => {
-  btn.textContent = "保存"
-  btn.onclick = () => this.save()
-})
-```
+### 可编辑表格
 
-### `addTag(text: string, build?: (el: HTMLElement) => void)`
+> **@beta**
 
-添加一个标签（`<div class="typ-tag">`），放置在名称**之前**。
+只有设置了 `type` 的列才会在编辑行中渲染输入框：
 
-```typescript
-setting.addTag("已启用")
-```
-
-### `addRemovableTag(text: string, onClose?: () => void)`
-
-添加一个可关闭的标签，带有关闭按钮。
-
-```typescript
-setting.addRemovableTag("tag1", () => {
-  console.log("移除 tag1")
-})
-```
-
-### `addTable(build: (table: EditableTable) => void)`
-
-添加一个可编辑表格（`@beta`）。
-
-```typescript
+```ts
 setting.addTable(table => {
   table.setHeaders([
-    { title: "名称", prop: "name" },
-    { title: "值", prop: "value" }
+    { title: '名称', prop: 'name', type: 'text' },
+    { title: '值', prop: 'value', type: 'text' },
   ])
-  table.setData(this.settings.get('items'))
-  table.onRowChange(event => {
-    this.settings.set('items', event.data)
+  table.setData(this.plugin.settings.get('items') ?? [])
+
+  table.onRowChange(row => {
+    // row 是当前行的对象，不是 { data }
+    console.log('changed row:', row)
+  })
+  table.onRowRemove(row => {
+    console.log('removed row:', row)
   })
 })
 ```
 
-### `addSidebarLayout(options, onSelect)`
+`EditableTable` 还提供 `getData()`、`setData()`、`setHeaders()`、`onRowChange()`、`onRowRemove()`。表格数据不会自动持久化，需要在回调中写入设置。
 
-添加一个侧边栏 + 面板布局（`@beta`）。回调的上下文对象包含：
 
-- `items` — 当前全部侧边栏项目列表
-- `item` — 当前选中的项目
-- `panelEl` — 面板容器元素（可自由操作 DOM）
-- `panel` — 面板对象，提供与 `SettingTab.addSetting()` 相同的 `addSetting(build)` 方法，可将多行设置组合进同一面板
 
-```typescript
+### 侧边栏布局
+
+> **@beta**
+
+`addSidebarLayout()` 返回的对象可以动态增删左侧项目：
+
+```ts
 const layout = setting.addSidebarLayout(
-  { items: ["选项 A", "选项 B"], initialActive: "选项 A" },
-  ({ item, panel }) => {
-    // 方式一：通过 panel.addSetting() 组合多行（推荐）
-    panel.addSetting(row => {
-      row.addName("当前选中")
-      row.addDescription(`当前：${item}`)
-    })
+  { items: ['常规', '高级'], initialActive: '常规' },
+  ({ item, panelEl, panel }) => {
+    if (item === '常规') {
+      panel.addSetting(row => {
+        row.addName('启用')
+        row.addCheckbox({
+          settings: this.plugin.settings,
+          bindingKey: 'enabled',
+        })
+      })
+      return
+    }
 
-    // 方式二：直接操作 panelEl
-    // panelEl.innerHTML = `<p>当前选中：${item}</p>`
-  }
-)
+    // 也可以直接操作 panelEl
+    panelEl.innerHTML = '<p>高级选项</p>'
+  })
 
-// 动态管理侧边栏项目
-layout.addItem("选项 C")
-layout.removeItem("选项 A")
-layout.setItems(["新选项 1", "新选项 2"])
+layout.addItem('实验性')
+layout.removeItem('常规')
+layout.setItems(['A', 'B'])
 ```
 
-
-## 生命周期
-
-### `onshow()`
-
-当设置面板显示时调用。在此方法中刷新/重建表单内容。
-
-```typescript
-onshow() {
-  this.render()
-}
-```
-
-### `onhide()`
-
-当设置面板隐藏时调用。可用于清理操作。
-
-```typescript
-onhide() {
-  // 清理资源
-}
-```
 
 
 ## 完整示例
 
-```typescript
-class MyPluginSettingsTab extends PluginSettingTab {
-  get name() {
-    return "我的插件"
+```ts
+import { Plugin, PluginSettings, SettingTab } from '@typora-community-plugin/core'
+
+type Settings = {
+  enabled: boolean
+  apiKey: string
+  theme: string
+  timeout: number
+}
+
+class MySettingsTab extends SettingTab {
+
+  constructor(private plugin: MyPlugin) {
+    super()
   }
 
-  render() {
-    this.containerEl.empty()
-
-    this.addSettingTitle("常规")
-
-    this.addSetting(setting => {
-      setting.addName("启用功能")
-      setting.addDescription("开启这个功能")
-      setting.addCheckbox(cb => {
-        cb.checked = this.settings.get('enabled') ?? false
-        cb.onchange = () => this.settings.set('enabled', cb.checked)
-      })
-    })
-
-    this.addSetting(setting => {
-      setting.addName("API 密钥")
-      setting.addText(input => {
-        input.value = this.settings.get('apiKey') ?? ''
-        input.onchange = () => this.settings.set('apiKey', input.value)
-      })
-    })
-
-    this.addSettingTitle("高级")
-
-    this.addSetting(setting => {
-      setting.addName("主题")
-      setting.addSelect({
-        options: ["light", "dark", "auto"],
-        selected: this.settings.get('theme') ?? 'auto',
-        onchange: e => this.settings.set('theme', e.target.value)
-      })
-    })
-
-    this.addSetting(setting => {
-      setting.addName("超时（秒）")
-      setting.addInput('number', input => {
-        input.value = (this.settings.get('timeout') ?? 30).toString()
-        input.onchange = () => this.settings.set('timeout', parseInt(input.value))
-      })
-    })
+  get name() {
+    return this.plugin.manifest.name
   }
 
   onshow() {
+    this.containerEl.innerHTML = ''
     this.render()
+  }
+
+  private render() {
+    this.addSettingTitle('常规')
+
+    this.addSetting(setting => {
+      setting.addName('启用功能')
+      setting.addDescription('开启这个功能')
+      setting.addCheckbox({
+        settings: this.plugin.settings,
+        bindingKey: 'enabled',
+      })
+    })
+
+    this.addSetting(setting => {
+      setting.addName('API 密钥')
+      setting.addText(input => {
+        input.type = 'password'
+        input.value = this.plugin.settings.get('apiKey') ?? ''
+        input.onchange = () => this.plugin.settings.set('apiKey', input.value)
+      })
+    })
+
+    this.addSettingTitle('高级')
+
+    this.addSetting(setting => {
+      setting.addName('主题')
+      setting.addSelect({
+        options: ['light', 'dark', 'auto'],
+        selected: this.plugin.settings.get('theme') ?? 'auto',
+        onchange: event => this.plugin.settings.set('theme', event.target.value),
+      })
+    })
+
+    this.addSetting(setting => {
+      setting.addName('超时（秒）')
+      setting.addInput('number', input => {
+        input.value = String(this.plugin.settings.get('timeout') ?? 30)
+        input.onchange = () => this.plugin.settings.set('timeout', Number(input.value))
+      })
+    })
+  }
+}
+
+export default class MyPlugin extends Plugin {
+  onload() {
+    this.registerSettings(new PluginSettings<Settings>(this.app, this.manifest, { version: 1 }))
+    this.registerSettingTab(new MySettingsTab(this))
   }
 }
 ```
+
+
+
+## 例子
+
+- [typora-plugin-tag](https://github.com/typora-community-plugin/typora-plugin-tag)
+- [typora-plugin-note-snippets](https://github.com/typora-community-plugin/typora-plugin-note-snippets)

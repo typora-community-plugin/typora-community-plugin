@@ -1,321 +1,339 @@
-# Settings Tab
+# Settings UI
 
-Use the Plugin's `registerSettingTab()` to register a class that extends `PluginSettingTab`.
+Use `registerSettingTab()` to register a settings page extending `SettingTab`.
 
-Override the `onshow()` method in the subclass to display/refresh the settings form.
-
-Add setting fields to the settings form through the `addSetting()` method.
+Override the `onshow()` method in the subclass to build/refresh the settings form, and add setting rows with `addSetting()`.
 
 
-## Creating a Settings Tab
 
-The plugin needs to create a class extending `PluginSettingTab` and override the `name` getter:
+## Create a Settings Page
 
-```typescript
-class MyPluginSettingsTab extends PluginSettingTab {
+The `SettingTab` constructor takes no arguments and holds no `app` / `plugin` / `settings`. The recommended approach is to pass the plugin instance in through a custom constructor:
+
+```ts
+import { SettingTab } from '@typora-community-plugin/core'
+
+class MySettingsTab extends SettingTab {
+
+  constructor(private plugin: MyPlugin) {
+    super()
+  }
+
   get name() {
-    return "My Plugin"
+    return this.plugin.manifest.name
   }
 
   onshow() {
-    // Build settings form
+    this.containerEl.innerHTML = ''
+    this.render()
+  }
+
+  private render() {
+    this.addSettingTitle('General')
+
+    this.addSetting(setting => {
+      setting.addName('Enable feature')
+      setting.addDescription('Turn this feature on')
+    })
   }
 }
 ```
 
-Then register it in the Plugin:
+Then register it in `onload()`:
 
-```typescript
-export class MyPlugin extends Plugin {
-  registerSettings() {
-    this.registerSettingTab(new MyPluginSettingsTab(this.app, this))
+```ts
+import { Plugin, PluginSettings } from '@typora-community-plugin/core'
+
+export default class MyPlugin extends Plugin {
+  onload() {
+    this.registerSettings(new PluginSettings(this.app, this.manifest, { version: 1 }))
+    this.registerSettingTab(new MySettingsTab(this))
   }
 }
 ```
 
+After registration, the settings page appears under the "Plugins" group of the settings modal.
 
-## SettingTab API
 
-### `addSettingTitle(text: string)`
 
-Add a section title (`<h3>`).
+## SettingTab
 
-```typescript
-this.addSettingTitle("General")
+```ts
+abstract class SettingTab extends View {
+  abstract get name(): string
+  pill?: string | number
+  containerEl: HTMLElement
+
+  constructor()
+
+  addSettingTitle(text: string): void
+  addSetting(build: (setting: SettingItem) => void): void
+
+  show(): void
+  onshow(): void
+  hide(): void
+  onhide(): void
+}
 ```
 
-### `addSetting(build: (setting: SettingItem) => void)`
+| Member | Description |
+| --- | --- |
+| `name` | Name shown in the sidebar for this settings page; must be implemented. |
+| `pill` | Optional small badge shown next to the name. |
+| `containerEl` | Settings page root element (`.typ-setting-tab`). Clear it with `innerHTML = ''` when refreshing. |
+| `addSettingTitle(text)` | Add a group title (`<h3>`). |
+| `addSetting(build)` | Create a setting row and hand it to `build` for configuration. |
+| `onshow()` | Called when the settings page is shown; build or refresh the form here. |
+| `onhide()` | Called when the settings page is hidden; useful for cleanup. |
 
-Core method that creates a setting row and configures fields via a builder callback.
+> When registering a settings page, core still calls `onload()` for compatibility with the old API; new code should use `onshow()` / `onhide()` to build and clean up the UI.
 
-```typescript
+
+
+## SettingItem
+
+Each `addSetting()` callback receives a `SettingItem`:
+
+| Method | Description |
+| --- | --- |
+| `addTitle(text \| build)` | Add a title in the info area. Usually use `SettingTab.addSettingTitle()` instead. |
+| `addName(text \| build)` | Add the setting name. |
+| `addBadge(text \| build)` | Append a `<code>` badge after the name; creates an empty name automatically if `addName()` was not called. |
+| `addDescription(text \| build)` | Add description text; accepts a string or custom HTML. |
+| `addCheckbox(build)` | Add a checkbox in the control area before the name. |
+| `addCheckbox({ settings, bindingKey })` | Bound checkbox: automatically reads and writes back the given settings key. |
+| `addButton(build)` | Add a button in the control area after the name. |
+| `addInput(type, build)` | Add an input of the given type. |
+| `addText(build)` | Equivalent to `addInput('text', build)`. |
+| `addTextArea(build)` | Add a multi-line textarea in the info area. |
+| `addSelect(options \| build)` | Add a select (`@beta`). |
+| `addTag(text, build?)` | Add a tag, placed first in the control area after the name. |
+| `addRemovableTag(text, onClose?)` | Add a tag with a close button. |
+| `addTable(build)` | Add an editable table (`@beta`). |
+| `addSidebarLayout(options, onSelect)` | Add a "sidebar + panel" layout (`@beta`). |
+
+
+
+### Input Controls
+
+```ts
 this.addSetting(setting => {
-  setting.addName("Enable Feature")
-  setting.addDescription("Turn on this feature")
-  setting.addCheckbox(cb => {
-    cb.checked = this.settings.get('enabled')
-    cb.onclick = () => this.settings.set('enabled', cb.checked)
+  setting.addName('API key')
+  setting.addText(input => {
+    input.type = 'password'
+    input.value = this.plugin.settings.get('apiKey') ?? ''
+    input.onchange = () => this.plugin.settings.set('apiKey', input.value)
+  })
+})
+
+this.addSetting(setting => {
+  setting.addName('Timeout (seconds)')
+  setting.addInput('number', input => {
+    input.value = String(this.plugin.settings.get('timeout') ?? 30)
+    input.onchange = () => this.plugin.settings.set('timeout', Number(input.value))
   })
 })
 ```
 
 
-## SettingItem API
 
-Each `addSetting()` callback receives a `SettingItem` instance with the following methods:
+### Bound Checkbox
 
-### `addName(name: string)`
+The most common on/off settings can be bound directly:
 
-Add the setting name (displayed in the info area).
-
-### `addBadge(text: string)`
-
-Add a badge label (`<code>`) after the name. If `addName()` hasn't been called, it automatically creates an empty name.
-
-```typescript
-setting.addName("Version")
-setting.addBadge("v1.0.0")
-// Or equivalently:
-setting.addBadge("v1.0.0") // Automatically creates empty name
-```
-
-### `addDescription(description: string | ((div: HTMLElement) => void))`
-
-Add description text, supporting strings or custom HTML builder.
-
-```typescript
-// Plain text description
-setting.addDescription("This is a description")
-
-// Custom HTML
-setting.addDescription(div => {
-  div.innerHTML = "<a href='https://example.com'>Link</a>"
+```ts
+this.addSetting(setting => {
+  setting.addName('Enable feature')
+  setting.addDescription('Stop processing documents when disabled')
+  setting.addCheckbox({
+    settings: this.plugin.settings,
+    bindingKey: 'enabled',
+  })
 })
 ```
 
-### `addCheckbox(build: (checkbox: HTMLInputElement) => void)`
+Equivalent to reading and writing manually:
 
-Add a checkbox, placed in the controls area **before** the name.
-
-```typescript
+```ts
 setting.addCheckbox(cb => {
-  cb.checked = this.settings.get('feature')
-  cb.onchange = () => this.settings.set('feature', cb.checked)
+  cb.checked = this.plugin.settings.get('enabled') ?? false
+  cb.onchange = () => this.plugin.settings.set('enabled', cb.checked)
 })
 ```
 
-### `addText(build: (input: HTMLInputElement) => void)`
 
-Add a single-line text input, placed in the controls area **after** the name. Equivalent to `addInput('text', ...)`.
 
-```typescript
-setting.addText(input => {
-  input.value = this.settings.get('apiKey')
-  input.onchange = () => this.settings.set('apiKey', input.value)
-})
-```
+### Select
 
-### `addInput(type: string, build: (input: HTMLInputElement) => void)`
+> **@beta**
 
-Add an input of any type (e.g., `password`, `number`).
+The declarative form only supports string options, and `selected` is required:
 
-```typescript
-setting.addInput('number', input => {
-  input.value = this.settings.get('timeout').toString()
-  input.onchange = () => this.settings.set('timeout', parseInt(input.value))
-})
-```
-
-### `addTextArea(build: (input: HTMLTextAreaElement) => void)`
-
-Add a multi-line textarea, placed in the info area.
-
-```typescript
-setting.addTextArea(textarea => {
-  textarea.value = this.settings.get('template')
-  textarea.onchange = () => this.settings.set('template', textarea.value)
-})
-```
-
-### `addSelect(options: SelectOptions | ((select: HTMLSelectElement) => void))`
-
-Add a dropdown select, supporting declarative options object or builder callback.
-
-**Declarative:**
-
-```typescript
+```ts
 setting.addSelect({
-  options: ["light", "dark", "auto"],
-  selected: this.settings.get('theme'),
-  onchange: e => this.settings.set('theme', e.target.value)
+  options: ['light', 'dark', 'auto'],
+  selected: this.plugin.settings.get('theme') ?? 'auto',
+  onchange: event => this.plugin.settings.set('theme', event.target.value),
 })
 ```
 
-**Builder (dynamic options):**
+Use the builder form for dynamic options or custom values/labels:
 
-```typescript
+```ts
 setting.addSelect(select => {
   for (const folder of folders) {
-    const opt = document.createElement('option')
-    opt.value = folder.path
-    opt.textContent = folder.name
-    select.append(opt)
+    const option = document.createElement('option')
+    option.value = folder.path
+    option.textContent = folder.name
+    select.append(option)
   }
+  select.value = this.plugin.settings.get('folder') ?? ''
+  select.onchange = () => this.plugin.settings.set('folder', select.value)
 })
 ```
 
-### `addButton(build: (button: HTMLButtonElement) => void)`
 
-Add a button, placed in the controls area **after** the name.
 
-```typescript
-setting.addButton(btn => {
-  btn.textContent = "Save"
-  btn.onclick = () => this.save()
-})
-```
+### Editable Table
 
-### `addTag(text: string, build?: (el: HTMLElement) => void)`
+> **@beta**
 
-Add a tag (`<div class="typ-tag">`), placed **before** the name.
+Only columns with a `type` render an input in the editing row:
 
-```typescript
-setting.addTag("Enabled")
-```
-
-### `addRemovableTag(text: string, onClose?: () => void)`
-
-Add a closable tag with a close button.
-
-```typescript
-setting.addRemovableTag("tag1", () => {
-  console.log("Removed tag1")
-})
-```
-
-### `addTable(build: (table: EditableTable) => void)`
-
-Add an editable table (`@beta`).
-
-```typescript
+```ts
 setting.addTable(table => {
   table.setHeaders([
-    { title: "Name", prop: "name" },
-    { title: "Value", prop: "value" }
+    { title: 'Name', prop: 'name', type: 'text' },
+    { title: 'Value', prop: 'value', type: 'text' },
   ])
-  table.setData(this.settings.get('items'))
-  table.onRowChange(event => {
-    this.settings.set('items', event.data)
+  table.setData(this.plugin.settings.get('items') ?? [])
+
+  table.onRowChange(row => {
+    // row is the object of the current row, not { data }
+    console.log('changed row:', row)
+  })
+  table.onRowRemove(row => {
+    console.log('removed row:', row)
   })
 })
 ```
 
-### `addSidebarLayout(options, onSelect)`
+`EditableTable` also provides `getData()`, `setData()`, `setHeaders()`, `onRowChange()`, and `onRowRemove()`. Table data is not persisted automatically; write it to settings in the callbacks.
 
-Add a sidebar + panel layout (`@beta`). The callback context contains:
 
-- `items` — the full list of current sidebar items
-- `item` — the currently selected item
-- `panelEl` — the panel container element (free to manipulate DOM directly)
-- `panel` — a panel object exposing `addSetting(build)`, the same method as `SettingTab.addSetting()`, to compose multiple setting rows into one panel
 
-```typescript
+### Sidebar Layout
+
+> **@beta**
+
+The object returned by `addSidebarLayout()` lets you add or remove left-hand items dynamically:
+
+```ts
 const layout = setting.addSidebarLayout(
-  { items: ["Option A", "Option B"], initialActive: "Option A" },
-  ({ item, panel }) => {
-    // Option 1: compose rows via panel.addSetting() (recommended)
-    panel.addSetting(row => {
-      row.addName("Selected")
-      row.addDescription(`Current: ${item}`)
-    })
+  { items: ['General', 'Advanced'], initialActive: 'General' },
+  ({ item, panelEl, panel }) => {
+    if (item === 'General') {
+      panel.addSetting(row => {
+        row.addName('Enabled')
+        row.addCheckbox({
+          settings: this.plugin.settings,
+          bindingKey: 'enabled',
+        })
+      })
+      return
+    }
 
-    // Option 2: manipulate panelEl directly
-    // panelEl.innerHTML = `<p>Selected: ${item}</p>`
-  }
-)
+    // you can also operate on panelEl directly
+    panelEl.innerHTML = '<p>Advanced options</p>'
+  })
 
-// Dynamically manage sidebar items
-layout.addItem("Option C")
-layout.removeItem("Option A")
-layout.setItems(["New Option 1", "New Option 2"])
+layout.addItem('Experimental')
+layout.removeItem('General')
+layout.setItems(['A', 'B'])
 ```
 
-
-## Lifecycle
-
-### `onshow()`
-
-Called when the settings panel is displayed. Refresh/rebuild form content in this method.
-
-```typescript
-onshow() {
-  this.render()
-}
-```
-
-### `onhide()`
-
-Called when the settings panel is hidden. Can be used for cleanup operations.
-
-```typescript
-onhide() {
-  // Cleanup resources
-}
-```
 
 
 ## Complete Example
 
-```typescript
-class MyPluginSettingsTab extends PluginSettingTab {
-  get name() {
-    return "My Plugin"
+```ts
+import { Plugin, PluginSettings, SettingTab } from '@typora-community-plugin/core'
+
+type Settings = {
+  enabled: boolean
+  apiKey: string
+  theme: string
+  timeout: number
+}
+
+class MySettingsTab extends SettingTab {
+
+  constructor(private plugin: MyPlugin) {
+    super()
   }
 
-  render() {
-    this.containerEl.empty()
-
-    this.addSettingTitle("General")
-
-    this.addSetting(setting => {
-      setting.addName("Enable Feature")
-      setting.addDescription("Turn on this feature")
-      setting.addCheckbox(cb => {
-        cb.checked = this.settings.get('enabled') ?? false
-        cb.onchange = () => this.settings.set('enabled', cb.checked)
-      })
-    })
-
-    this.addSetting(setting => {
-      setting.addName("API Key")
-      setting.addText(input => {
-        input.value = this.settings.get('apiKey') ?? ''
-        input.onchange = () => this.settings.set('apiKey', input.value)
-      })
-    })
-
-    this.addSettingTitle("Advanced")
-
-    this.addSetting(setting => {
-      setting.addName("Theme")
-      setting.addSelect({
-        options: ["light", "dark", "auto"],
-        selected: this.settings.get('theme') ?? 'auto',
-        onchange: e => this.settings.set('theme', e.target.value)
-      })
-    })
-
-    this.addSetting(setting => {
-      setting.addName("Timeout (seconds)")
-      setting.addInput('number', input => {
-        input.value = (this.settings.get('timeout') ?? 30).toString()
-        input.onchange = () => this.settings.set('timeout', parseInt(input.value))
-      })
-    })
+  get name() {
+    return this.plugin.manifest.name
   }
 
   onshow() {
+    this.containerEl.innerHTML = ''
     this.render()
+  }
+
+  private render() {
+    this.addSettingTitle('General')
+
+    this.addSetting(setting => {
+      setting.addName('Enable feature')
+      setting.addDescription('Turn this feature on')
+      setting.addCheckbox({
+        settings: this.plugin.settings,
+        bindingKey: 'enabled',
+      })
+    })
+
+    this.addSetting(setting => {
+      setting.addName('API key')
+      setting.addText(input => {
+        input.type = 'password'
+        input.value = this.plugin.settings.get('apiKey') ?? ''
+        input.onchange = () => this.plugin.settings.set('apiKey', input.value)
+      })
+    })
+
+    this.addSettingTitle('Advanced')
+
+    this.addSetting(setting => {
+      setting.addName('Theme')
+      setting.addSelect({
+        options: ['light', 'dark', 'auto'],
+        selected: this.plugin.settings.get('theme') ?? 'auto',
+        onchange: event => this.plugin.settings.set('theme', event.target.value),
+      })
+    })
+
+    this.addSetting(setting => {
+      setting.addName('Timeout (seconds)')
+      setting.addInput('number', input => {
+        input.value = String(this.plugin.settings.get('timeout') ?? 30)
+        input.onchange = () => this.plugin.settings.set('timeout', Number(input.value))
+      })
+    })
+  }
+}
+
+export default class MyPlugin extends Plugin {
+  onload() {
+    this.registerSettings(new PluginSettings<Settings>(this.app, this.manifest, { version: 1 }))
+    this.registerSettingTab(new MySettingsTab(this))
   }
 }
 ```
+
+
+
+## Examples
+
+- [typora-plugin-tag](https://github.com/typora-community-plugin/typora-plugin-tag)
+- [typora-plugin-note-snippets](https://github.com/typora-community-plugin/typora-plugin-note-snippets)
