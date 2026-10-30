@@ -85,7 +85,14 @@ export abstract class Plugin<T extends Record<string, any> = {}>
       useService('markdown-editor').postProcessor.register(processor))
   }
 
+  /**
+   * @deprecated Typo of `registerMarkdownSuggest()`. Kept for backward compatibility.
+   */
   registerMarkdownSugguest(suggest: EditorSuggest<any>) {
+    return this.registerMarkdownSuggest(suggest)
+  }
+
+  registerMarkdownSuggest(suggest: EditorSuggest<any>) {
     this.register(
       useService('markdown-editor').suggestion.register(
         suggest
