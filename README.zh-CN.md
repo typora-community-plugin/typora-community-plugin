@@ -14,7 +14,7 @@
 
 | Ribbon & 工作区                        | 命令面板                                   |
 | :-----------------------------------: | :---------------------------------------: |
-| ![](./docs/assets/base.jpg)           | ![](./docs/assets/command-modal.jpg)      |
+| ![](./docs/assets/base.jpg)           | ![](./docs/assets/command-palette.jpg)      |
 | 配置对话框                              | 插件市场                                   |
 | ![](./docs/assets/settings-modal.jpg) | ![](./docs/assets/plugin-marketplace.jpg) |
 

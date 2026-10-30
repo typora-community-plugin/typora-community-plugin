@@ -14,7 +14,7 @@ To be on the safe side, install an open source plugin that can review the source
 
 | Ribbon & Workspace                    | Command Panel                             |
 | :-----------------------------------: | :---------------------------------------: |
-| ![](./docs/assets/base.jpg)           | ![](./docs/assets/command-modal.jpg)      |
+| ![](./docs/assets/base.jpg)           | ![](./docs/assets/command-palette.jpg)      |
 | Settings Modal                        | Plugin Marketplace                        |
 | ![](./docs/assets/settings-modal.jpg) | ![](./docs/assets/plugin-marketplace.jpg) |
 

@@ -1,37 +1,56 @@
-# Ribbon (Activity Bar)
+# Ribbon
 
-Inspired by VSCode, the Ribbon allows you to switch between different sidebar panes, including built-in panes (File Tree, Search, Outline) and custom panes provided by plugins (such as [tag][]).
+The vertical icon bar on the left, used to switch between sidebar panels such as files, search, and outline. It is also where plugins add their entries.
 
 ## Preview
 
 ![ribbon](../../assets/user/ribbon.jpg)
 
-## Usage
+## Where to find it
 
-### Switching Panes
+Shown by default after installation. To hide or restore it: Plugin Settings modal → [Appearance](./3b-appearance.md) → Advanced → "Show Ribbon".
 
-- **Left-click** an icon to toggle and display the corresponding sidebar pane
-- The currently active icon will be highlighted
+## Buttons
 
-### Managing Icon Visibility
+| Icon | Tooltip | Effect |
+|------|----------|------|
+| Magnifying glass | Search file content | Show/switch to the search panel |
+| Folder | Files | Show/switch to the file tree |
+| List | Outline | Show/switch to Typora's outline |
+| Gear (at the bottom) | Settings | Open the quick menu, see below |
 
-Right-click anywhere on the Ribbon area to open a context menu. From the list, you can toggle each icon's visibility (show/hide). Hidden icons will no longer appear on the Ribbon.
+Plugins can also register their own Ribbon buttons (for example, the tag plugin); these appear alongside the built-in buttons.
 
-### Rearranging Icons
+### Switch panels
 
-Drag an icon up or down to change its order within the Ribbon. The new order is saved automatically.
+- **Left-click** an icon to show the corresponding sidebar; clicking the currently active icon again **collapses** the sidebar.
+- The currently active icon is highlighted.
 
-## Settings Button
+### Manage icons
 
-A **gear icon** 🛠️ at the bottom of the Ribbon provides quick access:
+- **Right-click** the icon area: a menu appears where you can check or clear each icon to show or hide it.
+- **Drag** icons up or down to reorder them; the order is saved when you release and persists across launches.
+- Hidden icons do not take up space in the Ribbon.
 
-- Click the gear icon to open a menu
-  - **"App Settings"** — Jump to Typora's native settings page
-  - **"Plugin Settings"** — Open the community plugin configuration dialog (equivalent to <kbd>Ctrl</kbd>+<kbd>.</kbd>)
+### Bottom gear menu
 
-## Configuration
+Click the gear icon at the bottom to open a menu with two items:
 
-Use the shortcut <kbd>Ctrl</kbd>+<kbd>.</kbd> to open the "Plugin Settings" dialog → go to the "Appearance" tab → under "Advanced Options", check or uncheck **"Show Ribbon"** to show or hide the entire Ribbon.
+| Menu item | Effect |
+|--------|------|
+| Open App Settings | Open Typora's native preferences |
+| Open Plugin Settings (Global) / Open Plugin Settings (Vault) | Open the Plugin Settings modal; the parentheses show the currently active settings mode |
 
+The text of the second item changes with the current settings mode; it is equivalent to <kbd>Ctrl</kbd>+<kbd>.</kbd>.
 
-[tag]: https://github.com/typora-community-plugin/typora-plugin-tag
+## Notes and limitations
+
+- After the Ribbon is hidden, sidebar panels can still be opened through Typora's native entries or the [Command Panel](./6-command-palette.md).
+- Icon visibility and order are saved in the currently active settings; after switching to "Vault Settings", they are a separate configuration.
+- The Ribbon depends on the custom sidebar panel mechanism. Turning off "Show Ribbon" also disables that mechanism, so sidebar entries registered by plugins are no longer shown.
+
+## Related pages
+
+- [Appearance](./3b-appearance.md)
+- [Workspace](./4a-workspace.md)
+- [Right Sidebar](./4d-right-panel.md)
