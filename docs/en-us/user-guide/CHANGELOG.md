@@ -1,5 +1,23 @@
 # Changelog
 
+## v2.10.71
+
+- fix(core/ui/sidebar/advanced-search): negated words exclude the whole file; a match anywhere in the body excludes it
+- fix(core/ui/sidebar/advanced-search): fix parenthesized groups losing OR semantics
+- refactor(i18n): remove the incorrect regex claim from advanced search mode descriptions
+- docs(user-guide): rewrite and expand the user guide with new settings, workspace, file views and command palette docs
+
+- **Workspace**
+  - refactor(core/ui/layout/floating): set floating window size inline and fix content not filling the window
+
+- **Editor**
+  - fix(core/ui/editor/postprocessor): a single HTML post-processor failure no longer interrupts the remaining elements
+
+- **Developer**
+  - refactor(core/plugin): rename `registerMarkdownSugguest` to `registerMarkdownSuggest`, keeping a deprecated alias
+  - docs(core/io/config): document config repository methods and properties
+  - docs(dev-guide): expand and refresh the API documentation in English and Chinese
+
 ## v2.10.70
 
 - fix(core/metadata): add concurrency limit to incremental updates to avoid EMFILE

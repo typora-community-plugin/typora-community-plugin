@@ -1,5 +1,22 @@
 # 更新日志
 
+## v2.10.73
+
+- fix(core/ui/sidebar/advanced-search): 否定词按整文件排除，正文任意位置命中即排除该文件
+- fix(core/ui/sidebar/advanced-search): 修复括号分组丢失 OR 语义的问题
+- refactor(core/ui/sidebar/advanced-search): 高级搜索模式说明移除对正则表达式的错误描述
+- docs(user-guide): 重写并扩充用户指南，新增设置、工作区、文件视图与命令面板文档
+
+- **工作区**
+  - refactor(core/ui/layout/floating): 浮动窗口尺寸改为内联设置，并修复内容未填满的问题
+
+- **编辑器**
+  - fix(core/ui/editor/postprocessor): 单个 HTML 后处理器异常不再中断其余元素
+
+- **开发者**
+  - refactor(core/plugin): `registerMarkdownSugguest` 更名为 `registerMarkdownSuggest`，保留弃用别名
+  - docs(dev-guide): 扩充并刷新中英文 API 文档
+
 ## v2.10.70
 
 - fix(core/metadata): 增量更新增加并发限制，避免 EMFILE
