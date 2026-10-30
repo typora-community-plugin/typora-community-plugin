@@ -1,6 +1,6 @@
-import { getHandler, evaluateTerm, astHasField } from './query-parser'
-import type { ParsedAST, FieldNode, AndNode, OrNode, NotNode, EvalContext, TermNode } from './query-parser'
-import type { SearchResult, SearchMatch } from './text-search-service'
+import { getHandler, evaluateTerm, astHasField } from '../query-parser'
+import type { ParsedAST, FieldNode, AndNode, OrNode, NotNode, EvalContext, TermNode } from '../query-parser'
+import type { SearchResult, SearchMatch } from '../text-search-service'
 import type { TagObject, TitleObject } from 'src/utils'
 
 /**
@@ -13,6 +13,7 @@ export function buildSearchResult(
   ast: ParsedAST,
   tags?: TagObject[],
   titles?: TitleObject[],
+  filePatterns?: Set<string>,
 ): SearchResult | null {
 
   // Collect all tokens from body matches (for bare word verification)
@@ -24,6 +25,7 @@ export function buildSearchResult(
   // Build eval context shared across all evaluation phases
   const rawLines = textResult.matches.map(m => m.lineText.toLowerCase())
   const context: EvalContext = { bodyTokens, rawLines, frontmatter, tags, titles, inlineTags, filePath: textResult.filePath }
+  if (filePatterns) context.filePatterns = filePatterns
 
   // Evaluate AST against body tokens + frontmatter + inline tags
   if (!evaluateAST(ast, context)) {
@@ -156,7 +158,14 @@ export function evaluateAST(
 
     case 'not': {
       const node = ast as NotNode
-      return !evaluateAST(node.child, context)
+      // Negation excludes a whole file: when whole-file facts are available,
+      // re-evaluate the child against the entire file instead of the sampled
+      // matching lines. Without facts (e.g. macOS native search) fall back to
+      // the historical match-scoped behaviour.
+      const childContext = context.filePatterns
+        ? { ...context, scope: 'file' as const }
+        : context
+      return !evaluateAST(node.child, childContext)
     }
 
     case 'term': {
@@ -166,8 +175,15 @@ export function evaluateAST(
     case 'field': {
       const node = ast as FieldNode
       const handler = getHandler(node.field)
-      if (handler) return handler.evaluate(node, context)
-      return false
+      if (!handler) return false
+      if (context.scope === 'file') {
+        // Body-side evidence for a field (e.g. `tag:` → `#foo`) is a whole-file
+        // fact too; metadata-only fields (title/filename) return null and are
+        // answered by the handler below.
+        const text = handler.extractSearchText(node)
+        if (text !== null && context.filePatterns?.has(text)) return true
+      }
+      return handler.evaluate(node, context)
     }
   }
 

@@ -52,7 +52,7 @@ export type {
 export type { ASTNodeType, ASTNode, FieldKind } from './types'
 export { FIELD_KINDS, isFieldPrefix } from './types'
 
-// Re-export helpers used by result-builder.ts
+// Re-export helpers used by eval/result-builder.ts
 export { evaluateTerm } from './syntax'
 
 // ── Handler Registry ───────────────────────────────────────────────────
@@ -80,7 +80,7 @@ export function registerHandler(handler: SyntaxHandler): void {
 
 /**
  * Get a registered handler by field name.
- * Used by result-builder.ts and index-search-service.ts for dispatch.
+ * Used by eval/result-builder.ts and index-search-service.ts for dispatch.
  */
 export function getHandler(field: string): SyntaxHandler | undefined {
   return _handlers.get(field)

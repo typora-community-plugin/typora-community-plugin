@@ -32,6 +32,12 @@ export function tryParseBareword(value: string, isQuoted: boolean): TermNode {
 export function evaluateTerm(node: TermNode, context: EvalContext): boolean {
   const pattern = node.pattern.toLowerCase()
 
+  // File scope: presence means "occurs anywhere in the file", not "on one of
+  // the sampled matching lines". Negated sub-expressions are evaluated this way.
+  if (context.scope === 'file') {
+    return context.filePatterns?.has(node.pattern) ?? false
+  }
+
   if (node.isQuoted) {
     // Fast path: check if any body token contains the phrase
     for (const token of context.bodyTokens) {

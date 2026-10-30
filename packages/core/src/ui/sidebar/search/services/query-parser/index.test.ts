@@ -27,7 +27,7 @@ import { TagSyntaxHandler } from 'src/ui/sidebar/search/services/query-parser/sy
 import { TitleSyntaxHandler } from 'src/ui/sidebar/search/services/query-parser/syntax/title-syntax'
 import { FilenameSyntaxHandler } from 'src/ui/sidebar/search/services/query-parser/syntax/filename-syntax'
 
-import { collectInlineTagPatterns, evaluateAST } from 'src/ui/sidebar/search/services/result-builder'
+import { collectInlineTagPatterns, evaluateAST } from 'src/ui/sidebar/search/services/eval/result-builder'
 import type { SearchMatch } from 'src/ui/sidebar/search/services/text-search-service'
 
 // ── Helpers ─────────────────────────────────────────────────────────────

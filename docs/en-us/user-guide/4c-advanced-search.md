@@ -106,6 +106,10 @@ tag:project -deprecated
 (tag:work OR tag:personal) -(meeting OR call)
 ```
 
+Negation applies to the **whole file**: if a negated term appears anywhere in a file, that file is left out of the results, even when it never shares a line with a positive keyword. `-(meeting call)` excludes files that contain both, while `-(meeting OR call)` excludes files that contain either.
+
+When a negation sits in an `OR` branch (e.g. `foo OR -bar`), the search has to walk the whole metadata index to find the files without `bar`, so results can be numerous and the query takes longer.
+
 ### Combined example
 
 ```
@@ -125,18 +129,17 @@ Finds files that contain both `book` and `film`, or have the `game` tag.
 
 The following describes how the current implementation actually behaves. Where it differs from the syntax description above, this section takes precedence:
 
-1. **Negation only applies to lines already matched in the same file.** Exclusion conditions do not scan the whole document separately; content on other lines or outside the scanned range is not affected by `-term`.
-2. **A query with only a negated term (e.g. `-foo`) does not return "files without foo".** With metadata enabled it may return the entire vault; always combine it with at least one positive keyword.
-3. **`tag:foo -#tag` cannot be limited to "frontmatter only".** It only suppresses body tags that appear on the same line.
-4. **`tag:#foo` does not work**; the `#` is not stripped. Write `tag:foo`.
-5. **`title:` is case-sensitive**; `title:meeting` does not find `Meeting`. `filename:` is case-insensitive.
-6. **Frontmatter tag matching is case-sensitive; inline body tags are not.**
-7. **Regular expressions are not supported.** `/foo/` is searched as plain characters.
-8. **Body search limits: 2 MiB per file, at most 10 matching lines returned per file.** Large files or files with too many matches may have missing results.
-9. **Body search skips hidden files and files ignored by `.gitignore`**, but `filename:` and `title:` can still match them.
-10. **Only Markdown and image files are indexed**; other file types are not matched by structured queries.
-11. **There is no error message.** Syntax mistakes, disabled metadata, and engine errors all appear simply as "no results".
-12. **On macOS, boolean and field semantics for body results do not apply** (body search uses Typora's native engine); only metadata-side `tag:`/`title:`/`filename:` are still handled by the plugin. Use Windows / Linux if you need the full syntax.
+1. **`tag:foo -#tag` cannot be limited to "frontmatter only".** `-#tag` now applies at file level: it excludes results where the literal text `#tag` appears anywhere in the file. There is currently no syntax for "frontmatter tags only".
+2. **Negation-only queries (e.g. `-foo`) require the metadata index**, because the universe of "all files" comes from that index; such queries also return Markdown files only, so files without body text (images etc.) are not included.
+3. **`tag:#foo` does not work**; the `#` is not stripped. Write `tag:foo`.
+4. **`title:` is case-sensitive**; `title:meeting` does not find `Meeting`. `filename:` is case-insensitive.
+5. **Frontmatter tag matching is case-sensitive; inline body tags are not.**
+6. **Regular expressions are not supported.** `/foo/` is searched as plain characters.
+7. **Body search limits: 2 MiB per file, at most 10 matching lines returned per file.** Large files or files with too many matches may have missing results; negation checks are not subject to this limit.
+8. **Body search skips hidden files and files ignored by `.gitignore`**, but `filename:` and `title:` can still match them.
+9. **Only Markdown and image files are indexed**; other file types are not matched by structured queries.
+10. **There is no error message.** Syntax mistakes, disabled metadata, and engine errors all appear simply as "no results"; if the scan needed for negation fails, that search returns no results at all.
+11. **On macOS, boolean and field semantics for body results do not apply** (body search uses Typora's native engine); negation is still judged line by line as before, and only metadata-side `tag:`/`title:`/`filename:` are handled by the plugin. Use Windows / Linux if you need the full syntax.
 
 ## Related pages
 

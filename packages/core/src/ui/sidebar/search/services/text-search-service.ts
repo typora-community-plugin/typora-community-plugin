@@ -2,8 +2,13 @@ import { bridge } from "typora"
 import type { ChildProcess } from "node:child_process"
 import path from "src/path"
 import { platform } from "src/common/constants"
+import { Semaphore } from "src/utils/schedule/semaphore"
 import { noop } from "src/utils"
+import { buildFilesWithMatchesArgs } from "./scan/negation-scan"
 
+
+/** Max number of concurrent whole-file negation scans. */
+const NEGATION_SCAN_CONCURRENCY = 4
 
 /** Options for {@link RipgrepSearchService.execute}. */
 export interface SearchOptions {
@@ -11,6 +16,18 @@ export interface SearchOptions {
   wholeWord?: boolean
   onResult?: (result: SearchResult) => void
   onComplete?: () => void
+}
+
+/**
+ * Whole-file presence facts produced by {@link RipgrepSearchService.listFilesContaining}.
+ */
+export interface WholeFileFacts {
+  /** False on platforms where a plugin-side scan is impossible (macOS). */
+  supported: boolean
+  /** False when at least one scan failed; callers should fail closed. */
+  ok: boolean
+  /** Absolute file path → set of query patterns occurring anywhere in that file. */
+  files: Map<string, Set<string>>
 }
 
 /**
@@ -58,9 +75,12 @@ export interface SearchResult {
  */
 export class RipgrepSearchService {
 
-  private _rpTask1: ChildProcess | null = null  // content match
-  private _rpTask2: ChildProcess | null = null  // filename fuzzy match
-  private _rpTask3: ChildProcess | null = null  // file list (filename only)
+  /** Running content/filename scans of the current text run. */
+  private _textTasks = new Set<ChildProcess>()
+  /** Running whole-file negation scans (independent of the text run). */
+  private _negationTasks = new Set<ChildProcess>()
+  /** Incremented on every reset so stale `close` events are ignored. */
+  private _textRunId = 0
 
   /** Accumulator for streaming JSON Lines from task1 */
   private _prevBuffer = ""
@@ -79,8 +99,8 @@ export class RipgrepSearchService {
    * ONE complete SearchResult instead of creating duplicate DOM entries.
    */
   private _resultsByPath = new Map<string, SearchResult>()
-  /** Tracks how many tasks have closed; flush only when all 3 are done. */
-  private _tasksClosedCount = 0
+  /** Number of text tasks expected before flushing. */
+  private _expectedTextTasks = 0
 
   constructor(
     private mountFolder: string,
@@ -88,14 +108,29 @@ export class RipgrepSearchService {
 
   /** Kill all running ripgrep processes. Call before starting a new search. */
   cancel(): void {
-    this._killTask(this._rpTask1)
-    this._killTask(this._rpTask2)
-    this._killTask(this._rpTask3)
-    this._rpTask1 = null
-    this._rpTask2 = null
-    this._rpTask3 = null
+    for (const task of this._textTasks) this._killTask(task)
+    for (const task of this._negationTasks) this._killTask(task)
+    this._textTasks.clear()
+    this._negationTasks.clear()
+    this._textRunId++
+    this._expectedTextTasks = 0
     this._resultsByPath.clear()
-    this._tasksClosedCount = 0
+    this._prevBuffer = ""
+    this._pathPrevBuffer = ""
+  }
+
+  /**
+   * Stop the current text scan, keeping whole-file negation scans alive.
+   * Used by {@link execute}, which may run in parallel with such a scan.
+   */
+  private _resetTextRun(): void {
+    for (const task of this._textTasks) this._killTask(task)
+    this._textTasks.clear()
+    this._textRunId++
+    this._expectedTextTasks = 0
+    this._resultsByPath.clear()
+    this._prevBuffer = ""
+    this._pathPrevBuffer = ""
   }
 
   /**
@@ -109,7 +144,7 @@ export class RipgrepSearchService {
     query: string | string[],
     options?: SearchOptions,
   ): void {
-    this.cancel()
+    this._resetTextRun()
 
     const caseSensitive = options?.caseSensitive ?? false
     const wholeWord = options?.wholeWord ?? false
@@ -167,6 +202,7 @@ export class RipgrepSearchService {
 
     const child_process = this._reqChildProcess()
     const cwd = this.mountFolder
+    const runId = this._textRunId
 
     // Helper to spawn a ripgrep process
     const spawnRg = (args: string[]): ChildProcess => {
@@ -179,19 +215,34 @@ export class RipgrepSearchService {
       return proc
     }
 
+    // Track a task for this run. `settle` is idempotent because both `error`
+    // and `close` may fire; events from superseded runs are ignored.
+    const track = (proc: ChildProcess): ChildProcess => {
+      this._textTasks.add(proc)
+      this._expectedTextTasks++
+      let settled = false
+      const settle = () => {
+        if (settled) return
+        settled = true
+        this._textTasks.delete(proc)
+        if (runId !== this._textRunId) return
+        if (this._textTasks.size === 0 && this._expectedTextTasks > 0) {
+          this._flushResults(onResult, onComplete)
+        }
+      }
+      proc.on("close", settle)
+      proc.on("error", settle)
+      return proc
+    }
+
     // ── Task 1: Content match (file content search) ──────────────────────
     // Each pattern is passed as separate -e flag (OR semantics). The AST
     // evaluation in buildResult later enforces AND across all conditions.
     const task1Args = this._buildRpArgs(query, caseSensitive, wholeWord)
-    const task1 = spawnRg(task1Args)
-    this._rpTask1 = task1
+    const task1 = track(spawnRg(task1Args))
 
     task1.stdout?.on("data", (chunk: string) => {
       this._parseJsonLines(chunk, false)
-    })
-    task1.on("close", () => {
-      this._rpTask1 = null
-      this._flushResults(onResult, onComplete)
     })
     task1.stderr?.on("data", () => {
       // Silently ignore stderr (ripgrep warnings about permission denied, etc.)
@@ -212,16 +263,11 @@ export class RipgrepSearchService {
       caseSensitive ? "-g" : "--iglob",
       `*${escapedQuery}*`,
     ]
-    const task2 = spawnRg(task2Args)
-    this._rpTask2 = task2
+    const task2 = track(spawnRg(task2Args))
 
     task2.stdout?.on("data", (chunk: string) => {
       // pathMatch=true: accumulated into _resultsByPath; flushed on close
       this._parseJsonLines(chunk, true)
-    })
-    task2.on("close", () => {
-      this._rpTask2 = null
-      this._flushResults(onResult, onComplete)
     })
 
     // ── Task 3: File list (all files matching query in name) ─────────────
@@ -233,10 +279,8 @@ export class RipgrepSearchService {
       caseSensitive ? "-g" : "--iglob",
       `*${escapedQuery}*`,
     ]
-    const task3 = spawnRg(task3Args)
-    this._rpTask3 = task3
+    const task3 = track(spawnRg(task3Args))
 
-    let task3HasResults = false
     task3.stdout?.on("data", (chunk: string) => {
       const lines = chunk.split(/\r?\n/g)
       for (const line of lines) {
@@ -251,12 +295,7 @@ export class RipgrepSearchService {
           matches: [],
           totalMatches: 0,
         })
-        task3HasResults = true
       }
-    })
-    task3.on("close", () => {
-      this._rpTask3 = null
-      this._flushResults(onResult, onComplete)
     })
 
   }
@@ -361,17 +400,100 @@ export class RipgrepSearchService {
   }
 
   private _flushResults(onResult: (result: SearchResult) => void, onComplete?: () => void): void {
-    this._tasksClosedCount++
-    if (this._tasksClosedCount < 3) {
-      return
-    }
     for (const result of this._resultsByPath.values()) {
       result.totalMatches = result.matches.length
       onResult(result)
     }
     this._resultsByPath.clear()
-    this._tasksClosedCount = 0
+    this._prevBuffer = ""
+    this._pathPrevBuffer = ""
+    this._expectedTextTasks = 0
     onComplete?.()
+  }
+
+  /**
+   * Scan the vault for whole-file presence of each pattern.
+   *
+   * One `rg -l` run per pattern, at most {@link NEGATION_SCAN_CONCURRENCY} at a
+   * time. `-l` stops at the first match per file, so output is one path per
+   * occurring file — far cheaper than a full JSON scan, and it tells us *which*
+   * pattern occurred, which a combined scan cannot (ripgrep reports only the
+   * leftmost match, so `foo|foobar` would never report `foobar`).
+   *
+   * Returns `supported: false` on macOS, where search is delegated to Typora's
+   * native engine and no per-file facts are available.
+   */
+  async listFilesContaining(
+    patterns: string[],
+    options?: SearchOptions,
+  ): Promise<WholeFileFacts> {
+    const files = new Map<string, Set<string>>()
+    if (patterns.length === 0) return { supported: true, ok: true, files }
+    if (platform() === 'darwin') return { supported: false, ok: true, files }
+
+    const rg = this._getRipgrepPath()
+    if (!rg) return { supported: true, ok: false, files }
+
+    const child_process = this._reqChildProcess()
+    const caseSensitive = options?.caseSensitive ?? false
+    const wholeWord = options?.wholeWord ?? false
+    const semaphore = new Semaphore(NEGATION_SCAN_CONCURRENCY)
+    let ok = true
+
+    const scan = (pattern: string): Promise<void> => new Promise<void>(resolve => {
+      let proc: ChildProcess
+      try {
+        proc = child_process.spawn(
+          rg,
+          buildFilesWithMatchesArgs(pattern, caseSensitive, wholeWord),
+          { cwd: this.mountFolder, stdio: ["ignore", "pipe", "pipe"] },
+        )
+      } catch {
+        ok = false
+        resolve()
+        return
+      }
+
+      this._negationTasks.add(proc)
+      proc.stdout.setEncoding("utf8")
+      proc.stderr.setEncoding("utf8")
+
+      let output = ""
+      let settled = false
+      const finish = (success: boolean) => {
+        if (settled) return
+        settled = true
+        this._negationTasks.delete(proc)
+        if (!success) ok = false
+        resolve()
+      }
+
+      proc.stdout.on("data", (chunk: string) => { output += chunk })
+      proc.stderr.on("data", () => { /* ignore */ })
+      proc.on("error", () => finish(false))
+      proc.on("close", (code) => {
+        // rg exits 1 when nothing matched — a successful, empty result.
+        if (code !== 0 && code !== 1) {
+          finish(false)
+          return
+        }
+        for (const line of output.split(/\r?\n/g)) {
+          const rel = line.trim()
+          if (!rel) continue
+          const absPath = path.isAbsolute(rel) ? rel : path.join(this.mountFolder, rel)
+          let set = files.get(absPath)
+          if (!set) {
+            set = new Set<string>()
+            files.set(absPath, set)
+          }
+          set.add(pattern)
+        }
+        finish(true)
+      })
+    })
+
+    await Promise.all(patterns.map(pattern => semaphore.run(() => scan(pattern))))
+    return { supported: true, ok, files }
   }
 
   /** Kill a child process and clean up references. */

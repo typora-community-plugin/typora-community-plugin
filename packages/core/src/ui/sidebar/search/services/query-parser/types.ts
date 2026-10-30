@@ -82,6 +82,21 @@ export interface EvalContext {
   inlineTags?: Set<string>
   /** File path (relative for index-only, absolute for ripgrep path) for filename matching */
   filePath?: string
+  /**
+   * Evaluation scope.
+   *
+   * - `'match'` (default): term presence is judged from the ripgrep-matched
+   *   lines only — the historical behaviour.
+   * - `'file'`: term presence is judged against `filePatterns`, i.e. whether
+   *   the pattern occurs anywhere in the file. Used to evaluate negated
+   *   sub-expressions, which must exclude whole files rather than lines.
+   */
+  scope?: 'match' | 'file'
+  /**
+   * Patterns known to occur anywhere in the file (file scope only).
+   * Populated from a dedicated `rg -l` scan of every negated pattern.
+   */
+  filePatterns?: Set<string>
 }
 
 // ── SyntaxHandler interface ────────────────────────────────────────────
