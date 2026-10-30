@@ -21,7 +21,7 @@ import {
   astHasFieldNodes,
   astHasField,
 } from 'src/ui/sidebar/search/services/query-parser'
-import type { ParsedAST, FieldNode, AndNode, TermNode } from 'src/ui/sidebar/search/services/query-parser'
+import type { ParsedAST, FieldNode, AndNode, OrNode, NotNode, TermNode } from 'src/ui/sidebar/search/services/query-parser'
 
 import { TagSyntaxHandler } from 'src/ui/sidebar/search/services/query-parser/syntax/tag-syntax'
 import { TitleSyntaxHandler } from 'src/ui/sidebar/search/services/query-parser/syntax/title-syntax'
@@ -162,6 +162,61 @@ describe('tryParse', () => {
     const and = ast as AndNode
     expect(and.children).toHaveLength(2)
     expect(and.children[1].type).toBe('not')
+  })
+
+  it('parenthesized OR group stays OR', () => {
+    const ast = tryParse('(book OR film)')
+    expect(ast).not.toBeNull()
+    expect(ast!.type).toBe('or')
+    const or = ast as OrNode
+    expect(or.children).toHaveLength(2)
+    expect(or.children.every(c => c.type === 'term')).toBe(true)
+    expect((or.children[0] as TermNode).pattern).toBe('book')
+    expect((or.children[1] as TermNode).pattern).toBe('film')
+  })
+
+  it('parenthesized OR group combined with field via AND', () => {
+    const ast = tryParse('(book OR film) tag:movies')
+    expect(ast).not.toBeNull()
+    expect(ast!.type).toBe('and')
+    const and = ast as AndNode
+    expect(and.children).toHaveLength(2)
+    expect(and.children[0].type).toBe('or')
+    expect(and.children[1].type).toBe('field')
+  })
+
+  it('parenthesized AND group stays AND', () => {
+    const ast = tryParse('(book film)')
+    expect(ast).not.toBeNull()
+    expect(ast!.type).toBe('and')
+    expect((ast as AndNode).children).toHaveLength(2)
+  })
+
+  it('negating a parenthesized OR group negates the whole group', () => {
+    const ast = tryParse('-(meeting OR call)')
+    expect(ast).not.toBeNull()
+    expect(ast!.type).toBe('not')
+    expect((ast as NotNode).child.type).toBe('or')
+  })
+
+  it('parenthesized group keeps AND-over-OR precedence inside', () => {
+    const ast = tryParse('(book OR film notes)')
+    expect(ast).not.toBeNull()
+    expect(ast!.type).toBe('or')
+    const or = ast as OrNode
+    expect(or.children).toHaveLength(2)
+    expect(or.children[0].type).toBe('term')
+    expect(or.children[1].type).toBe('and')
+  })
+
+  it('nested parentheses preserve grouping', () => {
+    const ast = tryParse('a OR (b OR c)')
+    expect(ast).not.toBeNull()
+    expect(ast!.type).toBe('or')
+    const or = ast as OrNode
+    expect(or.children).toHaveLength(2)
+    expect(or.children[0].type).toBe('term')
+    expect(or.children[1].type).toBe('or')
   })
 })
 

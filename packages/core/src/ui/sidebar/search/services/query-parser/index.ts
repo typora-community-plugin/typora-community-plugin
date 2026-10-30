@@ -138,7 +138,10 @@ function _parseSequence(tokens: RawToken[], start: number): { nodes: ParsedAST[]
       const { nodes: inner, end } = _parseSequence(tokens, i)
       i = end
       if (inner.length > 0) {
-        let group: ParsedAST = inner.length === 1 ? inner[0] : { type: 'and', children: inner } as AndNode
+        // `inner` is already a list of OR-segments (each an AND of its terms),
+        // so joining them back must use OR — an AND here would turn
+        // `(a OR b)` into `(a AND b)`.
+        let group: ParsedAST = inner.length === 1 ? inner[0] : { type: 'or', children: inner } as OrNode
         if (negated) group = { type: 'not', child: group } as NotNode
         segments[segments.length - 1].push(group)
       }
