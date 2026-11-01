@@ -33,14 +33,24 @@ export class HotkeyManager {
     markdownEditor.on('load', (editorEl) => {
       // TODO move to MarkdownEditor
 
-      document.body.addEventListener('keyup', this._onKeyup(this.keybindings))
+      // Match hotkeys on `keydown` rather than `keyup`: macOS WebKit does not
+      // deliver `keyup` for keys pressed while ⌘ is held, so ⌘ hotkeys would
+      // never fire there.
+      document.body.addEventListener('keydown', this._onKeydown(this.keybindings))
 
-      editorEl.addEventListener('keyup', this._onKeyup(this.editorKeybindings))
+      editorEl.addEventListener('keydown', this._onKeydown(this.editorKeybindings))
     })
   }
 
-  private _onKeyup(keybindings: Record<string, EventListener[]>) {
+  private _onKeydown(keybindings: Record<string, EventListener[]>) {
     return (event: KeyboardEvent) => {
+      // Ignore auto-repeat while a key is held.
+      if (event.repeat) return
+
+      // Ignore plain keys typed during IME composition, but keep modifier
+      // shortcuts (e.g. ⌘S while composing) working.
+      if (event.isComposing && !event.ctrlKey && !event.metaKey && !event.altKey) return
+
       const hotkey = eventToHotkey(event)
       // TODO: try..catch with more msg
       keybindings[hotkey]?.forEach(listener => listener(event))

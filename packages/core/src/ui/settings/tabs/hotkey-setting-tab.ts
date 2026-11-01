@@ -7,6 +7,9 @@ import { eventToHotkey, readableHotkey } from "src/hotkey-manager"
 import type { SettingItem } from "../setting-item"
 
 
+const modifierKeys = new Set(['Alt', 'AltGraph', 'CapsLock', 'Control', 'Meta', 'Shift'])
+
+
 export class HotkeySettingTab extends SettingTab {
 
   get name() {
@@ -91,8 +94,13 @@ export class HotkeySettingTab extends SettingTab {
         setting.addButton(el => {
           el.innerText = this.i18n.t.settingTabs.hotkey.waitHotkey
           el.classList.add('primary')
-          el.onkeyup = event => {
-            el.onkeyup = null
+          // Use `keydown` for the same reason as `HotkeyManager`: macOS
+          // WebKit does not deliver `keyup` for keys pressed while ⌘ is held.
+          // Skip bare modifier presses so they do not end the recording.
+          el.onkeydown = event => {
+            if (event.isComposing || modifierKeys.has(event.key)) return
+            el.onkeydown = null
+            event.preventDefault()
             event.stopPropagation()
             setting.controls.innerHTML = ''
             const hotkey = readableHotkey(eventToHotkey(event))
