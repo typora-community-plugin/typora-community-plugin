@@ -99,20 +99,28 @@ export class MarkdownRenderer {
   }
 
   /**
-   * Get the `CodeMirror` instance of the codeblock rendered by the {@link MdPreviewerMode} in the `WorkspaceRoot`
+   * Get the `CodeMirror` instance of the codeblock rendered by {@link renderTo}.
+   *
+   * The preview is not limited to the workspace (e.g. a chat panel or the
+   * changelog in the settings modal), so look the element up in the whole
+   * document instead of only inside `.typ-workspace-root`.
    */
-  getCodeMirrorInstance(cid: string): CodeMirror.Editor {
-    const el = $('.typ-workspace-root').find(`[cid="${cid}"]`)[0]
-    return this._cmInstances.get(el)
+  getCodeMirrorInstance(cid: string): CodeMirror.Editor | undefined {
+    const el = $(`[cid="${cid}"]`)[0]
+    return el ? this._cmInstances.get(el) : undefined
   }
 
   /**
    * Prefix the `cid` of every rendered node so Typora's document-wide `[cid]`
    * lookups never resolve to preview nodes. See {@link PREVIEW_CID_PREFIX}.
+   *
+   * The prefix is unique per render so that previews rendered in different
+   * containers (workspace, chat panel, settings modal...) never share a `cid`.
    */
   private _namespaceCids(targetEl: HTMLElement): void {
+    const prefix = uniqueId(PREVIEW_CID_PREFIX) + '-'
     $(`[cid]`, targetEl).each((_, el) => {
-      el.setAttribute('cid', PREVIEW_CID_PREFIX + el.getAttribute('cid'))
+      el.setAttribute('cid', prefix + el.getAttribute('cid'))
     })
   }
 }

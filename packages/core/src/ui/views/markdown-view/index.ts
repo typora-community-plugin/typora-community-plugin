@@ -199,9 +199,9 @@ export class MarkdownView extends WorkspaceView {
     })
   }
 
-  getCodeMirrorInstance(cid: string): CodeMirror.Editor {
+  getCodeMirrorInstance(cid: string): CodeMirror.Editor | undefined {
     return this.isEditor()
-      ? editor.fences.getCm(cid)!
+      ? editor.fences.getCm(cid)
       : this.mdRenderer.getCodeMirrorInstance(cid)
   }
 }
