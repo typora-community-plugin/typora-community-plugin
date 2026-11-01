@@ -2,7 +2,7 @@ import { useService } from "src/common/service"
 import { InternalPlugin, InternalPluginManifest } from "./internal-plugin"
 import { MetadataPlugin, PLUGIN_METADATA_ID } from "./plugins/plugin-metadata"
 import { WorkspacePlugin, PLUGIN_WORKSPACE_ID } from "./plugins/plugin-workspace"
-import { PLUGIN_TEST_ID, TestPlugin } from "./plugins/plugin-test"
+import { PLUGIN_TEST_ID } from "./plugins/plugin-test-manifest"
 
 
 export const KEY_OF_ENABLED_PLUGINS = 'internalPlugin.enabledPlugins'
@@ -43,15 +43,18 @@ export class InternalPluginManager {
       [PLUGIN_METADATA_ID]: metadata.manifest,
       [PLUGIN_WORKSPACE_ID]: workspace.manifest,
     }
+  }
 
-    if (process.env.IS_DEV) {
+  async loadPlugins() {
+    if (process.env.IS_DEV && !this.instances[PLUGIN_TEST_ID]) {
+      // Keep the development-only test plugin out of production builds: the
+      // implementation (and its test scaffolding) is only imported here.
+      const { TestPlugin } = await import('./plugins/plugin-test')
       const test = new TestPlugin()
       this.instances[PLUGIN_TEST_ID] = test
       this.manifests[PLUGIN_TEST_ID] = test.manifest
     }
-  }
 
-  loadPlugins() {
     this.enabledPlugins = this.settings.get(KEY_OF_ENABLED_PLUGINS)
 
     return Promise.all(

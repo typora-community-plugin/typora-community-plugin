@@ -13,9 +13,10 @@ import { TEST_SELECTION_STATS, TEST_STATS } from "src/ui/statusbar/statistics-te
 import { html } from "src/utils"
 import { JSBridge } from "typora"
 import { DecoratedTextPostprocessor, type DecoratedTextMatch } from "src/ui/editor/postprocessor/decorated-text-postprocessor"
+import { PLUGIN_TEST_ID } from "./plugin-test-manifest"
 
 
-export const PLUGIN_TEST_ID = 'internal.test'
+export { PLUGIN_TEST_ID }
 
 export class TestPlugin extends InternalPlugin {
 
