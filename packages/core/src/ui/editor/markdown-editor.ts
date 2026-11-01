@@ -4,6 +4,7 @@ import { bindPreProcessorToEditor, MarkdownPreProcessor } from "./preprocessor/p
 import { bindPostProcessorToEditor, MarkdownPostProcessor } from "./postprocessor/postprocessor-manager"
 import { blockMarkdownViewPreviewMode } from "./postprocessor/codeblock-postprocessor"
 import { EditorSelection } from "./selection"
+import { isCodeEditor } from "./code-editor"
 import { EditorSuggestManager } from "./suggestion/suggest-manager"
 import { MarkdownLinkWitoutExtension, OpenLinkInCurrentWin } from "./link"
 import { debounce, until } from "src/utils"
@@ -83,6 +84,29 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
 
   setMarkdown(markdown: string) {
     File.reloadContent(markdown, false, true, false, true)
+  }
+
+  /**
+   * Insert Markdown at the current selection or cursor.
+   *
+   * A stable alternative to calling Typora's internal `UserOp.pasteHandler()`
+   * directly.
+   *
+   * @param markdown Markdown source to insert.
+   * @param at
+   * - `"selection"` (default): replace the current selection. If nothing is
+   *   selected, insert at the cursor.
+   * - `"cursor"`: insert at the cursor, discarding any selected range.
+   */
+  insertMarkdown(markdown: string, at: 'selection' | 'cursor' = 'selection') {
+    if (!editor.writingArea) return
+
+    // Keep editing inside a code fence or source view: the native paste
+    // handler writes to CodeMirror there.
+    if (!isCodeEditor(document.activeElement))
+      this.selection.restoreForInsertion(at)
+
+    editor.UserOp.pasteHandler(editor, markdown, true)
   }
 
   _onContextMenu(callback: MarkdownEditorEvents['contextmenu']) {

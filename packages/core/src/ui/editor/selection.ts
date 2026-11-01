@@ -1,16 +1,29 @@
 import { editor, type Rangy } from "typora"
 import { useEventBus } from "src/common/eventbus"
+import { isCodeEditor } from "./code-editor"
 
 
 export class EditorSelection {
 
-  private selected: Rangy | null
+  private selected: Rangy | null = null
 
   constructor(
     markdownEditor = useEventBus('markdown-editor')
   ) {
     markdownEditor.on('edit', () => {
       this.selected = null
+    })
+
+    // Keep track of the last selection made inside the editor. Commands that
+    // insert content asynchronously (after focus moved to an input or modal)
+    // can then restore the anchor instead of pasting at the document start.
+    document.addEventListener('selectionchange', () => {
+      if (!this._isInEditor() || isCodeEditor(document.activeElement))
+        return
+
+      const range = editor.selection.getRangy()
+      if (range)
+        this.selected = range
     })
   }
 
@@ -20,6 +33,67 @@ export class EditorSelection {
 
   restore() {
     this.selected?.select()
+  }
+
+  /**
+   * Whether the focus is currently inside the editor's writing area.
+   */
+  private _isInEditor(): boolean {
+    const active = document.activeElement
+    if (!active || active === document.body) return false
+    return !!editor.writingArea?.contains(active)
+  }
+
+  /**
+   * Restore the anchor before inserting content.
+   *
+   * Typora ignores paste events while an input or `body` has focus, so this
+   * re-focuses the writing area and re-applies the last selection captured
+   * inside the editor.
+   *
+   * @param at - `"selection"` keeps the selected range; `"cursor"` collapses
+   * it to the caret.
+   */
+  restoreForInsertion(at: 'selection' | 'cursor' = 'selection') {
+    const writingArea = editor.writingArea
+    if (!writingArea) return
+
+    const range = this._getInsertionRange()
+
+    writingArea.focus()
+
+    if (range) {
+      if (at === 'cursor')
+        range.collapse(!!range.isBackward)
+      range.select()
+      return
+    }
+
+    if (at === 'cursor') {
+      const selection = window.getSelection()
+      if (selection && !selection.isCollapsed)
+        selection.collapseToEnd()
+    }
+  }
+
+  /**
+   * Selection that an insertion should target.
+   *
+   * Uses the live selection while the editor has focus; otherwise falls back
+   * to the last selection captured inside the editor.
+   */
+  private _getInsertionRange(): Rangy | null {
+    if (this._isInEditor())
+      return editor.selection.getRangy()
+
+    if (this.selected)
+      return this.selected
+
+    // The saved selection is cleared on edits, but the browser may still keep
+    // the last selection inside the writing area. Use it rather than inserting
+    // at an unanchored position.
+    const live = editor.selection.getRangy()
+    return isRangeInEditor(live) ? live : null
   }
 
   /**
@@ -106,4 +180,10 @@ export class EditorSelection {
     }
   }
 
+}
+
+
+function isRangeInEditor(range: Rangy | null): range is Rangy {
+  const container = range?.commonAncestorContainer
+  return !!container && !!editor.writingArea?.contains(container)
 }

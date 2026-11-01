@@ -687,7 +687,11 @@ interface Rangy {
   collapsed: boolean
   startOffset: number
   endOffset: number
+  commonAncestorContainer: globalThis.Node
+  /** Whether the selection was made backwards (caret is at the range start). */
+  isBackward?: boolean
 
+  collapse(toStart?: boolean): void
   setStart(el: Element, pos: number): void
   setEnd(el: Element, pos: number): void
 
