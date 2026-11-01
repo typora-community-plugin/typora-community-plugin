@@ -132,7 +132,16 @@ export class GithubAPI {
   getReleaseInfo(repo: string) {
     const uri = this.uri.api + 'repos/{repo}/releases/latest'
     return fetch(format(uri, { repo }))
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok)
+          throw new Error(`Failed to get release info of "${repo}": ${res.status} ${res.statusText}`)
+        return res.json()
+      })
+      .then(data => {
+        if (typeof data?.tag_name !== 'string')
+          throw new Error(`Invalid release info of "${repo}": missing "tag_name"`)
+        return data
+      })
   }
 
   /**

@@ -15,8 +15,8 @@ export function compare(v1: string, v2: string) {
   return 0
 }
 
-function toNumbers(version: string): number[] {
-  const n = version.split(/[^0-9]+/).map(d => +d)
+function toNumbers(version: string | undefined): number[] {
+  const n = String(version ?? '').split(/[^0-9]+/).map(d => +d)
 
   if (n.length === 4) {
     n[2] -= 1
