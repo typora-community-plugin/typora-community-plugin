@@ -1,4 +1,5 @@
 import fs from 'src/io/fs/filesystem'
+import path from 'src/path'
 import { runConcurrent } from 'src/utils/schedule/concurrency'
 import { DeferredQueue } from 'src/utils/schedule/deferred-queue'
 import type { Vault } from 'src/io/vault'
@@ -46,6 +47,16 @@ export class MetadataIndexer {
     }
 
     const { vault, processor, concurrency, indexingWork, events, publish } = this.deps
+    const vaultPath = vault.path
+
+    // No folder is mounted and no document is opened. `vault.path` is empty in
+    // that case, and scanning it would fall back to the process working
+    // directory (or `/` on macOS), so skip indexing entirely.
+    if (!vaultPath || !path.isAbsolute(vaultPath)) {
+      console.log('[Metadata] No vault mounted, skip indexing.')
+      return
+    }
+
     this._isIndexing = true
     indexingWork.begin()
     console.log('[Metadata] Start indexing...')
@@ -55,7 +66,6 @@ export class MetadataIndexer {
 
     try {
       const { signal } = abortController
-      const vaultPath = vault.path
       const allFiles = await fs.listFiles(vaultPath, { recursive: true, signal })
       events.start(allFiles.length)
 

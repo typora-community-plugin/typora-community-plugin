@@ -65,6 +65,44 @@ describe('MetadataIndexer', () => {
     expect(indexer.isIndexing).toBe(false)
   })
 
+  it('skips indexing when no folder is mounted', async () => {
+    const { MetadataIndexer, MetadataProcessor, MetadataProviderRegistry, DeferredQueue } = await setup()
+    const events = { start: jest.fn(), progress: jest.fn(), done: jest.fn() }
+    const publish = jest.fn()
+
+    const indexer = new MetadataIndexer({
+      vault: { id: 'v0', path: '', on: jest.fn(() => jest.fn()) } as any,
+      processor: new MetadataProcessor(new MetadataProviderRegistry()),
+      concurrency: 1,
+      indexingWork: new DeferredQueue(),
+      events,
+      publish,
+    })
+    await indexer.index()
+
+    expect(fsMock.listFiles).not.toHaveBeenCalled()
+    expect(events.start).not.toHaveBeenCalled()
+    expect(publish).not.toHaveBeenCalled()
+    expect(indexer.isIndexing).toBe(false)
+  })
+
+  it('skips indexing when the vault path is relative', async () => {
+    const { MetadataIndexer, MetadataProcessor, MetadataProviderRegistry, DeferredQueue } = await setup()
+
+    const indexer = new MetadataIndexer({
+      vault: { id: 'v0', path: '.', on: jest.fn(() => jest.fn()) } as any,
+      processor: new MetadataProcessor(new MetadataProviderRegistry()),
+      concurrency: 1,
+      indexingWork: new DeferredQueue(),
+      events: { start: jest.fn(), progress: jest.fn(), done: jest.fn() },
+      publish: jest.fn(),
+    })
+    await indexer.index()
+
+    expect(fsMock.listFiles).not.toHaveBeenCalled()
+    expect(indexer.isIndexing).toBe(false)
+  })
+
   it('throws when indexing is already in progress', async () => {
     const { MetadataIndexer, MetadataProcessor, MetadataProviderRegistry, DeferredQueue } = await setup()
     let resolveList!: (paths: string[]) => void

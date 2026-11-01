@@ -37,9 +37,7 @@ export class Vault extends Events<VaultEvents> {
     this._registerEventHooks()
   }
 
-  private _path = File.getMountFolder()
-    ?? _options.mountFolder
-    ?? path.dirname(_options.initFilePath ?? File.filePath ?? File.bundle.filePath)
+  private _path = resolveVaultPath()
 
   get id() {
     return hashCode(this.path)
@@ -104,6 +102,23 @@ export class Vault extends Events<VaultEvents> {
         })
       })
   }
+}
+
+/**
+ * Resolve the mounted folder.
+ *
+ * Typora reports an empty string (instead of `undefined`) when no folder is
+ * mounted and no document is loaded. Passing it to `path.dirname()` would yield
+ * `.` (or `/` on macOS), making the plugin operate on the process working
+ * directory. Normalize such "no vault" states to `''` so consumers can detect
+ * them with a falsy check.
+ */
+export function resolveVaultPath(): string {
+  const mountFolder = File.getMountFolder?.() || _options.mountFolder
+  if (mountFolder) return mountFolder
+
+  const filePath = _options.initFilePath || File.filePath || File.bundle?.filePath
+  return filePath ? path.dirname(filePath) : ''
 }
 
 function hashCode(s: string) {

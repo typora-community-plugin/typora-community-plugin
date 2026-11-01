@@ -50,6 +50,16 @@ export class ConfigRepository extends Events<ConfigEvents> {
   }
 
   private _autoSelectConfig() {
+    // No folder is mounted and no document is opened: there is no vault-local
+    // config to look for, so skip `fs.access()` on a relative `.typora` path.
+    if (!this.vault.path) {
+      // Keep the `switch` event asynchronous (as `fs.access()` does), so that
+      // listeners registered right after construction, such as `App`, still
+      // receive it.
+      Promise.resolve().then(() => this.useGlobalConfig())
+      return
+    }
+
     fs.access(this.vault.configDir)
       .then(() => this.useVaultConfig())
       .catch(() => this.useGlobalConfig())
@@ -63,6 +73,9 @@ export class ConfigRepository extends Events<ConfigEvents> {
     this._isUsingGlobalConfig = true
 
     this.once('switch', () => {
+      // Cannot switch to a vault-local config without a vault.
+      if (!this.vault.path) return
+
       const commands = useService('command-manager')
       const i18n = useService('i18n')
       if (!commands || !i18n) return
@@ -79,6 +92,8 @@ export class ConfigRepository extends Events<ConfigEvents> {
   }
 
   private useVaultConfig() {
+    if (!this.vault.path) return
+
     if (this._configDir === this.vault.configDir) return
     this._disposeCommand?.()
 
