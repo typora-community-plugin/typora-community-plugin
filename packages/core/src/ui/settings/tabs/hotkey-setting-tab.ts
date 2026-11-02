@@ -94,18 +94,29 @@ export class HotkeySettingTab extends SettingTab {
         setting.addButton(el => {
           el.innerText = this.i18n.t.settingTabs.hotkey.waitHotkey
           el.classList.add('primary')
-          // Use `keydown` for the same reason as `HotkeyManager`: macOS
-          // WebKit does not deliver `keyup` for keys pressed while ⌘ is held.
+          // Match core's policy: meta (⌘/Win) combinations are recorded on
+          // `keydown` (macOS WebKit does not deliver their `keyup`), while
+          // other combinations are recorded on `keyup` because an IME may
+          // consume the `keydown` (e.g. Ctrl+. for punctuation switching).
           // Skip bare modifier presses so they do not end the recording.
-          el.onkeydown = event => {
+          const finish = (event: KeyboardEvent) => {
             if (event.isComposing || modifierKeys.has(event.key)) return
             el.onkeydown = null
+            el.onkeyup = null
             event.preventDefault()
             event.stopPropagation()
             setting.controls.innerHTML = ''
             const hotkey = readableHotkey(eventToHotkey(event))
             this.addHotkey(setting, id, hotkey)
             this.commands.setCommandHotkey(id, hotkey)
+          }
+          el.onkeydown = event => {
+            if (!event.metaKey || event.repeat) return
+            finish(event)
+          }
+          el.onkeyup = event => {
+            if (event.metaKey) return
+            finish(event)
           }
           setTimeout(() => el.focus())
         })

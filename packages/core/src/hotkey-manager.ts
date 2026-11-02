@@ -31,29 +31,57 @@ export class HotkeyManager {
     markdownEditor = useEventBus('markdown-editor')
   ) {
     markdownEditor.on('load', (editorEl) => {
-      // TODO move to MarkdownEditor
+      // Match on both events and de-duplicate per physical key:
+      // - `keydown` is required for meta (⌘/Win) combinations; macOS WebKit
+      //   does not deliver `keyup` while ⌘ is held.
+      // - `keyup` is the fallback for keys whose `keydown` an IME consumes
+      //   (e.g. Ctrl+. for Chinese/English punctuation switching).
+      const globalHandler = this._onKeyboardEvent(this.keybindings)
+      const editorHandler = this._onKeyboardEvent(this.editorKeybindings)
 
-      // Match hotkeys on `keydown` rather than `keyup`: macOS WebKit does not
-      // deliver `keyup` for keys pressed while ⌘ is held, so ⌘ hotkeys would
-      // never fire there.
-      document.body.addEventListener('keydown', this._onKeydown(this.keybindings))
+      // Capture only `keydown`: Typora stops ⌘-shortcut keydowns from
+      // bubbling, but leaves `keyup` alone. Keeping `keyup` on bubble also
+      // preserves the old ordering relative to Typora's own keyup handler.
+      window.addEventListener('keydown', globalHandler, true)
+      window.addEventListener('keyup', globalHandler)
 
-      editorEl.addEventListener('keydown', this._onKeydown(this.editorKeybindings))
+      editorEl.addEventListener('keydown', editorHandler, true)
+      editorEl.addEventListener('keyup', editorHandler)
     })
   }
 
-  private _onKeydown(keybindings: Record<string, EventListener[]>) {
-    return (event: KeyboardEvent) => {
-      // Ignore auto-repeat while a key is held.
-      if (event.repeat) return
+  private _onKeyboardEvent(keybindings: Record<string, EventListener[]>) {
+    const handled = new Set<string>()
 
-      // Ignore plain keys typed during IME composition, but keep modifier
-      // shortcuts (e.g. ⌘S while composing) working.
+    // A lost keyup (e.g. ⌘ combinations on macOS) must not leave a key marked
+    // as handled forever.
+    window.addEventListener('blur', () => handled.clear())
+
+    return (event: KeyboardEvent) => {
+      if (event.type === 'keydown' && event.repeat) return
+
       if (event.isComposing && !event.ctrlKey && !event.metaKey && !event.altKey) return
 
+      const code = event.code || event.key
+      if (event.type === 'keyup') {
+        if (handled.delete(code)) return
+      }
+      else if (event.type !== 'keydown') {
+        return
+      }
+
       const hotkey = eventToHotkey(event)
+      const listeners = keybindings[hotkey]
+      if (!listeners?.length) return
+
+      if (event.type === 'keydown') {
+        handled.add(code)
+      }
+
+      event.preventDefault()
+
       // TODO: try..catch with more msg
-      keybindings[hotkey]?.forEach(listener => listener(event))
+      listeners.forEach(listener => listener(event))
     }
   }
 
