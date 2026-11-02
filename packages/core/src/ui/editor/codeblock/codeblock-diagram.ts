@@ -129,6 +129,14 @@ export function registerDiagramRenderer(lang: string, render: CodeblockRenderer)
   if (!modes.includes(lang)) modes.push(lang)
 }
 
+/**
+ * Get the renderer registered for `lang`, used to render that language in
+ * markdown previews outside the editor document.
+ */
+export function getDiagramRenderer(lang: string): CodeblockRenderer | undefined {
+  return renderers.get(normalizeLang(lang))
+}
+
 export function unregisterDiagramRenderer(lang: string) {
   renderers.delete(lang)
 

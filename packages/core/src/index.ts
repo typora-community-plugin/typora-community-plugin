@@ -32,6 +32,7 @@ export { SettingItem } from './ui/settings/setting-item'
 
 export type { CodeblockModeOptions } from './ui/editor/codeblock'
 export type { CodeblockRenderer } from './ui/editor/codeblock'
+export type { MarkdownRenderOptions } from './ui/editor/markdown-renderer'
 
 export { PostProcessor } from './ui/editor/postprocessor/postprocessor'
 export { HtmlPostProcessor } from './ui/editor/postprocessor/html-postprocessor'

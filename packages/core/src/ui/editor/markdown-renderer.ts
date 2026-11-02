@@ -3,6 +3,7 @@ import { CodeMirror, editor, File, MathJax } from "typora"
 import { useService } from "src/common/service"
 import type { MdPreviewerMode } from '../views/markdown-view/md-previewer-mode'
 import { memorize, parseMarkdown, uniqueId } from "src/utils"
+import { renderDiagramBlocks } from "./markdown-renderer-diagram"
 
 
 const OPTIONS = {
@@ -48,6 +49,31 @@ const MarkdownParser = memorize(() => editor.nodeMap.allNodes.first()!.__proto__
  */
 const PREVIEW_CID_PREFIX = 'typ-preview-'
 
+export interface MarkdownRenderOptions {
+  /**
+   * Wait for asynchronous blocks (diagrams, math) to finish rendering.
+   *
+   * Without this option those blocks keep rendering in the background and the
+   * method returns immediately, so reading the rendered DOM right after the
+   * call may still show an empty diagram. Useful when the preview is rendered
+   * to a detached element (e.g. before it is appended to the document).
+   */
+  async?: boolean
+}
+
+/**
+ * Narrowed option types used to pick the correct `renderTo()` overload.
+ * Without narrowing `async` to a literal, `{ async: true }` would also match
+ * the synchronous overload and TypeScript would report `void`.
+ */
+interface SyncMarkdownRenderOptions extends MarkdownRenderOptions {
+  async?: false
+}
+
+interface AsyncMarkdownRenderOptions extends MarkdownRenderOptions {
+  async: true
+}
+
 export class MarkdownRenderer {
 
   private _cmInstances: WeakMap<HTMLElement, CodeMirror.Editor> = new WeakMap()
@@ -55,9 +81,21 @@ export class MarkdownRenderer {
   constructor(private mdEditor = useService('markdown-editor')) { }
 
   /**
-   * Render markdown in HTMLElement
+   * Render markdown in HTMLElement.
+   *
+   * Diagram code blocks (mermaid, ...) are rendered asynchronously because
+   * Typora's native diagram engine resolves blocks in the editor document,
+   * which does not contain preview nodes.
+   *
+   * @example
+   * ```ts
+   * await app.features.markdownRenderer.renderTo(md, el, { async: true })
+   * ```
    */
-  renderTo(md: string, targetEl: HTMLElement): void {
+  renderTo(md: string, targetEl: HTMLElement, options?: SyncMarkdownRenderOptions): void
+  renderTo(md: string, targetEl: HTMLElement, options: AsyncMarkdownRenderOptions): Promise<void>
+  renderTo(md: string, targetEl: HTMLElement, options: MarkdownRenderOptions): void | Promise<void>
+  renderTo(md: string, targetEl: HTMLElement, options: MarkdownRenderOptions = {}): void | Promise<void> {
 
     // handle: preprocessor
     md = this.mdEditor.preProcessor.process('preload', md)
@@ -91,11 +129,23 @@ export class MarkdownRenderer {
       this._cmInstances.set(el, cm)
     })
 
-    // handle: latex render
-    MathJax.typesetPromise($('.math-jax-preprocess', targetEl).toArray())
-
     // handle: postprocessor
     this.mdEditor.postProcessor.processAll(targetEl)
+
+    const asyncTask = (async () => {
+      await Promise.allSettled([
+        // handle: latex render
+        MathJax.typesetPromise($('.math-jax-preprocess', targetEl).toArray()),
+        // handle: flowchart, mermaid, sequence
+        renderDiagramBlocks(
+          targetEl,
+          codeblock => this._cmInstances.get(codeblock)?.getValue() ?? codeblock.textContent ?? '',
+        ),
+      ])
+    })()
+
+    if (options.async) return asyncTask
+    void asyncTask
   }
 
   /**
