@@ -1,8 +1,9 @@
 :root {
   --typ-layer-editor: 800;
-  --typ-layer-popover: 850;
-  --typ-layer-modal: 900;
-  --typ-layer-notice: 1000;
+  --typ-layer-left-sidebar: 900; // [Typora] header
+  --typ-layer-popover: 1000;     // [Typora] .dropdown-menu
+  --typ-layer-modal: 1100;
+  --typ-layer-notice: 1200;
 
   // color red from https://ant.design/docs/spec/colors
   --typ-color-red-1: 255, 204, 199;
