@@ -1,5 +1,28 @@
 # Changelog
 
+## v2.10.84
+
+- fix(core): validate GitHub Release information and make version parsing more tolerant, preventing the About page and plugin marketplace from crashing
+
+- **Workspace**
+  - fix(core/io): treat an unmounted folder as an empty vault path to prevent metadata from accidentally scanning the working directory
+
+- **Editor**
+  - feat(core/ui/editor/markdown-renderer): Markdown preview supports rendering mermaid, sequence and flow charts, and adds an async `renderTo` option
+  - fix(core/ui/editor/renderer): preview code blocks support resolving instances outside the workspace
+
+- **Developer**
+  - fix(core/ui): add a left sidebar layer and raise the stacking order of popover, modal and notice
+  - feat(core/ui): add the `--typ-layer-popover` layer variable, positioned between the editor and modal
+  - feat(core/ui/editor): add the `insertMarkdown()` API to insert Markdown at the selection or cursor
+  - fix(core/ui/editor): wait for the native context menu to render before invoking plugin menu items
+  - fix(core/ui/menu): toggle the context menu via the `show` class, consistent with Typora's native menu
+  - fix(core/hotkey): support Cmd shortcuts on macOS
+  - refactor(core/plugin-internal): lazy-load test plugins used only in development; do not bundle test plugins in production
+
+- **Plugin Update**
+  - [chat][]: support the "Ask AI here" popup window
+
 ## v2.10.73
 
 - fix(core/ui/sidebar/advanced-search): negated words exclude the whole file; a match anywhere in the body excludes it

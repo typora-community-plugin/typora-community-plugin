@@ -1,5 +1,28 @@
 # 更新日志
 
+## v2.10.84
+
+- fix(core): 校验 GitHub Release 信息并增强版本号解析容错，避免关于页与插件市场崩溃
+
+- **工作区**
+  - fix(core/io): 未挂载文件夹时按空仓库路径处理，避免 metadata 误扫工作目录
+
+- **编辑器**
+  - feat(core/ui/editor/markdown-renderer): Markdown 预览支持渲染 mermaid、sequence 与 flow 图表，并新增异步 `renderTo` 选项
+  - fix(core/ui/editor/renderer): 预览代码块支持解析工作区之外的实例
+
+- **开发者**
+  - fix(core/ui): 新增左侧边栏层级，并提升 popover、modal、notice 的层叠顺序
+  - feat(core/ui): 新增 `--typ-layer-popover` 层级变量，位于编辑器与 modal 之间
+  - feat(core/ui/editor): 新增 `insertMarkdown()` API，支持在选区或光标处插入 Markdown
+  - fix(core/ui/editor): 等待原生右键菜单渲染后再调用插件菜单项
+  - fix(core/ui/menu): 通过 `show` class 切换右键菜单，与 Typora 原生菜单一致
+  - fix(core/hotkey): 支持 macOS 的 Cmd 快捷键
+  - refactor(core/plugin-internal): 延迟加载仅开发环境使用的测试插件，生产环境不打包测试插件
+
+- **插件更新**
+  - [chat][]: 支持「在此处询问 AI」弹出窗口
+
 ## v2.10.73
 
 - fix(core/ui/sidebar/advanced-search): 否定词按整文件排除，正文任意位置命中即排除该文件
