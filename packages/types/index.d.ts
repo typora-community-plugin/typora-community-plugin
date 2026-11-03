@@ -656,7 +656,7 @@ interface QuickOpenPanel {
 
 interface Selection {
   rangy: RangyNs
-  getRangy(): Rangy
+  getRangy(deRange?: boolean): Rangy | null
   setRange(range: Rangy, param1: boolean): void
 
   getTextAround(): TextAround
@@ -692,8 +692,8 @@ interface Rangy {
   isBackward?: boolean
 
   collapse(toStart?: boolean): void
-  setStart(el: Element, pos: number): void
-  setEnd(el: Element, pos: number): void
+  setStart(node: globalThis.Node, pos: number): void
+  setEnd(node: globalThis.Node, pos: number): void
 
   select(): void
 
@@ -702,6 +702,8 @@ interface Rangy {
   deleteContents(): void
 
   moveToBookmark(bookmark: Bookmark): void
+
+  toHtml(): string
 }
 
 interface Bookmark {
@@ -766,8 +768,10 @@ interface Command {
 interface TUserOp {
   backspaceHandler(editor: Editor, event: Event | null, type: 'delSelection' | 'Backspace' | 'Delete'): void
   deleteLine(editor: Editor): void
-  getMarkdownSourceFrom($el: JQuery): string
+  getMarkdownSourceFrom(html: string): string
+  insertParagraph(before?: boolean, editor?: Editor, elem?: JQuery<HTMLElement>): void
   pasteHandler(editor: Editor, content: string, isMarkdown?: boolean, param3?: boolean | Function): void
+  prepMarkHtml(html: string, editor?: Editor): JQuery<HTMLElement>
   setClipboard(html: string | null, markhtml: string | null, text: string, shouldClear?: boolean, event?: any): void
 }
 
