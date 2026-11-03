@@ -108,7 +108,7 @@ export class Menu extends View implements Closeable {
    */
   open() {
     setTimeout(() => {
-      this.containerEl.style.display = 'block'
+      $(this.containerEl).addClass('show')
       this.component.registerDomEvent(document.body, 'click', event => {
         if ((<HTMLElement>event.target).closest('.context-menu')) return
         this.close()
@@ -117,13 +117,13 @@ export class Menu extends View implements Closeable {
   }
 
   close(): this {
-    this.containerEl.style.display = 'none'
+    $(this.containerEl).removeClass('show')
     this.component.unload()
     return this
   }
 }
 
-class MenuItem {
+export class MenuItem {
 
   protected containerEl: HTMLElement
   private anchorEl: HTMLElement
@@ -254,7 +254,7 @@ export class InternalContextMenu extends Menu {
 
   insertSeparatorAfter(selector: string) {
     this.containerEl.querySelector(selector)
-      .insertAdjacentElement('afterend', this._createSeparator())
+      ?.insertAdjacentElement('afterend', this._createSeparator())
     return this
   }
 
