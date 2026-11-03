@@ -34,6 +34,7 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
   codeblock = new Codeblock()
 
   private _contextmenu = new InternalContextMenu('#context-menu')
+  private _isContextMenuReady = false
   private _openLinkInCurrentWin!: OpenLinkInCurrentWin
   private _markdownLinkWitoutExtension!: MarkdownLinkWitoutExtension
 
@@ -111,11 +112,24 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
 
   _onContextMenu(callback: MarkdownEditorEvents['contextmenu']) {
     $(editor.writingArea).on('mousedown', event => {
-      if (event.button === 2) {
-        this._contextmenu.removeExtendedMenuItem()
+      if (event.button !== 2) return
 
+      this._contextmenu.removeExtendedMenuItem()
+
+      // Typora builds some native menu groups lazily on the first open (e.g.
+      // the search group), inside the `contextmenu` handler that runs after
+      // this `mousedown` handler. Wait until the menu is shown before invoking
+      // plugins, otherwise they cannot find those groups via `insertItemAfter`.
+      if (this._isContextMenuReady || editor.sourceView.inSourceMode) {
         callback({ menu: this._contextmenu })
+        return
       }
+
+      until(() => this._contextmenu.containerEl.classList.contains('show'))
+        .then(() => {
+          this._isContextMenuReady = true
+          callback({ menu: this._contextmenu })
+        })
     })
   }
 }

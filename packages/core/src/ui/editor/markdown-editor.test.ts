@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { jest, describe, expect, test, beforeEach } from '@jest/globals'
+import { jest, describe, expect, test, beforeEach, afterEach } from '@jest/globals'
 import { EditorSelection } from './selection'
 
 // Some modules imported by `markdown-editor` read the Typora global at import
@@ -118,3 +118,76 @@ describe('MarkdownEditor.insertMarkdown()', () => {
     expect(editor.UserOp.pasteHandler).toHaveBeenCalledWith(editor, 'text', true)
   })
 })
+
+
+describe('MarkdownEditor._onContextMenu()', () => {
+  let mdEditor: MarkdownEditor
+  let menu: { containerEl: HTMLElement, removeExtendedMenuItem: jest.Mock }
+  let writingArea: HTMLElement
+  let editor: any
+
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <div id="write" contenteditable="true"></div>
+      <ul id="context-menu"></ul>
+    `
+    writingArea = document.querySelector('#write')!
+    editor = { writingArea, sourceView: { inSourceMode: false } }
+    ;(globalThis as any).editor = editor
+
+    mdEditor = Object.create(MarkdownEditor.prototype) as MarkdownEditor
+    menu = {
+      containerEl: document.querySelector('#context-menu')!,
+      removeExtendedMenuItem: jest.fn(),
+    }
+    ;(mdEditor as any)._contextmenu = menu
+    ;(mdEditor as any)._isContextMenuReady = false
+  })
+
+  afterEach(() => {
+    jest.useRealTimers()
+  })
+
+  function rightClick() {
+    writingArea.dispatchEvent(new MouseEvent('mousedown', { button: 2 }))
+  }
+
+  test('waits for the native menu to be shown on the first open', async () => {
+    jest.useFakeTimers()
+    const callback = jest.fn()
+    mdEditor._onContextMenu(callback)
+
+    rightClick()
+    expect(menu.removeExtendedMenuItem).toHaveBeenCalled()
+    jest.advanceTimersByTime(1000)
+    expect(callback).not.toHaveBeenCalled()
+
+    // Typora creates the native menu groups and shows the menu after mousedown.
+    menu.containerEl.classList.add('show')
+    await jest.advanceTimersByTimeAsync(352)
+
+    expect(callback).toHaveBeenCalledWith({ menu })
+    expect((mdEditor as any)._isContextMenuReady).toBe(true)
+  })
+
+  test('invokes plugins immediately once the native menu is ready', () => {
+    ;(mdEditor as any)._isContextMenuReady = true
+    const callback = jest.fn()
+    mdEditor._onContextMenu(callback)
+
+    rightClick()
+
+    expect(callback).toHaveBeenCalledWith({ menu })
+  })
+
+  test('invokes plugins immediately in source mode', () => {
+    editor.sourceView.inSourceMode = true
+    const callback = jest.fn()
+    mdEditor._onContextMenu(callback)
+
+    rightClick()
+
+    expect(callback).toHaveBeenCalledWith({ menu })
+  })
+})
+
