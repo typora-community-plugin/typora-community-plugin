@@ -1,5 +1,13 @@
 # 更新日志
 
+## v2.10.86
+
+- **设置**
+  - fix(core/ui/settings/tab/plugin-marketplace): 修复点击“已安装插件”才显示“可更新插件数量”的问题
+
+- **开发者**
+  - fix(core/ui/components/menu): 菜单图标支持传入元素（如 SVG），并修正图标与子菜单指示器的定位
+
 ## v2.10.84
 
 - fix(core): 校验 GitHub Release 信息并增强版本号解析容错，避免关于页与插件市场崩溃
@@ -21,7 +29,7 @@
   - refactor(core/plugin-internal): 延迟加载仅开发环境使用的测试插件，生产环境不打包测试插件
 
 - **插件更新**
-  - [chat][]: 支持「在此处询问 AI」弹出窗口
+  - [chat][]: 支持「在此处询问 AI」弹出窗口。 @XingYujieee [chat#2](https://github.com/typora-community-plugin/typora-plugin-chat/pull/2)
 
 ## v2.10.73
 

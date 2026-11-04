@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.10.86
+
+- **Settings**
+  - fix(core/ui/settings/tab/plugin-marketplace): fix the "updatable plugin count" only appearing after clicking "Installed Plugins"
+
+- **Developer**
+  - fix(core/ui/components/menu): menu icons now accept elements (e.g. SVG), and fix the positioning of icons and submenu indicators
+
 ## v2.10.84
 
 - fix(core): validate GitHub Release information and make version parsing more tolerant, preventing the About page and plugin marketplace from crashing
@@ -21,7 +29,7 @@
   - refactor(core/plugin-internal): lazy-load test plugins used only in development; do not bundle test plugins in production
 
 - **Plugin Update**
-  - [chat][]: support the "Ask AI here" popup window
+  - [chat][]: support the "Ask AI here" popup window. @XingYujieee [chat#2](https://github.com/typora-community-plugin/typora-plugin-chat/pull/2)
 
 ## v2.10.73
 
