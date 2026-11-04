@@ -62,7 +62,9 @@ export class PluginMarketplace extends Events<{ 'stats:loaded'(): void }> {
     return Promise.all([
       this.loadCommunityPluginList(),
       this.loadCommunityPluginStats(),
-    ]).then(() => this.markUpdatesAvailable())
+    ])
+      .then(() => this.markUpdatesAvailable())
+      .then(() => this.emit('stats:loaded'))
   }
 
   private async loadCommunityPluginList(): Promise<void> {
@@ -161,7 +163,6 @@ export class PluginMarketplace extends Events<{ 'stats:loaded'(): void }> {
     return this.github.getJSON('typora-community-plugin/typora-plugin-releases', 'main', 'community-plugin-stats.json')
       .then(res => this.pluginStats = res ?? {} as any)
       .catch(() => this.pluginStats = {})
-      .finally(() => this.emit('stats:loaded'))
   }
 
   installPlugin(info: PluginMarketInfo, position: PluginPosition) {
