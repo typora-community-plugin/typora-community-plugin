@@ -16,10 +16,27 @@
     }
   }
 
-  .fa {
+  > a > .typ-menu-icon {
     position: absolute;
     top: 50%;
-    transform: translateY(-50%);
     left: .8rem;
+    transform: translateY(-50%);
+    font-size: .7rem;
+    line-height: 1;
+  }
+
+  // Icon can be an element (e.g. SVG) instead of a font glyph.
+  > a > svg.typ-menu-icon {
+    width: .7rem;
+    height: .7rem;
+  }
+
+  // Submenu indicator, stays on the right side.
+  > a > .fa-caret-right {
+    position: absolute;
+    top: 50%;
+    right: .5rem;
+    left: auto;
+    transform: translateY(-50%);
   }
 }

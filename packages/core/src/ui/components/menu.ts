@@ -20,7 +20,7 @@ export class Menu extends View implements Closeable {
 
   constructor() {
     super()
-    this.containerEl = $(`<ul class="dropdown-menu context-menu typ-menu" role="menu">`)
+    this.containerEl = $(`<ul class="context-menu dropdown-menu ext-context-menu typ-menu" role="menu">`)
       .on('click', () => this.close())
       .get(0)
 
@@ -154,10 +154,11 @@ export class MenuItem {
 
   setIcon(icon: string | HTMLElement): this {
     if (typeof icon === 'string') {
-      this.iconEl = html`<i class="fa fa-${icon}"></i>`
+      this.iconEl = html`<i class="fa fa-${icon} typ-menu-icon"></i>`
     }
     else {
       this.iconEl = icon
+      this.iconEl.classList.add('typ-menu-icon')
     }
     this._setContent()
     return this
