@@ -18,13 +18,17 @@ function makePlugin(overrides: Partial<PluginMarketInfo> = {}): PluginMarketInfo
   }
 }
 
-function makeMarketplace(getJSON: jest.Mock, locale = 'zh-cn') {
+function makeMarketplace(
+  getJSON: jest.Mock,
+  locale = 'zh-cn',
+  manifests: Record<string, { version: string }> = {},
+) {
   const logger = { debug() { }, info() { }, warn: jest.fn(), error: jest.fn() } as any
   return new PluginMarketplace(
     logger,
     { locale } as any,
     { getJSON } as any,
-    { manifests: {} } as any,
+    { manifests } as any,
   )
 }
 
@@ -128,5 +132,70 @@ describe('PluginMarketplace.loadCommunityPlugins()', () => {
     await marketplace.loadCommunityPlugins()
 
     expect(marketplace.pluginList[0].newestVersion).toBe('1.2.3')
+  })
+
+  test('should not mark updates when the installed plugin is already up to date', async () => {
+    const zhList = [makePlugin()]
+    const stats: Record<string, PluginStat> = {
+      'test.plugin': { downloads: 1, updated: Date.now(), size: 1024, '1.2.3': 1 },
+    }
+
+    const getJSON = jest.fn(async (_repo: string, _branch: string, filepath: string) => {
+      if (filepath === `community-plugins.zh-cn.json`) return zhList
+      if (filepath === 'community-plugin-stats.json') return stats
+      throw new Error('unexpected file: ' + filepath)
+    })
+
+    const marketplace = makeMarketplace(getJSON, 'zh-cn', {
+      'test.plugin': { version: '1.2.3' },
+    })
+    await marketplace.loadCommunityPlugins()
+
+    expect(marketplace.pluginList[0].newestVersion).toBeUndefined()
+  })
+
+  test('should mark updates when the installed plugin is older', async () => {
+    const zhList = [makePlugin()]
+    const stats: Record<string, PluginStat> = {
+      'test.plugin': { downloads: 1, updated: Date.now(), size: 1024, '1.2.3': 1 },
+    }
+
+    const getJSON = jest.fn(async (_repo: string, _branch: string, filepath: string) => {
+      if (filepath === `community-plugins.zh-cn.json`) return zhList
+      if (filepath === 'community-plugin-stats.json') return stats
+      throw new Error('unexpected file: ' + filepath)
+    })
+
+    const marketplace = makeMarketplace(getJSON, 'zh-cn', {
+      'test.plugin': { version: '1.2.2' },
+    })
+    await marketplace.loadCommunityPlugins()
+
+    expect(marketplace.pluginList[0].newestVersion).toBe('1.2.3')
+  })
+
+  test('should emit stats:loaded after update availability is marked', async () => {
+    const zhList = [makePlugin()]
+    const stats: Record<string, PluginStat> = {
+      'test.plugin': { downloads: 1, updated: Date.now(), size: 1024, '1.2.3': 1 },
+    }
+
+    const getJSON = jest.fn(async (_repo: string, _branch: string, filepath: string) => {
+      if (filepath === `community-plugins.zh-cn.json`) return zhList
+      if (filepath === 'community-plugin-stats.json') return stats
+      throw new Error('unexpected file: ' + filepath)
+    })
+
+    const marketplace = makeMarketplace(getJSON, 'zh-cn', {
+      'test.plugin': { version: '1.2.2' },
+    })
+    let newestVersionOnEvent: string | undefined
+    marketplace.on('stats:loaded', () => {
+      newestVersionOnEvent = marketplace.pluginList[0]?.newestVersion
+    })
+
+    await marketplace.loadCommunityPlugins()
+
+    expect(newestVersionOnEvent).toBe('1.2.3')
   })
 })

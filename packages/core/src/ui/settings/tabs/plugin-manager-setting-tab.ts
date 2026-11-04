@@ -76,19 +76,6 @@ export class PluginManagerSettingTab extends SettingTab {
     this._loadPromise.then(() => {
       if (version !== this._renderVersion) return
 
-      const { manifests, marketplace } = this.plugins
-      for (const id of Object.keys(manifests)) {
-        const info = marketplace.getPlugin(id)
-        if (!info) continue
-
-        const newestVersion = marketplace.pluginList.find(info => info.id === id)?.newestVersion
-        if (newestVersion && versions.compare(manifests[id].version, newestVersion) < 0) {
-          info.newestVersion = newestVersion
-        } else {
-          delete info.newestVersion
-        }
-      }
-
       this.renderPluginItems(query)
       this.refreshTabPill()
     })
@@ -106,10 +93,14 @@ export class PluginManagerSettingTab extends SettingTab {
   private refreshTabPill() {
     const { manifests, marketplace } = this.plugins
     const count = Object.keys(manifests)
-      .filter(id => marketplace.getPlugin(id)?.newestVersion)
+      .filter(id => {
+        const newestVersion = marketplace.getPlugin(id)?.newestVersion
+        return !!newestVersion && versions.compare(manifests[id].version, newestVersion) < 0
+      })
       .length
 
-    this.settingsModal.setTabPill(this, count || undefined)
+    this.pill = count || undefined
+    this.settingsModal.setTabPill(this, this.pill)
   }
 
   private cleanPluginList() {

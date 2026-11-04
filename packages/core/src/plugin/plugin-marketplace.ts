@@ -95,10 +95,14 @@ export class PluginMarketplace extends Events<{ 'stats:loaded'(): void }> {
   private markUpdatesAvailable() {
     for (const info of this.pluginList) {
       const newestVersion = this.getStatsNewestVersion(info.id)
-      if (newestVersion) {
-        info.newestVersion = newestVersion
-      } else {
+      const installedVersion = this.plugins.manifests[info.id]?.version
+
+      // Keep `newestVersion` only when it actually is newer than the installed
+      // plugin, so that every consumer agrees on what "has update" means.
+      if (!newestVersion || (installedVersion && versions.compare(installedVersion, newestVersion) >= 0)) {
         delete info.newestVersion
+      } else {
+        info.newestVersion = newestVersion
       }
     }
   }
