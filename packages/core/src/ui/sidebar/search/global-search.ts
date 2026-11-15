@@ -58,6 +58,12 @@ export class GlobalSearch {
       workspace.ribbon.clickButton(GlobalSearchView.id)
     }
 
+    // The panel may have been opened through Typora's native search button,
+    // in which case `GlobalSearchView.onshow()` never ran. Ensure the CSS
+    // class that reveals the result panel is present without toggling the
+    // sidebar off.
+    $('#typora-sidebar').addClass('ty-on-search')
+
     const view = workspace.getViewByType(GlobalSearchView)!
 
     view.setQuery(query)

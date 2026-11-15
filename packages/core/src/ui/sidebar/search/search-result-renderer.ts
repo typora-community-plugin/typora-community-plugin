@@ -50,19 +50,21 @@ export class SearchResultRenderer {
     // Skip empty file paths (can happen from task3 file list)
     if (!result.filePath || !result.filePath.trim()) return
 
-    this._queue.push({
-      result,
-      resultsEl: resultsEl ?? document.querySelector(SELECTOR_RESULTS)!,
-    })
+    const target = resultsEl ?? document.querySelector<HTMLElement>(SELECTOR_RESULTS)
+    if (!target) return
+
+    this._queue.push({ result, resultsEl: target })
     this._scheduleFlush()
   }
 
   /** Clear all search results from the DOM. */
-  clearResults(resultsEl: HTMLElement = document.querySelector(SELECTOR_RESULTS)!): void {
+  clearResults(resultsEl?: HTMLElement | null): void {
     this._cancelFlush()
     this._queue.length = 0
     this._pathElMap.clear()
-    resultsEl.innerHTML = ''
+
+    const target = resultsEl ?? document.querySelector<HTMLElement>(SELECTOR_RESULTS)
+    if (target) target.innerHTML = ''
   }
 
   /**

@@ -18,9 +18,9 @@ export class AdvancedSearchMode extends Component {
 
   private SETTING_KEY = 'advancedSearchMode' as const
 
-  private headerRow!: HTMLElement
-  private labelEl!: HTMLElement
-  private btnEl!: HTMLElement
+  private headerRow?: HTMLElement
+  private labelEl?: HTMLElement
+  private btnEl?: HTMLElement
 
   constructor(
     private i18n = useService('i18n'),
@@ -51,7 +51,10 @@ export class AdvancedSearchMode extends Component {
   }
 
   onunload() {
-    this.headerRow.remove()
+    this.headerRow?.remove()
+    this.headerRow = undefined
+    this.labelEl = undefined
+    this.btnEl = undefined
   }
 
   toggle = () => {
@@ -66,32 +69,33 @@ export class AdvancedSearchMode extends Component {
   }
 
   private _injectButton() {
-    const inputEl = document.querySelector('#file-library-search-input')
+    const inputEl = document.querySelector('#file-library-search-input') as HTMLElement | null
     if (!inputEl?.parentElement) return
 
     // Create header row: "Search" on left, toggle button on right
-    this.btnEl = html`<button class="ty-plugin-advanced-search-btn">✨</button>`
+    const btnEl = html`<button class="ty-plugin-advanced-search-btn">✨</button>`
 
-    this.btnEl.addEventListener('click', (e) => {
+    btnEl.addEventListener('click', (e) => {
       e.preventDefault()
       e.stopPropagation()
       this.toggle()
     })
 
-    this.headerRow = document.createElement('div')
-    this.headerRow.className = 'ty-plugin-search-header'
+    const headerRow = document.createElement('div')
+    headerRow.className = 'ty-plugin-search-header'
 
-    this.labelEl = document.createElement('span')
-    this.labelEl.textContent = 'Search'
+    const labelEl = document.createElement('span')
+    labelEl.textContent = 'Search'
 
-    this.headerRow.appendChild(this.labelEl)
-    this.headerRow.appendChild(this.btnEl)
+    headerRow.appendChild(labelEl)
+    headerRow.appendChild(btnEl)
 
     // Insert above the search input
-    const panel = document.getElementById('file-library-search-panel')
-    if (panel && inputEl) {
-      panel.insertBefore(this.headerRow, inputEl)
-    }
+    inputEl.parentElement.insertBefore(headerRow, inputEl)
+
+    this.headerRow = headerRow
+    this.labelEl = labelEl
+    this.btnEl = btnEl
   }
 
   private _updateButtonState() {
@@ -100,10 +104,16 @@ export class AdvancedSearchMode extends Component {
 
     document.body.classList.toggle('ty-advanced-search-active', enabled)
 
-    this.labelEl.textContent = enabled ? t.advancedMode : t.commonMode
-    this.labelEl.title = enabled ? t.advancedModeDesc : ''
+    // The search panel may not be in the DOM yet, so the header row might
+    // not have been injected. Keep this method safe to call at any time.
+    if (this.labelEl) {
+      this.labelEl.textContent = enabled ? t.advancedMode : t.commonMode
+      this.labelEl.title = enabled ? t.advancedModeDesc : ''
+    }
 
-    this.btnEl.classList.toggle('ty-active', enabled)
-    this.btnEl.title = t.advancedMode
+    if (this.btnEl) {
+      this.btnEl.classList.toggle('ty-active', enabled)
+      this.btnEl.title = t.advancedMode
+    }
   }
 }
