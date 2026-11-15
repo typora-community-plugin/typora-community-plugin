@@ -1,15 +1,42 @@
 # @import "./find-home.ps1"
 # @import "./find-window-html.ps1"
 # @import "./find-userdata.ps1"
-# @import "./find-loader-js.ps1"
 
-If ($html -notmatch $loaderJsPattern) {
+if (-not $htmlPath) {
+  Write-Host "Could not find window.html under: $typoraHome" -ForegroundColor Red
+  [void][System.Console]::ReadKey($true)
+  exit 1
+}
+
+$originalHtml = $html
+
+# Remove every previously injected loader tag before inserting a fresh one.
+# The broad pattern also catches the malformed duplicates produced by the old
+# installer, whose `src` contained a space-joined array of userData URLs.
+$anyLoaderJsPattern = '(?is)<script\b[^>]*\bsrc\s*=\s*["''][^"'']*userData[^"'']*plugins/loader\.js["''][^>]*>\s*</script>\s*'
+$html = [regex]::Replace($html, $anyLoaderJsPattern, '')
+
+$pluginScript = "<script src=""$userDataPath/plugins/loader.js"" type=""module""></script>"
+
+# Insert exactly once, right before the closing body/html pair.
+$closingMatch = [regex]::Match($html, '(?is)</body>\s*</html>\s*$')
+if ($closingMatch.Success) {
+  $before = $html.Substring(0, $closingMatch.Index)
+  $closing = $closingMatch.Value
+  $html = "$before$pluginScript$closing"
+}
+elseif ($html -match '(?is)</body>') {
+  $html = [regex]::Replace($html, '(?is)</body>', "$pluginScript</body>")
+}
+else {
+  $html = "$html`r`n$pluginScript"
+}
+
+if ($html -ne $originalHtml) {
   Write-Host "Editing File: $htmlPath"
 
-  $html = $html -replace '</body></html>$', "<script src=""$userDataPath/plugins/loader.js"" type=""module""></script>$&"
-
   $utf8NoBom = New-Object System.Text.UTF8Encoding $False
-  [System.IO.File]::WriteAllLines($htmlPath, $html, $utf8NoBom)
+  [System.IO.File]::WriteAllText($htmlPath, $html, $utf8NoBom)
 }
 
 $pluginsPath = "$env:USERPROFILE/AppData/Roaming/Typora/plugins"
