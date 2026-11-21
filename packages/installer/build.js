@@ -1,8 +1,11 @@
 import * as fs from 'fs'
 import * as path from 'path'
+import { fileURLToPath } from 'url'
 
 
-main()
+const isCli = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+
+if (isCli) main()
 
 function main() {
   if (!fs.existsSync(`./dist`)) fs.mkdirSync(`./dist`)
@@ -39,3 +42,5 @@ function importFiles(file) {
 function removeEnv(script, env) {
   return script.replace(new RegExp(`# ${env}_START(.|\\n)+?# ${env}_END`, 'g'), '')
 }
+
+export { main, buildScript, buildWindowsScript, buildBash, importFiles, removeEnv }

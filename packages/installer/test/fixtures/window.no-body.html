@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Typora</title>
+	<link rel="stylesheet" href="typora://app/userData/conf/user.css">
+	<script src="./lib.asar/pdf/pdf-lib.min.js" defer="defer" async></script>
+</head>
+
+<body>
+	<div id="write" class="write" role="textbox" contenteditable="false">
+		<div style="opacity: 0">
+			<h1>ABCDEFG</h1>
+			<p>abcdefg</p>
+		</div>
+	</div>
+
+	<script>
+		window.reqnode = window.require;
+		delete window.require;
+		delete window.exports;
+		delete window.module;
+	</script>
+	<script src="./appsrc/window/frame.js" defer="defer"></script>
+</html>

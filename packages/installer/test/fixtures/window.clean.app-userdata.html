@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Typora</title>
+	<link rel="stylesheet" href="typora://app/userData/conf/user.css">
+	<link rel="stylesheet" href="typora://app/userData/themes/github.css">
+	<script src="./lib.asar/pdf/pdf-lib.min.js" defer="defer" async></script>
+</head>
+
+<body>
+	<div id="write" class="write" role="textbox" contenteditable="false">
+		<div style="opacity: 0">
+			<h1>ABCDEFG</h1>
+			<p>abcdefg</p>
+		</div>
+	</div>
+
+	<footer class="stopselect ty-footer">
+		<div class="footer-item footer-item-right" id="footer-word-count">
+			<span id="footer-word-count-label">0 Words</span>
+		</div>
+	</footer>
+
+	<script id="md-htmlblock-panel-nohtml-templ" type="text/x-custom-template">
+		<span class="md-resouce-error-message">{src}</span>
+	</script>
+
+	<script>
+		window.reqnode = window.require;
+		delete window.require;
+		delete window.exports;
+		delete window.module;
+	</script>
+	<script src="./appsrc/window/frame.js" defer="defer"></script>
+</body>
+
+</html>
