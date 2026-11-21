@@ -1,5 +1,6 @@
 export default {
   testEnvironment: 'jsdom',
+  testMatch: ['<rootDir>/test/**/*.test.ts'],
   moduleNameMapper: {
     "^src/(.*)$": "<rootDir>/src/$1",
     "\\.scss$": "<rootDir>/__mocks__/styleMock.mjs"
