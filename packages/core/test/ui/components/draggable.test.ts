@@ -198,14 +198,14 @@ describe('draggable', () => {
     })
   })
 
-  describe('mousemove behavior', () => {
+  describe('pointermove behavior', () => {
     test('should reorder items on drag with y direction', () => {
       const { containerEl, item1, item2 } = makeDragFixture('y') as any
       
       jest.useRealTimers()
       
       fireEvent(item1, 'mousedown', { button: 0 })
-      fireEvent(item2, 'mousemove', { button: 0, clientX: 0, clientY: 50 })
+      fireEvent(item2, 'pointermove', { button: 0, clientX: 0, clientY: 50 })
 
       // insertAdjacentElement moved item1 into item2's wrapper; total children count stays 3 (w1 + w2)
       expect(containerEl.childNodes.length).toBe(2)
@@ -217,14 +217,14 @@ describe('draggable', () => {
       jest.useRealTimers()
       
       fireEvent(item1, 'mousedown', { button: 0 })
-      fireEvent(item1, 'mousemove', { button: 2, clientX: 0, clientY: 0 })
+      fireEvent(item1, 'pointermove', { button: 2, clientX: 0, clientY: 0 })
 
       expect(item1.classList.contains('typ-dragging')).toBe(true)
     })
   })
 
-  describe('mouseup behavior', () => {
-    test('should remove typ-dragging class and call onChange on mouseup', () => {
+  describe('pointerup behavior', () => {
+    test('should remove typ-dragging class and call onChange on pointerup', () => {
       jest.useRealTimers()
       const onChange = jest.fn()
       const fixture = makeDragFixture('y', onChange) as any
@@ -233,12 +233,12 @@ describe('draggable', () => {
       fireEvent(item1, 'mousedown', { button: 0 })
       expect(item1.classList.contains('typ-dragging')).toBe(true)
 
-      fireEvent(document.body, 'mouseup', { button: 0 })
+      fireEvent(document.body, 'pointerup', { button: 0 })
       expect(item1.classList.contains('typ-dragging')).toBe(false)
       expect(onChange).toHaveBeenCalled()
     })
 
-    test('should not call onChange for non-left button mouseup', () => {
+    test('should not call onChange for non-left button pointerup', () => {
       jest.useRealTimers()
       const onChange = jest.fn()
       const fixture = makeDragFixture('y', onChange) as any
@@ -246,18 +246,18 @@ describe('draggable', () => {
 
       fireEvent(item1, 'mousedown', { button: 0 })
       
-      // Non-left-button mouseup (the handler checks button !== 0 and returns early)
-      fireEvent(document.body, 'mouseup', { button: 2 })
+      // Non-left-button pointerup (the handler checks button !== 0 and returns early)
+      fireEvent(document.body, 'pointerup', { button: 2 })
     })
 
-    test('should remove mouseup listener after one completion', () => {
+    test('should remove pointerup listener after one completion', () => {
       jest.useRealTimers()
       const onChange = jest.fn()
       const fixture = makeDragFixture('y', onChange) as any
       const { item1 } = fixture;
 
       fireEvent(item1, 'mousedown', { button: 0 })
-      fireEvent(document.body, 'mouseup', { button: 0 })
+      fireEvent(document.body, 'pointerup', { button: 0 })
       
       expect(onChange).toHaveBeenCalledTimes(1)
     })
@@ -270,7 +270,7 @@ describe('draggable', () => {
       const { containerEl, item1, item2 } = fixture;
 
       fireEvent(item1, 'mousedown', { button: 0 })
-      fireEvent(item2, 'mousemove', { button: 0, clientX: 0, clientY: 50 })
+      fireEvent(item2, 'pointermove', { button: 0, clientX: 0, clientY: 50 })
 
       // items were reordered via insertAdjacentElement during drag
       expect(containerEl.childNodes.length).toBe(2)
@@ -282,7 +282,7 @@ describe('draggable', () => {
       const { containerEl, item1, item2 } = fixture;
 
       fireEvent(item1, 'mousedown', { button: 0 })
-      fireEvent(item2, 'mousemove', { button: 0, clientX: 50, clientY: 0 })
+      fireEvent(item2, 'pointermove', { button: 0, clientX: 50, clientY: 0 })
 
       // items were reordered via insertAdjacentElement during drag
       expect(containerEl.childNodes.length).toBe(2)
@@ -315,7 +315,7 @@ describe('draggable', () => {
 
       fireEvent(dragItem, 'mousedown', { button: 0 })
       expect(() => {
-        fireEvent(normalEl, 'mousemove', { button: 0, clientX: 0, clientY: 0 })
+        fireEvent(normalEl, 'pointermove', { button: 0, clientX: 0, clientY: 0 })
       }).not.toThrow()
     })
 
@@ -328,9 +328,9 @@ describe('draggable', () => {
       fireEvent(item1, 'mousedown', { button: 0 })
       
       // mousemove over the same dragging element should not change anything
-      fireEvent(item1, 'mousemove', { button: 0, clientX: 0, clientY: 0 })
+      fireEvent(item1, 'pointermove', { button: 0, clientX: 0, clientY: 0 })
 
-      fireEvent(document.body, 'mouseup', { button: 0 })
+      fireEvent(document.body, 'pointerup', { button: 0 })
       expect(onChange).toHaveBeenCalledTimes(1)
     })
 
@@ -341,7 +341,7 @@ describe('draggable', () => {
 
       fireEvent(item1, 'mousedown', { button: 0 })
       expect(() => {
-        fireEvent(document.body, 'mouseup', { button: 0 })
+        fireEvent(document.body, 'pointerup', { button: 0 })
       }).not.toThrow()
     })
   })

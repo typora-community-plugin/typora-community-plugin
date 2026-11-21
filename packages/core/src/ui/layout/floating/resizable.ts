@@ -1,3 +1,4 @@
+import { beginDrag } from 'src/utils/pointer/drag'
 import type { DisposeFunc } from "src/utils/types"
 
 /**
@@ -23,41 +24,24 @@ export function resizable(
     containerEl.style.position = 'relative'
   }
 
-  let startX = 0
-  let startY = 0
-  let startWidth = 0
-  let startHeight = 0
-
-  function onMouseMove(e: MouseEvent) {
-    const width = Math.max(minWidth, startWidth + e.clientX - startX)
-    const height = Math.max(minHeight, startHeight + e.clientY - startY)
-    containerEl.style.width = `${width}px`
-    containerEl.style.height = `${height}px`
-  }
-
-  function onMouseUp() {
-    document.removeEventListener('mousemove', onMouseMove)
-    document.removeEventListener('mouseup', onMouseUp)
-  }
-
-  function onHandleMouseDown(e: MouseEvent) {
+  const onHandleMouseDown = (e: MouseEvent) => {
     e.stopPropagation()
-    e.preventDefault()
-    startX = e.clientX
-    startY = e.clientY
-    startWidth = containerEl.offsetWidth
-    startHeight = containerEl.offsetHeight
-    document.addEventListener('mousemove', onMouseMove)
-    document.addEventListener('mouseup', onMouseUp)
+    const startWidth = containerEl.offsetWidth
+    const startHeight = containerEl.offsetHeight
+
+    beginDrag(e, {
+      onMove: (_e, { dx, dy }) => {
+        containerEl.style.width = `${Math.max(minWidth, startWidth + dx)}px`
+        containerEl.style.height = `${Math.max(minHeight, startHeight + dy)}px`
+      },
+    })
   }
 
-  handle.addEventListener('mousedown', onHandleMouseDown)
+  handle.addEventListener('mousedown', onHandleMouseDown as EventListener)
   containerEl.appendChild(handle)
 
   return () => {
-    handle.removeEventListener('mousedown', onHandleMouseDown)
+    handle.removeEventListener('mousedown', onHandleMouseDown as EventListener)
     handle.remove()
-    document.removeEventListener('mousemove', onMouseMove)
-    document.removeEventListener('mouseup', onMouseUp)
   }
 }

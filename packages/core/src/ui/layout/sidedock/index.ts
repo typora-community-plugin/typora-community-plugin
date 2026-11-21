@@ -11,6 +11,7 @@ import type { PublicEvents } from 'src/common/events'
 import type { WorkspaceRootEvents } from '../workspace-root'
 import type { WorkspaceSplit } from '../split'
 import { useSettingEffect } from 'src/settings/use-setting-effect'
+import { beginDrag } from 'src/utils/pointer/drag'
 
 
 /**
@@ -159,41 +160,28 @@ export class WorkspaceSidedock extends WorkspaceParent {
 
   /** Mouse drag to resize the dock */
   private _onResizeStart(e: MouseEvent) {
-    if (e.button !== 0) return
-    e.preventDefault()
-
     const dock = this
-    let dragging = true
     const startPos = e.clientX
     const startSize = dock.size
 
-    function onMouseMove(e2: MouseEvent) {
-      if (!dragging) return
-      const delta = startPos - e2.clientX  // drag left = wider
-      let newSize = startSize + delta
+    beginDrag(e, {
+      onMove: (e2) => {
+        const delta = startPos - e2.clientX  // drag left = wider
+        const newSize = startSize + delta
 
-      // Auto-collapse when too narrow (< 50px)
-      if (newSize < 50) {
-        dock.collapse()
-        dragging = false
-        document.removeEventListener('mousemove', onMouseMove)
-        document.removeEventListener('mouseup', onMouseUp)
-        return
-      }
+        // Auto-collapse when too narrow (< 50px); `false` ends the drag session
+        if (newSize < 50) {
+          dock.collapse()
+          return false
+        }
 
-      newSize = Math.max(WorkspaceSidedock.MIN_SIZE, newSize)
-      dock.setSize(newSize)
-    }
-
-    const onMouseUp = () => {
-      dragging = false
-      document.removeEventListener('mousemove', onMouseMove)
-      document.removeEventListener('mouseup', onMouseUp)
-      this._onResizedEnd()
-    }
-
-    document.addEventListener('mousemove', onMouseMove)
-    document.addEventListener('mouseup', onMouseUp)
+        dock.setSize(Math.max(WorkspaceSidedock.MIN_SIZE, newSize))
+      },
+      onEnd: (_e, _info, canceled) => {
+        // `collapse()` in onMove already emitted `split:resized`
+        if (!canceled) this._onResizedEnd()
+      },
+    })
   }
 
   private _onResizedEnd() {

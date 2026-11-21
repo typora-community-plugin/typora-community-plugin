@@ -10,6 +10,11 @@ Object.defineProperty(HTMLElement.prototype, 'innerText', {
   configurable: true,
 })
 
+// jsdom lacks `PointerEvent` (like Safari < 13). Expose it so the pointer
+// branch of `beginDrag` is exercised by default; the mouse fallback is
+// tested explicitly by removing it.
+;(globalThis as any).PointerEvent ??= MouseEvent
+
 // Minimal jQuery shim so `html`` and other DOM helpers work under jsdom.
 ;(globalThis as any).$ = ((selectorOrHtml: string | Element) => {
   const el = typeof selectorOrHtml === 'string'

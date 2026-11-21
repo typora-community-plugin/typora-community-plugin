@@ -1,90 +1,70 @@
 import { useService } from "src/common/service"
+import { beginDrag } from 'src/utils/pointer/drag'
+import type { DisposeFunc } from 'src/utils/types'
 import type { WorkspaceTabs } from "."
 import type { WorkspaceRoot } from "../workspace-root"
 
 
-export function draggableTabs(root: WorkspaceRoot, workspace = useService('workspace')) {
+/**
+ * Reorder workspace tabs by dragging, and move tabs across tab strips.
+ *
+ * A drag only starts after the pointer travels 9px, so plain clicks on tabs
+ * are not captured. Returns a dispose function that removes the listeners.
+ */
+export function draggableTabs(root: WorkspaceRoot, workspace = useService('workspace')): DisposeFunc {
 
   const rootEl = root.containerEl
 
-  let startX = 0
-  let startY = 0
-  let isMouseDown = false
-  let draggingTabEl: HTMLElement | null
-
-  rootEl.addEventListener('mousedown', onDragStart)
-
-  function onDragStart(e: MouseEvent) {
-    if (e.button !== 0) return
-
+  const onDragStart = (e: MouseEvent) => {
     const draggableEl = $(e.target!).closest('[draggable=true]')[0]
     if (!draggableEl) return
-    e.preventDefault()
+    const draggingTabEl = $(draggableEl).closest('.typ-tab')[0]
 
-    startX = e.clientX
-    startY = e.clientY
-    isMouseDown = true
-    draggingTabEl = $(draggableEl).closest('.typ-tab')[0]
+    beginDrag(e, {
+      threshold: 9,
+      onMove: (e) => {
+        $('.mod-drag-over').removeClass('mod-drag-over')
+        const $target = $(e.target!)
+        const $tabEl = $target.closest('.typ-tab')
+        if ($tabEl.length)
+          $tabEl.addClass('mod-drag-over')
+        else
+          $target.closest('.typ-workspace-tabs').addClass('mod-drag-over')
+      },
+      onEnd: (e, { moved }) => {
+        $('.mod-drag-over').removeClass('mod-drag-over')
+        // pointer released before the drag threshold — plain click, not a drop
+        if (!e || !moved) return
 
-    rootEl.addEventListener('mousemove', onDragOver)
-    rootEl.addEventListener('mouseup', onDrop)
+        const draggingLeaf = root.findLeaf(leaf => leaf.state.path === draggingTabEl!.dataset.id)!
+        const dragOverTabEl = $(e.target!).closest('.typ-tab')[0]
+        const dragOverTabsEl = $(e.target!).closest('.typ-workspace-tabs')[0]
+        const dragOverTabs = root.findNode(node => node.containerEl === dragOverTabsEl) as WorkspaceTabs
+        if (!dragOverTabs) return
+        const isDroppingInOriginalTabs = draggingLeaf.parent === dragOverTabs
+
+        if (isDroppingInOriginalTabs) {
+          if (dragOverTabEl) {
+            dragOverTabEl.parentElement!.insertBefore(draggingTabEl, dragOverTabEl)
+          }
+        }
+        else {
+          const i = dragOverTabEl
+            ? Array.from(dragOverTabEl.parentElement!.children).findIndex(el => el === dragOverTabEl)
+            : dragOverTabs.children.length
+          draggingLeaf.detach()
+          dragOverTabs.insertChild(i, draggingLeaf)
+          setTimeout(() => {
+            workspace.activeLeaf = draggingLeaf
+          })
+        }
+      },
+    })
   }
 
-  function onDragOver(e: MouseEvent) {
-    if (!isMouseDown) return
-    if (moveLessThan9px(e.clientX, e.clientY)) return
-
-    $('.mod-drag-over').removeClass('mod-drag-over')
-
-    const $tabEl = $(e.target!).closest('.typ-tab')
-    if ($tabEl)
-      $tabEl.addClass('mod-drag-over')
-    else
-      $(e.target!).closest('.typ-workspace-tabs').addClass('mod-drag-over')
-  }
-
-  function onDrop(e: MouseEvent) {
-    isMouseDown = false
-    rootEl.removeEventListener('mousemove', onDragOver)
-    rootEl.removeEventListener('mouseup', onDrop)
-
-    if (moveLessThan9px(e.clientX, e.clientY)) {
-      draggingTabEl = null
-    }
-    if (draggingTabEl == null) return
-
-    $('.mod-drag-over').removeClass('mod-drag-over')
-
-    const draggingLeaf = root.findLeaf(leaf => leaf.state.path === draggingTabEl!.dataset.id)!
-    const dragOverTabEl = $(e.target!).closest('.typ-tab')[0]
-    const dragOverTabsEl = $(e.target!).closest('.typ-workspace-tabs')[0]
-    const dragOverTabs = root.findNode(node => node.containerEl === dragOverTabsEl) as WorkspaceTabs
-    const isDroppingInOriginalTabs = draggingLeaf.parent === dragOverTabs
-
-    if (isDroppingInOriginalTabs) {
-      if (dragOverTabEl) {
-        dragOverTabEl.parentElement!.insertBefore(draggingTabEl, dragOverTabEl)
-      }
-    }
-    else {
-      const i = dragOverTabEl
-        ? Array.from(dragOverTabEl.parentElement!.children).findIndex(el => el === dragOverTabEl)
-        : dragOverTabs.children.length
-      draggingLeaf.detach()
-      dragOverTabs.insertChild(i, draggingLeaf)
-      setTimeout(() => {
-        workspace.activeLeaf = draggingLeaf
-      })
-    }
-
-    draggingTabEl = null
-  }
-
-  function moveLessThan9px(currentX: number, currentY: number) {
-    return Math.abs(startX - currentX) < 9 && Math.abs(startY - currentY) < 9
-  }
+  rootEl.addEventListener('mousedown', onDragStart as EventListener)
 
   return () => {
-    rootEl.removeEventListener("mousedown", onDragStart)
+    rootEl.removeEventListener("mousedown", onDragStart as EventListener)
   }
 }

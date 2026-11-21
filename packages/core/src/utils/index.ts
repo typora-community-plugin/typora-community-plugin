@@ -5,6 +5,8 @@ export * from './function/identity'
 export * from './function/memorize'
 export * from './function/noop'
 
+export * from './pointer/drag'
+
 export * from './schedule/debounce'
 export * from './schedule/throttle'
 

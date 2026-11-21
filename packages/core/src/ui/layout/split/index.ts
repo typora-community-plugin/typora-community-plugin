@@ -1,5 +1,6 @@
 import './index.scss'
 import { WorkspaceParent } from '../workspace-parent'
+import { beginDrag } from 'src/utils/pointer/drag'
 import type { WorkspaceNode } from '../workspace-node'
 
 
@@ -64,7 +65,6 @@ export class WorkspaceSplit extends WorkspaceParent {
   }
 
   onChildResizeStart(child: WorkspaceNode, e: MouseEvent) {
-    let dragging = true
     const isVertical = this.direction === 'vertical'
     const splits = this.children
     const idx = process.env.IS_DEV
@@ -81,44 +81,40 @@ export class WorkspaceSplit extends WorkspaceParent {
     const rightDom = splits[idx].containerEl
     const leftW = isVertical ? leftDom.offsetWidth : leftDom.offsetHeight
     const rightW = isVertical ? rightDom.offsetWidth : rightDom.offsetHeight
-    const startPos = isVertical ? e.clientX : e.clientY
 
-    document.onmousemove = (e2) => {
-      if (!dragging) return;
-      const curPos = isVertical ? e2.clientX : e2.clientY
-      const deltaPx = curPos - startPos
+    beginDrag(e, {
+      onMove: (e2, { dx, dy }) => {
+        const deltaPx = isVertical ? dx : dy
 
-      let newLeftPx = Math.max(120, leftW + deltaPx)
-      let newRightPx = Math.max(120, rightW - deltaPx)
+        let newLeftPx = Math.max(120, leftW + deltaPx)
+        let newRightPx = Math.max(120, rightW - deltaPx)
 
-      if (newLeftPx + newRightPx > totalPixel) {
-        newRightPx = totalPixel - newLeftPx
-      }
+        if (newLeftPx + newRightPx > totalPixel) {
+          newRightPx = totalPixel - newLeftPx
+        }
 
-      const newLeftSize = newLeftPx / totalPixel
-      const newRightSize = newRightPx / totalPixel
+        const newLeftSize = newLeftPx / totalPixel
+        const newRightSize = newRightPx / totalPixel
 
-      this.sizes[leftIdx] = newLeftSize
-      this.sizes[idx] = newRightSize
+        this.sizes[leftIdx] = newLeftSize
+        this.sizes[idx] = newRightSize
 
-      const remain = 1 - (newLeftSize + newRightSize)
-      const otherIdx = this.sizes
-        .map((v, index) => (index === leftIdx || index === idx ? -1 : index))
-        .filter(i => i !== -1)
+        const remain = 1 - (newLeftSize + newRightSize)
+        const otherIdx = this.sizes
+          .map((v, index) => (index === leftIdx || index === idx ? -1 : index))
+          .filter(i => i !== -1)
 
-      if (otherIdx.length > 0) {
-        const fact = remain / otherIdx.length
-        otherIdx.forEach(i => this.sizes[i] = fact)
-      }
+        if (otherIdx.length > 0) {
+          const fact = remain / otherIdx.length
+          otherIdx.forEach(i => this.sizes[i] = fact)
+        }
 
-      this.updatePaneSizes()
-    }
-
-    document.onmouseup = () => {
-      dragging = false
-      document.onmousemove = document.onmouseup = null
-      this.getRoot().emit('split:resized', this)
-    }
+        this.updatePaneSizes()
+      },
+      onEnd: () => {
+        this.getRoot().emit('split:resized', this)
+      },
+    })
   }
 
   private updatePaneSizes() {

@@ -1,4 +1,6 @@
 import './draggable.scss'
+import { beginDrag } from 'src/utils/pointer/drag'
+import type { DisposeFunc } from 'src/utils/types'
 
 
 const compare = {
@@ -12,39 +14,44 @@ const compare = {
   }
 }
 
+/**
+ * Make children of a container reorderable by drag-and-drop.
+ *
+ * Elements marked with `[draggable=true]` can be dragged past each other;
+ * the drop position is decided by which half of the hovered element the
+ * pointer is over, along `direction`. Returns a dispose function that
+ * removes the listeners.
+ */
 export function draggable(
   containerEl: HTMLElement,
   direction: keyof typeof compare,
   onChange?: () => void
-) {
+): DisposeFunc {
 
-  let draggingEl: HTMLElement | null
-
-  containerEl.addEventListener('mousedown', event => {
+  const onDragStart = (event: MouseEvent) => {
     if (event.button !== 0) return
-    event.preventDefault()
-    const el = event.target as HTMLElement
-    draggingEl = el.closest('[draggable=true]')
-    draggingEl?.classList.add('typ-dragging')
+    const draggingEl = (event.target as HTMLElement).closest<HTMLElement>('[draggable=true]')
+    if (!draggingEl) return
+    draggingEl.classList.add('typ-dragging')
 
-    const onMouseUp = (event: MouseEvent) => {
-      if (event.button !== 0) return
-      onChange?.()
-      draggingEl?.classList.remove('typ-dragging')
-      draggingEl = null
-      document.body.removeEventListener('mouseup', onMouseUp)
-    }
-    document.body.addEventListener('mouseup', onMouseUp)
-  })
+    beginDrag(event, {
+      onMove: (e) => {
+        const dropEl = (e.target as HTMLElement | null)?.closest<HTMLElement>('[draggable=true]')
+        if (!dropEl || dropEl === draggingEl || !containerEl.contains(dropEl)) return
+        const pos = compare[direction](e, dropEl) ? 'beforebegin' : 'afterend'
+        dropEl.insertAdjacentElement(pos, draggingEl)
+        dropEl.style.cssText = ''
+      },
+      onEnd: () => {
+        draggingEl.classList.remove('typ-dragging')
+        onChange?.()
+      },
+    })
+  }
 
-  containerEl.addEventListener('mousemove', (event: MouseEvent) => {
-    if (event.button !== 0) return
-    const el = event.target as HTMLElement
-    const dropEl = el.closest<HTMLElement>('[draggable=true]')
-    if (draggingEl && dropEl && dropEl !== draggingEl) {
-      const pos = compare[direction](event, dropEl) ? 'beforebegin' : 'afterend'
-      dropEl.insertAdjacentElement(pos, draggingEl)
-      dropEl.style.cssText = ''
-    }
-  })
+  containerEl.addEventListener('mousedown', onDragStart as EventListener)
+
+  return () => {
+    containerEl.removeEventListener('mousedown', onDragStart as EventListener)
+  }
 }
