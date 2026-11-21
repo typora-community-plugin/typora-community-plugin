@@ -82,9 +82,13 @@ export class CommandManager {
   }
 
   unregister(command: Command) {
-    this.unbindHotkey(this.commandMap[command.id])
+    const registered = this.commandMap[command.id]
+    if (!registered) return
+
+    this.unbindHotkey(registered)
     delete this.commandMap[command.id]
     delete this.defaultCommandMap[command.id]
+    delete this.disposableMap[command.id]
   }
 
   protected bindHotkey(command: Command) {
@@ -102,7 +106,7 @@ export class CommandManager {
   }
 
   protected unbindHotkey(command: Command) {
-    this.disposableMap[command.id].forEach(fn => fn())
+    this.disposableMap[command.id]?.forEach(fn => fn())
     this.disposableMap[command.id] = []
   }
 

@@ -49,6 +49,26 @@ describe('CommandManager', () => {
     expect(mockHotkeyManager.addHotkey).toHaveBeenCalledTimes(1)
   })
 
+  test('`unregister()` is idempotent: repeated calls do not throw', () => {
+    const command: Command = {
+      id: 'double-unregister',
+      title: 'Double Unregister',
+      callback: jest.fn(),
+      hotkey: 'ctrl+shift+d',
+      scope: 'global',
+    }
+
+    const unregister = commandManager.register(command)
+
+    unregister()
+    expect(() => unregister()).not.toThrow()
+    // direct unregister after the dispose function also safe
+    expect(() => commandManager.unregister(command)).not.toThrow()
+
+    expect(commandManager.commandMap['double-unregister']).toBeUndefined()
+    expect(commandManager.getDisposableMap('double-unregister')).toBeUndefined()
+  })
+
   test('runs a command', () => {
     const command: Command = {
       id: 'run-command',
