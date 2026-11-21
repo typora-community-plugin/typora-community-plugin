@@ -159,7 +159,21 @@ export async function installDevPlugin(valut?: string) {
 
   const root = path.dirname(process.argv[1])
 
-  valut ??= `${root}/test/vault`
+  if (!valut) {
+    // Prefer the new fixtures layout, but stay compatible with the old one.
+    const candidates = [
+      path.join(root, 'test/fixtures/vault'),
+      path.join(root, 'test/vault'),
+    ]
+    for (const candidate of candidates) {
+      const exists = await fs.access(candidate).then(() => true, () => false)
+      if (exists) {
+        valut = candidate
+        break
+      }
+    }
+    valut ??= candidates[0]
+  }
 
   const manifestPath = path.join(root, `./src/manifest.json`)
   const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'))

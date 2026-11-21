@@ -46,5 +46,5 @@ await fs.rm('./dist/locales/i18n.ts')
 if (args.includes('--start')) {
 
   closeTypora()
-  child_process.exec('Typora ./test/vault/doc.md')
+  child_process.exec('Typora ./test/fixtures/vault/doc.md')
 }
