@@ -1,10 +1,14 @@
 import { bridge } from "typora"
-import type { ChildProcess } from "node:child_process"
-import path from "src/path"
-import { platform } from "src/common/constants"
 import { Semaphore } from "src/utils/schedule/semaphore"
 import { noop } from "src/utils"
 import { buildFilesWithMatchesArgs } from "./scan/negation-scan"
+import { isNativeBridgePlatform, resolveRipgrepPath, toAbsolutePath } from "./scan/rg-platform"
+import { RipgrepProcessManager } from "./scan/ripgrep-process"
+import type { TextRunHandle } from "./scan/ripgrep-process"
+import { JsonLinesParser, matchPathOf, toSearchMatch } from "./scan/json-lines"
+import type { SearchMatch } from "./scan/json-lines"
+
+export type { MatchSource, SearchMatch } from "./scan/json-lines"
 
 
 /** Max number of concurrent whole-file negation scans. */
@@ -31,23 +35,6 @@ export interface WholeFileFacts {
 }
 
 /**
- * Result of a single line match from ripgrep.
- */
-export interface SearchMatch {
-  /** Line number (1-based) */
-  lineNumber: number
-  /** Full line text */
-  lineText: string
-  /** The matched substring within the line */
-  matchedText: string
-  /** Where this match was found: 'body' (正文) or a field like 'tag', 'title' */
-  source?: MatchSource
-}
-
-/** Match source type for enriched search results. */
-export type MatchSource = 'body' | `field:${string}`
-
-/**
  * A file found by global search, with its matches.
  */
 export interface SearchResult {
@@ -70,22 +57,19 @@ export interface SearchResult {
  *   3. File list: rg --max-filesize 0K --files --iglob "*<query>*" (all matching file paths)
  * - macOS: delegates to bridge.callHandler("library.search", ...) native handler
  *
+ * This class only orchestrates: process spawning/tracking lives in
+ * `scan/ripgrep-process`, platform path handling in `scan/rg-platform`, and
+ * JSON-lines parsing in `scan/json-lines`.
+ *
  * Results are streamed via JSON Lines from ripgrep stdout, parsed incrementally,
  * and rendered into the existing Typora DOM structure (#file-library-search-result).
  */
 export class RipgrepSearchService {
 
-  /** Running content/filename scans of the current text run. */
-  private _textTasks = new Set<ChildProcess>()
-  /** Running whole-file negation scans (independent of the text run). */
-  private _negationTasks = new Set<ChildProcess>()
-  /** Incremented on every reset so stale `close` events are ignored. */
-  private _textRunId = 0
-
-  /** Accumulator for streaming JSON Lines from task1 */
-  private _prevBuffer = ""
-  /** Accumulator for streaming JSON Lines from task2 (pathMatch=true) */
-  private _pathPrevBuffer = ""
+  private _processes = new RipgrepProcessManager()
+  /** Streaming JSON-lines parsers for task1 (content) and task2 (pathMatch=true). */
+  private _contentParser = new JsonLinesParser()
+  private _pathParser = new JsonLinesParser()
 
   /** Accumulates results by file path so we emit complete SearchResult objects.
    *
@@ -99,8 +83,6 @@ export class RipgrepSearchService {
    * ONE complete SearchResult instead of creating duplicate DOM entries.
    */
   private _resultsByPath = new Map<string, SearchResult>()
-  /** Number of text tasks expected before flushing. */
-  private _expectedTextTasks = 0
 
   constructor(
     private mountFolder: string,
@@ -108,29 +90,8 @@ export class RipgrepSearchService {
 
   /** Kill all running ripgrep processes. Call before starting a new search. */
   cancel(): void {
-    for (const task of this._textTasks) this._killTask(task)
-    for (const task of this._negationTasks) this._killTask(task)
-    this._textTasks.clear()
-    this._negationTasks.clear()
-    this._textRunId++
-    this._expectedTextTasks = 0
-    this._resultsByPath.clear()
-    this._prevBuffer = ""
-    this._pathPrevBuffer = ""
-  }
-
-  /**
-   * Stop the current text scan, keeping whole-file negation scans alive.
-   * Used by {@link execute}, which may run in parallel with such a scan.
-   */
-  private _resetTextRun(): void {
-    for (const task of this._textTasks) this._killTask(task)
-    this._textTasks.clear()
-    this._textRunId++
-    this._expectedTextTasks = 0
-    this._resultsByPath.clear()
-    this._prevBuffer = ""
-    this._pathPrevBuffer = ""
+    this._processes.cancelAll()
+    this._resetRunState()
   }
 
   /**
@@ -144,25 +105,21 @@ export class RipgrepSearchService {
     query: string | string[],
     options?: SearchOptions,
   ): void {
-    this._resetTextRun()
-
     const caseSensitive = options?.caseSensitive ?? false
     const wholeWord = options?.wholeWord ?? false
     const { onResult, onComplete } = options ?? {}
 
-    if (platform() === 'darwin') {
+    // Kills the previous text run and opens a new generation; flushes when all
+    // tasks of this run have settled. Negation scans stay alive.
+    const run = this._processes.beginTextRun(() => this._flushResults(onResult, onComplete))
+    this._resetRunState()
+
+    if (isNativeBridgePlatform()) {
       this._executeOnMac(query, caseSensitive, wholeWord, onResult)
       onComplete?.()
     } else {
-      this._executeOnNode(query, caseSensitive, wholeWord, onResult, onComplete)
+      this._executeOnNode(run, query, caseSensitive, wholeWord, onResult, onComplete)
     }
-  }
-
-  /**
-   * Normalize query to a string array for internal use.
-   */
-  private _normalizeQuery(query: string | string[]): string[] {
-    return typeof query === 'string' ? [query] : query
   }
 
   /**
@@ -173,11 +130,9 @@ export class RipgrepSearchService {
     caseSensitive = false,
     wholeWord = false,
     onResult?: (result: SearchResult) => void,
-    onComplete?: () => void,
   ): void {
     // macOS: use bridge.callHandler("library.search", ...) which invokes native ripgrep
     const queryStr = typeof query === 'string' ? query : query.join(' ')
-    const nfdQuery = this._normalizeNFD(queryStr)
 
     bridge.callHandler("library.search", {
       text: queryStr,
@@ -188,61 +143,28 @@ export class RipgrepSearchService {
   }
 
   private _executeOnNode(
+    run: TextRunHandle,
     query: string | string[],
     caseSensitive: boolean,
     wholeWord: boolean,
     onResult: (result: SearchResult) => void = noop,
     onComplete?: () => void,
   ): void {
-    const rg = this._getRipgrepPath()
+    const rg = resolveRipgrepPath()
     if (!rg) {
       onComplete?.()
       return
     }
 
-    const child_process = this._reqChildProcess()
     const cwd = this.mountFolder
-    const runId = this._textRunId
-
-    // Helper to spawn a ripgrep process
-    const spawnRg = (args: string[]): ChildProcess => {
-      const proc = child_process.spawn(rg, args, {
-        cwd,
-        stdio: ["ignore", "pipe", "pipe"],
-      })
-      proc.stdout.setEncoding("utf8")
-      proc.stderr.setEncoding("utf8")
-      return proc
-    }
-
-    // Track a task for this run. `settle` is idempotent because both `error`
-    // and `close` may fire; events from superseded runs are ignored.
-    const track = (proc: ChildProcess): ChildProcess => {
-      this._textTasks.add(proc)
-      this._expectedTextTasks++
-      let settled = false
-      const settle = () => {
-        if (settled) return
-        settled = true
-        this._textTasks.delete(proc)
-        if (runId !== this._textRunId) return
-        if (this._textTasks.size === 0 && this._expectedTextTasks > 0) {
-          this._flushResults(onResult, onComplete)
-        }
-      }
-      proc.on("close", settle)
-      proc.on("error", settle)
-      return proc
-    }
 
     // ── Task 1: Content match (file content search) ──────────────────────
     // Each pattern is passed as separate -e flag (OR semantics). The AST
     // evaluation in buildResult later enforces AND across all conditions.
-    const task1Args = this._buildRpArgs(query, caseSensitive, wholeWord)
-    const task1 = track(spawnRg(task1Args))
+    const task1 = run.track(run.spawn(rg, this._buildRpArgs(query, caseSensitive, wholeWord), cwd))
 
     task1.stdout?.on("data", (chunk: string) => {
-      this._parseJsonLines(chunk, false)
+      this._accumulateContentMatches(chunk)
     })
     task1.stderr?.on("data", () => {
       // Silently ignore stderr (ripgrep warnings about permission denied, etc.)
@@ -263,11 +185,11 @@ export class RipgrepSearchService {
       caseSensitive ? "-g" : "--iglob",
       `*${escapedQuery}*`,
     ]
-    const task2 = track(spawnRg(task2Args))
+    const task2 = run.track(run.spawn(rg, task2Args, cwd))
 
     task2.stdout?.on("data", (chunk: string) => {
       // pathMatch=true: accumulated into _resultsByPath; flushed on close
-      this._parseJsonLines(chunk, true)
+      this._accumulateFilenameMatches(chunk)
     })
 
     // ── Task 3: File list (all files matching query in name) ─────────────
@@ -279,104 +201,37 @@ export class RipgrepSearchService {
       caseSensitive ? "-g" : "--iglob",
       `*${escapedQuery}*`,
     ]
-    const task3 = track(spawnRg(task3Args))
+    const task3 = run.track(run.spawn(rg, task3Args, cwd))
 
     task3.stdout?.on("data", (chunk: string) => {
       const lines = chunk.split(/\r?\n/g)
       for (const line of lines) {
         if (!line || line.length > 10000) continue
-        // Ripgrep outputs relative paths; make absolute
-        const absPath = path.isAbsolute(line)
-          ? line
-          : path.join(this.mountFolder, line)
         // Accumulate filename-only result; flushed on close
-        this._resultsByPath.set(absPath, {
-          filePath: absPath,
-          matches: [],
-          totalMatches: 0,
-        })
+        this._addFilenameOnlyResult(this._absPath(line))
       }
     })
 
   }
 
-  /**
-   * Parse ripgrep JSON Lines output and convert to SearchResult objects.
-   *
-   * Ripgrep --json outputs one JSON object per line:
-   * - {"type":"match","data":{"path":{"text":"..."},"span":{"line":N,...},"lines":["..."],"submatches":[...]}}
-   * - {"type":"stats","data":{"matches":N,...}}
-   */
-  private _parseJsonLines(
-    chunk: string,
-    pathMatch: boolean,
-  ): void {
-    // Accumulate buffer to handle partial JSON lines across chunks
-    const buf = pathMatch ? this._pathPrevBuffer : this._prevBuffer
-    const combined = buf + chunk
-
-    // Split into complete lines (last element may be incomplete)
-    const lines = combined.split(/\r?\n/g)
-    const completeLines = lines.slice(0, -1)
-
-    // Save potentially incomplete last line back to buffer
-    if (pathMatch) {
-      this._pathPrevBuffer = lines.at(-1) ?? ""
-    } else {
-      this._prevBuffer = lines.at(-1) ?? ""
-    }
-
-    for (const line of completeLines) {
-      if (!line.trim()) continue
-
-      let parsed: { type: string; data?: Record<string, unknown> | undefined }
-      try {
-        parsed = JSON.parse(line)
-      } catch {
-        // Skip malformed JSON lines
-        continue
-      }
-
-      if (parsed.type !== "match" || !parsed.data) continue
-
-      this._processMatch(parsed.data as Record<string, unknown>, pathMatch)
-    }
+  /** Ripgrep prints paths relative to cwd (mountFolder); make them absolute. */
+  private _absPath(rawPath: string): string {
+    return toAbsolutePath(this.mountFolder, rawPath)
   }
 
-  private _processMatch(
-    data: Record<string, unknown>,
-    pathMatch: boolean,
-  ): void {
-    const pathData = data.path as Record<string, unknown> | undefined
-    if (!pathData?.text) return
+  /** Drop per-run parsing/accumulation state. */
+  private _resetRunState(): void {
+    this._contentParser.reset()
+    this._pathParser.reset()
+    this._resultsByPath.clear()
+  }
 
-    const filePath = pathData.text as string
-
-    // Ripgrep outputs paths relative to cwd (mountFolder); make absolute
-    const absPath = path.isAbsolute(filePath)
-      ? filePath
-      : path.join(this.mountFolder, filePath)
-
-    // For content matches (pathMatch=false), extract line info and submatches
-    if (!pathMatch) {
-      const span = data.span as Record<string, unknown> | undefined
-      const linesData = data.lines as { text: string }
-      const submatches = data.submatches as Array<Record<string, unknown>> | undefined
-
-      let lineNumber = 0
-      let lineText = ""
-      let matchedText = ""
-
-      // ripgrep --json outputs line_number at data top-level, NOT inside span
-      lineNumber = (data.line_number as number) ?? (span?.line as number) ?? 0
-      if (linesData?.text?.length) {
-        lineText = linesData.text.replace(/[\r\n]/g, "")
-      }
-      if (submatches?.length) {
-        const firstSubmatch = submatches[0] as Record<string, unknown>
-        const matchData = firstSubmatch.match as Record<string, unknown> | undefined
-        matchedText = matchData?.text as string ?? ""
-      }
+  /** Task 1: accumulate content match records into per-file results. */
+  private _accumulateContentMatches(chunk: string): void {
+    for (const data of this._contentParser.feed(chunk)) {
+      const rawPath = matchPathOf(data)
+      if (rawPath === null) continue
+      const absPath = this._absPath(rawPath)
 
       // Accumulate into per-file result instead of emitting one-per-match.
       let entry = this._resultsByPath.get(absPath)
@@ -384,18 +239,27 @@ export class RipgrepSearchService {
         entry = { filePath: absPath, matches: [], totalMatches: 0 }
         this._resultsByPath.set(absPath, entry)
       }
-      entry.matches.push({ lineNumber, lineText, matchedText })
+      entry.matches.push(toSearchMatch(data))
+    }
+  }
 
-    } else {
-      // Filename-only match (pathMatch=true): accumulate into per-file result.
+  /** Task 2: accumulate pathMatch-only records; keep content matches intact. */
+  private _accumulateFilenameMatches(chunk: string): void {
+    for (const data of this._pathParser.feed(chunk)) {
+      const rawPath = matchPathOf(data)
+      if (rawPath === null) continue
       // Only create an entry if we don't already have one from Task 1 content matches.
-      if (!this._resultsByPath.has(absPath)) {
-        this._resultsByPath.set(absPath, {
-          filePath: absPath,
-          matches: [],
-          totalMatches: 0,
-        })
-      }
+      this._addFilenameOnlyResult(this._absPath(rawPath))
+    }
+  }
+
+  private _addFilenameOnlyResult(absPath: string): void {
+    if (!this._resultsByPath.has(absPath)) {
+      this._resultsByPath.set(absPath, {
+        filePath: absPath,
+        matches: [],
+        totalMatches: 0,
+      })
     }
   }
 
@@ -405,9 +269,6 @@ export class RipgrepSearchService {
       onResult(result)
     }
     this._resultsByPath.clear()
-    this._prevBuffer = ""
-    this._pathPrevBuffer = ""
-    this._expectedTextTasks = 0
     onComplete?.()
   }
 
@@ -429,98 +290,37 @@ export class RipgrepSearchService {
   ): Promise<WholeFileFacts> {
     const files = new Map<string, Set<string>>()
     if (patterns.length === 0) return { supported: true, ok: true, files }
-    if (platform() === 'darwin') return { supported: false, ok: true, files }
+    if (isNativeBridgePlatform()) return { supported: false, ok: true, files }
 
-    const rg = this._getRipgrepPath()
+    const rg = resolveRipgrepPath()
     if (!rg) return { supported: true, ok: false, files }
 
-    const child_process = this._reqChildProcess()
     const caseSensitive = options?.caseSensitive ?? false
     const wholeWord = options?.wholeWord ?? false
     const semaphore = new Semaphore(NEGATION_SCAN_CONCURRENCY)
+
+    const scans = await Promise.all(patterns.map(pattern => semaphore.run(() =>
+      this._processes.scanFilesWithMatches(
+        rg,
+        buildFilesWithMatchesArgs(pattern, caseSensitive, wholeWord),
+        this.mountFolder,
+      )
+    )))
+
     let ok = true
-
-    const scan = (pattern: string): Promise<void> => new Promise<void>(resolve => {
-      let proc: ChildProcess
-      try {
-        proc = child_process.spawn(
-          rg,
-          buildFilesWithMatchesArgs(pattern, caseSensitive, wholeWord),
-          { cwd: this.mountFolder, stdio: ["ignore", "pipe", "pipe"] },
-        )
-      } catch {
-        ok = false
-        resolve()
-        return
-      }
-
-      this._negationTasks.add(proc)
-      proc.stdout.setEncoding("utf8")
-      proc.stderr.setEncoding("utf8")
-
-      let output = ""
-      let settled = false
-      const finish = (success: boolean) => {
-        if (settled) return
-        settled = true
-        this._negationTasks.delete(proc)
-        if (!success) ok = false
-        resolve()
-      }
-
-      proc.stdout.on("data", (chunk: string) => { output += chunk })
-      proc.stderr.on("data", () => { /* ignore */ })
-      proc.on("error", () => finish(false))
-      proc.on("close", (code) => {
-        // rg exits 1 when nothing matched — a successful, empty result.
-        if (code !== 0 && code !== 1) {
-          finish(false)
-          return
+    for (let i = 0; i < scans.length; i++) {
+      if (!scans[i].ok) ok = false
+      for (const rawPath of scans[i].paths) {
+        const absPath = this._absPath(rawPath)
+        let set = files.get(absPath)
+        if (!set) {
+          set = new Set<string>()
+          files.set(absPath, set)
         }
-        for (const line of output.split(/\r?\n/g)) {
-          const rel = line.trim()
-          if (!rel) continue
-          const absPath = path.isAbsolute(rel) ? rel : path.join(this.mountFolder, rel)
-          let set = files.get(absPath)
-          if (!set) {
-            set = new Set<string>()
-            files.set(absPath, set)
-          }
-          set.add(pattern)
-        }
-        finish(true)
-      })
-    })
-
-    await Promise.all(patterns.map(pattern => semaphore.run(() => scan(pattern))))
+        set.add(patterns[i])
+      }
+    }
     return { supported: true, ok, files }
-  }
-
-  /** Kill a child process and clean up references. */
-  private _killTask(proc: ChildProcess | null): void {
-    if (proc && !proc.killed) {
-      try { proc.kill() } catch { /* ignore */ }
-    }
-  }
-
-  /** Get the ripgrep binary path from vscode-ripgrep. */
-  private _getRipgrepPath(): string | null {
-    try {
-      const rgModule = (globalThis as any).reqnode?.("vscode-ripgrep")
-      if (!rgModule) return null
-
-      // Handle both asar and non-asar paths
-      let path = (rgModule as any).rgPath ?? ""
-      path = path.replace("node_modules.asar", "node_modules")
-      return path || null
-    } catch {
-      return null
-    }
-  }
-
-  /** Require child_process module. */
-  private _reqChildProcess(): typeof import("child_process") {
-    return (globalThis as any).reqnode?.("child_process") ?? require("child_process")
   }
 
   /** Build ripgrep arguments for content search. */
@@ -561,11 +361,6 @@ export class RipgrepSearchService {
     }
 
     return args
-  }
-
-  /** Normalize query to NFD form for better Unicode matching on macOS. */
-  private _normalizeNFD(str: string): string {
-    return str.normalize("NFD")
   }
 
   /** Escape special regex characters in a string. */
