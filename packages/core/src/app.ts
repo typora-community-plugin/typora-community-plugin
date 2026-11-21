@@ -30,6 +30,7 @@ import type { RibbonSettings } from 'src/ui/ribbon/workspace-ribbon'
 import { GlobalSearch } from './ui/sidebar/search/global-search'
 import { Statistics } from './ui/statusbar/statistics'
 import { isCustomProtocolUrl, isMarkdownUrl } from 'src/utils'
+import { wrapClassesForES5 } from 'src/utils/es5-shim'
 import type { FileURL } from 'src/utils/types'
 import { ConfigRepository } from './io/config-repository'
 import { ExportManager } from './export-manager'
@@ -113,7 +114,9 @@ export class App extends StickyEvents<AppEvents> {
 
     // @ts-ignore
     window[Symbol.for(process.env.CORE_NS)] = {
-      ...Core,
+      // dev: wrap native classes into ES5-compatible constructors,
+      // so prod-built plugins (ES5-transpiled classes) can extend them.
+      ...(process.env.IS_DEV ? wrapClassesForES5(Core) : Core),
       app: this,
     }
     if (process.env.IS_DEV) {
