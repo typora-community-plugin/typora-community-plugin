@@ -16,11 +16,23 @@ const KEY_OPENFILE = Symbol.for('openFile$original')
 export class SwapCommand extends Component {
 
   constructor(
+    private settings = useService('settings'),
     private workspace = useService('workspace'),
   ) {
     super()
 
     useSettingEffectedFeature('useAutoSwap', this)
+  }
+
+  /**
+   * The parent MarkdownView force-loads this child on every view open
+   * (`Component.load()` → children), which would re-enable swap on views
+   * created while the setting is off. Gate on the setting so a disabled
+   * `useAutoSwap` stays disabled.
+   */
+  override load() {
+    if (!this.settings.get('useAutoSwap')) return
+    super.load()
   }
 
   execute(editorLeaf: WorkspaceLeaf<MarkdownView>, previewLeaf: WorkspaceLeaf<MarkdownView>) {
