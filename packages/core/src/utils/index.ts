@@ -16,6 +16,7 @@ export * from './string/is-custom-protocol-url'
 export * from './string/is-markdown-url'
 export * from './string/markdown'
 export * from './string/random-string'
+export * from './string/to-file-url'
 export * from './string/truncate'
 export * from './string/yaml'
 

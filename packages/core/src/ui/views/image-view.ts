@@ -1,26 +1,15 @@
 import './image-view.scss'
-import path from 'src/path'
 import type { WorkspaceLeaf } from '../layout/workspace-leaf'
-import { WorkspaceView } from '../layout/workspace-view'
-import type { DisposeFunc } from 'src/utils/types'
-import { useService } from 'src/common/service'
-import { Component } from 'src/common/component'
+import { MediaView, UseMediaView } from './media-view'
 
 
-export class UseImageView extends Component {
-
-  private _dispose!: DisposeFunc
-
-  onload(viewManager = useService('view-manager')) {
-    this._dispose = viewManager.registerViewWithExtensions(ImageView.extensions, ImageView.type, (leaf) => new ImageView(leaf))
-  }
-
-  onunload(): void {
-    this._dispose()
+export class UseImageView extends UseMediaView {
+  constructor() {
+    super(ImageView)
   }
 }
 
-export class ImageView extends WorkspaceView {
+export class ImageView extends MediaView {
 
   static type = 'core.image'
 
@@ -29,29 +18,14 @@ export class ImageView extends WorkspaceView {
 
   icon = 'fa-file-image-o'
 
-  containerEl = $('<div class="typ-image-view"></div>')[0]
-
   constructor(leaf: WorkspaceLeaf) {
-    super(leaf)
-  }
-
-  get filePath() {
-    return this.leaf.state.path
+    super(leaf, 'typ-image-view')
   }
 
   /** @override */
-  onload() {
+  protected createMediaEl(basename: string) {
     const img = $('<img>')[0] as HTMLImageElement
-    img.src = toFileUrl(this.filePath)
-    img.alt = path.basename(this.filePath)
-    this.containerEl.innerHTML = ''
-    this.containerEl.appendChild(img)
+    img.alt = basename
+    return img
   }
-}
-
-function toFileUrl(filePath: string) {
-  const normalized = filePath.replace(/\\/g, '/').replace(/^([^/])/, '/$1')
-  return encodeURI('file://' + normalized)
-    .replace(/#/g, '%23')
-    .replace(/\?/g, '%3F')
 }
