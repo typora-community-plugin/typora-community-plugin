@@ -52,7 +52,8 @@ export { Sidebar } from './ui/sidebar/sidebar'
 
 export { SidebarPanel } from './ui/sidebar/sidebar-panel'
 
-export { StatisticHandler, StatisticContext } from './ui/statusbar/statistics'
+export type { StatisticHandler } from './ui/statusbar/statistics'
+export { StatisticContext } from './ui/statusbar/statistics'
 
 export { default as fs } from 'src/io/fs/filesystem'
 export { default as path } from 'src/path'
