@@ -4,7 +4,7 @@ import fs from 'src/io/fs/filesystem'
 import path from 'src/path'
 import { Shell } from 'src/io/shell'
 import { uniqueId } from "src/utils"
-import { unzip } from 'src/common/zlib'
+import { unzip } from 'src/io/zlib'
 import { useService } from 'src/common/service'
 
 
