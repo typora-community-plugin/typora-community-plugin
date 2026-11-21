@@ -5,9 +5,18 @@ import url from "node:url"
 
 const __filename = url.fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+const isCli = process.argv[1] && path.resolve(process.argv[1]) === __filename
+
 const resolve = file => path.join(__dirname, file)
 const readText = async file => fs.readFile(resolve(file), 'utf8')
 const writeJSON = async (file, data) => fs.writeFile(resolve(file), JSON.stringify(data), 'utf8')
+
+
+/** Sources and generated files, relative to this package. */
+export const TYPORA_TYPES = '../types/index.d.ts'
+export const CORE_ENTRY = '../core/src/index.ts'
+export const TYPORA_EXPORTS = './exported-by-typora.json'
+export const CORE_EXPORTS = './exported-by-core.json'
 
 
 // Matches one `export` statement and captures its kind:
@@ -25,7 +34,7 @@ const exportStatement = () =>
  * lists (`export { A, B as C }`) and ignores type-only exports, so the
  * generated list matches the module namespace object plugins actually get.
  */
-function collectExportedNames(code, file) {
+export function collectExportedNames(code, file = 'module') {
   // Strip comments so `export` in docs is not picked up.
   const stripped = code
     .replace(/\/\*[\s\S]*?\*\//g, '')
@@ -71,12 +80,20 @@ function collectExportedNames(code, file) {
   return [...names].sort()
 }
 
+/** Collect the global variables that Typora exposes to plugins. */
+export function extractTyporaExports(code) {
+  const names = code.match(/(?<=export declare (?:function|var|const|let) )\w+\b/g) ?? []
+  return [...new Set(names)].sort()
+}
 
-await readText('../types/index.d.ts')
-  .then(code => code.match(/(?<=export declare (?:function|var|const|let) )\w+\b/g))
-  .then(names => writeJSON('./exported-by-typora.json', [...new Set(names)].sort()))
+
+export async function main() {
+  const typoraNames = await readText(TYPORA_TYPES).then(extractTyporaExports)
+  await writeJSON(TYPORA_EXPORTS, typoraNames)
+
+  const coreNames = await readText(CORE_ENTRY).then(code => collectExportedNames(code, CORE_ENTRY))
+  await writeJSON(CORE_EXPORTS, coreNames)
+}
 
 
-await readText('../core/src/index.ts')
-  .then(code => collectExportedNames(code, '../core/src/index.ts'))
-  .then(names => writeJSON('./exported-by-core.json', names))
+if (isCli) await main()

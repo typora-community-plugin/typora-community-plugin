@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "build": "node build.js",
+    "test": "node --test test/",
     "prepublish": "pnpm run build",
     "publish": "pnpm publish --access=public"
   },
