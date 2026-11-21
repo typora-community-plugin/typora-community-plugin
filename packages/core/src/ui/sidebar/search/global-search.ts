@@ -85,6 +85,22 @@ export class GlobalSearch {
     })
   }
 
+  /**
+   * Stop the running advanced search and clear the rendered results.
+   *
+   * Used when advanced mode is toggled off: without this, results rendered by
+   * the custom engine stay in `#file-library-search-result` and a subsequent
+   * native search that finds nothing leaves them visible as stale hits.
+   */
+  cancelSearch() {
+    this._hybridSearch.cancel()
+
+    const view = this.workspace.getViewByType(GlobalSearchView) as GlobalSearchView | undefined
+    if (!view) return
+    view.renderer.clearResults()
+    view.progressBar.hide()
+  }
+
   getGlobalSearchQuery() {
     const view = this.workspace.getViewByType(GlobalSearchView) as GlobalSearchView | undefined
     return view?.getQuery() ?? ""

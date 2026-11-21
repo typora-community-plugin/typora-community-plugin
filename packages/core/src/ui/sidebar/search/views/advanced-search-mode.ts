@@ -60,8 +60,16 @@ export class AdvancedSearchMode extends Component {
   toggle = () => {
     const settings = useService('settings')
     const currentValue = settings.get(this.SETTING_KEY)
-    settings.set(this.SETTING_KEY, !currentValue)
+    const enabled = !currentValue
+    settings.set(this.SETTING_KEY, enabled)
     this._updateButtonState()
+
+    // Leaving advanced mode: the native engine renders into the same panel,
+    // so cancel any in-flight advanced search and clear its results to avoid
+    // stale hits surviving into the next native search.
+    if (!enabled) {
+      useService('app').features.globalSearch.cancelSearch()
+    }
   }
 
   private _isEnabled(): boolean {
