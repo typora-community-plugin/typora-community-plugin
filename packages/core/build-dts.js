@@ -17,6 +17,17 @@ await fs.copyFile('./src/utils/types.d.ts', './typings/utils/types.d.ts')
 const blackList = [
   './typings/core.d.ts',
   './typings/devtools.d.ts',
+  // dev demos and test infra, not part of the plugin development typings
+  './typings/setup-test-env.d.ts',
+  './typings/plugin-internal/plugins/plugin-test.d.ts',
+  './typings/plugin-internal/plugins/plugin-test-manifest.d.ts',
+  './typings/ui/components/editable-table-test.d.ts',
+  './typings/ui/editor/codeblock/codeblock-test.d.ts',
+  './typings/ui/editor/suggestion/suggest-test.d.ts',
+  './typings/ui/layout/floating/index-test.d.ts',
+  './typings/ui/layout/sidedock/index-test.d.ts',
+  './typings/ui/settings/setting-item-test.d.ts',
+  './typings/ui/statusbar/statistics-test.d.ts',
 ]
 await Promise.all(
   blackList.map(file =>
