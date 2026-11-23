@@ -6,4 +6,6 @@ export default {
 	// 仅当 core 包文件变更时才跑 typecheck，避免每次提交全量编译
 	"packages/core/**/*.{ts,tsx}": () =>
 		"pnpm --filter @typora-community-plugin/core run typecheck",
+	// 语言文件变更时校验多语言 key 对齐
+	"packages/core/src/locales/lang.*.json": () => "pnpm run check:i18n",
 }

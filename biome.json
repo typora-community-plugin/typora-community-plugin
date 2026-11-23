@@ -3,6 +3,8 @@
 	"files": {
 		"includes": [
 			"build.js",
+			"lint-staged.config.mjs",
+			"packages/*/scripts/**",
 			"packages/*/src/**",
 			"packages/*/test/**",
 			"packages/*/__mocks__/**",

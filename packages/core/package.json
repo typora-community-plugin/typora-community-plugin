@@ -9,6 +9,7 @@
     "build:dev": "node build.js --start",
     "build": "rollup -c rollup.config.js",
     "build-dts": "node build-dts.js",
+    "check:i18n": "node scripts/check-i18n-keys.mjs",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p test/tsconfig.json",

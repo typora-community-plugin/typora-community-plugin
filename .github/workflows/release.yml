@@ -34,6 +34,9 @@ jobs:
       - name: Lint
         run: pnpm run lint
 
+      - name: i18n key alignment
+        run: pnpm run check:i18n
+
       - name: Typecheck
         run: pnpm --filter ./packages/core run typecheck
 

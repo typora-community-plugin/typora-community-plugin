@@ -11,6 +11,7 @@
     "build": "pnpm --filter=\"./packages/*\" run build && node build.js",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
+    "check:i18n": "pnpm --filter @typora-community-plugin/core run check:i18n",
     "prepare": "husky"
   },
   "keywords": [],
