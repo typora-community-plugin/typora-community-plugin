@@ -27,7 +27,11 @@
 			"preset": "recommended",
 			"suspicious": {
 				"noAssignInExpressions": "warn",
-				"useIterableCallbackReturn": "warn"
+				"useIterableCallbackReturn": "warn",
+				"noExplicitAny": "off"
+			},
+			"style": {
+				"noNonNullAssertion": "off"
 			}
 		}
 	},

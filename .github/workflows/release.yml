@@ -24,6 +24,25 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - name: Audit
+        run: pnpm audit --audit-level=critical
+
+      - name: Audit (advisory)
+        run: pnpm audit --audit-level=high
+        continue-on-error: true
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Typecheck
+        run: pnpm --filter ./packages/core run typecheck
+
+      - name: Test
+        run: pnpm --recursive --if-present test
+
+      - name: Build declarations
+        run: pnpm --filter ./packages/core run build-dts
+
       - run: pnpm run build
 
       - name: Extract changelog
