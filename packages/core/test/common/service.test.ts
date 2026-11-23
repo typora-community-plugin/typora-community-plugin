@@ -1,6 +1,6 @@
 import 'src/setup-test-env'
+import { useService } from 'src/common/service'
 import { describe, expect, test } from 'vitest'
-import { useService } from '../../src/common/service'
 
 describe('useService()', () => {
   describe('singleton behavior', () => {

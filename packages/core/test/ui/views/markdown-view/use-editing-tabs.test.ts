@@ -1,5 +1,5 @@
 
-import { useEditingTabs } from '../../../../src/ui/views/markdown-view/use-editing-tabs'
+import { useEditingTabs } from 'src/ui/views/markdown-view/use-editing-tabs'
 
 
 type MockWorkspaceTabs = { children: MockWorkspaceLeaf[]; id?: string }

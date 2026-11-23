@@ -11,12 +11,12 @@ const fsMock = {
 
 const logger = { debug() { }, info() { }, warn() { }, error() { } }
 
-let ConfigRepository: typeof import('../../src/io/config-repository').ConfigRepository
+let ConfigRepository: typeof import('src/io/config-repository').ConfigRepository
 
 
 beforeAll(async () => {
   await vi.doMock('src/io/fs/filesystem', () => ({ default: fsMock }))
-  ;({ ConfigRepository } = await import('../../src/io/config-repository'))
+  ;({ ConfigRepository } = await import('src/io/config-repository'))
 })
 
 beforeEach(() => vi.clearAllMocks())

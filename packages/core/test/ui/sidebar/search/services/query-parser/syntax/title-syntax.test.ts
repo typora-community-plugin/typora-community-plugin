@@ -1,6 +1,6 @@
+import { TitleSyntaxHandler } from 'src/ui/sidebar/search/services/query-parser/syntax/title-syntax'
+import type { EvalContext, FieldNode } from 'src/ui/sidebar/search/services/query-parser/types'
 import { describe, expect, it, vi } from 'vitest'
-import { TitleSyntaxHandler } from '../../../../../../../src/ui/sidebar/search/services/query-parser/syntax/title-syntax'
-import type { EvalContext, FieldNode } from '../../../../../../../src/ui/sidebar/search/services/query-parser/types'
 
 // ── Helpers ─────────────────────────────────────────────────────────────
 

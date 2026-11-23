@@ -1,4 +1,4 @@
-import { runConcurrent } from '../../../src/utils/schedule/concurrency'
+import { runConcurrent } from 'src/utils/schedule/concurrency'
 
 
 describe('runConcurrent', () => {

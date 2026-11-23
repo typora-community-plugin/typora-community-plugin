@@ -1,7 +1,7 @@
 import 'src/setup-test-env'
 import { registerService } from 'src/common/service'
+import { PluginManager } from 'src/plugin/plugin-manager'
 import { describe, expect, test, vi } from 'vitest'
-import { PluginManager } from '../../src/plugin/plugin-manager'
 
 // `PluginManager.marketplace` 会在首次访问时懒加载 `plugin-marketplace` 服务，
 // 这里注册它可能间接依赖的服务，避免测试中抛异常。

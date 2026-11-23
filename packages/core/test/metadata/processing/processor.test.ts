@@ -12,7 +12,7 @@ async function setup() {
   vi.clearAllMocks()
   await vi.doMock('src/io/fs/filesystem', () => ({ default: fsMock }))
 
-  const { MetadataProcessor } = await import('../../../src/metadata/processing/processor')
+  const { MetadataProcessor } = await import('src/metadata/processing/processor')
   const { MetadataProviderRegistry } = await import('src/metadata/provider/registry')
 
   return { MetadataProcessor, MetadataProviderRegistry }

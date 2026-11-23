@@ -1,5 +1,5 @@
+import { debounce } from "src/utils/schedule/debounce"
 import { vi } from 'vitest'
-import { debounce } from "../../../src/utils/schedule/debounce"
 
 describe('debounce', () => {
   beforeEach(() => {

@@ -1,6 +1,6 @@
 import 'src/setup-test-env'
+import { SettingItem } from 'src/ui/settings/setting-item'
 import { describe, expect, it, vi } from 'vitest'
-import { SettingItem } from '../../../src/ui/settings/setting-item'
 
 
 describe('SettingItem.addBadge', () => {

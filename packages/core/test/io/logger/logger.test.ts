@@ -1,6 +1,6 @@
 import 'src/setup-test-env'
+import { badge, badges, Logger } from 'src/io/logger/logger'
 import { type Mock, vi } from 'vitest'
-import { badge, badges, Logger } from '../../../src/io/logger/logger'
 
 describe('badge', () => {
   test('creates badge with correct format', () => {

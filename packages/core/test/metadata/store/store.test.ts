@@ -41,14 +41,14 @@ class FakeMiniDexie {
   close = vi.fn(() => { state.closed.push(this) })
 }
 
-async function setup(): Promise<typeof import('../../../src/metadata/store/store')> {
+async function setup(): Promise<typeof import('src/metadata/store/store')> {
   vi.resetModules()
   state.instances = []
   state.closed = []
   state.failOpen = false
 
   await vi.doMock('src/utils/indexed-db', () => ({ MiniDexie: FakeMiniDexie }))
-  return import('../../../src/metadata/store/store')
+  return import('src/metadata/store/store')
 }
 
 const entry = (mtime: number) => ({ mtime, metadata: { frontmatter: {}, tags: [] as never[] } })

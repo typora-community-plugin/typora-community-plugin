@@ -1,6 +1,6 @@
 import 'src/setup-test-env'
+import { type EventDefination, type EventListener, Events, PublicEvents, PublicStickyEvents } from 'src/common/events'
 import { vi } from 'vitest'
-import { type EventDefination, type EventListener, Events, PublicEvents, PublicStickyEvents } from '../../src/common/events'
 
 // Define test event types
 type TestEvents = {

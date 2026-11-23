@@ -1,5 +1,5 @@
+import { getElementPagePosition, html } from 'src/utils/html'
 import { describe, expect, it, vi } from 'vitest'
-import { getElementPagePosition, html } from '../../src/utils/html'
 
 // Mock jQuery globally for tests
 (global as any).$ = vi.fn().mockReturnValue(document.createElement('div'))

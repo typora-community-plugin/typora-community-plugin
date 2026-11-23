@@ -1,4 +1,4 @@
-import { Semaphore } from '../../../src/utils/schedule/semaphore'
+import { Semaphore } from 'src/utils/schedule/semaphore'
 
 
 const deferred = () => {

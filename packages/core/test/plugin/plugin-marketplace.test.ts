@@ -1,7 +1,7 @@
 import 'src/setup-test-env'
+import type { PluginMarketInfo, PluginStat } from 'src/plugin/plugin-marketplace'
+import { PluginMarketplace } from 'src/plugin/plugin-marketplace'
 import { describe, expect, type Mock, test, vi } from 'vitest'
-import type { PluginMarketInfo, PluginStat } from '../../src/plugin/plugin-marketplace'
-import { PluginMarketplace } from '../../src/plugin/plugin-marketplace'
 
 const REPO = 'typora-community-plugin/typora-plugin-releases'
 const BRANCH = 'main'

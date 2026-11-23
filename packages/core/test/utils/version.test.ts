@@ -1,4 +1,4 @@
-import { compare } from '../../src/utils/versions'
+import { compare } from 'src/utils/versions'
 
 describe('compare verion', () => {
 

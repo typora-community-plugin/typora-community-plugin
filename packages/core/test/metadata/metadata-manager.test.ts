@@ -1,6 +1,6 @@
 import { vi } from 'vitest'
 import 'src/setup-test-env'
-import type { MetadataManager, MetadataProvider } from '../../src/metadata/metadata-manager'
+import type { MetadataManager, MetadataProvider } from 'src/metadata/metadata-manager'
 
 
 const fsMock = {
@@ -23,7 +23,7 @@ async function loadManager(): Promise<typeof MetadataManager> {
   await vi.doMock('src/io/fs/filesystem', () => ({ default: fsMock }))
   await vi.doMock('src/metadata/store/store', () => ({ ...storeMock }))
 
-  return (await import('../../src/metadata/metadata-manager')).MetadataManager
+  return (await import('src/metadata/metadata-manager')).MetadataManager
 }
 
 function createManager(

@@ -1,4 +1,4 @@
-import { hookDiagramEngine, registerDiagramRenderer, unregisterDiagramRenderer } from "../../../../src/ui/editor/codeblock/codeblock-diagram"
+import { hookDiagramEngine, registerDiagramRenderer, unregisterDiagramRenderer } from "src/ui/editor/codeblock/codeblock-diagram"
 
 
 class FakeDiagramClass {

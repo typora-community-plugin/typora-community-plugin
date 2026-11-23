@@ -1,7 +1,7 @@
 import 'src/setup-test-env'
+import { registerDiagramRenderer, unregisterDiagramRenderer } from 'src/ui/editor/codeblock/codeblock-diagram'
+import { renderDiagramBlocks } from 'src/ui/editor/markdown-renderer-diagram'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
-import { registerDiagramRenderer, unregisterDiagramRenderer } from '../../../src/ui/editor/codeblock/codeblock-diagram'
-import { renderDiagramBlocks } from '../../../src/ui/editor/markdown-renderer-diagram'
 
 
 function createCodeblock(lang: string, code: string) {

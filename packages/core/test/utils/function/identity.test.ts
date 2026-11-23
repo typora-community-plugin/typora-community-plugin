@@ -1,4 +1,4 @@
-import { identity } from "../../../src/utils/function/identity"
+import { identity } from "src/utils/function/identity"
 
 
 describe('identity function', () => {

@@ -1,4 +1,4 @@
-import { noop } from "../../../src/utils/function/noop"
+import { noop } from "src/utils/function/noop"
 
 describe('noop function', () => {
 

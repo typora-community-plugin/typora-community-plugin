@@ -1,5 +1,5 @@
+import { throttle } from "src/utils/schedule/throttle"
 import { vi } from 'vitest'
-import { throttle } from "../../../src/utils/schedule/throttle"
 
 describe('throttle', () => {
   beforeEach(() => {

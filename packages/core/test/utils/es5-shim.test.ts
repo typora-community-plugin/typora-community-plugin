@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { isNativeClass, toES5Ctor, wrapClassesForES5 } from '../../src/utils/es5-shim'
+import { isNativeClass, toES5Ctor, wrapClassesForES5 } from 'src/utils/es5-shim'
 
 
 class Base {

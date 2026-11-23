@@ -1,6 +1,6 @@
+import { evaluateTerm, tryParseBareword } from 'src/ui/sidebar/search/services/query-parser/syntax/bareword-syntax'
+import type { EvalContext, TermNode } from 'src/ui/sidebar/search/services/query-parser/types'
 import { describe, expect, it, vi } from 'vitest'
-import { evaluateTerm, tryParseBareword } from '../../../../../../../src/ui/sidebar/search/services/query-parser/syntax/bareword-syntax'
-import type { EvalContext, TermNode } from '../../../../../../../src/ui/sidebar/search/services/query-parser/types'
 
 // ── Helpers ─────────────────────────────────────────────────────────────
 

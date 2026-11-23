@@ -1,6 +1,6 @@
 import 'src/setup-test-env'
+import { eventToHotkey, HotkeyManager } from 'src/hotkey-manager'
 import { vi } from 'vitest'
-import { eventToHotkey, HotkeyManager } from '../src/hotkey-manager'
 
 
 describe('HotkeyManager', () => {

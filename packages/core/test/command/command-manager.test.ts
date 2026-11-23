@@ -1,7 +1,7 @@
 import 'src/setup-test-env'
+import { type Command, CommandManager } from 'src/command/command-manager'
 import { useService } from 'src/common/service'
 import { vi } from 'vitest'
-import { type Command, CommandManager } from '../../src/command/command-manager'
 
 
 class TestCommandManager extends CommandManager {

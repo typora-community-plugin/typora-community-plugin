@@ -1,5 +1,5 @@
+import { parseSimplifiedYAML, parseTagsWithPositionsFromYAML } from "src/utils/string/yaml";
 import { describe, expect, it, vi } from 'vitest';
-import { parseSimplifiedYAML, parseTagsWithPositionsFromYAML } from "../../../src/utils/string/yaml";
 
 describe('parseSimplifiedYAML', () => {
   it('should return empty object for empty or falsy input', () => {

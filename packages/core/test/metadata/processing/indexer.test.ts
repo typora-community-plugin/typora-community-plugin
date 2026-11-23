@@ -22,8 +22,8 @@ async function setup() {
   await vi.doMock('src/io/fs/filesystem', () => ({ default: fsMock }))
   await vi.doMock('src/metadata/store/store', () => ({ ...storeMock }))
 
-  const { MetadataIndexer } = await import('../../../src/metadata/processing/indexer')
-  const { MetadataProcessor } = await import('../../../src/metadata/processing/processor')
+  const { MetadataIndexer } = await import('src/metadata/processing/indexer')
+  const { MetadataProcessor } = await import('src/metadata/processing/processor')
   const { MetadataProviderRegistry } = await import('src/metadata/provider/registry')
   const { DeferredQueue } = await import('src/utils/schedule/deferred-queue')
 

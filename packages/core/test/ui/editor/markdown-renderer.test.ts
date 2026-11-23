@@ -38,7 +38,7 @@ function createJQuery() {
   }
 }
 
-let MarkdownRenderer: typeof import('../../../src/ui/editor/markdown-renderer').MarkdownRenderer
+let MarkdownRenderer: typeof import('src/ui/editor/markdown-renderer').MarkdownRenderer
 
 beforeEach(async () => {
   document.body.innerHTML = ''
@@ -82,7 +82,7 @@ beforeEach(async () => {
     render: vi.fn(async () => ({ svg: '<svg class="mermaid-svg"></svg>' })),
   }
 
-  MarkdownRenderer = (await import('../../../src/ui/editor/markdown-renderer')).MarkdownRenderer
+  MarkdownRenderer = (await import('src/ui/editor/markdown-renderer')).MarkdownRenderer
 })
 
 function createRenderer() {

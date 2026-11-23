@@ -1,5 +1,5 @@
-import { RE_CODEBLOCK } from "../../../../src/ui/editor/preprocessor/preprocessor"
-import { HtmlMask, RegexpBasedStringMask } from "../../../../src/ui/editor/preprocessor/string-mask"
+import { RE_CODEBLOCK } from "src/ui/editor/preprocessor/preprocessor"
+import { HtmlMask, RegexpBasedStringMask } from "src/ui/editor/preprocessor/string-mask"
 
 
 describe('extract codeblock', () => {

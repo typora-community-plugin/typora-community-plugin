@@ -1,4 +1,4 @@
-import { isCustomProtocolUrl } from '../../../src/utils/string/is-custom-protocol-url'
+import { isCustomProtocolUrl } from 'src/utils/string/is-custom-protocol-url'
 
 describe('isCustomProtocolUrl', () => {
   it('should return false for empty string', () => {

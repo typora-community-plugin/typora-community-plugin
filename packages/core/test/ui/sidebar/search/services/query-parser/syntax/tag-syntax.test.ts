@@ -1,6 +1,6 @@
+import { TagSyntaxHandler } from 'src/ui/sidebar/search/services/query-parser/syntax/tag-syntax'
+import type { EvalContext, FieldNode } from 'src/ui/sidebar/search/services/query-parser/types'
 import { describe, expect, it, vi } from 'vitest'
-import { TagSyntaxHandler } from '../../../../../../../src/ui/sidebar/search/services/query-parser/syntax/tag-syntax'
-import type { EvalContext, FieldNode } from '../../../../../../../src/ui/sidebar/search/services/query-parser/types'
 
 // ── Helpers ─────────────────────────────────────────────────────────────
 

@@ -1,7 +1,7 @@
 import { vi } from 'vitest'
 import 'src/setup-test-env'
 import { useService } from "src/common/service"
-import { SettingMigrations, Settings } from "../../src/settings/settings"
+import { SettingMigrations, Settings } from "src/settings/settings"
 
 
 describe('class Settings', () => {

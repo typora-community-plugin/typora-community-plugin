@@ -1,6 +1,6 @@
 import { vi } from 'vitest'
 import 'src/setup-test-env'
-import { FileAdapter } from '../../../src/io/fs/file-adapter'
+import { FileAdapter } from 'src/io/fs/file-adapter'
 
 class TestFileAdapter extends FileAdapter {
   mockList = vi.fn().mockResolvedValue([] as string[])

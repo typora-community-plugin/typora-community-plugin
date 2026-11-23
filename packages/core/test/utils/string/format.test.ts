@@ -1,5 +1,5 @@
+import { format } from "src/utils/string/format";
 import { describe, expect, it, vi } from 'vitest';
-import { format } from "../../../src/utils/string/format";
 
 describe('format', () => {
   it('should replace a single placeholder with the corresponding value', () => {

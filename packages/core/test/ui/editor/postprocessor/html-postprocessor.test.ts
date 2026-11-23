@@ -1,5 +1,5 @@
+import { HtmlPostProcessor } from 'src/ui/editor/postprocessor/html-postprocessor'
 import { vi } from 'vitest'
-import { HtmlPostProcessor } from '../../../../src/ui/editor/postprocessor/html-postprocessor'
 
 describe('HtmlPostProcessor', () => {
   test('continues processing matching elements after one processor call fails', () => {

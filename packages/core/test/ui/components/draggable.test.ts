@@ -1,6 +1,6 @@
 import 'src/setup-test-env'
+import { draggable } from 'src/ui/components/draggable'
 import { beforeEach, describe, expect, vi } from 'vitest'
-import { draggable } from '../../../src/ui/components/draggable'
 
 // Mock offsetParent so elements have a valid parent chain for compare functions.
 // In jsdom, offsetParent is null by default. We simulate the DOM structure where

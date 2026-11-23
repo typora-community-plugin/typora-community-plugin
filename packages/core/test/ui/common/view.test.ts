@@ -1,6 +1,6 @@
 import 'src/setup-test-env'
+import { type Closeable, View } from 'src/ui/common/view'
 import { describe, expect, vi } from 'vitest'
-import { type Closeable, View } from '../../../src/ui/common/view'
 
 describe('View', () => {
   const defaultContainerEl = document.createElement('div')

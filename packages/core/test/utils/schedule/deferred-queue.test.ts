@@ -1,5 +1,5 @@
+import { DeferredQueue } from 'src/utils/schedule/deferred-queue'
 import { vi } from 'vitest'
-import { DeferredQueue } from '../../../src/utils/schedule/deferred-queue'
 
 
 describe('DeferredQueue', () => {

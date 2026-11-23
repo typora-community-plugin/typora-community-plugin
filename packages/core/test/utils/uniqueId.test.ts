@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { _resetCounter, uniqueId } from '../../src/utils/uniqueId'
+import { _resetCounter, uniqueId } from 'src/utils/uniqueId'
 
 describe('uniqueId', () => {
   beforeEach(() => {

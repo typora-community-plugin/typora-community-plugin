@@ -1,5 +1,5 @@
+import { debounced } from 'src/utils/decorator/debounced'
 import { vi } from 'vitest'
-import { debounced } from '../../../src/utils/decorator/debounced'
 
 
 describe('debounced decorator', () => {

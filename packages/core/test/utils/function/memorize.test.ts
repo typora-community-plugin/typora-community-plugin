@@ -1,5 +1,5 @@
+import { memorize } from "src/utils/function/memorize"
 import { vi } from 'vitest'
-import { memorize } from "../../../src/utils/function/memorize"
 
 
 // Sample function to be memorized

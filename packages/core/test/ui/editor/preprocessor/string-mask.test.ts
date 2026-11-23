@@ -1,4 +1,4 @@
-import { RegexpBasedStringMask } from "../../../../src/ui/editor/preprocessor/string-mask"
+import { RegexpBasedStringMask } from "src/ui/editor/preprocessor/string-mask"
 
 
 class TestStringMasker extends RegexpBasedStringMask {

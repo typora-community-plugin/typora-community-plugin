@@ -1,6 +1,6 @@
 import 'src/setup-test-env'
+import { until } from 'src/utils/until'
 import { vi } from 'vitest'
-import { until } from '../../src/utils/until'
 
 describe('until', () => {
   beforeEach(() => {

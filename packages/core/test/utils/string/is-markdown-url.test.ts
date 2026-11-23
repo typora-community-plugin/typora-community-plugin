@@ -1,5 +1,5 @@
+import { isMarkdownUrl } from "src/utils/string/is-markdown-url";
 import { File } from "typora";
-import { isMarkdownUrl } from "../../../src/utils/string/is-markdown-url";
 
 
 describe('isMarkdownUrl', () => {

@@ -1,4 +1,4 @@
-import { randomString } from "../../../src/utils/string/random-string";
+import { randomString } from "src/utils/string/random-string";
 
 
 describe('randomString', () => {

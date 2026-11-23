@@ -1,4 +1,4 @@
-import { parseMarkdown, parseTitles } from "../../../src/utils/string/markdown";
+import { parseMarkdown, parseTitles } from "src/utils/string/markdown";
 
 describe('parseTitles', () => {
   it('should return empty array for empty content', () => {

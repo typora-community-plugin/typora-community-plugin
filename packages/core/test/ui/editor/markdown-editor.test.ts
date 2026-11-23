@@ -1,11 +1,12 @@
 import 'src/setup-test-env'
+import { EditorSelection } from 'src/ui/editor/selection'
+
 import { afterEach, beforeEach, describe, expect, type Mock, test, vi } from 'vitest'
-import { EditorSelection } from '../../../src/ui/editor/selection'
 
 // Some modules imported by `markdown-editor` read the Typora global at import
 // time, so provide a minimal stub before loading it.
 ;(globalThis as any).editor = { tryOpenUrl_: undefined }
-const { MarkdownEditor } = await import('../../../src/ui/editor/markdown-editor')
+const { MarkdownEditor } = await import('src/ui/editor/markdown-editor')
 
 
 function createRange(collapsed = false) {

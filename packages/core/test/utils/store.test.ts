@@ -1,5 +1,5 @@
+import { Store } from "src/utils/store"
 import { describe, expect, it, vi } from 'vitest'
-import { Store } from "../../src/utils/store"
 
 describe('Store', () => {
 

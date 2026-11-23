@@ -1,4 +1,4 @@
-import { constant } from "../../../src/utils/function/constant"
+import { constant } from "src/utils/function/constant"
 
 
 describe('constant function', () => {

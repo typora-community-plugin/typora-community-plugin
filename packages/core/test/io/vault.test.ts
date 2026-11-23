@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { resolveVaultPath } from '../../src/io/vault'
+import { resolveVaultPath } from 'src/io/vault'
 
 
 function setTyporaGlobals(
