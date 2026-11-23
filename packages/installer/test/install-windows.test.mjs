@@ -20,7 +20,11 @@ const uninstallScript = path.join(distDir, 'uninstall-windows.ps1')
 const APP_USERDATA_SRC = 'typora://app/userData/plugins/loader.js'
 const USERDATA_SRC = 'typora://userData/plugins/loader.js'
 
-const skip = pwsh ? false : 'pwsh is not available'
+// pwsh ships with GitHub's ubuntu runners, so a shell check alone is not
+// enough: the Windows installer relies on junctions and Windows paths.
+const skip = process.platform !== 'win32'
+  ? 'Windows installer tests require Windows'
+  : pwsh ? false : 'pwsh is not available'
 
 async function readHtml(sandbox) {
   return readFile(sandbox.windowHtml, 'utf8')
