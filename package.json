@@ -10,13 +10,16 @@
   "scripts": {
     "build": "pnpm --filter=\"./packages/*\" run build && node build.js",
     "lint": "biome check .",
-    "lint:fix": "biome check --write ."
+    "lint:fix": "biome check --write .",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "plylrnsdy",
   "license": "MIT",
   "devDependencies": {
     "@biomejs/biome": "^2.6.8",
-    "archiver": "^5.3.1"
+    "archiver": "^5.3.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.2"
   }
 }
