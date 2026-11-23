@@ -155,7 +155,7 @@ const SHOW_TEXT = 4
  */
 function getCaretTextOffset(container: HTMLElement): number | null {
   const selection = window.getSelection()
-  if (!selection || !selection.focusNode) return null
+  if (!selection?.focusNode) return null
 
   const walker = document.createTreeWalker(container, SHOW_TEXT, null)
   let offset = 0

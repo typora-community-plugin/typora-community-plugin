@@ -31,7 +31,7 @@ import { _options, bridge, File, reqnode } from 'typora'
 })()
 
 function dirname(filepath: string) {
-  return filepath && filepath.split(/\b(?=[\\\/]+)/).slice(0, -1).join('')
+  return filepath?.split(/\b(?=[\\\/]+)/).slice(0, -1).join('')
 }
 
 function readText(filepath: string) {

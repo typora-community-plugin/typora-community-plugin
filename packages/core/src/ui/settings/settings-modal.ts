@@ -88,7 +88,7 @@ export class SettingsModal extends Component {
         // fix: clicking on the link in setting modal (out of editor) will close Typora unexpectly
         el.addEventListener('click', event => {
           const anchorEl = (event.target as HTMLElement).closest('a')
-          if (anchorEl && anchorEl.getAttribute('href')) {
+          if (anchorEl?.getAttribute('href')) {
             event.preventDefault()
             event.stopPropagation()
             useService('app').openLink(anchorEl.getAttribute('href')!)

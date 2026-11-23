@@ -53,7 +53,7 @@ function findRenderer(cid: string): DiagramTarget | undefined {
 
 function renderDiagram(diagrams: Diagram, cid: string, target: DiagramTarget, args: any[]) {
   const elem = editor.findElemById(cid)
-  if (!elem || !elem.length) return
+  if (!elem?.length) return
 
   const panel = elem.find('.md-diagram-panel')
   if (!panel.length) {

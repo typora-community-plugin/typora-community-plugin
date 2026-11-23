@@ -29,7 +29,7 @@ const FAKE_EDITOR = {
   }
 }
 
-const MarkdownParser = memorize(() => editor.nodeMap.allNodes.first()!.__proto__.constructor)
+const MarkdownParser = memorize(() => Object.getPrototypeOf(editor.nodeMap.allNodes.first()!).constructor)
 
 /**
  * Prefix applied to every `cid` of the rendered preview.

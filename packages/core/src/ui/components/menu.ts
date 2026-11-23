@@ -14,7 +14,7 @@ export class Menu extends View implements Closeable {
   private submenus: Record<string, Menu> = {}
 
   private component = new Component()
-  private _mouseoverListeners: Record<string, Function> = {}
+  private _mouseoverListeners: Record<string, (...args: any[]) => void> = {}
 
   constructor() {
     super()
@@ -198,7 +198,7 @@ export class MenuItem {
 
 export class InternalContextMenu extends Menu {
 
-  private _mousedownListeners: Record<string, Function> = {}
+  private _mousedownListeners: Record<string, (...args: any[]) => void> = {}
 
   constructor(selector: string) {
     super()
@@ -257,7 +257,7 @@ export class InternalContextMenu extends Menu {
     return this
   }
 
-  _onMouseDown(key: string, callback: Function) {
+  _onMouseDown(key: string, callback: (...args: any[]) => void) {
     this._mousedownListeners[key] = callback
   }
 }

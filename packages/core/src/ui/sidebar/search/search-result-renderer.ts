@@ -48,7 +48,7 @@ export class SearchResultRenderer {
    */
   renderResult(result: SearchResult, resultsEl?: HTMLElement): void {
     // Skip empty file paths (can happen from task3 file list)
-    if (!result.filePath || !result.filePath.trim()) return
+    if (!result.filePath?.trim()) return
 
     const target = resultsEl ?? document.querySelector<HTMLElement>(SELECTOR_RESULTS)
     if (!target) return

@@ -45,10 +45,6 @@ interface Options {
   mode?: 'development' | 'production'
 }
 
-const DEFAULT_SETTINGS = {
-  mode: 'production',
-}
-
 /**
  * esbuild plugin for Typora.
  */

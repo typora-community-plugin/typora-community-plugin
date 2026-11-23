@@ -1,4 +1,4 @@
-export function memorize<T extends Function>(fn: T): T {
+export function memorize<T extends (...args: any[]) => any>(fn: T): T {
   const cache = {} as Record<string, any>
 
   return function (...args: any[]) {

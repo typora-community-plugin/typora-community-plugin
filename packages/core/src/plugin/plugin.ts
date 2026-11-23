@@ -26,7 +26,7 @@ interface StatusBarItemOptions {
   type?: 'item' | 'button'
 }
 
-export abstract class Plugin<T extends Record<string, any> = {}>
+export abstract class Plugin<T extends Record<string, any> = Record<string, any>>
   extends Component {
 
   private _settings: PluginSettings<T> | undefined

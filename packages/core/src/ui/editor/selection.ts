@@ -102,7 +102,7 @@ export class EditorSelection {
    */
   getCursor(): number | null {
     const sel = window.getSelection()
-    if (!sel || !sel.rangeCount) return null
+    if (!sel?.rangeCount) return null
 
     const container = editor.writingArea
     const focusNode = sel.focusNode
