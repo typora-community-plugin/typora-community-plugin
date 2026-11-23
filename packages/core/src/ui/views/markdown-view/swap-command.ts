@@ -2,6 +2,7 @@ import { Component } from 'src/common/component'
 import { useService } from 'src/common/service'
 import { useSettingEffectedFeature } from 'src/settings/use-setting-effect'
 import type { WorkspaceTabs } from 'src/ui/layout/tabs'
+import { useActiveLeaf } from 'src/ui/layout/use-active-leaf'
 import type { WorkspaceLeaf } from 'src/ui/layout/workspace-leaf'
 import { editor } from 'typora'
 import type { MarkdownView } from '.'
@@ -51,6 +52,9 @@ export class SwapCommand extends Component {
     beginSwap(previewLeaf)
     this._hideEditor(writeEl)
     this._setParent(previewLeaf)
+
+    const [, setActiveLeaf] = useActiveLeaf()
+    setActiveLeaf(previewLeaf)
     this._openFile(previewLeaf.state.path)
 
     const doSwap = () => {

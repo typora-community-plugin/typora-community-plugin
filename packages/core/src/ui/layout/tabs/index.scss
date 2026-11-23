@@ -43,7 +43,7 @@
   }
 
   &.mod-active .typ-tab.active {
-    border-top: var(--typ-indicator-width) solid var(--active-file-border-color);
+    border-top: var(--typ-indicator-width) solid var(--active-file-border-color, var(--typ-tab-border-color));
   }
 
   &>.typ-workspace-tab-content {
