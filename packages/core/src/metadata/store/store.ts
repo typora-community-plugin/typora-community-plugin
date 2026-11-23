@@ -1,5 +1,5 @@
+import type { TagObject } from 'src/utils'
 import { MiniDexie } from 'src/utils/indexed-db'
-import { TagObject } from 'src/utils'
 
 
 export interface CacheEntry {

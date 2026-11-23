@@ -1,8 +1,8 @@
 import { useService } from "src/common/service"
 import { beginDrag } from 'src/utils/pointer/drag'
 import type { DisposeFunc } from 'src/utils/types'
-import type { WorkspaceTabs } from "."
 import type { WorkspaceRoot } from "../workspace-root"
+import type { WorkspaceTabs } from "."
 
 
 /**

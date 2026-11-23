@@ -7,7 +7,7 @@ describe('noop function', () => {
   })
 
   it('should accept arguments without error', () => {
-    // @ts-ignore
+    // @ts-expect-error
     expect(noop(1, 'hello', true)).toBeUndefined()
   })
 
@@ -19,7 +19,7 @@ describe('noop function', () => {
   })
 
   it('should work with typed inputs that are ignored', () => {
-    // @ts-ignore
+    // @ts-expect-error
     noop(42, 'string', null, undefined, {}, [])
     expect(noop()).toBeUndefined()
   })

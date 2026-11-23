@@ -9,6 +9,8 @@
     "build:dev": "node build.js --start",
     "build": "rollup -c rollup.config.js",
     "build-dts": "node build-dts.js",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --no-cache",
     "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --no-cache --coverage",
     "prepublish": "node build.js && pnpm run build-dts"

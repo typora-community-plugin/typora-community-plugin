@@ -1,5 +1,5 @@
 import decorate from "@plylrnsdy/decorate.js"
-import { Diagram, editor } from "typora"
+import { type Diagram, editor } from "typora"
 
 
 /**
@@ -109,7 +109,7 @@ export function hookDiagramEngine() {
   })
 
   decorate(diagrams, 'updateDiagram', fn =>
-    async function (cid: string, ...args: any[]) {
+    async (cid: string, ...args: any[]) => {
       const target = findRenderer(cid)
       if (target) return renderDiagram(diagrams, cid, target, args)
 

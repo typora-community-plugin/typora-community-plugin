@@ -9,7 +9,7 @@
  */
 
 import { getHandler } from './index'
-import type { ParsedAST, FieldNode } from './types'
+import type { FieldNode, ParsedAST } from './types'
 
 /**
  * Collect every literal pattern that appears inside a negated sub-expression.

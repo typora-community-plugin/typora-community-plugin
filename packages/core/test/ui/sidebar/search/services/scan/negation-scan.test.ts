@@ -2,7 +2,7 @@
  * Whole-file negation scan helpers: ripgrep arguments and file-type checks.
  */
 
-import { describe, it, expect } from '@jest/globals'
+import { describe, expect, it } from '@jest/globals'
 
 import {
   buildFilesWithMatchesArgs,

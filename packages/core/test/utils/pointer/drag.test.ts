@@ -1,7 +1,7 @@
 import 'src/setup-test-env'
-import { describe, test, expect, jest, beforeEach, afterEach } from '@jest/globals'
-import { beginDrag } from 'src/utils/pointer/drag'
+import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals'
 import type { DragInfo, DragOptions } from 'src/utils/pointer/drag'
+import { beginDrag } from 'src/utils/pointer/drag'
 
 
 function fire(type: string, options: Record<string, any> = {}) {

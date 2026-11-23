@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { jest, describe, it, expect, beforeEach } from '@jest/globals'
+import { beforeEach, describe, expect, it, jest } from '@jest/globals'
 import { draggable } from '../../../src/ui/components/draggable'
 
 // Mock offsetParent so elements have a valid parent chain for compare functions.

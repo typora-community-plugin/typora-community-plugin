@@ -1,9 +1,9 @@
+import { useService } from "src/common/service"
+import { wrapWithLoggingProxy } from "src/io/logger/service-logger"
 import path from "src/path"
 import type { DisposeFunc } from "src/utils/types"
 import type { WorkspaceLeaf } from "./layout/workspace-leaf"
-import { WorkspaceView } from "./layout/workspace-view"
-import { wrapWithLoggingProxy } from "src/io/logger/service-logger"
-import { useService } from "src/common/service"
+import type { WorkspaceView } from "./layout/workspace-view"
 
 
 export interface ViewState {

@@ -1,5 +1,5 @@
 import './modal.scss'
-import { Closeable, View } from "src/ui/common/view"
+import { type Closeable, View } from "src/ui/common/view"
 import { html } from 'src/utils'
 
 

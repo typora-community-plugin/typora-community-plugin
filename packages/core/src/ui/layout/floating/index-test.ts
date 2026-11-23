@@ -1,9 +1,9 @@
 import { useService } from "src/common/service"
 import { html } from "src/utils"
-import type { WorkspaceLeaf } from "../workspace-leaf"
-import { WorkspaceView } from "../workspace-view"
-import { createLeaf, openFloatingLeaf } from "../workspace-utils"
 import type { WorkspaceTabs } from "../tabs"
+import type { WorkspaceLeaf } from "../workspace-leaf"
+import { createLeaf, openFloatingLeaf } from "../workspace-utils"
+import { WorkspaceView } from "../workspace-view"
 
 
 /**

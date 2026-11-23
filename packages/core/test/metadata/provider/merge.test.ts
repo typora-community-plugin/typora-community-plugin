@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { mergeMetadata, type MergeSpec } from '../../../src/metadata/provider/merge'
+import { type MergeSpec, mergeMetadata } from '../../../src/metadata/provider/merge'
 
 
 describe('mergeMetadata', () => {

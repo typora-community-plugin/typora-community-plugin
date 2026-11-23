@@ -1,7 +1,6 @@
 import 'src/setup-test-env'
-import { jest } from '@jest/globals'
-import { describe, it, expect } from '@jest/globals'
-import { View, Closeable } from '../../../src/ui/common/view'
+import { describe, expect, it, jest } from '@jest/globals'
+import { type Closeable, View } from '../../../src/ui/common/view'
 
 describe('View', () => {
   const defaultContainerEl = document.createElement('div')

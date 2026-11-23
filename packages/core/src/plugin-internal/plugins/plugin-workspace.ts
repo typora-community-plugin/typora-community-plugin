@@ -1,11 +1,11 @@
 import { useService } from 'src/common/service'
-import { InternalPlugin, InternalPluginManifest } from '../internal-plugin'
 import type { WorkspaceSettings } from 'src/ui/settings/tabs-plugin/workspace'
 import { WorkspaceSettingTab } from 'src/ui/settings/tabs-plugin/workspace'
+import { InternalPlugin, type InternalPluginManifest } from '../internal-plugin'
 
 
-export type { WorkspaceSettings }
 export { DEFAULT_WORKSPACE_SETTINGS, WorkspaceSettingTab } from 'src/ui/settings/tabs-plugin/workspace'
+export type { WorkspaceSettings }
 
 export const PLUGIN_WORKSPACE_ID = 'internal.workspace'
 

@@ -1,11 +1,11 @@
 import type { IncomingMessage } from 'node:http'
-import { File, JSBridge, _options, reqnode } from 'typora'
-import fs from 'src/io/fs/filesystem'
-import path from 'src/path'
-import { Shell } from 'src/io/shell'
-import { uniqueId } from "src/utils"
-import { unzip } from 'src/io/zlib'
 import { useService } from 'src/common/service'
+import fs from 'src/io/fs/filesystem'
+import { Shell } from 'src/io/shell'
+import { unzip } from 'src/io/zlib'
+import path from 'src/path'
+import { uniqueId } from "src/utils"
+import { _options, File, JSBridge, reqnode } from 'typora'
 
 
 export enum Downloader {

@@ -1,7 +1,7 @@
 import { useService } from 'src/common/service'
-import { Plugin } from '../plugin/plugin'
 import type { SettingTab } from 'src/ui/settings/setting-tab'
 import { SettingsModal } from 'src/ui/settings/settings-modal'
+import { Plugin } from '../plugin/plugin'
 
 
 export interface InternalPluginManifest {

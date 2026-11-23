@@ -1,5 +1,5 @@
-import { describe, it, expect, jest } from '@jest/globals'
-import { html, getElementPagePosition } from '../../src/utils/html'
+import { describe, expect, it, jest } from '@jest/globals'
+import { getElementPagePosition, html } from '../../src/utils/html'
 
 // Mock jQuery globally for tests
 global.$ = jest.fn().mockReturnValue(document.createElement('div'))

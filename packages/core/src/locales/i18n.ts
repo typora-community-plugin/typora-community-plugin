@@ -1,8 +1,8 @@
-import path from 'src/path'
-import { _options } from "typora"
 import { useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
+import path from 'src/path'
 import type { ReadonlyDeep } from 'src/utils/types'
+import { _options } from "typora"
 
 
 type I18nBaseOptions = {
@@ -74,7 +74,6 @@ export class I18n<T> {
       }
       catch (error) {
         this.logger.warn(`Failed to load locale file: lang.${localeList[i]}.json`)
-        continue
       }
     }
 

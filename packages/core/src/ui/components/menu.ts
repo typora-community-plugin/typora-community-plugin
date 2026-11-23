@@ -1,8 +1,8 @@
 import './menu.scss'
+import { Component } from 'src/common/component'
 import { useService } from "src/common/service"
 import { getElementPagePosition, html } from "src/utils"
-import { Closeable, View } from '../common/view'
-import { Component } from 'src/common/component'
+import { type Closeable, View } from '../common/view'
 
 
 interface MenuPositionDef {
@@ -53,7 +53,7 @@ export class Menu extends View implements Closeable {
   }
 
   protected _createItem(build: (item: MenuItem) => any) {
-    // @ts-ignore
+    // @ts-expect-error
     const item = new MenuItem(this)
     build(item)
     return item
@@ -180,7 +180,7 @@ export class MenuItem {
 
     const itemKey = this.containerEl.dataset.key
     const submenuKey = itemKey + ':submenu'
-    // @ts-ignore
+    // @ts-expect-error
     const submenu = (this.menu.submenus[submenuKey] ??= new Menu())
     submenu.empty()
     build(submenu)
@@ -232,7 +232,7 @@ export class InternalContextMenu extends Menu {
   }
 
   protected _createItem(build: (item: MenuItem) => any) {
-    // @ts-ignore
+    // @ts-expect-error
     const item = new InternalMenuItem(this)
     build(item)
     return item

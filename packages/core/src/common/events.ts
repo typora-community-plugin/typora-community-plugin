@@ -1,7 +1,7 @@
-import { isDebug } from "./constants"
-import { useService } from "./service"
 import { noop } from "src/utils"
 import type { DisposeFunc } from "src/utils/types"
+import { isDebug } from "./constants"
+import { useService } from "./service"
 
 
 export type EventListener = (...args: any[]) => any
@@ -32,7 +32,7 @@ export class Events<E extends EventDefination> {
   }
 
   prependListener<K extends keyof E>(event: K, listener: E[K]): DisposeFunc {
-    let listeners = this._listeners[event]
+    const listeners = this._listeners[event]
       ?? (this._listeners[event] = [])
 
     listeners.unshift(listener)
@@ -40,7 +40,7 @@ export class Events<E extends EventDefination> {
   }
 
   on<K extends keyof E>(event: K, listener: E[K]): DisposeFunc {
-    let listeners = this._listeners[event]
+    const listeners = this._listeners[event]
       ?? (this._listeners[event] = [])
 
     listeners.push(listener)

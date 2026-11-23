@@ -1,12 +1,12 @@
-import { Modal } from "../components/modal"
-import { html } from 'src/utils'
-import { useService } from 'src/common/service'
 import { Component } from 'src/common/component'
+import { useService } from 'src/common/service'
+import { html } from 'src/utils'
+import { Modal } from "../components/modal"
 
 
-// @ts-ignore
+// @ts-expect-error
 globalThis.openInputBox = openInputBox
-// @ts-ignore
+// @ts-expect-error
 globalThis.openQuickPick = openQuickPick
 
 interface InputBoxOptions {
@@ -239,7 +239,7 @@ export class QuickPick extends Component {
   }
 
   private onKeyup = (event: KeyboardEvent) => {
-    let { key } = event;
+    const { key } = event;
     if (key.startsWith("Arrow")) {
       this.moveSelection(key === "ArrowDown" ? 1 : -1)
       this.renderItems()

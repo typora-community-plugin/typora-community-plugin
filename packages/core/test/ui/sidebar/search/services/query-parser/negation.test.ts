@@ -3,14 +3,14 @@
  * and when the positive search alone cannot answer the query.
  */
 
-import { describe, it, expect } from '@jest/globals'
+import { describe, expect, it } from '@jest/globals'
 
 import { tryParse } from 'src/ui/sidebar/search/services/query-parser'
 import {
-  collectNegationPatterns,
   astHasBodyNegation,
   astHasNegatedTerm,
   astHasNegationUnderOr,
+  collectNegationPatterns,
 } from 'src/ui/sidebar/search/services/query-parser/negation'
 
 function patterns(query: string): string[] {

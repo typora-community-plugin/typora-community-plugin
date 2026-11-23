@@ -1,9 +1,9 @@
 import decorate from '@plylrnsdy/decorate.js'
-import { editor, File } from 'typora'
 import { useService } from 'src/common/service'
+import type { DisposeFunc } from 'src/utils/types'
+import { editor, File } from 'typora'
 import type { MarkdownEditor } from '../markdown-editor'
 import { HtmlMask, RegexpBasedStringMask } from './string-mask'
-import type { DisposeFunc } from 'src/utils/types'
 
 
 type ProcessTime = 'preload' | 'presave'

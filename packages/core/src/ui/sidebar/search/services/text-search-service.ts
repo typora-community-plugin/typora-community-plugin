@@ -1,12 +1,12 @@
-import { bridge } from "typora"
-import { Semaphore } from "src/utils/schedule/semaphore"
 import { noop } from "src/utils"
+import { Semaphore } from "src/utils/schedule/semaphore"
+import { bridge } from "typora"
+import type { SearchMatch } from "./scan/json-lines"
+import { JsonLinesParser, matchPathOf, toSearchMatch } from "./scan/json-lines"
 import { buildFilesWithMatchesArgs } from "./scan/negation-scan"
 import { isNativeBridgePlatform, resolveRipgrepPath, toAbsolutePath } from "./scan/rg-platform"
-import { RipgrepProcessManager } from "./scan/ripgrep-process"
 import type { TextRunHandle } from "./scan/ripgrep-process"
-import { JsonLinesParser, matchPathOf, toSearchMatch } from "./scan/json-lines"
-import type { SearchMatch } from "./scan/json-lines"
+import { RipgrepProcessManager } from "./scan/ripgrep-process"
 
 export type { MatchSource, SearchMatch } from "./scan/json-lines"
 

@@ -1,7 +1,7 @@
 import './index.scss'
-import { WorkspaceParent } from '../workspace-parent'
 import { beginDrag } from 'src/utils/pointer/drag'
 import type { WorkspaceNode } from '../workspace-node'
+import { WorkspaceParent } from '../workspace-parent'
 
 
 export type Direction = 'horizontal' | 'vertical'
@@ -86,7 +86,7 @@ export class WorkspaceSplit extends WorkspaceParent {
       onMove: (e2, { dx, dy }) => {
         const deltaPx = isVertical ? dx : dy
 
-        let newLeftPx = Math.max(120, leftW + deltaPx)
+        const newLeftPx = Math.max(120, leftW + deltaPx)
         let newRightPx = Math.max(120, rightW - deltaPx)
 
         if (newLeftPx + newRightPx > totalPixel) {

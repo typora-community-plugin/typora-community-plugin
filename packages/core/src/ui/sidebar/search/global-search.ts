@@ -1,8 +1,8 @@
-import { editor } from "typora"
 import { useService } from "src/common/service"
-import { GlobalSearchView } from "./views/global-search-view"
-import { RipgrepSearchService } from "./services/text-search-service"
+import { editor } from "typora"
 import { HybridSearchService } from "./services/hybrid-search-service"
+import { RipgrepSearchService } from "./services/text-search-service"
+import { GlobalSearchView } from "./views/global-search-view"
 
 
 const ORIGINAL_KEY = Symbol.for('search$original')

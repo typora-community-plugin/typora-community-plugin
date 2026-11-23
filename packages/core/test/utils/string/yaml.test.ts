@@ -1,5 +1,5 @@
+import { describe, expect, it } from '@jest/globals';
 import { parseSimplifiedYAML, parseTagsWithPositionsFromYAML } from "../../../src/utils/string/yaml";
-import { describe, it, expect } from '@jest/globals';
 
 describe('parseSimplifiedYAML', () => {
   it('should return empty object for empty or falsy input', () => {

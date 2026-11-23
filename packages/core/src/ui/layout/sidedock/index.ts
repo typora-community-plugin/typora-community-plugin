@@ -1,17 +1,17 @@
 import './index.scss'
-import { WorkspaceParent } from '../workspace-parent'
-import type { WorkspaceNode } from '../workspace-node'
-import { useService } from 'src/common/service'
 import { Component } from 'src/common/component'
+import type { PublicEvents } from 'src/common/events'
+import { useService } from 'src/common/service'
 import { KEY_OF_ENABLED_PLUGINS } from 'src/plugin-internal/internal-plugin-manager'
 import { PLUGIN_WORKSPACE_ID } from 'src/plugin-internal/plugins/plugin-workspace'
-import { ensureRightSidedockLeaf } from '../workspace-utils'
-import type { Workspace } from 'src/ui/workspace'
-import type { PublicEvents } from 'src/common/events'
-import type { WorkspaceRootEvents } from '../workspace-root'
-import type { WorkspaceSplit } from '../split'
 import { useSettingEffect } from 'src/settings/use-setting-effect'
+import type { Workspace } from 'src/ui/workspace'
 import { beginDrag } from 'src/utils/pointer/drag'
+import type { WorkspaceSplit } from '../split'
+import type { WorkspaceNode } from '../workspace-node'
+import { WorkspaceParent } from '../workspace-parent'
+import type { WorkspaceRootEvents } from '../workspace-root'
+import { ensureRightSidedockLeaf } from '../workspace-utils'
 
 
 /**
@@ -160,9 +160,8 @@ export class WorkspaceSidedock extends WorkspaceParent {
 
   /** Mouse drag to resize the dock */
   private _onResizeStart(e: MouseEvent) {
-    const dock = this
     const startPos = e.clientX
-    const startSize = dock.size
+    const startSize = this.size
 
     beginDrag(e, {
       onMove: (e2) => {
@@ -171,11 +170,11 @@ export class WorkspaceSidedock extends WorkspaceParent {
 
         // Auto-collapse when too narrow (< 50px); `false` ends the drag session
         if (newSize < 50) {
-          dock.collapse()
+          this.collapse()
           return false
         }
 
-        dock.setSize(Math.max(WorkspaceSidedock.MIN_SIZE, newSize))
+        this.setSize(Math.max(WorkspaceSidedock.MIN_SIZE, newSize))
       },
       onEnd: (_e, _info, canceled) => {
         // `collapse()` in onMove already emitted `split:resized`

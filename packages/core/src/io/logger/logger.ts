@@ -55,7 +55,7 @@ export class Logger {
     console[level.method](
       ...badges(
         badge('[Typora Plugin]', level.bgColor),
-        !!this.scope ? badge(this.scope, 'gray') : undefined),
+        this.scope ? badge(this.scope, 'gray') : undefined),
       ...messages
     )
   }

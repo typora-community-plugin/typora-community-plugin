@@ -1,13 +1,13 @@
 import { useEventBus } from "src/common/eventbus"
 import { useService } from "src/common/service"
+import { memorize } from "src/utils"
 import type { WorkspaceLeaf } from "./workspace-leaf"
 import type { WorkspaceParent } from "./workspace-parent"
-import { memorize } from "src/utils"
 
 /**
  * @example const [getActiveLeaf, setActiveLeaf] = useActiveLeaf()
  */
-const useActiveLeaf = memorize(function () {
+const useActiveLeaf = memorize(() => {
   let _activeLeaf: WorkspaceLeaf | null
 
   function getActiveLeaf(rootSplit = useService('workspace-root')): WorkspaceLeaf | null {

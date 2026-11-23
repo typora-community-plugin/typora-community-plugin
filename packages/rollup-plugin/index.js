@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
+import * as modules from 'node:module'
 import path from "node:path"
 import url from "node:url"
-import * as modules from 'node:module'
 
 
 const __filename = url.fileURLToPath(import.meta.url)

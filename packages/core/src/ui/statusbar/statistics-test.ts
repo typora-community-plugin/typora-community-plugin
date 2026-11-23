@@ -1,4 +1,4 @@
-import { StatisticHandler } from "./statistics"
+import type { StatisticHandler } from "./statistics"
 
 
 const countUp = (() => {

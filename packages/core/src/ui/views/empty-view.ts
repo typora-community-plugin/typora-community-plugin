@@ -1,8 +1,8 @@
 import './empty-view.scss'
 import { useService } from 'src/common/service'
+import { html } from 'src/utils'
 import type { WorkspaceLeaf } from '../layout/workspace-leaf'
 import { WorkspaceView } from '../layout/workspace-view'
-import { html } from 'src/utils'
 
 
 export class EmptyView extends WorkspaceView {

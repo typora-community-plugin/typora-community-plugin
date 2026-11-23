@@ -1,4 +1,4 @@
-import { File, _options, bridge, reqnode } from 'typora'
+import { _options, bridge, File, reqnode } from 'typora'
 
 
 (function main() {

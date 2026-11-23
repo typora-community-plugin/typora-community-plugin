@@ -23,7 +23,7 @@ class BrowserOs implements INodeOs {
   homedir(): string {
     const loaderScriptEl = document.querySelector('script[src^="file:///Users/"]')
     if (!loaderScriptEl) throw Error('Can not get homedir.')
-    return loaderScriptEl.getAttribute('src')!.match(/(\/Users\/[^\/]+)\//)![1]
+    return loaderScriptEl.getAttribute('src')!.match(/(\/Users\/[^/]+)\//)![1]
   }
 
   hostname(): string {

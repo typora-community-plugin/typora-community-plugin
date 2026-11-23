@@ -9,8 +9,8 @@
  *   title:meeting  → find files whose frontmatter title or headings contain "meeting"
  */
 
-import type { FieldNode, SyntaxHandler, EvalContext } from '../types'
-import type { SearchMatch, MatchSource } from '../../text-search-service'
+import type { MatchSource, SearchMatch } from '../../text-search-service'
+import type { EvalContext, FieldNode, SyntaxHandler } from '../types'
 
 export const TitleSyntaxHandler: SyntaxHandler = {
   name: 'title',

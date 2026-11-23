@@ -45,7 +45,7 @@ export class MergedSuggest<T> extends EditorSuggest<MergedSuggestion<T>> {
     for (const s of this._suggests) {
       const res = s.findQuery(textBefore, textAfter, range)
       if (res.isMatched) {
-        // @ts-ignore
+        // @ts-expect-error
         s._query = res.query
         if (!isMatched) {
           isMatched = true
@@ -65,7 +65,7 @@ export class MergedSuggest<T> extends EditorSuggest<MergedSuggestion<T>> {
 
     this._suggests.forEach((suggest, index) => {
       suggest
-        // @ts-ignore
+        // @ts-expect-error
         .getSuggestions(suggest._query)
         .forEach(s => {
           const id = this._generateMergedId(index, suggest.getSuggestionId(s))

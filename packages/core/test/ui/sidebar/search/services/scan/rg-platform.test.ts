@@ -2,7 +2,7 @@
  * Platform/path helpers of the ripgrep search backend.
  */
 
-import { describe, it, expect, afterEach } from '@jest/globals'
+import { afterEach, describe, expect, it } from '@jest/globals'
 
 import {
   isNativeBridgePlatform,

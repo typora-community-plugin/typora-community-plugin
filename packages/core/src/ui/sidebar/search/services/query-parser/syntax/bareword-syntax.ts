@@ -9,7 +9,7 @@
  *   - Bare word: check if body token set contains the word (ripgrep already confirmed presence)
  */
 
-import type { TermNode, ParsedAST, EvalContext } from '../types'
+import type { EvalContext, ParsedAST, TermNode } from '../types'
 
 export interface BarewordToken {
   node: TermNode

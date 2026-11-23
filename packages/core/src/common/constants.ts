@@ -1,6 +1,6 @@
-import { _options } from "typora"
 import path from "src/path"
 import { constant } from "src/utils"
+import { _options } from "typora"
 
 
 export const coreVersion = constant(process.env.CORE_VERSION!)
@@ -29,7 +29,7 @@ export const platform = constant(
 
 export const isDebug = constant(
   process.env.IS_PROD
-    // @ts-ignore
+    // @ts-expect-error
     ? globalThis[Symbol.for(`${process.env.CORE_NS}:env`)].debug
     : process.env.IS_DEV
 )

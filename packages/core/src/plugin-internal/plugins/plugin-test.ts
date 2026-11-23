@@ -1,8 +1,9 @@
 import './plugin-test.scss'
 import { useService } from "src/common/service"
-import { InternalPlugin, InternalPluginManifest } from "src/plugin-internal/internal-plugin"
+import { InternalPlugin, type InternalPluginManifest } from "src/plugin-internal/internal-plugin"
 import { EditaleTableTestTab } from "src/ui/components/editable-table-test"
 import { setupTestCodeblock } from "src/ui/editor/codeblock/codeblock-test"
+import { type DecoratedTextMatch, DecoratedTextPostprocessor } from "src/ui/editor/postprocessor/decorated-text-postprocessor"
 import { BarSlashSuggest, FooSlashSuggest } from "src/ui/editor/suggestion/suggest-test"
 import { setupTestFloatingView } from "src/ui/layout/floating/index-test"
 import { setupTestSidedockView } from "src/ui/layout/sidedock/index-test"
@@ -12,7 +13,6 @@ import { SettingsModal } from "src/ui/settings/settings-modal"
 import { TEST_SELECTION_STATS, TEST_STATS } from "src/ui/statusbar/statistics-test"
 import { html } from "src/utils"
 import { JSBridge } from "typora"
-import { DecoratedTextPostprocessor, type DecoratedTextMatch } from "src/ui/editor/postprocessor/decorated-text-postprocessor"
 import { PLUGIN_TEST_ID } from "./plugin-test-manifest"
 
 
@@ -108,7 +108,7 @@ export class TestPlugin extends InternalPlugin {
     // Test Wikilink Highlight Postprocessor
     const tagMatches: DecoratedTextMatch[] = [
       {
-        regexp: /(^|\s)(#[^\u2000-\u206F\u2E00-\u2E7F'!"#$%&()*+,.:;<=>?@^`{|}~\[\]\\\s]+)/g,
+        regexp: /(^|\s)(#[^\u2000-\u206F\u2E00-\u2E7F'!"#$%&()*+,.:;<=>?@^`{|}~[\]\\\s]+)/g,
         classname: 'typ-tag__test',
         onClick: (_event, element) => {
           useService('notice', [element.textContent ?? ''])

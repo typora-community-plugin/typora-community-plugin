@@ -1,13 +1,13 @@
 import './index.scss'
-import { WorkspaceParent } from "../workspace-parent"
-import type { WorkspaceLeaf } from '../workspace-leaf'
-import { createEmptyLeaf } from '../workspace-utils'
-import { WorkspaceNode } from '../workspace-node'
-import { FileTab, FileTabContainer, UntitledTab } from './file-tabs'
-import { useActiveLeaf } from '../use-active-leaf'
+import { useSettingEffect } from 'src/settings/use-setting-effect'
 import { EmptyView } from 'src/ui/views/empty-view'
 import { noop } from 'src/utils'
-import { useSettingEffect } from 'src/settings/use-setting-effect'
+import { useActiveLeaf } from '../use-active-leaf'
+import type { WorkspaceLeaf } from '../workspace-leaf'
+import type { WorkspaceNode } from '../workspace-node'
+import { WorkspaceParent } from "../workspace-parent"
+import { createEmptyLeaf } from '../workspace-utils'
+import { FileTab, FileTabContainer, UntitledTab } from './file-tabs'
 
 
 function enabledFileTabsProps(tabs: WorkspaceTabs) {
@@ -50,7 +50,7 @@ export class WorkspaceTabs extends WorkspaceParent {
       setTimeout(() => {
         if (!this.containerEl.closest('.typ-workspace-root')) return
 
-        // @ts-ignore
+        // @ts-expect-error
         this.tabHeader.props =
           isEnabled ? enabledFileTabsProps(this) : disabledFileTabsProps(this)
 

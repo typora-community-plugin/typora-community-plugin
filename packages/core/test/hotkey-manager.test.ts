@@ -1,6 +1,6 @@
 import 'src/setup-test-env'
 import { jest } from '@jest/globals'
-import { HotkeyManager, eventToHotkey } from '../src/hotkey-manager'
+import { eventToHotkey, HotkeyManager } from '../src/hotkey-manager'
 
 
 describe('HotkeyManager', () => {

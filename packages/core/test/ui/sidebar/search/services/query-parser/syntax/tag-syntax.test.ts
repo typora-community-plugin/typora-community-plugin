@@ -1,6 +1,6 @@
-import { describe, it, expect } from '@jest/globals'
+import { describe, expect, it } from '@jest/globals'
 import { TagSyntaxHandler } from '../../../../../../../src/ui/sidebar/search/services/query-parser/syntax/tag-syntax'
-import type { FieldNode, EvalContext } from '../../../../../../../src/ui/sidebar/search/services/query-parser/types'
+import type { EvalContext, FieldNode } from '../../../../../../../src/ui/sidebar/search/services/query-parser/types'
 
 // ── Helpers ─────────────────────────────────────────────────────────────
 

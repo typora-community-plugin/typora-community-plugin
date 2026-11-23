@@ -1,10 +1,10 @@
-import path from "src/path"
-import { JSBridge, editor } from "typora"
 import decorate from '@plylrnsdy/decorate.js'
 import { Component } from "src/common/component"
 import { useService } from "src/common/service"
 import fs from 'src/io/fs/filesystem'
+import path from "src/path"
 import { useSettingEffect, useSettingEffectedFeature } from "src/settings/use-setting-effect"
+import { editor, JSBridge } from "typora"
 
 
 export class QuickOpenPanel extends Component {

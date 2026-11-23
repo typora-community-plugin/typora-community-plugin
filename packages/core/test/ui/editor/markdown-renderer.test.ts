@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { jest, describe, expect, test, beforeEach } from '@jest/globals'
+import { beforeEach, describe, expect, jest, test } from '@jest/globals'
 
 
 // `MarkdownRenderer` imports `typora` modules as bare globals. Provide the

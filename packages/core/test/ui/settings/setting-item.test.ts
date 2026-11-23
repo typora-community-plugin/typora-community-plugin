@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { describe, it, expect, jest } from '@jest/globals'
+import { describe, expect, it, jest } from '@jest/globals'
 import { SettingItem } from '../../../src/ui/settings/setting-item'
 
 

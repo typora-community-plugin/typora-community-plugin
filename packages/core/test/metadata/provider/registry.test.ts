@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { MetadataProviderRegistry, type MetadataProvider } from '../../../src/metadata/provider/registry'
+import { type MetadataProvider, MetadataProviderRegistry } from '../../../src/metadata/provider/registry'
 
 
 describe('MetadataProviderRegistry', () => {

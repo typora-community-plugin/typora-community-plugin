@@ -1,9 +1,9 @@
 import './statistics.scss'
-import { editor } from 'typora'
-import { Component } from 'src/common/component'
-import type { DisposeFunc } from 'src/utils/types'
 import decorate from '@plylrnsdy/decorate.js'
+import { Component } from 'src/common/component'
 import { throttle } from 'src/utils'
+import type { DisposeFunc } from 'src/utils/types'
+import { editor } from 'typora'
 
 
 const TBODY_SEL = 'li.ty-footer-word-count-all table tbody'

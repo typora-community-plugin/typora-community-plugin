@@ -1,5 +1,5 @@
-import { editor, type Rangy } from "typora"
 import { useEventBus } from "src/common/eventbus"
+import { editor, type Rangy } from "typora"
 import { isCodeEditor } from "./code-editor"
 
 

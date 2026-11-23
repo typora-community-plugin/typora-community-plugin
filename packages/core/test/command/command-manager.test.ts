@@ -1,7 +1,7 @@
 import 'src/setup-test-env'
 import { jest } from '@jest/globals'
 import { useService } from 'src/common/service'
-import { CommandManager, Command } from '../../src/command/command-manager'
+import { type Command, CommandManager } from '../../src/command/command-manager'
 
 
 class TestCommandManager extends CommandManager {

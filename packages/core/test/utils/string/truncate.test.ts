@@ -51,13 +51,13 @@ describe('truncate', () => {
 
   it('should throw an error if length is not a number', () => {
     const str = 'hello world';
-    // @ts-ignore
+    // @ts-expect-error
     expect(() => truncate(str, { length: 'not-a-number' })).toThrow();
   });
 
   it('should not throw an error if omission is not a string', () => {
     const str = 'hello world';
-    // @ts-ignore
+    // @ts-expect-error
     const truncated = truncate(str, { length: 5, omission: 123 });
     expect(truncated).toBe('he123');
   });

@@ -1,0 +1,99 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.6.8/schema.json",
+	"files": {
+		"includes": [
+			"build.js",
+			"packages/*/src/**",
+			"packages/*/test/**",
+			"packages/*/__mocks__/**",
+			"packages/*/index.ts",
+			"packages/*/index.js",
+			"packages/*/index.d.ts",
+			"packages/*/build.js",
+			"packages/*/build-dts.js",
+			"packages/*/jest-esbuild.js",
+			"packages/*/jest.config.mjs",
+			"packages/*/rollup.config.js",
+			"!packages/installer/test/fixtures/**/*"
+		],
+		"ignoreUnknown": true
+	},
+	"formatter": {
+		"enabled": false
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"preset": "recommended",
+			"suspicious": {
+				"noAssignInExpressions": "warn",
+				"useIterableCallbackReturn": "warn"
+			}
+		}
+	},
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
+	},
+	"overrides": [
+		{
+			"includes": ["packages/*/test/**", "packages/*/__mocks__/**"],
+			"javascript": {
+				"globals": [
+					"jest",
+					"describe",
+					"it",
+					"test",
+					"expect",
+					"beforeEach",
+					"afterEach",
+					"beforeAll",
+					"afterAll",
+					"vi"
+				]
+			}
+		},
+		{
+			"includes": ["packages/types/**", "packages/core/typings/**"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noExplicitAny": "off",
+						"noEmptyInterface": "off",
+						"noUnknownAtRules": "off"
+					},
+					"style": {
+						"noNamespace": "off",
+						"noInferrableTypes": "off"
+					},
+					"complexity": {
+						"noBannedTypes": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["**/*.js", "**/*.mjs"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noCommonJs": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["**/*.scss"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noUnknownTypeSelector": "off"
+					}
+				}
+			}
+		}
+	]
+}

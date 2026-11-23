@@ -1,12 +1,12 @@
 import './index.scss'
-import { WorkspaceParent } from '../workspace-parent'
-import type { WorkspaceNode } from '../workspace-node'
 import { Component } from 'src/common/component'
 import { useService } from 'src/common/service'
 import { KEY_OF_ENABLED_PLUGINS } from 'src/plugin-internal/internal-plugin-manager'
 import { PLUGIN_WORKSPACE_ID } from 'src/plugin-internal/plugins/plugin-workspace'
-import { openFloatingLeaf } from '../workspace-utils'
 import { useSettingEffect } from 'src/settings/use-setting-effect'
+import type { WorkspaceNode } from '../workspace-node'
+import { WorkspaceParent } from '../workspace-parent'
+import { openFloatingLeaf } from '../workspace-utils'
 
 
 /**

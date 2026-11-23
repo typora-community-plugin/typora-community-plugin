@@ -1,9 +1,9 @@
 import './plugin-manager-setting-tab.scss'
 import { useService } from 'src/common/service'
 import type { PluginManifest } from "src/plugin/plugin-manifest"
-import { SettingTab } from "../setting-tab"
 import { debounce, format } from "src/utils"
 import * as versions from "src/utils/versions"
+import { SettingTab } from "../setting-tab"
 
 
 export class PluginManagerSettingTab extends SettingTab {

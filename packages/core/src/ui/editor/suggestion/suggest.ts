@@ -1,5 +1,5 @@
 import './suggest.scss'
-import { type TRange, editor } from 'typora'
+import { editor, type TRange } from 'typora'
 
 
 /**

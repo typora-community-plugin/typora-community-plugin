@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { jest, describe, expect, test } from '@jest/globals'
+import { describe, expect, jest, test } from '@jest/globals'
 import { registerService } from 'src/common/service'
 import { PluginManager } from '../../src/plugin/plugin-manager'
 
@@ -43,7 +43,7 @@ let capturedEl: HTMLElement | undefined
   }
 
   // jQuery-like .get(i) — access by index.
-  api.get = function (i: number) { return i === 0 ? el : undefined }
+  api.get = (i: number) => i === 0 ? el : undefined
 
   const out = new Proxy(el, {
     get(target, prop) {

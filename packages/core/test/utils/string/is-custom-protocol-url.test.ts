@@ -6,9 +6,9 @@ describe('isCustomProtocolUrl', () => {
   })
 
   it('should return false for null/undefined', () => {
-    // @ts-ignore
+    // @ts-expect-error
     expect(isCustomProtocolUrl(null)).toBe(false)
-    // @ts-ignore
+    // @ts-expect-error
     expect(isCustomProtocolUrl(undefined)).toBe(false)
   })
 

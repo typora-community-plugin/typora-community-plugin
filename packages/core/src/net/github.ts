@@ -1,9 +1,9 @@
-import { _options } from 'typora'
 import { useService } from 'src/common/service'
+import { useSettingEffect } from 'src/settings/use-setting-effect'
 import { Notice } from 'src/ui/components/notice'
 import { format } from "src/utils"
+import { _options } from 'typora'
 import * as net from './net'
-import { useSettingEffect } from 'src/settings/use-setting-effect'
 
 
 interface GithubProxy {

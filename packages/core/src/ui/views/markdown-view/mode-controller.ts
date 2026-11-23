@@ -1,5 +1,5 @@
-import type { ScrollState } from 'src/ui/layout/workspace-view'
 import type { WorkspaceLeaf } from 'src/ui/layout/workspace-leaf'
+import type { ScrollState } from 'src/ui/layout/workspace-view'
 
 
 export interface ModeContext {

@@ -1,7 +1,7 @@
 import { useEventBus } from "src/common/eventbus"
 import { useService } from "src/common/service"
 import { type HotkeyScope, readableHotkey } from "src/hotkey-manager"
-import { WorkspaceLeaf } from "src/ui/layout/workspace-leaf"
+import type { WorkspaceLeaf } from "src/ui/layout/workspace-leaf"
 import { debounced } from "src/utils"
 import type { DisposeFunc } from "src/utils/types"
 
@@ -163,6 +163,7 @@ export class CommandManager {
   setCommandHotkey(commandId: string, hotkey: string | null) {
     const cmd = this.commandMap[commandId]
 
+    // biome-ignore lint/suspicious/noDoubleEquals: default hotkey may be undefined, loose compare with null intended
     if (this.defaultCommandMap[commandId].hotkey == hotkey) {
       delete cmd.hotkey
     }

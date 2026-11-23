@@ -1,5 +1,5 @@
-import { capitalize } from 'src/utils'
 import { platform } from "src/common/constants"
+import { capitalize } from 'src/utils'
 import { useEventBus } from "./common/eventbus"
 
 

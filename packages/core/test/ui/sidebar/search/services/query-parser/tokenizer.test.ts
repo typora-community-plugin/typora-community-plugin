@@ -1,7 +1,7 @@
 import 'src/setup-test-env'
 import { jest } from '@jest/globals'
-import { tokenize } from '../../../../../../src/ui/sidebar/search/services/query-parser/tokenizer'
 import type { RawToken } from '../../../../../../src/ui/sidebar/search/services/query-parser/tokenizer'
+import { tokenize } from '../../../../../../src/ui/sidebar/search/services/query-parser/tokenizer'
 
 describe('tokenize', () => {
   describe('basic whitespace handling', () => {

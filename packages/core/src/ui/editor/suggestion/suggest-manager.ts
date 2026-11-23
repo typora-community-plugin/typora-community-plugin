@@ -1,9 +1,9 @@
-import { editor } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
-import { EditorSuggest } from './suggest'
-import type { DisposeFunc } from "src/utils/types"
 import { useEventBus } from 'src/common/eventbus'
+import type { DisposeFunc } from "src/utils/types"
+import { editor } from 'typora'
 import { MergedSuggest } from './merged-suggest'
+import type { EditorSuggest } from './suggest'
 
 
 export class EditorSuggestManager {
@@ -24,10 +24,10 @@ export class EditorSuggestManager {
 
     decorate(editor.autoComplete, 'apply', fn => (text) => {
       if (this._currentSuggest?.isUsing) {
-        const range = editor.selection.getRangy()
+        const range = editor.selection.getRangy()!
         const { anchor } = editor.autoComplete.state
         const suggest = this._currentSuggest!
-        // @ts-ignore `_query` is private
+        // @ts-expect-error `_query` is private
         const start = anchor.start - suggest.lengthOfTextBeforeToBeReplaced(suggest._query)
         const end = anchor.end
         // `containerNode`'s text may be split across several child nodes (e.g.
@@ -36,9 +36,7 @@ export class EditorSuggestManager {
         // `firstChild`.
         const startPos = textOffsetToPosition(anchor.containerNode, start)
         const endPos = textOffsetToPosition(anchor.containerNode, end)
-        // @ts-ignore rangy accepts text nodes
         range.setStart(startPos.node, startPos.offset)
-        // @ts-ignore rangy accepts text nodes
         range.setEnd(endPos.node, endPos.offset)
         editor.selection.setRange(range, true)
         editor.UserOp.pasteHandler(editor, suggest._beforeApply(text), true)

@@ -1,5 +1,5 @@
+import { describe, expect, it, jest } from '@jest/globals'
 import { Store } from "../../src/utils/store"
-import { jest, describe, it, expect } from '@jest/globals'
 
 describe('Store', () => {
 
@@ -55,16 +55,16 @@ describe('Store', () => {
     })
 
     it('should return undefined when intermediate path is null', () => {
-      // @ts-ignore
+      // @ts-expect-error
       const store = newStore<{ a: null }>({ a: null })
       expect(store.get(['a', 'b'])).toBeUndefined()
     })
 
     it('should throw TypeError for invalid key type', () => {
       const store = newStore({ name: 'test' })
-      // @ts-ignore
+      // @ts-expect-error
       expect(() => store.get(123)).toThrow(TypeError)
-      // @ts-ignore
+      // @ts-expect-error
       expect(() => store.get(null)).toThrow(TypeError)
     })
 
@@ -123,9 +123,9 @@ describe('Store', () => {
 
     it('should throw TypeError for invalid key type', () => {
       const store = newStore({ name: 'test' })
-      // @ts-ignore
+      // @ts-expect-error
       expect(() => store.set(123, 'value')).toThrow(TypeError)
-      // @ts-ignore
+      // @ts-expect-error
       expect(() => store.set(null, 'value')).toThrow(TypeError)
     })
 

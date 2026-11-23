@@ -1,9 +1,9 @@
 import './workspace-node.scss'
 import { Events } from "src/common/events"
 import { useService } from 'src/common/service'
-import type { WorkspaceParent } from "./workspace-parent"
-import type { WorkspaceLeaf } from "./workspace-leaf"
 import type { WorkspaceSplit } from './split'
+import type { WorkspaceLeaf } from "./workspace-leaf"
+import type { WorkspaceParent } from "./workspace-parent"
 
 
 export abstract class WorkspaceNode extends Events<any> {

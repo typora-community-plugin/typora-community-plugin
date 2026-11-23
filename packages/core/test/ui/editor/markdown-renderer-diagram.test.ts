@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { jest, describe, expect, test, beforeEach, afterEach } from '@jest/globals'
+import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals'
 import { registerDiagramRenderer, unregisterDiagramRenderer } from '../../../src/ui/editor/codeblock/codeblock-diagram'
 import { renderDiagramBlocks } from '../../../src/ui/editor/markdown-renderer-diagram'
 

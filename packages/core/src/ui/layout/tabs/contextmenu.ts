@@ -1,8 +1,8 @@
 import { useService } from "src/common/service"
 import { Menu } from "src/ui/components/menu"
 import type { WorkspaceRoot } from "../workspace-root"
-import type { WorkspaceTabs } from "."
 import { splitDown, splitRight } from "../workspace-utils"
+import type { WorkspaceTabs } from "."
 
 
 export function onTabsContextMenu(
@@ -15,7 +15,7 @@ export function onTabsContextMenu(
 
   const menu = new Menu()
 
-  return function (event: MouseEvent) {
+  return (event: MouseEvent) => {
     const $tabEl = $(event.target!).closest('.typ-tab')
 
     if (!$tabEl.length) return

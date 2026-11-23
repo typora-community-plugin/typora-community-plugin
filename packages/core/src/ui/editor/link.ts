@@ -1,10 +1,10 @@
 import decorate from "@plylrnsdy/decorate.js"
-import { editor } from "typora"
 import { Component } from "src/common/component"
 import { useService } from "src/common/service"
 import path from "src/path"
-import { isCustomProtocolUrl } from "src/utils"
 import { useSettingEffectedFeature } from "src/settings/use-setting-effect"
+import { isCustomProtocolUrl } from "src/utils"
+import { editor } from "typora"
 
 
 const tryOpenUrl = editor.tryOpenUrl_ ? 'tryOpenUrl_' : 'tryOpenUrl'

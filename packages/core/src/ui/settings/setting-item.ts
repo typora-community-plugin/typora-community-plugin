@@ -1,8 +1,8 @@
 import './setting-item.scss'
-import { EditableTable } from 'src/ui/components/editable-table'
-import { View } from "src/ui/common/view"
-import { html, noop } from 'src/utils'
 import type { Settings } from 'src/settings/settings'
+import { View } from "src/ui/common/view"
+import { EditableTable } from 'src/ui/components/editable-table'
+import { html, noop } from 'src/utils'
 
 
 export class SettingContainer {

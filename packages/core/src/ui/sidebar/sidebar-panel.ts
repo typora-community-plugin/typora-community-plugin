@@ -1,6 +1,6 @@
 import { useService } from "src/common/service"
 import { View } from "src/ui/common/view"
-import { RibbonItemButton } from "src/ui/ribbon/workspace-ribbon"
+import type { RibbonItemButton } from "src/ui/ribbon/workspace-ribbon"
 
 
 export class SidebarPanel extends View {
@@ -31,7 +31,7 @@ export class SidebarPanel extends View {
   addRibbonButton(button: Omit<RibbonItemButton, 'onclick'>) {
     this.ribbonButton = {
       ...button,
-      // @ts-ignore
+      // @ts-expect-error
       onclick: () => this.sidebar.switch(this.constructor)
     }
   }

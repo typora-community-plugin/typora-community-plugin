@@ -1,6 +1,6 @@
 import { useService } from "src/common/service"
-import { SettingTab } from "../setting-tab"
 import type { InternalPluginManifest } from "src/plugin-internal/internal-plugin"
+import { SettingTab } from "../setting-tab"
 
 
 export class InternalPluginsManagerSettingTab extends SettingTab {

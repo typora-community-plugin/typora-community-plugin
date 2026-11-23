@@ -1,7 +1,7 @@
 import './notice.scss'
 import { Component } from 'src/common/component'
 import { useService } from 'src/common/service'
-import { Closeable, View } from 'src/ui/common/view'
+import { type Closeable, View } from 'src/ui/common/view'
 import { html, until } from 'src/utils'
 
 

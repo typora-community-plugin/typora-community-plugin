@@ -1,9 +1,9 @@
 import './index.scss'
-import { editor } from "typora"
 import { useService } from 'src/common/service'
 import type { WorkspaceTabs } from 'src/ui/layout/tabs'
 import type { WorkspaceLeaf } from 'src/ui/layout/workspace-leaf'
-import { ScrollState, WorkspaceView } from 'src/ui/layout/workspace-view'
+import { type ScrollState, WorkspaceView } from 'src/ui/layout/workspace-view'
+import { editor } from "typora"
 import { MdEditorMode } from './md-editor-mode'
 import { MdPreviewerMode } from './md-previewer-mode'
 import type { ModeContext, ModeController } from './mode-controller'
@@ -118,7 +118,7 @@ export class MarkdownView extends WorkspaceView {
 
     if (this.isEditor()) {
       editor.writingArea.parentElement!.classList.remove('typ-deactive')
-      // @ts-ignore
+      // @ts-expect-error
       editor.library[KEY_OPENFILE](this.filePath)
       this.workspace.once('file:open', doRestore)
     }

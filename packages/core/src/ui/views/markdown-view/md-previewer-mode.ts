@@ -1,7 +1,7 @@
 import { useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
-import type { ModeController, ModeContext } from './mode-controller'
 import type { ScrollState } from 'src/ui/layout/workspace-view'
+import type { ModeContext, ModeController } from './mode-controller'
 
 
 export class MdPreviewerMode implements ModeController {
@@ -26,7 +26,7 @@ export class MdPreviewerMode implements ModeController {
 
   getScroll(): ScrollState {
     return {
-      scrollTop: this._containerEl?.parentElement!.scrollTop ?? 0,
+      scrollTop: this._containerEl?.parentElement?.scrollTop ?? 0,
     }
   }
 

@@ -1,31 +1,31 @@
 import './title-bar.scss'
 import decorate from '@plylrnsdy/decorate.js'
-import { File, editor } from 'typora'
-import { Events } from 'src/common/events'
-import { noticeContainer } from './components/notice'
-import type { MarkdownEditor, MarkdownEditorEvents } from './editor/markdown-editor'
-import type { WorkspaceRibbon } from './ribbon/workspace-ribbon'
-import { Sidebar } from './sidebar/sidebar'
-import { GlobalSearchView } from './sidebar/search/views/global-search-view'
-import type { FileExplorerEvents } from './sidebar/file-explorer'
-import { Outline } from './sidebar/outline'
-import { CommandModal } from './commands/command-modal'
-import { QuickOpenPanel } from './quick-open-panel'
 import type { Component } from 'src/common/component'
 import { useEventBus } from 'src/common/eventbus'
+import { Events } from 'src/common/events'
 import { useService } from 'src/common/service'
-import { WorkspaceRoot } from './layout/workspace-root'
+import { useSettingEffectedFeature } from 'src/settings/use-setting-effect'
+import { editor, File } from 'typora'
+import { CommandModal } from './commands/command-modal'
+import { noticeContainer } from './components/notice'
+import type { MarkdownEditor, MarkdownEditorEvents } from './editor/markdown-editor'
 import { WorkspaceFloating } from './layout/floating'
-import type { WorkspaceLeaf } from './layout/workspace-leaf'
+import { WorkspaceSidedock } from './layout/sidedock'
 import { useActiveLeaf } from './layout/use-active-leaf'
+import type { WorkspaceLeaf } from './layout/workspace-leaf'
+import { WorkspaceRoot } from './layout/workspace-root'
 import { createLeaf } from './layout/workspace-utils'
-import { EmptyView } from './views/empty-view'
+import { QuickOpenPanel } from './quick-open-panel'
+import type { WorkspaceRibbon } from './ribbon/workspace-ribbon'
+import type { FileExplorerEvents } from './sidebar/file-explorer'
+import { Outline } from './sidebar/outline'
+import { GlobalSearchView } from './sidebar/search/views/global-search-view'
+import { Sidebar } from './sidebar/sidebar'
 import { UseAudioView } from './views/audio-view'
-import { UseVideoView } from './views/video-view'
+import { EmptyView } from './views/empty-view'
 import { UseImageView } from './views/image-view'
 import { MarkdownView } from './views/markdown-view'
-import { WorkspaceSidedock } from './layout/sidedock'
-import { useSettingEffectedFeature } from 'src/settings/use-setting-effect'
+import { UseVideoView } from './views/video-view'
 
 
 export type WorkspaceEvents = {
@@ -130,7 +130,7 @@ export class Workspace extends Events<WorkspaceEvents> {
   createLeaf = createLeaf
 
   getViewByType<T extends new (...args: any) => any>(cls: T) {
-    let res = undefined
+    let res: Component | undefined
     this.iterateViews(this as any, (v) => {
       if (v instanceof cls) {
         res = v
@@ -189,6 +189,7 @@ export class Workspace extends Events<WorkspaceEvents> {
       this.emit('file:will-open', file)
     })
 
+    // biome-ignore lint/suspicious/noTsIgnore: `File.loadInitData` is absent from the typora typings; the suppression is config-dependent, so @ts-expect-error is not usable
     // @ts-ignore
     const onFileOpened = File.loadInitData
       ? 'loadInitData'

@@ -1,5 +1,5 @@
-import { isMarkdownUrl } from "../../../src/utils/string/is-markdown-url";
 import { File } from "typora";
+import { isMarkdownUrl } from "../../../src/utils/string/is-markdown-url";
 
 
 describe('isMarkdownUrl', () => {
@@ -12,7 +12,7 @@ describe('isMarkdownUrl', () => {
   });
 
   it('should return false for undefined', () => {
-    // @ts-ignore
+    // @ts-expect-error
     expect(isMarkdownUrl(undefined)).toBe(false);
   });
 

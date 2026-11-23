@@ -1,4 +1,4 @@
-import { WorkspaceLeaf } from "src/ui/layout/workspace-leaf"
+import type { WorkspaceLeaf } from "src/ui/layout/workspace-leaf"
 import { memorize } from "src/utils"
 
 

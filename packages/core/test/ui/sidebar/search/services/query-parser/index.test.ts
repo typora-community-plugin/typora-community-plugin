@@ -10,24 +10,22 @@
  *   - collectInlineTagPatterns  #tag position validation
  */
 
-import { describe, it, expect } from '@jest/globals'
-
-import { tokenize } from 'src/ui/sidebar/search/services/query-parser/tokenizer'
-import type { RawToken } from 'src/ui/sidebar/search/services/query-parser/tokenizer'
+import { describe, expect, it } from '@jest/globals'
+import { collectInlineTagPatterns, evaluateAST } from 'src/ui/sidebar/search/services/eval/result-builder'
+import type { AndNode, FieldNode, NotNode, OrNode, ParsedAST, TermNode } from 'src/ui/sidebar/search/services/query-parser'
 
 import {
-  tryParse,
-  parse,
-  astHasFieldNodes,
   astHasField,
+  astHasFieldNodes,
+  parse,
+  tryParse,
 } from 'src/ui/sidebar/search/services/query-parser'
-import type { ParsedAST, FieldNode, AndNode, OrNode, NotNode, TermNode } from 'src/ui/sidebar/search/services/query-parser'
+import { FilenameSyntaxHandler } from 'src/ui/sidebar/search/services/query-parser/syntax/filename-syntax'
 
 import { TagSyntaxHandler } from 'src/ui/sidebar/search/services/query-parser/syntax/tag-syntax'
 import { TitleSyntaxHandler } from 'src/ui/sidebar/search/services/query-parser/syntax/title-syntax'
-import { FilenameSyntaxHandler } from 'src/ui/sidebar/search/services/query-parser/syntax/filename-syntax'
-
-import { collectInlineTagPatterns, evaluateAST } from 'src/ui/sidebar/search/services/eval/result-builder'
+import type { RawToken } from 'src/ui/sidebar/search/services/query-parser/tokenizer'
+import { tokenize } from 'src/ui/sidebar/search/services/query-parser/tokenizer'
 import type { SearchMatch } from 'src/ui/sidebar/search/services/text-search-service'
 
 // ── Helpers ─────────────────────────────────────────────────────────────

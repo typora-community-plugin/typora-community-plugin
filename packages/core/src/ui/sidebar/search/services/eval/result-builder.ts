@@ -1,7 +1,7 @@
-import { getHandler, evaluateTerm, astHasField } from '../query-parser'
-import type { ParsedAST, FieldNode, AndNode, OrNode, NotNode, EvalContext, TermNode } from '../query-parser'
-import type { SearchResult, SearchMatch } from '../text-search-service'
 import type { TagObject, TitleObject } from 'src/utils'
+import type { AndNode, EvalContext, FieldNode, NotNode, OrNode, ParsedAST, TermNode } from '../query-parser'
+import { astHasField, evaluateTerm, getHandler } from '../query-parser'
+import type { SearchMatch, SearchResult } from '../text-search-service'
 
 /**
  * Build an enriched SearchResult by evaluating the AST against text matches + metadata.

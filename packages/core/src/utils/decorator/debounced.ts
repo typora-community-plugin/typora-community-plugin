@@ -2,11 +2,11 @@ import { debounce } from "src/utils/schedule/debounce"
 
 
 export function debounced(delay: number): MethodDecorator {
-  return function (
+  return (
     target,
     propertyKey,
     descriptor
-  ) {
+  ) => {
     const originalMethod = descriptor.value
     descriptor.value = debounce(originalMethod as any, delay)
   }

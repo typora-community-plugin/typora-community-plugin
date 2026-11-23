@@ -8,8 +8,8 @@
  *   tag:project   → exact match for "project" (not "my-project")
  */
 
-import type { FieldNode, SyntaxHandler, EvalContext } from '../types'
-import type { SearchMatch, MatchSource } from '../../text-search-service'
+import type { MatchSource, SearchMatch } from '../../text-search-service'
+import type { EvalContext, FieldNode, SyntaxHandler } from '../types'
 
 export const TagSyntaxHandler: SyntaxHandler = {
   name: 'tag',

@@ -1,67 +1,50 @@
 import type { App } from './app'
+
 export type { App } from './app'
 export declare const app: App
 
+export { default as decorate } from '@plylrnsdy/decorate.js'
+export { default as fs } from 'src/io/fs/filesystem'
+export { default as os } from 'src/os'
+export { default as path } from 'src/path'
 export { Component } from './common/component'
 export { Events } from './common/events'
-
+export { CodeblockExportProcessor, ExportProcessor, HtmlExportProcessor } from './export-manager'
 export { I18n } from './locales/i18n'
-
+export { Plugin } from './plugin/plugin'
 export type { PluginManifest } from './plugin/plugin-manifest'
 export { PluginSettings } from './plugin/plugin-settings'
-export { Plugin } from './plugin/plugin'
-
 /** @deprecated */
 export { ViewLegacy as View } from './ui/common/view-legacy'
-
 export { Modal } from './ui/components/modal'
 export { Notice } from './ui/components/notice'
-export { openInputBox } from './ui/components/quick-open'
-export { openQuickPick } from './ui/components/quick-open'
-
-export type { WorkspaceTabs } from './ui/layout/tabs'
-export type { WorkspaceSplit } from './ui/layout/split'
-export type { WorkspaceSidedock } from './ui/layout/sidedock'
-export type { WorkspaceNode } from './ui/layout/workspace-node'
-export type { WorkspaceParent } from './ui/layout/workspace-parent'
-export type { WorkspaceLeaf } from './ui/layout/workspace-leaf'
-export { WorkspaceView } from './ui/layout/workspace-view'
-
-export { SettingTab } from './ui/settings/setting-tab'
-export { SettingItem } from './ui/settings/setting-item'
-
-export type { CodeblockModeOptions } from './ui/editor/codeblock'
-export type { CodeblockRenderer } from './ui/editor/codeblock'
+export { openInputBox, openQuickPick } from './ui/components/quick-open'
+export type { CodeblockModeOptions, CodeblockRenderer } from './ui/editor/codeblock'
 export type { MarkdownRenderOptions } from './ui/editor/markdown-renderer'
-
-export { PostProcessor } from './ui/editor/postprocessor/postprocessor'
-export { HtmlPostProcessor } from './ui/editor/postprocessor/html-postprocessor'
 export { CodeblockPostProcessor } from './ui/editor/postprocessor/codeblock-postprocessor'
 export { DecoratedTextPostprocessor } from './ui/editor/postprocessor/decorated-text-postprocessor'
-
+export { HtmlPostProcessor } from './ui/editor/postprocessor/html-postprocessor'
+export { PostProcessor } from './ui/editor/postprocessor/postprocessor'
 export { EditorSuggest } from './ui/editor/suggestion/suggest'
 export { TextSuggest } from './ui/editor/suggestion/text-suggest'
-
-export { ExportProcessor, HtmlExportProcessor, CodeblockExportProcessor } from './export-manager'
-
+export type { WorkspaceSidedock } from './ui/layout/sidedock'
+export type { WorkspaceSplit } from './ui/layout/split'
+export type { WorkspaceTabs } from './ui/layout/tabs'
+export type { WorkspaceLeaf } from './ui/layout/workspace-leaf'
+export type { WorkspaceNode } from './ui/layout/workspace-node'
+export type { WorkspaceParent } from './ui/layout/workspace-parent'
+export { WorkspaceView } from './ui/layout/workspace-view'
 /** @deprecated */
 export { WorkspaceRibbon } from './ui/ribbon/workspace-ribbon'
-
+export { SettingItem } from './ui/settings/setting-item'
+export { SettingTab } from './ui/settings/setting-tab'
 /** @deprecated */
 export { Sidebar } from './ui/sidebar/sidebar'
-
 export { SidebarPanel } from './ui/sidebar/sidebar-panel'
-
 export type { StatisticHandler } from './ui/statusbar/statistics'
 export { StatisticContext } from './ui/statusbar/statistics'
-
-export { default as fs } from 'src/io/fs/filesystem'
-export { default as path } from 'src/path'
-export { default as os } from 'src/os'
-
+export { html } from './utils/html'
 export { debounce } from './utils/schedule/debounce'
 export { format } from './utils/string/format'
-export { html } from './utils/html'
-export { until } from './utils/until'
 export type { DisposeFunc } from './utils/types'
-export { default as decorate } from '@plylrnsdy/decorate.js'
+export { until } from './utils/until'

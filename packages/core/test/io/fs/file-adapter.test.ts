@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals'
 import 'src/setup-test-env'
-import { FileAdapter, ListFilesOptions } from '../../../src/io/fs/file-adapter'
 import type { FileStats } from '../../../src/io/fs/file-adapter'
+import { FileAdapter, ListFilesOptions } from '../../../src/io/fs/file-adapter'
 
 class TestFileAdapter extends FileAdapter {
   mockList = jest.fn().mockResolvedValue([] as string[])

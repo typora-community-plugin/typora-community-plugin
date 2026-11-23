@@ -1,14 +1,14 @@
 import './workspace-ribbon.scss'
 import decorate from '@plylrnsdy/decorate.js'
-import { bridge, editor, File } from 'typora'
+import { Component } from 'src/common/component'
+import { platform } from 'src/common/constants'
 import { useService } from 'src/common/service'
+import { View } from 'src/ui/common/view'
 import { draggable } from 'src/ui/components/draggable'
 import { Menu } from 'src/ui/components/menu'
 import { html } from 'src/utils'
-import { View } from 'src/ui/common/view'
 import type { DisposeFunc } from 'src/utils/types'
-import { Component } from 'src/common/component'
-import { platform } from 'src/common/constants'
+import { bridge, editor, File } from 'typora'
 
 
 export type RibbonSettings = {

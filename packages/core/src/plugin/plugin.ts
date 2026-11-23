@@ -3,14 +3,14 @@ import type { Command } from "src/command/command-manager"
 import { Component } from "src/common/component"
 import { useService } from "src/common/service"
 import path from 'src/path'
-import type { PluginManifest } from "./plugin-manifest"
-import { PluginSettings } from './plugin-settings'
-import { SettingsModal } from "src/ui/settings/settings-modal"
-import type { SettingTab } from "src/ui/settings/setting-tab"
+import type { MarkdownEditor } from "src/ui/editor/markdown-editor"
 import type { TPostProcessor } from 'src/ui/editor/postprocessor/postprocessor-manager'
 import type { TPreProcessor } from 'src/ui/editor/preprocessor/preprocessor'
-import type { MarkdownEditor } from "src/ui/editor/markdown-editor"
 import type { EditorSuggest } from "src/ui/editor/suggestion/suggest"
+import type { SettingTab } from "src/ui/settings/setting-tab"
+import { SettingsModal } from "src/ui/settings/settings-modal"
+import type { PluginManifest } from "./plugin-manifest"
+import type { PluginSettings } from './plugin-settings'
 
 
 interface StatusBarItemOptions {

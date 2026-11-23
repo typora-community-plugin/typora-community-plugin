@@ -57,7 +57,7 @@ export class HtmlMask extends StringMask {
     const ranges = []
     const stack = [] as { tagName: string, start: number, end: number }[]
     const regex = /\\?<\/?([a-zA-Z][a-zA-Z-]*)[^>\n]*?>/g
-    let match
+    let match: RegExpExecArray | null
 
     while ((match = regex.exec(md)) !== null) {
       const tag = match[0]
@@ -70,7 +70,6 @@ export class HtmlMask extends StringMask {
 
       if (tag[1] !== '/') {
         if (tagName.startsWith('http')) {
-          continue
         }
         else if (SELF_CLOSING_TAGS.includes(tagName)) {
           if (stack.length === 0)

@@ -1,23 +1,23 @@
 import './workspace-root.scss'
-import { editor } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
 import { Component } from 'src/common/component'
 import { useEventBus } from 'src/common/eventbus'
 import { useService } from 'src/common/service'
-import type { Workspace } from "../workspace"
-import { WorkspaceSplit } from "./split"
-import type { WorkspaceTabs } from './tabs'
-import type { WorkspaceLeaf } from './workspace-leaf'
-import { draggableTabs } from './tabs/draggable'
-import { createTabs, createUntitledTabs, openFileInActiveTabs, splitDown, splitRight } from './workspace-utils'
-import { onTabsContextMenu } from './tabs/contextmenu'
-import { FileTabContainer } from './tabs/file-tabs'
-import { MarkdownView } from '../views/markdown-view'
-import { useEditingTabs } from '../views/markdown-view/use-editing-tabs'
-import { usePreviewTabToSwap } from '../views/markdown-view/use-preview-tab-to-swap'
 import { KEY_OF_ENABLED_PLUGINS } from 'src/plugin-internal/internal-plugin-manager'
 import { PLUGIN_WORKSPACE_ID } from 'src/plugin-internal/plugins/plugin-workspace'
 import { useSettingEffect } from 'src/settings/use-setting-effect'
+import { editor } from 'typora'
+import { MarkdownView } from '../views/markdown-view'
+import { useEditingTabs } from '../views/markdown-view/use-editing-tabs'
+import { usePreviewTabToSwap } from '../views/markdown-view/use-preview-tab-to-swap'
+import type { Workspace } from "../workspace"
+import { WorkspaceSplit } from "./split"
+import type { WorkspaceTabs } from './tabs'
+import { onTabsContextMenu } from './tabs/contextmenu'
+import { draggableTabs } from './tabs/draggable'
+import { FileTabContainer } from './tabs/file-tabs'
+import type { WorkspaceLeaf } from './workspace-leaf'
+import { createTabs, createUntitledTabs, openFileInActiveTabs, splitDown, splitRight } from './workspace-utils'
 
 
 export type WorkspaceRootEvents = {

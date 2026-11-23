@@ -1,10 +1,10 @@
-import { editor } from 'typora'
 import { useService } from 'src/common/service'
 import type { WorkspaceTabs } from 'src/ui/layout/tabs'
-import type { ModeController, ModeContext } from './mode-controller'
 import type { ScrollState } from 'src/ui/layout/workspace-view'
-import { useEditingTabs } from './use-editing-tabs'
 import { memorize } from 'src/utils'
+import { editor } from 'typora'
+import type { ModeContext, ModeController } from './mode-controller'
+import { useEditingTabs } from './use-editing-tabs'
 
 
 const RESIZE_HANDLER_WIDTH = 7

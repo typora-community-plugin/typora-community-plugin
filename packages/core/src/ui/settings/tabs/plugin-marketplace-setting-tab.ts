@@ -1,13 +1,13 @@
-import { useService } from "src/common/service"
 import { platform } from "src/common/constants"
+import { useService } from "src/common/service"
+import { Downloader } from "src/net/net"
 import path from 'src/path'
 import type { PluginMarketInfo, PluginReadme } from "src/plugin/plugin-marketplace"
-import { ExpandableSection } from "src/ui/settings/expandable-section"
-import { SettingTab } from "../setting-tab"
-import { debounce, format } from "src/utils"
-import { Downloader } from "src/net/net"
-import { File } from "typora"
 import { Notice } from "src/ui/components/notice"
+import { ExpandableSection } from "src/ui/settings/expandable-section"
+import { debounce, format } from "src/utils"
+import { File } from "typora"
+import { SettingTab } from "../setting-tab"
 
 
 const platformIcons: Record<string, string> = {
@@ -303,10 +303,10 @@ function isProtocolRef(ref: string) {
  * Resolve a path relative to `baseDir`, normalizing `.` and `..` segments. Returns null if it escapes the root.
  */
 function resolveRelativePath(baseDir: string, target: string): string | null {
-  const base = (baseDir === '' || baseDir === '.' ? [] : baseDir.split(/[\\\/]+/).filter(Boolean))
+  const base = (baseDir === '' || baseDir === '.' ? [] : baseDir.split(/[\\/]+/).filter(Boolean))
     .map(s => s.toLowerCase())
 
-  let segments = [...base]
+  const segments = [...base]
 
   for (const seg of target.split('/')) {
     if (!seg || seg === '.') continue

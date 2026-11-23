@@ -1,7 +1,7 @@
-import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
-import { editor } from "typora"
-import { html } from "src/utils"
 import { useService } from 'src/common/service'
+import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
+import { html } from "src/utils"
+import { editor } from "typora"
 import { InternalSidebarPanel } from './sidebar-panel'
 
 

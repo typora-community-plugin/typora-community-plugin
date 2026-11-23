@@ -1,6 +1,6 @@
 import 'src/setup-test-env'
 import { jest } from '@jest/globals'
-import { Logger, badge, badges } from '../../../src/io/logger/logger'
+import { badge, badges, Logger } from '../../../src/io/logger/logger'
 
 describe('badge', () => {
   test('creates badge with correct format', () => {

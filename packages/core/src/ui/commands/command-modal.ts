@@ -1,7 +1,7 @@
 import './command-modal.scss'
-import { useService } from 'src/common/service'
 import { Component } from 'src/common/component'
-import { openQuickPick, QuickPickItemKind, type QuickPickItem } from '../components/quick-open'
+import { useService } from 'src/common/service'
+import { openQuickPick, type QuickPickItem, QuickPickItemKind } from '../components/quick-open'
 
 
 export class CommandModal extends Component {

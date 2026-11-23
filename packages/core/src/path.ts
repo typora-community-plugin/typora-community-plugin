@@ -25,7 +25,7 @@ class BrowserPath implements IPath {
   }
 
   basename(filepath: string, suffix?: string): string {
-    const segments = filepath.split(/[\\\/]+/)
+    const segments = filepath.split(/[\\/]+/)
     if (!segments[segments.length - 1]) segments.pop()
     const base = segments.pop() ?? ''
     return (suffix && base.endsWith(suffix))
@@ -44,7 +44,7 @@ class BrowserPath implements IPath {
   }
 
   dirname(filepath: string): string {
-    const segments = filepath.split(/[\\\/]+/)
+    const segments = filepath.split(/[\\/]+/)
     if (!segments[segments.length - 1]) segments.pop()
     const result = segments.slice(0, -1).join(this.sep)
     // Root directory: dirname('/') should return '/' (not '')
@@ -55,8 +55,8 @@ class BrowserPath implements IPath {
     if (!paths.length) return '.'
 
     const segments = paths
-      .map(path => path.trim().replace(/[\\\/]+$/, ''))
-      .flatMap(path => path.split(/[\\\/]+/))
+      .map(path => path.trim().replace(/[\\/]+$/, ''))
+      .flatMap(path => path.split(/[\\/]+/))
     const res = []
 
     for (let i = 0; i < segments.length; i++) {
@@ -72,8 +72,8 @@ class BrowserPath implements IPath {
   relative(from: string, to: string): string {
     if (from === to) return ''
 
-    const segments1 = from.trim().split(/[\\\/]+/).filter(Boolean)
-    const segments2 = to.trim().split(/[\\\/]+/).filter(Boolean)
+    const segments1 = from.trim().split(/[\\/]+/).filter(Boolean)
+    const segments2 = to.trim().split(/[\\/]+/).filter(Boolean)
 
     // Find the common ancestor segments
     let commonLength = 0

@@ -1,6 +1,6 @@
-import { describe, it, expect } from '@jest/globals'
+import { describe, expect, it } from '@jest/globals'
 import { FilenameSyntaxHandler } from '../../../../../../../src/ui/sidebar/search/services/query-parser/syntax/filename-syntax'
-import type { FieldNode, EvalContext } from '../../../../../../../src/ui/sidebar/search/services/query-parser/types'
+import type { EvalContext, FieldNode } from '../../../../../../../src/ui/sidebar/search/services/query-parser/types'
 
 // ── Helpers ─────────────────────────────────────────────────────────────
 

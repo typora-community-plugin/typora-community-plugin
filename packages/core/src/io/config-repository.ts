@@ -1,10 +1,10 @@
-import { _options } from "typora"
+import { globalConfigDir } from "src/common/constants"
 import { Events } from "src/common/events"
 import { useService } from "src/common/service"
-import path from "src/path"
 import fs from "src/io/fs/filesystem"
-import { globalConfigDir } from "src/common/constants"
+import path from "src/path"
 import type { DisposeFunc } from "src/utils/types"
+import { _options } from "typora"
 
 
 export type ConfigEvents = {

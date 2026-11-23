@@ -1,5 +1,5 @@
 import { useService } from "src/common/service"
-import { InternalPlugin, InternalPluginManifest } from "../internal-plugin"
+import { InternalPlugin, type InternalPluginManifest } from "../internal-plugin"
 
 
 export const PLUGIN_METADATA_ID = 'internal.metadata'

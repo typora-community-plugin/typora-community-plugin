@@ -3,7 +3,7 @@ import type { App } from "src/app"
 import type { Plugin } from "src/plugin/plugin"
 import { View } from "src/ui/common/view"
 import { html } from "src/utils"
-import { SettingContainer, SettingItem } from "./setting-item"
+import { SettingContainer, type SettingItem } from "./setting-item"
 
 
 export abstract class SettingTab extends View {
@@ -33,7 +33,7 @@ export abstract class SettingTab extends View {
    * @deprecated compatible with old api (<=2.2.22)
    */
   load() {
-    // @ts-ignore
+    // @ts-expect-error
     this.onload?.()
   }
 
@@ -41,7 +41,7 @@ export abstract class SettingTab extends View {
    * @deprecated compatible with old api (<=2.2.22)
    */
   unload() {
-    // @ts-ignore
+    // @ts-expect-error
     this.onunload?.()
   }
 

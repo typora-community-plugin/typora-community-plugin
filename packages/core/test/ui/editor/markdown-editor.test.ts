@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { jest, describe, expect, test, beforeEach, afterEach } from '@jest/globals'
+import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals'
 import { EditorSelection } from '../../../src/ui/editor/selection'
 
 // Some modules imported by `markdown-editor` read the Typora global at import

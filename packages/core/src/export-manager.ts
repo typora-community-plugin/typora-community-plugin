@@ -1,7 +1,7 @@
 import decorate from "@plylrnsdy/decorate.js"
 import { editor } from "typora"
-import type { DisposeFunc } from "./utils/types"
 import { useService } from "./common/service"
+import type { DisposeFunc } from "./utils/types"
 
 
 export class ExportManager {

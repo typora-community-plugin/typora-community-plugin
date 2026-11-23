@@ -1,39 +1,39 @@
 import './ui/variables.scss'
 import './ui/global.scss'
-import path from 'src/path'
-import { JSBridge, _options, editor } from 'typora'
-import * as Core from '.'
+import type { CommandManager } from 'src/command/command-manager'
 import { coreDir, coreVersion, platform } from 'src/common/constants'
 import { StickyEvents } from 'src/common/events'
 import { useService } from 'src/common/service'
-import type { GithubAPI } from 'src/net/github'
 import type { HotkeyManager } from 'src/hotkey-manager'
 import fs from 'src/io/fs/filesystem'
 import type { Vault } from "src/io/vault"
-import type { CommandManager } from 'src/command/command-manager'
 import type { I18n } from 'src/locales/i18n'
-import * as Locale from 'src/locales/lang.en.json'
-import type { MetadataManager } from './metadata'
+import type * as Locale from 'src/locales/lang.en.json'
+import type { GithubAPI } from 'src/net/github'
+import path from 'src/path'
 import type { PluginManager } from "src/plugin/plugin-manager"
-import type { InternalPluginManager, InternalPluginSettings } from './plugin-internal/internal-plugin-manager'
 import type { Settings } from 'src/settings/settings'
-import type { FileLinkSettings } from 'src/ui/settings/tabs/file-link-setting-tab'
-import type { AppearanceSettings } from 'src/ui/settings/tabs/appearance-setting-tab'
-import type { WorkspaceSettings } from './ui/settings/tabs-plugin/workspace'
-import type { PluginMarketplaceSettings } from 'src/ui/settings/tabs/plugin-marketplace-setting-tab'
-import type { CoreSettings } from 'src/ui/settings/tabs/about-tab'
-import type { ViewManager } from './ui/view-manager'
-import type { Workspace } from 'src/ui/workspace'
-import type { MarkdownEditor } from './ui/editor/markdown-editor'
-import { MarkdownRenderer } from './ui/editor/markdown-renderer'
 import type { RibbonSettings } from 'src/ui/ribbon/workspace-ribbon'
-import { GlobalSearch } from './ui/sidebar/search/global-search'
-import { Statistics } from './ui/statusbar/statistics'
+import type { CoreSettings } from 'src/ui/settings/tabs/about-tab'
+import type { AppearanceSettings } from 'src/ui/settings/tabs/appearance-setting-tab'
+import type { FileLinkSettings } from 'src/ui/settings/tabs/file-link-setting-tab'
+import type { PluginMarketplaceSettings } from 'src/ui/settings/tabs/plugin-marketplace-setting-tab'
+import type { Workspace } from 'src/ui/workspace'
 import { isCustomProtocolUrl, isMarkdownUrl } from 'src/utils'
 import { wrapClassesForES5 } from 'src/utils/es5-shim'
 import type { FileURL } from 'src/utils/types'
-import { ConfigRepository } from './io/config-repository'
-import { ExportManager } from './export-manager'
+import { _options, editor, JSBridge } from 'typora'
+import * as Core from '.'
+import type { ExportManager } from './export-manager'
+import type { ConfigRepository } from './io/config-repository'
+import type { MetadataManager } from './metadata'
+import type { InternalPluginManager, InternalPluginSettings } from './plugin-internal/internal-plugin-manager'
+import type { MarkdownEditor } from './ui/editor/markdown-editor'
+import type { MarkdownRenderer } from './ui/editor/markdown-renderer'
+import type { WorkspaceSettings } from './ui/settings/tabs-plugin/workspace'
+import { GlobalSearch } from './ui/sidebar/search/global-search'
+import { Statistics } from './ui/statusbar/statistics'
+import type { ViewManager } from './ui/view-manager'
 
 
 export type AppEvents = {
@@ -112,7 +112,7 @@ export class App extends StickyEvents<AppEvents> {
 
     this.setSticky('load')
 
-    // @ts-ignore
+    // @ts-expect-error
     window[Symbol.for(process.env.CORE_NS)] = {
       // dev: wrap native classes into ES5-compatible constructors,
       // so prod-built plugins (ES5-transpiled classes) can extend them.
@@ -120,7 +120,7 @@ export class App extends StickyEvents<AppEvents> {
       app: this,
     }
     if (process.env.IS_DEV) {
-      // @ts-ignore
+      // @ts-expect-error
       window['Typora'] = window[Symbol.for(process.env.CORE_NS)]
     }
 

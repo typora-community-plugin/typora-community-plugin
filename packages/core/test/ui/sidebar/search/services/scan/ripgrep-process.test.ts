@@ -2,8 +2,8 @@
  * Ripgrep child-process lifecycle: run generations, settlement, cancellation.
  */
 
-import { describe, it, expect, jest } from '@jest/globals'
 import { EventEmitter } from 'node:events'
+import { describe, expect, it, jest } from '@jest/globals'
 
 import { RipgrepProcessManager } from 'src/ui/sidebar/search/services/scan/ripgrep-process'
 

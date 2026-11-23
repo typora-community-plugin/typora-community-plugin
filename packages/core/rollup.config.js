@@ -1,13 +1,13 @@
 import fs from 'node:fs/promises'
-import { defineConfig } from 'rollup'
 import { babel } from '@rollup/plugin-babel'
 import commonjs from '@rollup/plugin-commonjs'
-import replace from '@rollup/plugin-replace'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
-import scss from 'rollup-plugin-scss'
+import replace from '@rollup/plugin-replace'
 import terser from '@rollup/plugin-terser'
 import typescript from '@rollup/plugin-typescript'
 import virtual from '@rollup/plugin-virtual'
+import { defineConfig } from 'rollup'
+import scss from 'rollup-plugin-scss'
 import { virtualModules } from 'rollup-plugin-typora'
 
 
@@ -17,6 +17,7 @@ const { compilerOptions } = JSON.parse(await fs.readFile('./tsconfig.json', 'utf
 
 const overrided = {
   "target": "ES5",
+  "lib": ["ES2022", "DOM", "DOM.Iterable"],
   "downlevelIteration": true,
 
   "module": undefined,

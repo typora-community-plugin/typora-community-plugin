@@ -1,7 +1,7 @@
 import { useService } from "src/common/service"
-import { WorkspaceNode } from "./workspace-node"
 import type { ViewState } from "../view-manager"
-import { WorkspaceView } from "./workspace-view"
+import { WorkspaceNode } from "./workspace-node"
+import type { WorkspaceView } from "./workspace-view"
 
 
 export class WorkspaceLeaf<V extends WorkspaceView = WorkspaceView> extends WorkspaceNode {

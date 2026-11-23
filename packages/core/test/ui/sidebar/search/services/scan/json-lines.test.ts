@@ -2,7 +2,7 @@
  * JSON-lines stream parsing for ripgrep --json output.
  */
 
-import { describe, it, expect } from '@jest/globals'
+import { describe, expect, it } from '@jest/globals'
 
 import {
   JsonLinesParser,

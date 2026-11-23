@@ -1,10 +1,10 @@
-import path from 'src/path'
-import { useService } from 'src/common/service'
 import { Events } from 'src/common/events'
-import { Notice } from 'src/ui/components/notice'
+import { useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
-import type { PluginManifest, PluginPosition } from "./plugin-manifest"
+import path from 'src/path'
+import { Notice } from 'src/ui/components/notice'
 import * as versions from "src/utils/versions"
+import type { PluginManifest, PluginPosition } from "./plugin-manifest"
 
 
 export type PluginMarketInfo = Pick<PluginManifest, "id" | "name" | "description" | "author" | "repo" | "platforms"> & {

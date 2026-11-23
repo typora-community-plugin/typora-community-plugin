@@ -1,6 +1,6 @@
 import './tabs.scss'
-import { html } from "src/utils"
 import { View } from "src/ui/common/view"
+import { html } from "src/utils"
 import { draggable } from "./draggable"
 
 
@@ -51,7 +51,7 @@ export class TabContainer extends View {
         .on('wheel', (event) => {
           event.preventDefault()
           const el = event.target as HTMLElement
-          let tabs
+          let tabs: any
           if (tabs = el.closest('.typ-tabs-wrapper')) {
             const evt = event.originalEvent as WheelEvent
             tabs.scrollLeft += evt.deltaY

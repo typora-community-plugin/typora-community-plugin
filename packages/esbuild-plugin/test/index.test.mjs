@@ -1,8 +1,8 @@
-import { describe, it, after } from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises'
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
+import { after, describe, it } from 'node:test'
 
 import * as esbuild from 'esbuild'
 

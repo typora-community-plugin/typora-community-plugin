@@ -1,0 +1,55 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.6.8/schema.json",
+	"extends": "//",
+	"files": {
+		"includes": [
+			"src/**",
+			"test/**",
+			"__mocks__/**",
+			"build.js",
+			"build-dts.js",
+			"jest-esbuild.js",
+			"jest.config.mjs",
+			"rollup.config.js"
+		],
+		"ignoreUnknown": true
+	},
+	"overrides": [
+		{
+			"includes": ["test/**", "__mocks__/**"],
+			"javascript": {
+				"globals": [
+					"jest",
+					"describe",
+					"it",
+					"test",
+					"expect",
+					"beforeEach",
+					"afterEach",
+					"beforeAll",
+					"afterAll",
+					"vi"
+				]
+			}
+		},
+		{
+			"includes": ["typings/**"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noExplicitAny": "off",
+						"noEmptyInterface": "off",
+						"noUnknownAtRules": "off"
+					},
+					"style": {
+						"noNamespace": "off",
+						"noInferrableTypes": "off"
+					},
+					"complexity": {
+						"noBannedTypes": "off"
+					}
+				}
+			}
+		}
+	]
+}

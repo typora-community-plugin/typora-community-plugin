@@ -1,39 +1,39 @@
-import path from "./path"
-import { Logger } from "./io/logger/logger"
-import { App } from "./app"
-import { coreDir } from "./common/constants"
-import { CommandManager } from "./command/command-manager"
-import { registerService, useService } from "./common/service"
 import { ServiceLogger } from "src/io/logger/service-logger"
+import { App } from "./app"
+import { CommandManager } from "./command/command-manager"
+import { coreDir } from "./common/constants"
+import { registerService, useService } from "./common/service"
+import { ExportManager } from "./export-manager"
 import { HotkeyManager } from "./hotkey-manager"
 import { ConfigRepository } from "./io/config-repository"
+import { Logger } from "./io/logger/logger"
 import { Vault } from "./io/vault"
 import { DEFAULT_OPTIONS, I18n } from "./locales/i18n"
+import type * as Locale from './locales/lang.en.json'
+import { MetadataManager, registerDefaultMetadataProviders } from "./metadata"
 import { GithubAPI } from "./net/github"
+import path from "./path"
 import { PluginManager } from "./plugin/plugin-manager"
-import { memorize } from "./utils/function/memorize"
-import * as Locale from './locales/lang.en.json'
+import { PluginMarketplace } from "./plugin/plugin-marketplace"
+import { DEFAULT_INTERNAL_PLUGIN_SETTINGS, InternalPluginManager } from "./plugin-internal/internal-plugin-manager"
 import { Settings } from "./settings/settings"
-import { ViewManager } from "./ui/view-manager"
-import { Workspace } from "./ui/workspace"
+import { createSettingsMigration } from "./settings/settings-migration"
+import { Notice } from "./ui/components/notice"
+import { InputBox, QuickPick } from "./ui/components/quick-open"
 import { MarkdownEditor } from "./ui/editor/markdown-editor"
 import { MarkdownRenderer } from "./ui/editor/markdown-renderer"
+import { WorkspaceSplit } from "./ui/layout/split"
+import { WorkspaceTabs } from "./ui/layout/tabs"
 import { DEFAULT_RIBBON_SETTINGS, WorkspaceRibbon } from "./ui/ribbon/workspace-ribbon"
+import { SettingsModal } from "./ui/settings/settings-modal"
 import { DEFAULT_APPEARANCE_SETTINGS } from "./ui/settings/tabs/appearance-setting-tab"
 import { DEFAULT_FILE_LINK_SETTINGS } from "./ui/settings/tabs/file-link-setting-tab"
 import { DEFAULT_PLUGIN_MARKETPLACE_SETTINGS } from "./ui/settings/tabs/plugin-marketplace-setting-tab"
-import { PluginMarketplace } from "./plugin/plugin-marketplace"
-import { InputBox, QuickPick } from "./ui/components/quick-open"
-import { Notice } from "./ui/components/notice"
-import { FileExplorer } from "./ui/sidebar/file-explorer"
-import { ExportManager } from "./export-manager"
-import { WorkspaceSplit } from "./ui/layout/split"
-import { WorkspaceTabs } from "./ui/layout/tabs"
-import { MetadataManager, registerDefaultMetadataProviders } from "./metadata"
-import { DEFAULT_INTERNAL_PLUGIN_SETTINGS, InternalPluginManager } from "./plugin-internal/internal-plugin-manager"
 import { DEFAULT_WORKSPACE_SETTINGS } from "./ui/settings/tabs-plugin/workspace"
-import { createSettingsMigration } from "./settings/settings-migration"
-import { SettingsModal } from "./ui/settings/settings-modal"
+import { FileExplorer } from "./ui/sidebar/file-explorer"
+import { ViewManager } from "./ui/view-manager"
+import { Workspace } from "./ui/workspace"
+import { memorize } from "./utils/function/memorize"
 
 
 // ── DEV ONLY: Attach logging listener to ServiceLogger._fire() output ──
@@ -58,7 +58,7 @@ registerService('logger', memorize(([scope]) => new Logger(scope)))
 
 registerService('app', memorize(() => new App()))
 registerService('env', () =>
-  // @ts-ignore
+  // @ts-expect-error
   window[Symbol.for(`${process.env.CORE_NS}:env`)] ?? {}
 )
 

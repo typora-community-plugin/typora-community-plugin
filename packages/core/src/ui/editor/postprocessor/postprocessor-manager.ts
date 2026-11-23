@@ -1,14 +1,14 @@
-import { editor } from "typora"
-import { useService } from "src/common/service"
 import { useEventBus } from "src/common/eventbus"
-import type { MarkdownEditor } from "../markdown-editor"
-import { PostProcessor, type RawProcessor } from './postprocessor'
-import { HtmlPostProcessor } from './html-postprocessor'
-import { CodeblockPostProcessor } from './codeblock-postprocessor'
+import { useService } from "src/common/service"
 import { CodeblockExportProcessor } from "src/export-manager"
+import { MarkdownView } from "src/ui/views/markdown-view"
 import { noop } from "src/utils"
 import type { DisposeFunc } from "src/utils/types"
-import { MarkdownView } from "src/ui/views/markdown-view"
+import { editor } from "typora"
+import type { MarkdownEditor } from "../markdown-editor"
+import { CodeblockPostProcessor } from './codeblock-postprocessor'
+import type { HtmlPostProcessor } from './html-postprocessor'
+import { PostProcessor, type RawProcessor } from './postprocessor'
 
 
 export type TPostProcessor = RawProcessor | PostProcessor | HtmlPostProcessor | CodeblockPostProcessor

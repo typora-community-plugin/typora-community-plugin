@@ -1,12 +1,12 @@
 import './sidebar.scss'
-import { editor } from "typora"
+import { Component } from 'src/common/component'
 import { useService } from "src/common/service"
 import { View } from "src/ui/common/view"
 import type { DisposeFunc } from "src/utils/types"
-import { FileExplorer } from "./file-explorer"
-import { Component } from 'src/common/component'
-import type { SidebarPanel } from './sidebar-panel'
+import { editor } from "typora"
 import { ViewLegacy } from '../common/view-legacy'
+import { FileExplorer } from "./file-explorer"
+import type { SidebarPanel } from './sidebar-panel'
 
 
 /**

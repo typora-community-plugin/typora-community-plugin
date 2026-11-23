@@ -1,16 +1,16 @@
 import './file-explorer.scss'
 import decorate from "@plylrnsdy/decorate.js"
-import { editor, File } from "typora"
 import { Component } from 'src/common/component'
+import { useService } from "src/common/service"
 import path from 'src/path'
+import { useSettingEffectedFeature } from 'src/settings/use-setting-effect'
 import { openFileInActiveTabs } from 'src/ui/layout/workspace-utils'
 import { BUILT_IN } from "src/ui/ribbon/workspace-ribbon"
-import { html } from "src/utils"
-import { useService } from "src/common/service"
 import { MarkdownView } from 'src/ui/views/markdown-view'
-import { InternalSidebarPanel } from './sidebar-panel'
+import { html } from "src/utils"
+import { editor, File } from "typora"
 import { InternalContextMenu } from '../components/menu'
-import { useSettingEffectedFeature } from 'src/settings/use-setting-effect'
+import { InternalSidebarPanel } from './sidebar-panel'
 
 
 export type FileExplorerEvents = {

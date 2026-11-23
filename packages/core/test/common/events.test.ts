@@ -1,7 +1,6 @@
 import 'src/setup-test-env'
 import { jest } from '@jest/globals'
-import { Events } from '../../src/common/events'
-import { EventListener, EventDefination, PublicEvents, PublicStickyEvents } from '../../src/common/events'
+import { type EventDefination, type EventListener, Events, PublicEvents, PublicStickyEvents } from '../../src/common/events'
 
 // Define test event types
 type TestEvents = {
@@ -80,7 +79,7 @@ describe('Events', () => {
       const listener = jest.fn()
       events.on('test-event', listener)
 
-      // @ts-ignore - 访问受保护的 emit 方法进行测试
+      // @ts-expect-error - 访问受保护的 emit 方法进行测试
       events.emit('test-event', 'hello', 42)
 
       expect(listener).toHaveBeenCalledWith('hello', 42)
@@ -99,7 +98,7 @@ describe('Events', () => {
       listener1.mockImplementation(() => callOrder.push('listener1'))
       listener2.mockImplementation(() => callOrder.push('listener2'))
 
-      // @ts-ignore - 访问受保护的 emit 方法进行测试
+      // @ts-expect-error - 访问受保护的 emit 方法进行测试
       events.emit('test-event', 'test', 1)
 
       expect(callOrder).toEqual(['listener2', 'listener1'])
@@ -121,9 +120,9 @@ describe('Events', () => {
       const listener = jest.fn()
       events.once('test-event', listener)
 
-      // @ts-ignore - 访问受保护的 emit 方法进行测试
+      // @ts-expect-error - 访问受保护的 emit 方法进行测试
       events.emit('test-event', 'first', 1)
-      // @ts-ignore - 访问受保护的 emit 方法进行测试
+      // @ts-expect-error - 访问受保护的 emit 方法进行测试
       events.emit('test-event', 'second', 2)
 
       expect(listener).toHaveBeenCalledTimes(1)
@@ -151,7 +150,7 @@ describe('Events', () => {
 
       events.off('test-event', listener1)
 
-      // @ts-ignore - 访问受保护的 emit 方法进行测试
+      // @ts-expect-error - 访问受保护的 emit 方法进行测试
       events.emit('test-event', 'test', 1)
 
       expect(listener1).not.toHaveBeenCalled()
@@ -165,7 +164,7 @@ describe('Events', () => {
       events.on('test-event', listener1)
       events.off('test-event', listener2) // listener2 从未被添加
 
-      // @ts-ignore - 访问受保护的 emit 方法进行测试
+      // @ts-expect-error - 访问受保护的 emit 方法进行测试
       events.emit('test-event', 'test', 1)
 
       expect(listener1).toHaveBeenCalledWith('test', 1)
@@ -186,7 +185,7 @@ describe('Events', () => {
       events.on('test-event', listener1)
       events.on('test-event', listener2)
 
-      // @ts-ignore - 访问受保护的 emit 方法进行测试
+      // @ts-expect-error - 访问受保护的 emit 方法进行测试
       events.emit('test-event', 'hello', 42)
 
       expect(listener1).toHaveBeenCalledWith('hello', 42)
@@ -199,7 +198,7 @@ describe('Events', () => {
 
       events.on('data-event', listener)
 
-      // @ts-ignore - 访问受保护的 emit 方法进行测试
+      // @ts-expect-error - 访问受保护的 emit 方法进行测试
       events.emit('data-event', testData)
 
       expect(listener).toHaveBeenCalledWith(testData)
@@ -209,7 +208,7 @@ describe('Events', () => {
       const listener = jest.fn()
       events.on('another-event', listener)
 
-      // @ts-ignore - 访问受保护的 emit 方法进行测试
+      // @ts-expect-error - 访问受保护的 emit 方法进行测试
       events.emit('another-event')
 
       expect(listener).toHaveBeenCalledWith()
@@ -226,7 +225,7 @@ describe('Events', () => {
 
       // 使用 try-catch 来捕获异常，确保测试不会因为异常而失败
       try {
-        // @ts-ignore - 访问受保护的 emit 方法进行测试
+        // @ts-expect-error - 访问受保护的 emit 方法进行测试
         events.emit('test-event', 'test', 1)
       } catch (error) {
         // 忽略异常，我们只关心其他监听器是否被调用

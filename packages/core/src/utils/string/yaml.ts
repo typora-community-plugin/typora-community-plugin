@@ -10,8 +10,8 @@ export interface TagObject {
   lineNumber: number
 }
 
-const keyValRegex = /^\s*([^\s\[\{:]+)\s*:\s*(.*)$/;
-const quotedKeyRegex = /^\s*(\"([^"]+)\"|\'([^']+)\')\s*:\s*(.*)/;
+const keyValRegex = /^\s*([^\s[{:]+)\s*:\s*(.*)$/;
+const quotedKeyRegex = /^\s*("([^"]+)"|'([^']+)')\s*:\s*(.*)/;
 const commentRegex = /^\s*#/;
 
 /**
@@ -166,7 +166,7 @@ function processLines(lines: string[]): any {
       const prevRawValue = resultObj[currentKey] || "";
 
       // Check for Literal (|) or Folded (>) block markers
-      const symbolMatch = /^\s*([\|\>])\s*$/.exec(prevRawValue);
+      const symbolMatch = /^\s*([|>])\s*$/.exec(prevRawValue);
       if (symbolMatch) {
         blockSymbol = symbolMatch[1];
       }

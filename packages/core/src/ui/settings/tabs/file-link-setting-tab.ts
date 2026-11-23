@@ -1,6 +1,6 @@
 import { useService } from "src/common/service"
-import { SettingTab } from "../setting-tab"
 import { debounce } from "src/utils"
+import { SettingTab } from "../setting-tab"
 
 
 export type FileLinkSettings = {

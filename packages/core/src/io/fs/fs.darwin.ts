@@ -1,6 +1,6 @@
-import { bridge } from "typora"
 import { Shell } from "src/io/shell"
-import { FileStats, FileAdapter } from "./file-adapter"
+import { bridge } from "typora"
+import { FileAdapter, type FileStats } from "./file-adapter"
 
 
 class MacFileStats implements FileStats {

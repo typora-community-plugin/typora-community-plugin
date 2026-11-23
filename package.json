@@ -8,12 +8,15 @@
     "pnpm": ">=7"
   },
   "scripts": {
-    "build": "cd packages/rollup-plugin && pnpm run build &&  cd ../esbuild-plugin && pnpm run build &&  cd ../loader && pnpm run build &&  cd ../core && pnpm run build &&  cd ../installer && pnpm run build &&  cd ../.. && node build.js"
+    "build": "cd packages/rollup-plugin && pnpm run build &&  cd ../esbuild-plugin && pnpm run build &&  cd ../loader && pnpm run build &&  cd ../core && pnpm run build &&  cd ../installer && pnpm run build &&  cd ../.. && node build.js",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write ."
   },
   "keywords": [],
   "author": "plylrnsdy",
   "license": "MIT",
   "devDependencies": {
+    "@biomejs/biome": "^2.6.8",
     "archiver": "^5.3.1"
   }
 }

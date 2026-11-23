@@ -1,5 +1,5 @@
-import { editor } from "typora"
 import { uniqueId } from "src/utils"
+import { editor } from "typora"
 import { getDiagramRenderer } from "./codeblock/codeblock-diagram"
 
 

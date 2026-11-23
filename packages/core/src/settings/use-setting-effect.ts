@@ -1,8 +1,8 @@
 import type { AppSettings } from "src/app"
 import type { Component } from "src/common/component"
 import { useService } from "src/common/service"
-import type { Settings } from "./settings"
 import type { DisposeFunc } from "src/utils/types"
+import type { Settings } from "./settings"
 
 
 export function useSettingEffect(

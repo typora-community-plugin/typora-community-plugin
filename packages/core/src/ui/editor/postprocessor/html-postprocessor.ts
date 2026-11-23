@@ -1,6 +1,6 @@
 import { useService } from 'src/common/service'
-import { PostProcessor } from "./postprocessor"
 import type { PostProcessorContext } from "./postprocessor"
+import { PostProcessor } from "./postprocessor"
 
 
 export class HtmlPostProcessor extends PostProcessor {

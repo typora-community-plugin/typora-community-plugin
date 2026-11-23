@@ -10,8 +10,8 @@
  */
 
 import path from 'src/path'
-import type { FieldNode, SyntaxHandler, EvalContext } from '../types'
 import type { SearchMatch } from '../../text-search-service'
+import type { EvalContext, FieldNode, SyntaxHandler } from '../types'
 
 export const FilenameSyntaxHandler: SyntaxHandler = {
   name: 'filename',

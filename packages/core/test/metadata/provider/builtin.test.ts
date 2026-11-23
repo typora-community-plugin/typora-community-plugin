@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals'
 import 'src/setup-test-env'
-import { registerDefaultMetadataProviders, basicMeta, markdown } from '../../../src/metadata/provider/builtin'
 import type { MetadataManager, MetadataProvider } from 'src/metadata/metadata-manager'
-import { MarkdownView } from 'src/ui/views/markdown-view'
 import { ImageView } from 'src/ui/views/image-view'
+import { MarkdownView } from 'src/ui/views/markdown-view'
+import { basicMeta, markdown, registerDefaultMetadataProviders } from '../../../src/metadata/provider/builtin'
 
 function createMockManager(): jest.Mocked<MetadataManager> {
   return {

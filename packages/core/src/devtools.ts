@@ -1,7 +1,7 @@
-import path from 'src/path'
-import { ClientCommand, File, JSBridge, reqnode } from 'typora'
 import { globalRootDir } from 'src/common/constants'
 import fs from 'src/io/fs/filesystem'
+import path from 'src/path'
+import { ClientCommand, File, JSBridge, reqnode } from 'typora'
 
 
 export function devtools() {

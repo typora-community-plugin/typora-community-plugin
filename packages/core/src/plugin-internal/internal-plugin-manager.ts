@@ -1,8 +1,8 @@
 import { useService } from "src/common/service"
-import { InternalPlugin, InternalPluginManifest } from "./internal-plugin"
+import type { InternalPlugin, InternalPluginManifest } from "./internal-plugin"
 import { MetadataPlugin, PLUGIN_METADATA_ID } from "./plugins/plugin-metadata"
-import { WorkspacePlugin, PLUGIN_WORKSPACE_ID } from "./plugins/plugin-workspace"
 import { PLUGIN_TEST_ID } from "./plugins/plugin-test-manifest"
+import { PLUGIN_WORKSPACE_ID, WorkspacePlugin } from "./plugins/plugin-workspace"
 
 
 export const KEY_OF_ENABLED_PLUGINS = 'internalPlugin.enabledPlugins'

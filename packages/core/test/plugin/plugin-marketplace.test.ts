@@ -1,7 +1,7 @@
 import 'src/setup-test-env'
-import { jest, describe, expect, test } from '@jest/globals'
-import { PluginMarketplace } from '../../src/plugin/plugin-marketplace'
+import { describe, expect, jest, test } from '@jest/globals'
 import type { PluginMarketInfo, PluginStat } from '../../src/plugin/plugin-marketplace'
+import { PluginMarketplace } from '../../src/plugin/plugin-marketplace'
 
 const REPO = 'typora-community-plugin/typora-plugin-releases'
 const BRANCH = 'main'

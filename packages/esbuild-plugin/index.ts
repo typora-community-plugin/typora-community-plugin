@@ -1,6 +1,6 @@
+import * as modules from 'node:module'
 import * as fs from 'fs/promises'
 import * as path from 'path'
-import * as modules from 'node:module'
 
 
 const internalModules: Record<string, string> = {

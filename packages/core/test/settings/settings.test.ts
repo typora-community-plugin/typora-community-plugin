@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals'
 import 'src/setup-test-env'
-import { Settings, SettingMigrations } from "../../src/settings/settings"
 import { useService } from "src/common/service"
+import { SettingMigrations, Settings } from "../../src/settings/settings"
 
 
 describe('class Settings', () => {
@@ -53,9 +53,9 @@ describe('class Settings', () => {
 
       settings.setDefault(defaultSettings)
 
-      // @ts-ignore
+      // @ts-expect-error
       expect(settings._data).toEqual({})
-      // @ts-ignore
+      // @ts-expect-error
       expect(Object.getPrototypeOf(settings._data)).toEqual(defaultSettings)
     })
 
@@ -107,7 +107,7 @@ describe('class Settings', () => {
       const testValue = 'testValue'
 
       const mockListener = jest.fn()
-      // @ts-ignore
+      // @ts-expect-error
       settings._listeners[testKey] = [mockListener]
 
       settings.set(testKey, testValue)
@@ -134,7 +134,7 @@ describe('class Settings', () => {
       settings.set(testKey, testValue)
 
       const mockListener = jest.fn()
-      // @ts-ignore
+      // @ts-expect-error
       settings._listeners[testKey] = [mockListener]
 
       const saveSpy = jest.spyOn(settings, 'save')
@@ -156,9 +156,9 @@ describe('class Settings', () => {
 
       settings.addChangeListener(key, listener)
 
-      // @ts-ignore
+      // @ts-expect-error
       expect(settings._listeners[key]).toHaveLength(1)
-      // @ts-ignore
+      // @ts-expect-error
       expect(settings._listeners[key]).toContain(listener)
     })
 
@@ -169,7 +169,7 @@ describe('class Settings', () => {
       const dispose = settings.addChangeListener(key, listener)
       dispose()
 
-      // @ts-ignore
+      // @ts-expect-error
       expect(settings._listeners[key]).toHaveLength(0)
     })
 
@@ -180,9 +180,9 @@ describe('class Settings', () => {
       settings.addChangeListener(key, listener)
       settings.addChangeListener(key, listener)
 
-      // @ts-ignore
+      // @ts-expect-error
       expect(settings._listeners[key]).toHaveLength(1)
-      // @ts-ignore
+      // @ts-expect-error
       expect(settings._listeners[key]).toContain(listener)
     })
   })
@@ -199,7 +199,7 @@ describe('class Settings', () => {
 
       settings.removeChangeListener(key, listener1)
 
-      // @ts-ignore
+      // @ts-expect-error
       const remainingListeners = settings._listeners[key]
       expect(remainingListeners).toHaveLength(1)
       expect(remainingListeners).toContain(listener2)
@@ -215,7 +215,7 @@ describe('class Settings', () => {
 
       settings.removeChangeListener(key, listener3)
 
-      // @ts-ignore
+      // @ts-expect-error
       const remainingListeners = settings._listeners[key]
       expect(remainingListeners).toHaveLength(1)
       expect(remainingListeners).toContain(listener1)
@@ -227,7 +227,7 @@ describe('class Settings', () => {
 
       settings.removeChangeListener(key, listener1)
 
-      // @ts-ignore
+      // @ts-expect-error
       expect(settings._listeners[key]).toBeUndefined()
     })
   })

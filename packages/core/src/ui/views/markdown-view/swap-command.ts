@@ -1,14 +1,14 @@
-import { editor } from 'typora'
 import { Component } from 'src/common/component'
 import { useService } from 'src/common/service'
-import type { WorkspaceLeaf } from 'src/ui/layout/workspace-leaf'
+import { useSettingEffectedFeature } from 'src/settings/use-setting-effect'
 import type { WorkspaceTabs } from 'src/ui/layout/tabs'
+import type { WorkspaceLeaf } from 'src/ui/layout/workspace-leaf'
+import { editor } from 'typora'
 import type { MarkdownView } from '.'
 import type { MdEditorMode } from './md-editor-mode'
 import { useEditingTabs } from './use-editing-tabs'
 import { usePreviewTabToSwap } from './use-preview-tab-to-swap'
 import { useRecord } from './use-record'
-import { useSettingEffectedFeature } from 'src/settings/use-setting-effect'
 
 
 const KEY_OPENFILE = Symbol.for('openFile$original')
@@ -82,12 +82,12 @@ export class SwapCommand extends Component {
   }
 
   private _openFile(filePath: string) {
-    // @ts-ignore — Typora internal API
+    // @ts-expect-error — Typora internal API
     editor.library[KEY_OPENFILE](filePath)
   }
 
   private _syncEditorSize(previewView: MarkdownView) {
-    // @ts-ignore
+    // @ts-expect-error
     const mode = previewView._modeState as MdEditorMode
     mode.syncSize()
   }

@@ -1,6 +1,6 @@
-import { JSBridge, reqnode } from "typora"
-import { FileStats, FileAdapter } from "./file-adapter"
 import { noop } from "src/utils"
+import { JSBridge, reqnode } from "typora"
+import { FileAdapter, type FileStats } from "./file-adapter"
 
 
 const fs = reqnode?.('fs') as typeof import('fs')

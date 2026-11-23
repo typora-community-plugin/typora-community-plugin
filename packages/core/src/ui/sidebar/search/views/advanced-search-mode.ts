@@ -1,9 +1,9 @@
 import './advanced-search-mode.scss'
 import decorate from '@plylrnsdy/decorate.js'
 import { Component } from 'src/common/component'
+import { useService } from 'src/common/service'
 import { html } from 'src/utils'
 import { editor } from 'typora'
-import { useService } from 'src/common/service'
 
 
 /**

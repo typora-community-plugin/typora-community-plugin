@@ -1,10 +1,10 @@
-import path from 'src/path'
-import { _options, editor, File, JSBridge } from 'typora'
 import decorate from '@plylrnsdy/decorate.js'
+import { useEventBus } from 'src/common/eventbus'
 import { Events } from 'src/common/events'
 import { useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
-import { useEventBus } from 'src/common/eventbus'
+import path from 'src/path'
+import { _options, editor, File, JSBridge } from 'typora'
 
 
 export type VaultEvents = {

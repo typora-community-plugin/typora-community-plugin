@@ -1,10 +1,10 @@
-import { useService } from "src/common/service"
-import { SettingTab } from "../setting-tab"
 import type { Command } from "src/command/command-manager"
 import { useEventBus } from "src/common/eventbus"
-import { debounce, html } from "src/utils"
+import { useService } from "src/common/service"
 import { eventToHotkey, readableHotkey } from "src/hotkey-manager"
+import { debounce, html } from "src/utils"
 import type { SettingItem } from "../setting-item"
+import { SettingTab } from "../setting-tab"
 
 
 const modifierKeys = new Set(['Alt', 'AltGraph', 'CapsLock', 'Control', 'Meta', 'Shift'])

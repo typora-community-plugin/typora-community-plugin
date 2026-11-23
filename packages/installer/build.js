@@ -43,4 +43,4 @@ function removeEnv(script, env) {
   return script.replace(new RegExp(`# ${env}_START(.|\\n)+?# ${env}_END`, 'g'), '')
 }
 
-export { main, buildScript, buildWindowsScript, buildBash, importFiles, removeEnv }
+export { buildBash, buildScript, buildWindowsScript, importFiles, main, removeEnv }

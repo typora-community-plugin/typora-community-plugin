@@ -1,5 +1,5 @@
+import { describe, expect, it } from '@jest/globals';
 import { format } from "../../../src/utils/string/format";
-import { describe, it, expect } from '@jest/globals';
 
 describe('format', () => {
   it('should replace a single placeholder with the corresponding value', () => {

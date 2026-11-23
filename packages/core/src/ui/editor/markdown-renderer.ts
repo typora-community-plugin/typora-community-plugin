@@ -1,8 +1,8 @@
 import './markdown-renderer.scss'
-import { CodeMirror, editor, File, MathJax } from "typora"
 import { useService } from "src/common/service"
-import type { MdPreviewerMode } from '../views/markdown-view/md-previewer-mode'
 import { memorize, parseMarkdown, uniqueId } from "src/utils"
+import { CodeMirror, editor, File, MathJax } from "typora"
+import type { MdPreviewerMode } from '../views/markdown-view/md-previewer-mode'
 import { renderDiagramBlocks } from "./markdown-renderer-diagram"
 
 
@@ -117,7 +117,7 @@ export class MarkdownRenderer {
       el.innerHTML = ''
       const opts = {
         ...OPTIONS,
-        // @ts-ignore
+        // @ts-expect-error
         mode: window.getCodeMirrorMode(el.getAttribute('lang')),
         lineWrapping: !File.option.noLineWrapping,
         lineNumbers: File.option.showLineNumbersForFence,

@@ -1,14 +1,14 @@
-import { _options } from 'typora'
-import { Notice } from 'src/ui/components/notice'
+import { coreVersion, globalRootDir } from 'src/common/constants'
+import { useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
 import path from 'src/path'
-import { Plugin } from "./plugin"
-import type { PluginManifest, PluginPosition } from "./plugin-manifest"
-import { PluginMarketplace } from './plugin-marketplace'
+import { Notice } from 'src/ui/components/notice'
 import { debounced, format } from 'src/utils'
 import * as versions from 'src/utils/versions'
-import { useService } from 'src/common/service'
-import { coreVersion, globalRootDir } from 'src/common/constants'
+import { _options } from 'typora'
+import type { Plugin } from "./plugin"
+import type { PluginManifest, PluginPosition } from "./plugin-manifest"
+import type { PluginMarketplace } from './plugin-marketplace'
 
 
 export class PluginManager {

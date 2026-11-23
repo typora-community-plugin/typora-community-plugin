@@ -17,43 +17,43 @@
  *   - All AST types (ParsedAST, FieldNode, TermNode, etc.)
  */
 
-import { tokenize } from './tokenizer'
-import type { RawToken } from './tokenizer'
 import {
+  evaluateTerm,
+  FilenameSyntaxHandler,
   TagSyntaxHandler,
   TitleSyntaxHandler,
-  FilenameSyntaxHandler,
   tryParseBareword,
-  evaluateTerm,
 } from './syntax'
+import type { RawToken } from './tokenizer'
+import { tokenize } from './tokenizer'
 import type {
-  ParsedAST,
   AndNode,
-  OrNode,
-  NotNode,
-  FieldNode,
-  TermNode,
-  SyntaxHandler,
   EvalContext,
+  FieldNode,
+  NotNode,
+  OrNode,
+  ParsedAST,
+  SyntaxHandler,
+  TermNode,
 } from './types'
 
 // ── Re-export all types (backward compat) ──────────────────────────────
 
-export type {
-  ParsedAST,
-  AndNode,
-  OrNode,
-  NotNode,
-  FieldNode,
-  TermNode,
-  SyntaxHandler,
-  EvalContext,
-}
-export type { ASTNodeType, ASTNode, FieldKind } from './types'
-export { FIELD_KINDS, isFieldPrefix } from './types'
 
 // Re-export helpers used by eval/result-builder.ts
 export { evaluateTerm } from './syntax'
+export type { ASTNode, ASTNodeType, FieldKind } from './types'
+export { FIELD_KINDS, isFieldPrefix } from './types'
+export type {
+  AndNode,
+  EvalContext,
+  FieldNode,
+  NotNode,
+  OrNode,
+  ParsedAST,
+  SyntaxHandler,
+  TermNode,
+}
 
 // ── Handler Registry ───────────────────────────────────────────────────
 

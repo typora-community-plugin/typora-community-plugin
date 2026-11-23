@@ -1,5 +1,5 @@
-import { editor, File } from 'typora'
 import type { MetadataManager } from 'src/metadata/metadata-manager'
+import { editor, File } from 'typora'
 
 
 /** Workers already wrapped by {@link interceptQuickOpenWorker}. */

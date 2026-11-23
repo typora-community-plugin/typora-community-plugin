@@ -1,13 +1,13 @@
 import './about-tab.scss'
-import path from 'src/path'
 import { coreDir, coreVersion, isDebug } from 'src/common/constants'
-import { Notice } from 'src/ui/components/notice'
+import { useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
+import * as net from 'src/net/net'
+import path from 'src/path'
+import { Notice } from 'src/ui/components/notice'
 import { ExpandableSection } from "src/ui/settings/expandable-section"
 import { SettingTab } from "src/ui/settings/setting-tab"
 import * as versions from 'src/utils/versions'
-import * as net from 'src/net/net'
-import { useService } from 'src/common/service'
 
 const CORE_NAME = 'typora-community-plugin'
 const CORE_REPO = `${CORE_NAME}/${CORE_NAME}`

@@ -1,8 +1,8 @@
-import type { RipgrepSearchService, SearchOptions, SearchResult } from './text-search-service'
 import { IndexSearchService } from './index-search-service'
-import { astHasFieldNodes } from './query-parser'
 import type { ParsedAST } from './query-parser'
+import { astHasFieldNodes } from './query-parser'
 import { astHasBodyNegation, astHasNegationUnderOr, collectNegationPatterns } from './query-parser/negation'
+import type { RipgrepSearchService, SearchOptions, SearchResult } from './text-search-service'
 
 /**
  * Hybrid search service — combines ripgrep text search with IndexedDB metadata lookup.

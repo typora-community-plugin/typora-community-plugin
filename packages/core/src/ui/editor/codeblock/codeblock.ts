@@ -1,10 +1,10 @@
-import { CodeMirror, editor } from "typora"
 import { useService } from "src/common/service"
-import type { CodeMirrorModeFactory } from "typora"
 import type { ILogger } from "src/io/logger/logger"
 import type { DisposeFunc } from "src/utils/types"
-import { hookDiagramEngine, registerDiagramRenderer, unregisterDiagramRenderer } from "./codeblock-diagram"
+import type { CodeMirrorModeFactory } from "typora"
+import { CodeMirror, editor } from "typora"
 import type { CodeblockRenderer } from "./codeblock-diagram"
+import { hookDiagramEngine, registerDiagramRenderer, unregisterDiagramRenderer } from "./codeblock-diagram"
 
 
 export interface CodeblockModeOptions {

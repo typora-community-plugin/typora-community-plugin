@@ -1,5 +1,5 @@
-export { MetadataManager } from './metadata-manager'
 export type { MetadataEvents } from './metadata-manager'
-export type { MetadataProvider, MetadataProviderContext, RegisterOptions } from './provider/registry'
-export type { MergeSpec, MergeStrategy } from './provider/merge'
+export { MetadataManager } from './metadata-manager'
 export { registerDefaultMetadataProviders } from './provider/builtin'
+export type { MergeSpec, MergeStrategy } from './provider/merge'
+export type { MetadataProvider, MetadataProviderContext, RegisterOptions } from './provider/registry'

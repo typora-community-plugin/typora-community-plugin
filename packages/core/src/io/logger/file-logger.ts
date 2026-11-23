@@ -1,7 +1,7 @@
-import { _options } from 'typora'
 import fs from "src/io/fs/filesystem"
 import path from "src/path"
 import { noop } from "src/utils"
+import { _options } from 'typora'
 
 
 const DEFAULT_BUFFER_SIZE = 99 * 1024 // 99KB to avoid frequent disk IO
@@ -71,7 +71,7 @@ export function getOrCreateDevLogger(): FileLogger {
   const logFile = resolveDevLogFile()
   if (!logFile) return new NoopFileLogger()
 
-  // @ts-ignore Re-check cache in case mount folder changed since last call
+  // @ts-expect-error Re-check cache in case mount folder changed since last call
   if (_devInstance && _devInstance.logFile === logFile) return _devInstance
 
   _devInstance?.flush()

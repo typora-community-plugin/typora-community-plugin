@@ -1,11 +1,11 @@
 import decorate from "@plylrnsdy/decorate.js"
-import { editor } from "typora"
 import { useService } from "src/common/service"
-import { HtmlPostProcessor } from "./html-postprocessor"
-import type { ButtonOptions, PostProcessorContext } from "./postprocessor"
-import { MarkdownView } from "src/ui/views/markdown-view"
+import type { MarkdownView } from "src/ui/views/markdown-view"
 import { useEditingTabs } from "src/ui/views/markdown-view/use-editing-tabs"
 import { debounce } from "src/utils"
+import { editor } from "typora"
+import { HtmlPostProcessor } from "./html-postprocessor"
+import type { ButtonOptions, PostProcessorContext } from "./postprocessor"
 
 
 interface CodeblockContext {
