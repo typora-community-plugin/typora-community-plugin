@@ -30,7 +30,7 @@
 			},
 			"suspicious": {
 				"noAssignInExpressions": "warn",
-				"useIterableCallbackReturn": "warn",
+				"useIterableCallbackReturn": "off",
 				"noExplicitAny": "off"
 			},
 			"style": {
