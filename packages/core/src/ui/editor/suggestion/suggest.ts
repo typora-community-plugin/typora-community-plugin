@@ -30,6 +30,7 @@ export abstract class EditorSuggest<T> {
    */
   abstract triggerText: string
 
+  // biome-ignore lint/correctness/noUnusedPrivateClassMembers: read by SuggestManager/MergedSuggest through casts; kept private as an implementation detail
   private _query = ''
   private _placeholder: string[] = []
 

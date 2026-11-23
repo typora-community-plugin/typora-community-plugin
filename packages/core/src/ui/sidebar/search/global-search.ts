@@ -15,6 +15,7 @@ export class GlobalSearch {
 
   constructor(
     private workspace = useService('workspace'),
+    // biome-ignore lint/correctness/noUnusedPrivateClassMembers: kept as a parameter property for the search service injection signature
     private vault = useService('vault'),
   ) {
     this._searchService = new RipgrepSearchService(vault.path)

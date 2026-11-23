@@ -1,6 +1,4 @@
 import 'src/setup-test-env'
-import { jest } from '@jest/globals'
-import type { RawToken } from '../../../../../../src/ui/sidebar/search/services/query-parser/tokenizer'
 import { tokenize } from '../../../../../../src/ui/sidebar/search/services/query-parser/tokenizer'
 
 describe('tokenize', () => {

@@ -9,7 +9,9 @@ import { editor, JSBridge } from "typora"
 
 export class QuickOpenPanel extends Component {
 
+  // biome-ignore lint/correctness/noUnusedPrivateClassMembers: the constructor of this component registers its behavior; the field is never read on purpose
   private _ignoreFile!: IgnoreFile
+  // biome-ignore lint/correctness/noUnusedPrivateClassMembers: the constructor of this component registers its behavior; the field is never read on purpose
   private _quickOpenInCurrentWin!: QuickOpenInCurrentWin
 
   constructor() {

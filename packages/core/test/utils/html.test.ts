@@ -71,7 +71,7 @@ describe('getElementPagePosition', () => {
     return el
   }
 
-  function chainParents(child: HTMLElement, parent: HTMLElement, grandparent?: HTMLElement) {
+  function _chainParents(child: HTMLElement, parent: HTMLElement, grandparent?: HTMLElement) {
     if (grandparent) {
       Object.defineProperty(grandparent, 'offsetParent', { configurable: true, get() { return null } })
     }

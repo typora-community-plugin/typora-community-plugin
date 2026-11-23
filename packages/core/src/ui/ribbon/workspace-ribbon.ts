@@ -93,7 +93,7 @@ export class WorkspaceRibbon extends Component {
 
     this.ribbonView = new RibbonView({
       buttons: this.buttons,
-      onChange: buttons => {
+      onChange: _buttons => {
         this.settings.set('ribbonState', this.getState())
       }
     })

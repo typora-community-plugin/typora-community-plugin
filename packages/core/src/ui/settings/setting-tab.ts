@@ -56,6 +56,7 @@ export abstract class SettingTab extends View {
 
 export abstract class PluginSettingTab extends SettingTab {
 
+  // biome-ignore lint/correctness/noUnusedPrivateClassMembers: `app` is part of the plugin setting-tab API consumed by subclasses outside this repo
   constructor(private app: App, private plugin: Plugin) {
     super()
   }

@@ -73,7 +73,7 @@ describe('beginTextRun()', () => {
   })
 
   it('ignores settlements of a superseded run and kills its processes', () => {
-    const { spawned, manager } = createTestEnv()
+    const { manager } = createTestEnv()
     const settled1 = jest.fn()
     const settled2 = jest.fn()
 

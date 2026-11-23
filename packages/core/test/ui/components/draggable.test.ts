@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { beforeEach, describe, expect, it, jest } from '@jest/globals'
+import { beforeEach, describe, expect, jest } from '@jest/globals'
 import { draggable } from '../../../src/ui/components/draggable'
 
 // Mock offsetParent so elements have a valid parent chain for compare functions.
@@ -79,7 +79,7 @@ class DragFixture {
       return { item1, item2 }
     }
 
-    const items = this._makeItem()
+    const _items = this._makeItem()
   }
   
   private _makeItem!: () => { item1: HTMLElement; item2: HTMLElement }
@@ -167,7 +167,7 @@ describe('draggable', () => {
 
   describe('mousedown behavior', () => {
     test('should add typ-dragging class to dragged element on mousedown', () => {
-      const { containerEl, item1 } = makeDragFixture('y') as any
+      const { item1 } = makeDragFixture('y') as any
       
       jest.useRealTimers()
       fireEvent(item1, 'mousedown', { button: 0 })
@@ -176,7 +176,7 @@ describe('draggable', () => {
     })
 
     test('should not trigger on non-left mouse button', () => {
-      const { containerEl, item1 } = makeDragFixture('y') as any
+      const { item1 } = makeDragFixture('y') as any
 
       jest.useRealTimers()
       fireEvent(item1, 'mousedown', { button: 2 })
@@ -212,7 +212,7 @@ describe('draggable', () => {
     })
 
     test('should not reorder on non-left button mousemove', () => {
-      const { containerEl, item1 } = makeDragFixture('y') as any
+      const { item1 } = makeDragFixture('y') as any
 
       jest.useRealTimers()
       
@@ -228,7 +228,7 @@ describe('draggable', () => {
       jest.useRealTimers()
       const onChange = jest.fn()
       const fixture = makeDragFixture('y', onChange) as any
-      const { containerEl, item1 } = fixture;
+      const { item1 } = fixture;
 
       fireEvent(item1, 'mousedown', { button: 0 })
       expect(item1.classList.contains('typ-dragging')).toBe(true)

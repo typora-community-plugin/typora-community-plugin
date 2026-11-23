@@ -84,7 +84,7 @@ export class PluginMarketplace extends Events<{ 'stats:loaded'(): void }> {
           return;
         }
         this.logger.warn(`Failed to load ${fileName}.`);
-      } catch (error) {
+      } catch (_error) {
         this.logger.warn(`Failed to load ${fileName}.`);
       }
     }
@@ -153,7 +153,7 @@ export class PluginMarketplace extends Events<{ 'stats:loaded'(): void }> {
     try {
       const defaultBranch = await this.github.getDefaultBranch(repo)
       if (defaultBranch) branch = defaultBranch
-    } catch (error) {
+    } catch (_error) {
       this.logger.warn(`Failed to get default branch of ${repo}.`)
     }
 

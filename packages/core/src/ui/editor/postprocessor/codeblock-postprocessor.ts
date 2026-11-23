@@ -1,7 +1,6 @@
 import decorate from "@plylrnsdy/decorate.js"
 import { useService } from "src/common/service"
 import type { MarkdownView } from "src/ui/views/markdown-view"
-import { useEditingTabs } from "src/ui/views/markdown-view/use-editing-tabs"
 import { debounce } from "src/utils"
 import { editor } from "typora"
 import { HtmlPostProcessor } from "./html-postprocessor"

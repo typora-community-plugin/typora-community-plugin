@@ -22,8 +22,11 @@ export class GlobalSearchView extends InternalSidebarPanel {
   /** @private */
   renderer = new SearchResultRenderer()
 
+  // biome-ignore lint/correctness/noUnusedPrivateClassMembers: the constructor of this component registers its settings entry; the field is never read on purpose
   private _keepSearchResult = new KeepSearchResult()
+  // biome-ignore lint/correctness/noUnusedPrivateClassMembers: the constructor of this component registers its settings entry; the field is never read on purpose
   private _showSearchResultFullPath = new ShowSearchResultFullPath()
+  // biome-ignore lint/correctness/noUnusedPrivateClassMembers: the constructor of this component registers its settings entry; the field is never read on purpose
   private _advancedSearchMode = new AdvancedSearchMode()
 
   progressBar = new GlobalSearchProgressbar()

@@ -1,4 +1,4 @@
-import { jest } from '@jest/globals'
+
 import { useEditingTabs } from '../../../../src/ui/views/markdown-view/use-editing-tabs'
 
 

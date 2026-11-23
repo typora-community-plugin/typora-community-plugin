@@ -13,15 +13,15 @@ registerService('plugin-marketplace', () => marketplaceStub)
 
 // Patch $ AFTER importing PluginManager so the Notice class (which uses $ internally
 // via its constructor) gets our patched version when .then() callbacks execute.
-const original$ = (globalThis as any).$
-let capturedEl: HTMLElement | undefined
+const _original$ = (globalThis as any).$
+let _capturedEl: HTMLElement | undefined
 
 ;(globalThis as any).$ = ((selectorOrHtml: string | Element) => {
   const el = typeof selectorOrHtml === 'string'
     ? document.createRange().createContextualFragment(selectorOrHtml).firstElementChild!
     : selectorOrHtml
 
-  capturedEl = el as HTMLElement
+  _capturedEl = el as HTMLElement
 
   const api: Record<string, unknown> = {
     get(i: number) { return i === 0 ? el : undefined },

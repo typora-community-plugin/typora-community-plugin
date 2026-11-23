@@ -37,7 +37,6 @@ export class InternalPluginsManagerSettingTab extends SettingTab {
 
   private renderPlugin(manifest: InternalPluginManifest) {
     const { plugins } = this
-    const t = this.i18n.t.settingTabs.plugins
 
     this.addSetting(setting => {
       setting.containerEl.classList.add('typ-plugin-item')

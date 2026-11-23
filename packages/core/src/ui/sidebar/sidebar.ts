@@ -5,7 +5,6 @@ import { View } from "src/ui/common/view"
 import type { DisposeFunc } from "src/utils/types"
 import { editor } from "typora"
 import { ViewLegacy } from '../common/view-legacy'
-import { FileExplorer } from "./file-explorer"
 import type { SidebarPanel } from './sidebar-panel'
 
 

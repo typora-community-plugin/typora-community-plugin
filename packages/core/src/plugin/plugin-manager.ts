@@ -5,7 +5,6 @@ import path from 'src/path'
 import { Notice } from 'src/ui/components/notice'
 import { debounced, format } from 'src/utils'
 import * as versions from 'src/utils/versions'
-import { _options } from 'typora'
 import type { Plugin } from "./plugin"
 import type { PluginManifest, PluginPosition } from "./plugin-manifest"
 import type { PluginMarketplace } from './plugin-marketplace'

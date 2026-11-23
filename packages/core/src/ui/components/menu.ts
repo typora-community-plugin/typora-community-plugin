@@ -1,6 +1,5 @@
 import './menu.scss'
 import { Component } from 'src/common/component'
-import { useService } from "src/common/service"
 import { getElementPagePosition, html } from "src/utils"
 import { type Closeable, View } from '../common/view'
 
@@ -16,7 +15,6 @@ export class Menu extends View implements Closeable {
 
   private component = new Component()
   private _mouseoverListeners: Record<string, Function> = {}
-  private _mouseoutListeners: Record<string, Function> = {}
 
   constructor() {
     super()
@@ -185,7 +183,7 @@ export class MenuItem {
     submenu.empty()
     build(submenu)
 
-    this.menu._onMouseOver(itemKey, event => {
+    this.menu._onMouseOver(itemKey, _event => {
       const itemEl = this.menu.containerEl
       const itemPos = getElementPagePosition(this.containerEl)
       const submenuPos = {

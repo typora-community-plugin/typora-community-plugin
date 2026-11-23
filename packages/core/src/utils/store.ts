@@ -2,7 +2,6 @@ import { noop } from "./function/noop"
 import type { DisposeFunc } from "./types"
 
 
-type StorePath = string[]
 type StorePathKey = string
 
 

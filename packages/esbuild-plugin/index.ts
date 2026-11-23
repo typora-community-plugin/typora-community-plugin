@@ -54,7 +54,6 @@ const DEFAULT_SETTINGS = {
  */
 export default function typoraPlugin(options: Options) {
 
-  const { mode } = Object.assign({}, DEFAULT_SETTINGS, options)
   const coreModuleId = 'Symbol.for("typora-plugin-core@v2")'
 
   return {

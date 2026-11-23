@@ -1,4 +1,4 @@
-import { jest } from '@jest/globals'
+
 import path from '../src/path'
 
 describe('BrowserPath', () => {

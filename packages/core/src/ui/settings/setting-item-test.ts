@@ -1,5 +1,4 @@
 import { noop } from "src/utils"
-import { SettingItem } from "./setting-item"
 import { SettingTab } from "./setting-tab"
 
 

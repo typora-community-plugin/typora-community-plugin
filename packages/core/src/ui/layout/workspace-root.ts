@@ -171,7 +171,7 @@ export class WorkspaceRoot extends WorkspaceSplit {
             item
               .setKey('typ-split-right')
               .setTitle(t.workspace.fileContextMenuSplitRight)
-              .onClick(event => splitRight(path))
+              .onClick(_event => splitRight(path))
           })
         }))
 

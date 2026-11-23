@@ -35,7 +35,9 @@ export class MarkdownEditor extends Events<MarkdownEditorEvents> {
 
   private _contextmenu = new InternalContextMenu('#context-menu')
   private _isContextMenuReady = false
+  // biome-ignore lint/correctness/noUnusedPrivateClassMembers: the constructor of this component registers its behavior; the field is never read on purpose
   private _openLinkInCurrentWin!: OpenLinkInCurrentWin
+  // biome-ignore lint/correctness/noUnusedPrivateClassMembers: the constructor of this component registers its behavior; the field is never read on purpose
   private _markdownLinkWitoutExtension!: MarkdownLinkWitoutExtension
 
   constructor() {

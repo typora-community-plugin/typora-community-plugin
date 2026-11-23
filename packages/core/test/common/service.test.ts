@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { describe, expect, jest, test } from '@jest/globals'
+import { describe, expect, test } from '@jest/globals'
 import { useService } from '../../src/common/service'
 
 describe('useService()', () => {

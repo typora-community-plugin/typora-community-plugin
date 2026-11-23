@@ -227,7 +227,7 @@ describe('Events', () => {
       try {
         // @ts-expect-error - 访问受保护的 emit 方法进行测试
         events.emit('test-event', 'test', 1)
-      } catch (error) {
+      } catch (_error) {
         // 忽略异常，我们只关心其他监听器是否被调用
       }
 

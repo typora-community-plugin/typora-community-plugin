@@ -11,7 +11,7 @@
  */
 
 import { describe, expect, it } from '@jest/globals'
-import { collectInlineTagPatterns, evaluateAST } from 'src/ui/sidebar/search/services/eval/result-builder'
+import { collectInlineTagPatterns } from 'src/ui/sidebar/search/services/eval/result-builder'
 import type { AndNode, FieldNode, NotNode, OrNode, ParsedAST, TermNode } from 'src/ui/sidebar/search/services/query-parser'
 
 import {
@@ -30,7 +30,7 @@ import type { SearchMatch } from 'src/ui/sidebar/search/services/text-search-ser
 
 // ── Helpers ─────────────────────────────────────────────────────────────
 
-function stripPos(node: ParsedAST): ParsedAST {
+function _stripPos(node: ParsedAST): ParsedAST {
   return JSON.parse(JSON.stringify(node))
 }
 

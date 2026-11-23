@@ -25,6 +25,9 @@
 		"enabled": true,
 		"rules": {
 			"preset": "recommended",
+			"correctness": {
+				"noUnusedFunctionParameters": "off"
+			},
 			"suspicious": {
 				"noAssignInExpressions": "warn",
 				"useIterableCallbackReturn": "warn",

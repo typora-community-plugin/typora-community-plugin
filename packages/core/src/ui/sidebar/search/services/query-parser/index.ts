@@ -18,7 +18,6 @@
  */
 
 import {
-  evaluateTerm,
   FilenameSyntaxHandler,
   TagSyntaxHandler,
   TitleSyntaxHandler,

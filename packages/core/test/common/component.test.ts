@@ -1,6 +1,6 @@
 import 'src/setup-test-env'
 import { jest } from '@jest/globals'
-import { Component, Loadable } from '../../src/common/component'
+import { Component } from '../../src/common/component'
 
 // 测试用的子组件类
 class TestComponent extends Component {

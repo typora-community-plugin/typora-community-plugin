@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { describe, expect, it, jest } from '@jest/globals'
+import { describe, expect, jest } from '@jest/globals'
 import { type Closeable, View } from '../../../src/ui/common/view'
 
 describe('View', () => {

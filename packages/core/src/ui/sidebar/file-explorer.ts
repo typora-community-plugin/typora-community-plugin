@@ -25,9 +25,11 @@ export class FileExplorer extends InternalSidebarPanel {
   }
 
   private _contextmenu = new InternalContextMenu('#file-menu')
+  // biome-ignore lint/correctness/noUnusedPrivateClassMembers: the constructor of this component registers its behavior; the field is never read on purpose
   private _showNotSupportedFile = new ShowNotSupportedFile()
 
   constructor(
+    // biome-ignore lint/correctness/noUnusedPrivateClassMembers: kept as a parameter property for the sidebar service injection signature
     private i18n = useService('i18n'),
     private vault = useService('vault'),
   ) {

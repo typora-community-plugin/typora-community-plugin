@@ -4,7 +4,6 @@ import { useService } from "src/common/service"
 import fs from "src/io/fs/filesystem"
 import path from "src/path"
 import type { DisposeFunc } from "src/utils/types"
-import { _options } from "typora"
 
 
 export type ConfigEvents = {
@@ -136,7 +135,7 @@ export class ConfigRepository extends Events<ConfigEvents> {
       const configPath = path.join(this.configDir, filename + '.json')
       const text = fs.readTextSync(configPath)
       return JSON.parse(text)
-    } catch (error) {
+    } catch (_error) {
       this.logger.warn(`Failed to load config "${filename}.json"`)
       return defaultValue
     }

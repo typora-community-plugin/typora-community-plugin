@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals'
 import 'src/setup-test-env'
-import type { FileStats } from '../../../src/io/fs/file-adapter'
-import { FileAdapter, ListFilesOptions } from '../../../src/io/fs/file-adapter'
+import { FileAdapter } from '../../../src/io/fs/file-adapter'
 
 class TestFileAdapter extends FileAdapter {
   mockList = jest.fn().mockResolvedValue([] as string[])
@@ -80,7 +79,7 @@ describe('FileAdapter', () => {
       })
       adapter.mockIsDir.mockResolvedValue(false)
       // Override isDirectory for subdir path to make it be treated as directory
-      const originalIsDir = adapter.isDirectory.bind(adapter)
+      const _originalIsDir = adapter.isDirectory.bind(adapter)
       adapter.mockIsDir.mockImplementation(async (p: string) => {
         return p === '/vault/subdir' || p.endsWith('\\subdir')
       })

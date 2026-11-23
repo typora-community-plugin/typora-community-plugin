@@ -13,7 +13,7 @@
  */
 
 import type { TagObject, TitleObject } from 'src/utils'
-import type { MatchSource, SearchMatch } from '../text-search-service'
+import type { SearchMatch } from '../text-search-service'
 
 // ── AST Node Types ─────────────────────────────────────────────────────
 

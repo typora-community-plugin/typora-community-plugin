@@ -2,7 +2,6 @@ import './markdown-renderer.scss'
 import { useService } from "src/common/service"
 import { memorize, parseMarkdown, uniqueId } from "src/utils"
 import { CodeMirror, editor, File, MathJax } from "typora"
-import type { MdPreviewerMode } from '../views/markdown-view/md-previewer-mode'
 import { renderDiagramBlocks } from "./markdown-renderer-diagram"
 
 

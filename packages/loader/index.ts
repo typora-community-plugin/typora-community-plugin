@@ -17,6 +17,7 @@ import { _options, bridge, File, reqnode } from 'typora'
     ? env.PLUGIN_CORE_PATH.replace(/\{VAULT\}/, mountFolder)
     : new URL(`./${loaderConfig.coreVersion}/core.js`, import.meta.url).href
 
+  // biome-ignore lint/suspicious/noTsIgnore: symbol-indexed assignment to `window` is not in the DOM lib types
   // @ts-ignore
   window[Symbol.for(`${process.env.CORE_NS}:env`)] = {
     ...env,

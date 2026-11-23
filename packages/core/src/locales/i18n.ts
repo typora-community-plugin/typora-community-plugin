@@ -72,7 +72,7 @@ export class I18n<T> {
         this.resources = JSON.parse(localeText)
         return
       }
-      catch (error) {
+      catch (_error) {
         this.logger.warn(`Failed to load locale file: lang.${localeList[i]}.json`)
       }
     }
