@@ -43,11 +43,17 @@ export class SwapCommand extends Component {
     const previewView = previewLeaf.view
     const writeEl = editor.writingArea.parentElement!
     const { saveStateToLeaf, restoreStateFromLeaf } = useRecord()
-    const { beginSwap, endSwap } = usePreviewTabToSwap()
+    const { beginSwap, endSwap, markLeafInSwap } = usePreviewTabToSwap()
 
     saveStateToLeaf(editorLeaf.view)
     saveStateToLeaf(previewView)
     editorLeaf.view.setMode('previewer')
+    // Both swap leaves must be skipped by the "open the next md leaf" fix in
+    // `MarkdownView#onClose()`: a teardown (e.g. `core.workspace:reset`)
+    // detaching the only editor leaf would reopen the swapped preview leaf
+    // and leave a duplicate tab in the non-editing tabs group.
+    markLeafInSwap(editorLeaf)
+    markLeafInSwap(previewLeaf)
 
     beginSwap(previewLeaf)
     this._hideEditor(writeEl)
@@ -58,6 +64,15 @@ export class SwapCommand extends Component {
     this._openFile(previewLeaf.state.path)
 
     const doSwap = () => {
+      // A teardown (e.g. `core.workspace:reset`) can detach the leaves while
+      // the async `_openFile` → `file:open` is in flight. Reopening a detached
+      // preview leaf here rebinds the native editor to a leaf outside the
+      // layout and leaves a duplicate tab in the old tabs group, so only
+      // clear the swap flag.
+      if (!this._loaded || !previewLeaf.parent) {
+        endSwap()
+        return
+      }
       previewView.setMode('typora')
       this._syncEditorSize(previewView)
       this._showEditor(writeEl)
@@ -71,7 +86,9 @@ export class SwapCommand extends Component {
     if (isSwappingSameFile) {
       doSwap()
     } else {
-      this.workspace.once('file:open', doSwap)
+      // Register the disposer so closing this view cancels the pending swap;
+      // a bare `once()` on the workspace service outlives teardown.
+      this.register(this.workspace.once('file:open', doSwap))
     }
   }
 

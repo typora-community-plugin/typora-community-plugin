@@ -9,6 +9,7 @@ import { MdPreviewerMode } from './md-previewer-mode'
 import type { ModeContext, ModeController } from './mode-controller'
 import { SwapCommand } from './swap-command'
 import { useEditingTabs } from './use-editing-tabs'
+import { usePreviewTabToSwap } from './use-preview-tab-to-swap'
 import { useRecord } from './use-record'
 
 
@@ -132,6 +133,10 @@ export class MarkdownView extends WorkspaceView {
     const { saveStateToLeaf } = useRecord()
     saveStateToLeaf(this)
 
+    // The leaf leaves the layout; drop its swap mark (see use-preview-tab-to-swap).
+    const { unmarkLeafInSwap, isLeafInSwap } = usePreviewTabToSwap()
+    unmarkLeafInSwap(this.leaf)
+
     if (this.isEditor()) {
       if (this.workspace.activeFile === this.filePath)
         editor.writingArea.parentElement!.classList.add('typ-deactive')
@@ -146,8 +151,13 @@ export class MarkdownView extends WorkspaceView {
           setEditingTabs(null)
 
           // fix: will not open typora editor after the only one closed
+          // (skip leaves involved in a swap: reopening them on teardown
+          // re-runs `autoSetMode` → native `openFile` and leaves a
+          // duplicate tab in the non-editing tabs group)
           const nextMdLeaf = this.leaf.getRoot()
-            .findLeaf(leaf => leaf.viewType === MarkdownView.type && leaf !== this.leaf)
+            .findLeaf(leaf => leaf.viewType === MarkdownView.type &&
+              leaf !== this.leaf &&
+              !isLeafInSwap(leaf))
           if (nextMdLeaf) (nextMdLeaf.parent as WorkspaceTabs).activeLeaf.view.onOpen()
         }
       } else {
@@ -164,6 +174,11 @@ export class MarkdownView extends WorkspaceView {
   /** @private */
   setMode(mode: 'typora' | 'previewer') {
     const prevMode = this._modeState
+
+    // The leaf is promoted to the shared Typora editor → it no longer needs
+    // the swap mark (see use-preview-tab-to-swap).
+    if (mode === 'typora')
+      usePreviewTabToSwap().unmarkLeafInSwap(this.leaf)
 
     if (prevMode instanceof MdEditorMode) {
       this._modeCtx.containerEl.classList.remove('mode-typora')
