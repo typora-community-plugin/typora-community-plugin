@@ -1,13 +1,13 @@
-import { jest } from '@jest/globals'
+import { type Mocked, vi } from 'vitest'
 import 'src/setup-test-env'
 import type { MetadataManager, MetadataProvider } from 'src/metadata/metadata-manager'
 import { ImageView } from 'src/ui/views/image-view'
 import { MarkdownView } from 'src/ui/views/markdown-view'
 import { basicMeta, markdown, registerDefaultMetadataProviders } from '../../../src/metadata/provider/builtin'
 
-function createMockManager(): jest.Mocked<MetadataManager> {
+function createMockManager(): Mocked<MetadataManager> {
   return {
-    register: jest.fn(),
+    register: vi.fn(),
   } as any
 }
 
@@ -43,7 +43,7 @@ describe('markdown provider', () => {
   function createContext(filePath: string, content: string): Parameters<MetadataProvider>[0] {
     return {
       filePath,
-      text: jest.fn().mockResolvedValue(content),
+      text: vi.fn().mockResolvedValue(content),
     } as any
   }
 

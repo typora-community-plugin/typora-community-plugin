@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { jest } from '@jest/globals'
+import { vi } from 'vitest'
 import { eventToHotkey, HotkeyManager } from '../src/hotkey-manager'
 
 
@@ -26,7 +26,7 @@ describe('HotkeyManager', () => {
   })
 
   test('matches hotkeys on keydown, including ⌘ combinations', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addHotkey('Cmd+J', listener)
 
     document.body.dispatchEvent(new KeyboardEvent('keydown', {
@@ -39,7 +39,7 @@ describe('HotkeyManager', () => {
   })
 
   test('matches editor hotkeys on keydown', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addEditorHotkey('Cmd+J', listener)
 
     editorEl.dispatchEvent(new KeyboardEvent('keydown', {
@@ -52,7 +52,7 @@ describe('HotkeyManager', () => {
   })
 
   test('matches editor non-meta hotkeys on keyup', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addEditorHotkey('Ctrl+.', listener)
 
     editorEl.dispatchEvent(new KeyboardEvent('keyup', {
@@ -65,7 +65,7 @@ describe('HotkeyManager', () => {
   })
 
   test('prevents the default action when a hotkey matches', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addEditorHotkey('Cmd+J', listener)
     const event = new KeyboardEvent('keydown', {
       key: 'j',
@@ -80,7 +80,7 @@ describe('HotkeyManager', () => {
   })
 
   test('prevents the default action on keyup fallback', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addHotkey('Ctrl+.', listener)
     const event = new KeyboardEvent('keyup', {
       key: '.',
@@ -113,7 +113,7 @@ describe('HotkeyManager', () => {
     const stop = (event: Event) => event.stopPropagation()
     child.addEventListener('keydown', stop)
 
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addEditorHotkey('Cmd+J', listener)
 
     child.dispatchEvent(new KeyboardEvent('keydown', {
@@ -132,7 +132,7 @@ describe('HotkeyManager', () => {
     const stop = (event: Event) => event.stopImmediatePropagation()
     editorEl.addEventListener('keydown', stop)
 
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addEditorHotkey('Cmd+J', listener)
 
     editorEl.dispatchEvent(new KeyboardEvent('keydown', {
@@ -147,7 +147,7 @@ describe('HotkeyManager', () => {
   })
 
   test('does not match editor hotkeys outside the editor', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addEditorHotkey('Cmd+J', listener)
 
     document.body.dispatchEvent(new KeyboardEvent('keydown', {
@@ -160,7 +160,7 @@ describe('HotkeyManager', () => {
   })
 
   test('matches global hotkeys inside the editor', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addHotkey('Cmd+J', listener)
 
     editorEl.dispatchEvent(new KeyboardEvent('keydown', {
@@ -173,7 +173,7 @@ describe('HotkeyManager', () => {
   })
 
   test('matches non-meta global hotkeys on keyup inside the editor', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addHotkey('Ctrl+.', listener)
 
     editorEl.dispatchEvent(new KeyboardEvent('keyup', {
@@ -186,7 +186,7 @@ describe('HotkeyManager', () => {
   })
 
   test('matches F1 on keyup', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addHotkey('F1', listener)
 
     editorEl.dispatchEvent(new KeyboardEvent('keyup', {
@@ -198,7 +198,7 @@ describe('HotkeyManager', () => {
   })
 
   test('matches non-meta global hotkeys on keydown inside the editor', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addHotkey('Ctrl+.', listener)
 
     editorEl.dispatchEvent(new KeyboardEvent('keydown', {
@@ -211,7 +211,7 @@ describe('HotkeyManager', () => {
   })
 
   test('does not fire twice when both keydown and keyup match', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addHotkey('Ctrl+.', listener)
 
     editorEl.dispatchEvent(new KeyboardEvent('keydown', {
@@ -229,7 +229,7 @@ describe('HotkeyManager', () => {
   })
 
   test('matches global hotkeys dispatched on the document', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addHotkey('Cmd+J', listener)
 
     document.dispatchEvent(new KeyboardEvent('keydown', {
@@ -242,7 +242,7 @@ describe('HotkeyManager', () => {
   })
 
   test('matches global hotkeys dispatched on the window', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addHotkey('Cmd+J', listener)
 
     window.dispatchEvent(new KeyboardEvent('keydown', {
@@ -260,7 +260,7 @@ describe('HotkeyManager', () => {
     const stop = (event: Event) => event.stopPropagation()
     child.addEventListener('keydown', stop)
 
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addHotkey('Cmd+J', listener)
 
     child.dispatchEvent(new KeyboardEvent('keydown', {
@@ -276,7 +276,7 @@ describe('HotkeyManager', () => {
   })
 
   test('does not fire twice when the key is released', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addHotkey('Cmd+J', listener)
 
     document.body.dispatchEvent(new KeyboardEvent('keydown', {
@@ -294,7 +294,7 @@ describe('HotkeyManager', () => {
   })
 
   test('ignores auto-repeat keydown events', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addHotkey('Cmd+J', listener)
 
     document.body.dispatchEvent(new KeyboardEvent('keydown', {
@@ -308,7 +308,7 @@ describe('HotkeyManager', () => {
   })
 
   test('ignores plain keys typed during IME composition', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addHotkey('J', listener)
 
     document.body.dispatchEvent(new KeyboardEvent('keyup', {
@@ -321,7 +321,7 @@ describe('HotkeyManager', () => {
   })
 
   test('keeps modifier shortcuts working during IME composition', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     manager.addHotkey('Cmd+J', listener)
 
     document.body.dispatchEvent(new KeyboardEvent('keydown', {

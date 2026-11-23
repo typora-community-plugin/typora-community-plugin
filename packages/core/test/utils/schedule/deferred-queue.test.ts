@@ -1,4 +1,4 @@
-import { jest } from '@jest/globals'
+import { vi } from 'vitest'
 import { DeferredQueue } from '../../../src/utils/schedule/deferred-queue'
 
 
@@ -6,7 +6,7 @@ describe('DeferredQueue', () => {
 
   it('runs tasks immediately when not deferring', async () => {
     const queue = new DeferredQueue()
-    const task = jest.fn(async () => { })
+    const task = vi.fn(async () => { })
 
     await queue.run(task)
 
@@ -15,7 +15,7 @@ describe('DeferredQueue', () => {
 
   it('defer() returns false and does nothing when not deferring', () => {
     const queue = new DeferredQueue()
-    const task = jest.fn()
+    const task = vi.fn()
 
     expect(queue.defer(task)).toBe(false)
     expect(task).not.toHaveBeenCalled()
@@ -23,7 +23,7 @@ describe('DeferredQueue', () => {
 
   it('queues asynchronous tasks until end() when deferring', async () => {
     const queue = new DeferredQueue()
-    const task = jest.fn(async () => { })
+    const task = vi.fn(async () => { })
     queue.begin()
 
     const done = queue.run(task)
@@ -36,7 +36,7 @@ describe('DeferredQueue', () => {
 
   it('queues synchronous tasks and reports them as deferred', async () => {
     const queue = new DeferredQueue()
-    const task = jest.fn()
+    const task = vi.fn()
     queue.begin()
 
     expect(queue.defer(task)).toBe(true)
@@ -60,7 +60,7 @@ describe('DeferredQueue', () => {
 
   it('keeps draining other tasks when one throws', async () => {
     const queue = new DeferredQueue()
-    const ok = jest.fn()
+    const ok = vi.fn()
     queue.begin()
     queue.run(async () => { throw new Error('boom') }).catch(() => { })
     queue.defer(ok)

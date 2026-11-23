@@ -1,12 +1,12 @@
-import { jest } from '@jest/globals'
+import { vi } from 'vitest'
 import 'src/setup-test-env'
 
 
 const fsMock = {
-  access: jest.fn(async () => { }),
-  mkdir: jest.fn(async () => { }),
-  copy: jest.fn(async () => { }),
-  remove: jest.fn(async () => { }),
+  access: vi.fn(async () => { }),
+  mkdir: vi.fn(async () => { }),
+  copy: vi.fn(async () => { }),
+  remove: vi.fn(async () => { }),
 }
 
 const logger = { debug() { }, info() { }, warn() { }, error() { } }
@@ -15,17 +15,17 @@ let ConfigRepository: typeof import('../../src/io/config-repository').ConfigRepo
 
 
 beforeAll(async () => {
-  await jest.unstable_mockModule('src/io/fs/filesystem', () => ({ default: fsMock }))
+  await vi.doMock('src/io/fs/filesystem', () => ({ default: fsMock }))
   ;({ ConfigRepository } = await import('../../src/io/config-repository'))
 })
 
-beforeEach(() => jest.clearAllMocks())
+beforeEach(() => vi.clearAllMocks())
 
 
 function createRepo(vault: { path: string, configDir: string }) {
   return new ConfigRepository(logger as any, {
     ...vault,
-    on: jest.fn(() => jest.fn()),
+    on: vi.fn(() => vi.fn()),
   } as any)
 }
 
@@ -34,7 +34,7 @@ describe('ConfigRepository', () => {
 
   it('uses the global config without touching the file system when no vault is mounted', async () => {
     const repo = createRepo({ path: '', configDir: '.typora' })
-    const onSwitch = jest.fn()
+    const onSwitch = vi.fn()
 
     repo.on('switch', onSwitch)
     // The event is deferred (like the `fs.access()` path) so that listeners

@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { jest } from '@jest/globals'
+import { vi } from 'vitest'
 import { type EventDefination, type EventListener, Events, PublicEvents, PublicStickyEvents } from '../../src/common/events'
 
 // Define test event types
@@ -33,7 +33,7 @@ describe('Events', () => {
       const events1 = new $Events<TestEvents>(sharedScope)
       const events2 = new $Events<TestEvents>(sharedScope)
 
-      const listener = jest.fn()
+      const listener = vi.fn()
       events1.on('test-event', listener)
 
       // 验证两个实例共享同一个监听器映射
@@ -44,7 +44,7 @@ describe('Events', () => {
       const events1 = new $Events<TestEvents>('scope-1')
       const events2 = new $Events<TestEvents>('scope-2')
 
-      const listener = jest.fn()
+      const listener = vi.fn()
       events1.on('test-event', listener)
 
       expect(events1.getEventNames()).toEqual(['test-event'])
@@ -54,7 +54,7 @@ describe('Events', () => {
 
   describe('on()', () => {
     test('should register event listener and return dispose function', () => {
-      const listener = jest.fn()
+      const listener = vi.fn()
       const dispose = events.on('test-event', listener)
 
       expect(events.getEventNames()).toEqual(['test-event'])
@@ -66,8 +66,8 @@ describe('Events', () => {
     })
 
     test('should allow multiple listeners for same event', () => {
-      const listener1 = jest.fn()
-      const listener2 = jest.fn()
+      const listener1 = vi.fn()
+      const listener2 = vi.fn()
 
       events.on('test-event', listener1)
       events.on('test-event', listener2)
@@ -76,7 +76,7 @@ describe('Events', () => {
     })
 
     test('should pass correct arguments to listeners', () => {
-      const listener = jest.fn()
+      const listener = vi.fn()
       events.on('test-event', listener)
 
       // @ts-expect-error - 访问受保护的 emit 方法进行测试
@@ -88,8 +88,8 @@ describe('Events', () => {
 
   describe('prependListener()', () => {
     test('should add listener at the beginning of the list', () => {
-      const listener1 = jest.fn()
-      const listener2 = jest.fn()
+      const listener1 = vi.fn()
+      const listener2 = vi.fn()
 
       events.on('test-event', listener1)
       events.prependListener('test-event', listener2)
@@ -105,7 +105,7 @@ describe('Events', () => {
     })
 
     test('should return dispose function', () => {
-      const listener = jest.fn()
+      const listener = vi.fn()
       const dispose = events.prependListener('test-event', listener)
 
       expect(typeof dispose).toBe('function')
@@ -117,7 +117,7 @@ describe('Events', () => {
 
   describe('once()', () => {
     test('should call listener only once', () => {
-      const listener = jest.fn()
+      const listener = vi.fn()
       events.once('test-event', listener)
 
       // @ts-expect-error - 访问受保护的 emit 方法进行测试
@@ -130,7 +130,7 @@ describe('Events', () => {
     })
 
     test('should return dispose function', () => {
-      const listener = jest.fn()
+      const listener = vi.fn()
       const dispose = events.once('test-event', listener)
 
       expect(typeof dispose).toBe('function')
@@ -142,8 +142,8 @@ describe('Events', () => {
 
   describe('off()', () => {
     test('should remove specific listener', () => {
-      const listener1 = jest.fn()
-      const listener2 = jest.fn()
+      const listener1 = vi.fn()
+      const listener2 = vi.fn()
 
       events.on('test-event', listener1)
       events.on('test-event', listener2)
@@ -158,8 +158,8 @@ describe('Events', () => {
     })
 
     test('should do nothing when removing non-existent listener', () => {
-      const listener1 = jest.fn()
-      const listener2 = jest.fn()
+      const listener1 = vi.fn()
+      const listener2 = vi.fn()
 
       events.on('test-event', listener1)
       events.off('test-event', listener2) // listener2 从未被添加
@@ -171,7 +171,7 @@ describe('Events', () => {
     })
 
     test('should do nothing when event has no listeners', () => {
-      const listener = jest.fn()
+      const listener = vi.fn()
       // 使用类型断言来测试边界情况
       events.off('another-event' as any, listener) // 应该不会抛出错误
     })
@@ -179,8 +179,8 @@ describe('Events', () => {
 
   describe('emit()', () => {
     test('should call all registered listeners', () => {
-      const listener1 = jest.fn()
-      const listener2 = jest.fn()
+      const listener1 = vi.fn()
+      const listener2 = vi.fn()
 
       events.on('test-event', listener1)
       events.on('test-event', listener2)
@@ -193,7 +193,7 @@ describe('Events', () => {
     })
 
     test('should handle complex data types', () => {
-      const listener = jest.fn()
+      const listener = vi.fn()
       const testData = { id: 1, name: 'test' }
 
       events.on('data-event', listener)
@@ -205,7 +205,7 @@ describe('Events', () => {
     })
 
     test('should handle events with no arguments', () => {
-      const listener = jest.fn()
+      const listener = vi.fn()
       events.on('another-event', listener)
 
       // @ts-expect-error - 访问受保护的 emit 方法进行测试
@@ -215,10 +215,10 @@ describe('Events', () => {
     })
 
     test('should handle listener exceptions gracefully', () => {
-      const errorListener = jest.fn().mockImplementation(() => {
+      const errorListener = vi.fn().mockImplementation(() => {
         throw new Error('Listener error')
       })
-      const normalListener = jest.fn()
+      const normalListener = vi.fn()
 
       events.on('test-event', errorListener)
       events.on('test-event', normalListener)
@@ -238,8 +238,8 @@ describe('Events', () => {
 
   describe('getEventNames()', () => {
     test('should return all registered event names', () => {
-      const listener1 = jest.fn()
-      const listener2 = jest.fn()
+      const listener1 = vi.fn()
+      const listener2 = vi.fn()
 
       events.on('test-event', listener1)
       events.on('another-event', listener2)
@@ -268,7 +268,7 @@ describe('PublicEvents', () => {
   })
 
   test('should have public emit method', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     publicEvents.on('test-event', listener)
 
     // 可以直接调用 public emit 方法
@@ -278,7 +278,7 @@ describe('PublicEvents', () => {
   })
 
   test('should support all Events methods', () => {
-    const listener = jest.fn()
+    const listener = vi.fn()
     publicEvents.on('test-event', listener)
     publicEvents.emit('test-event', 'test', 1)
 
@@ -297,7 +297,7 @@ describe('PublicStickyEvents', () => {
   test('should not replay a non-sticky event to late subscribers', () => {
     events.emit('another-event')
 
-    const listener = jest.fn()
+    const listener = vi.fn()
     events.on('another-event', listener)
 
     expect(listener).not.toHaveBeenCalled()
@@ -307,7 +307,7 @@ describe('PublicStickyEvents', () => {
     events.setSticky('another-event')
     events.emit('another-event')
 
-    const listener = jest.fn()
+    const listener = vi.fn()
     events.on('another-event', listener)
 
     expect(listener).toHaveBeenCalledTimes(1)
@@ -317,7 +317,7 @@ describe('PublicStickyEvents', () => {
     events.setSticky('test-event')
     events.emit('test-event', 'ready', 1)
 
-    const listener = jest.fn()
+    const listener = vi.fn()
     events.once('test-event', listener)
 
     expect(listener).toHaveBeenCalledWith('ready', 1)
@@ -329,7 +329,7 @@ describe('PublicStickyEvents', () => {
   test('once() should fire once on the next emit when not yet emitted', () => {
     events.setSticky('test-event')
 
-    const listener = jest.fn()
+    const listener = vi.fn()
     events.once('test-event', listener)
     expect(listener).not.toHaveBeenCalled()
 

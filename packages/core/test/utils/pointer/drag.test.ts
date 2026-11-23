@@ -1,7 +1,7 @@
 import 'src/setup-test-env'
-import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals'
 import type { DragInfo, DragOptions } from 'src/utils/pointer/drag'
 import { beginDrag } from 'src/utils/pointer/drag'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 
 function fire(type: string, options: Record<string, any> = {}) {
@@ -13,8 +13,8 @@ function mousedown(clientX: number, clientY: number, button = 0) {
 }
 
 function makeOptions(overrides: Partial<DragOptions> = {}) {
-  const onMove = jest.fn()
-  const onEnd = jest.fn()
+  const onMove = vi.fn()
+  const onEnd = vi.fn()
   return { onMove, onEnd, options: { onMove, onEnd, ...overrides } }
 }
 
@@ -100,7 +100,7 @@ describe('beginDrag', () => {
   })
 
   test('onMove returning false ends the session as canceled', () => {
-    const onMove = jest.fn().mockReturnValue(false)
+    const onMove = vi.fn().mockReturnValue(false)
     const { onEnd, options } = makeOptions({ onMove })
     beginDrag(mousedown(0, 0), options)
 
@@ -125,7 +125,7 @@ describe('beginDrag', () => {
   })
 
   test('works without onEnd', () => {
-    const onMove = jest.fn()
+    const onMove = vi.fn()
     beginDrag(mousedown(0, 0), { onMove })
 
     fire('pointermove', { clientX: 1, clientY: 1 })
@@ -175,7 +175,7 @@ describe('beginDrag — mouse fallback (no PointerEvent, e.g. Safari < 13 / macO
   })
 
   test('threshold and early cancel work the same', () => {
-    const onMove = jest.fn().mockImplementation((_e, info: DragInfo) => {
+    const onMove = vi.fn().mockImplementation((_e, info: DragInfo) => {
       if (info.x > 50) return false
     })
     const { onEnd, options } = makeOptions({ threshold: 9, onMove })

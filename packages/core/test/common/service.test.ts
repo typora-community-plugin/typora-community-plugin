@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { describe, expect, test } from '@jest/globals'
+import { describe, expect, test } from 'vitest'
 import { useService } from '../../src/common/service'
 
 describe('useService()', () => {
@@ -35,28 +35,28 @@ describe('useService()', () => {
     test('should return app with on and emit methods', () => {
       const app = useService('app')
       expect(typeof app.on).toBe('function')
-      expect(typeof app.emit).toBe('function')
+      expect(typeof (app as any).emit).toBe('function')
     })
 
     test('should return config-repository with expected API', () => {
       const config = useService('config-repository')
       expect(typeof config.configDir).toBe('string')
       expect(config.configDir).toBe('/default-config-dir')
-      expect(typeof config.setConfigDir).toBe('function')
+      expect(typeof (config as any).setConfigDir).toBe('function')
       expect(typeof config.readConfigJson).toBe('function')
       expect(typeof config.writeConfigJson).toBe('function')
     })
 
     test('config-repository should allow changing configDir', () => {
       const config = useService('config-repository')
-      config.setConfigDir('/custom')
+      ;(config as any).setConfigDir('/custom')
       expect(config.configDir).toBe('/custom')
     })
 
     test('hotkey-manager should return mock dispose functions from hotkey methods', () => {
       const hk = useService('hotkey-manager')
-      const dispose1 = hk.addHotkey({} as any)
-      const dispose2 = hk.addEditorHotkey({} as any)
+      const dispose1 = (hk as any).addHotkey({} as any)
+      const dispose2 = (hk as any).addEditorHotkey({} as any)
       expect(typeof dispose1).toBe('function')
       expect(typeof dispose2).toBe('function')
     })
@@ -67,7 +67,7 @@ describe('useService()', () => {
       const logger = useService('logger')
       const config = useService('config-repository')
       // Modify config without affecting logger
-      config.setConfigDir('/isolated')
+      ;(config as any).setConfigDir('/isolated')
       expect(config.configDir).toBe('/isolated')
       // Logger should still have its own identity
       expect(logger).toBeDefined()

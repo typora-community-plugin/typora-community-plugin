@@ -8,8 +8,7 @@
 			"__mocks__/**",
 			"build.js",
 			"build-dts.js",
-			"jest-esbuild.js",
-			"jest.config.mjs",
+			"vitest.config.ts",
 			"rollup.config.js"
 		],
 		"ignoreUnknown": true
@@ -19,7 +18,6 @@
 			"includes": ["test/**", "__mocks__/**"],
 			"javascript": {
 				"globals": [
-					"jest",
 					"describe",
 					"it",
 					"test",

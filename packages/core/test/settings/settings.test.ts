@@ -1,4 +1,4 @@
-import { jest } from '@jest/globals'
+import { vi } from 'vitest'
 import 'src/setup-test-env'
 import { useService } from "src/common/service"
 import { SettingMigrations, Settings } from "../../src/settings/settings"
@@ -106,7 +106,7 @@ describe('class Settings', () => {
       const testKey = 'testKey'
       const testValue = 'testValue'
 
-      const mockListener = jest.fn()
+      const mockListener = vi.fn()
       // @ts-expect-error
       settings._listeners[testKey] = [mockListener]
 
@@ -117,7 +117,7 @@ describe('class Settings', () => {
     })
 
     it('should call save method when a value is set', () => {
-      const saveSpy = jest.spyOn(settings, 'save')
+      const saveSpy = vi.spyOn(settings, 'save')
 
       settings.set('someKey', 'someValue')
 
@@ -133,11 +133,11 @@ describe('class Settings', () => {
 
       settings.set(testKey, testValue)
 
-      const mockListener = jest.fn()
+      const mockListener = vi.fn()
       // @ts-expect-error
       settings._listeners[testKey] = [mockListener]
 
-      const saveSpy = jest.spyOn(settings, 'save')
+      const saveSpy = vi.spyOn(settings, 'save')
 
       settings.set(testKey, testValue)
       expect(mockListener).not.toHaveBeenCalled()
@@ -152,7 +152,7 @@ describe('class Settings', () => {
 
     it('should add a listener to the _listeners object', () => {
       const key = 'testKey'
-      const listener = jest.fn()
+      const listener = vi.fn()
 
       settings.addChangeListener(key, listener)
 
@@ -164,7 +164,7 @@ describe('class Settings', () => {
 
     it('should remove the listener when the returned function is called', () => {
       const key = 'testKey'
-      const listener = jest.fn()
+      const listener = vi.fn()
 
       const dispose = settings.addChangeListener(key, listener)
       dispose()
@@ -175,7 +175,7 @@ describe('class Settings', () => {
 
     it('should not add the same listener multiple times', () => {
       const key = 'testKey'
-      const listener = jest.fn()
+      const listener = vi.fn()
 
       settings.addChangeListener(key, listener)
       settings.addChangeListener(key, listener)
@@ -191,8 +191,8 @@ describe('class Settings', () => {
 
     test('removeChangeListener removes a listener for a given key', () => {
       const key = 'testKey'
-      const listener1 = jest.fn()
-      const listener2 = jest.fn()
+      const listener1 = vi.fn()
+      const listener2 = vi.fn()
 
       settings.addChangeListener(key, listener1)
       settings.addChangeListener(key, listener2)
@@ -208,8 +208,8 @@ describe('class Settings', () => {
 
     test('removeChangeListener does nothing when listener is not present', () => {
       const key = 'testKey';
-      const listener1 = jest.fn();
-      const listener3 = jest.fn(); // 注意: 这不是之前添加的监听器
+      const listener1 = vi.fn();
+      const listener3 = vi.fn(); // 注意: 这不是之前添加的监听器
 
       settings.addChangeListener(key, listener1)
 
@@ -223,7 +223,7 @@ describe('class Settings', () => {
 
     test('removeChangeListener does nothing when key is not present', () => {
       const key = 'testKey'
-      const listener1 = jest.fn()
+      const listener1 = vi.fn()
 
       settings.removeChangeListener(key, listener1)
 
@@ -236,7 +236,7 @@ describe('class Settings', () => {
 
     let configRepo: any
     beforeEach(() => {
-      jest.useFakeTimers()
+      vi.useFakeTimers()
       configRepo = useService('config-repository')
       configRepo.readConfigJson.mockReset()
       configRepo.readConfigJson.mockImplementation((filename: string, defaultValue: any) => defaultValue)
@@ -245,7 +245,7 @@ describe('class Settings', () => {
     })
 
     afterEach(() => {
-      jest.useRealTimers()
+      vi.useRealTimers()
     })
 
     it('should not migrate when file version equals code version', () => {
@@ -266,7 +266,7 @@ describe('class Settings', () => {
         migrations,
       })
 
-      jest.runAllTimers()
+      vi.runAllTimers()
 
       expect(s.get('theme')).toBe('dark')
       expect(configRepo.writeConfigJson).not.toHaveBeenCalled()
@@ -297,7 +297,7 @@ describe('class Settings', () => {
         migrations,
       })
 
-      jest.runAllTimers()
+      vi.runAllTimers()
 
       expect(migrations.hasMigrated).toBe(false)
       expect(configRepo.writeConfigJson).toHaveBeenCalledTimes(1)
@@ -342,7 +342,7 @@ describe('class Settings', () => {
         migrations,
       })
 
-      jest.runAllTimers()
+      vi.runAllTimers()
 
       expect(migrations.hasMigrated).toBe(false)
       expect(configRepo.writeConfigJson).toHaveBeenCalledTimes(1)
@@ -390,7 +390,7 @@ describe('class Settings', () => {
         migrations,
       })
 
-      jest.runAllTimers()
+      vi.runAllTimers()
 
       expect(configRepo.writeConfigJson).toHaveBeenCalledTimes(1)
       expect(s.get('appearance')).toEqual({
@@ -418,7 +418,7 @@ describe('class Settings', () => {
         migrations,
       })
 
-      jest.runAllTimers()
+      vi.runAllTimers()
 
       expect(configRepo.writeConfigJson).not.toHaveBeenCalled()
     })

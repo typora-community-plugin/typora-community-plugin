@@ -1,6 +1,6 @@
 import 'src/setup-test-env'
-import { describe, expect, jest, test } from '@jest/globals'
 import { registerService } from 'src/common/service'
+import { describe, expect, test, vi } from 'vitest'
 import { PluginManager } from '../../src/plugin/plugin-manager'
 
 // `PluginManager.marketplace` 会在首次访问时懒加载 `plugin-marketplace` 服务，
@@ -65,9 +65,9 @@ function makeManager() {
   const logger = { debug() { }, info() { }, warn() { }, error() { } } as any
   const config = {
     configDir: '/config',
-    readConfigJson: jest.fn(() => ({})),
-    writeConfigJson: jest.fn(),
-    on: jest.fn(),
+    readConfigJson: vi.fn(() => ({})),
+    writeConfigJson: vi.fn(),
+    on: vi.fn(),
   } as any
   const vault = { path: '/vault' } as any
   const i18n = { t: { pluginManager: { upToDate: '', updateSuccessful: '' } } } as any
@@ -78,9 +78,9 @@ function makeManager() {
   manager.manifests[ID] = { id: ID, name: 'Test', version: '1.0.0', position: 'global', dir: '/plugins/test' } as any
   manager.enabledPlugins[ID] = true
   manager.marketplace = {
-    getPlugin: jest.fn(() => ({ id: ID, name: 'Test', repo: 'a/b', platforms: [] })),
-    getPluginNewestVersion: jest.fn(async () => '2.0.0'),
-    installPlugin: jest.fn(async () => { }),
+    getPlugin: vi.fn(() => ({ id: ID, name: 'Test', repo: 'a/b', platforms: [] })),
+    getPluginNewestVersion: vi.fn(async () => '2.0.0'),
+    installPlugin: vi.fn(async () => { }),
   } as any
 
   return manager
@@ -90,12 +90,12 @@ describe('PluginManager.updatePlugin()', () => {
   test('should resolve only after the updated plugin is re-enabled', async () => {
     const manager = makeManager()
 
-    jest.spyOn(manager, 'uninstallPlugin').mockResolvedValue(undefined as any)
+    vi.spyOn(manager, 'uninstallPlugin').mockResolvedValue(undefined as any)
 
     let resolveEnable!: () => void
     const enableGate = new Promise<void>((resolve) => { resolveEnable = resolve })
     let enableFinished = false
-    jest.spyOn(manager, 'enablePlugin').mockImplementation(async () => {
+    vi.spyOn(manager, 'enablePlugin').mockImplementation(async () => {
       await enableGate
       enableFinished = true
       manager.enabledPlugins[ID] = true
@@ -122,9 +122,9 @@ describe('PluginManager.marketplace', () => {
     const logger = { debug() { }, info() { }, warn() { }, error() { } } as any
     const config = {
       configDir: '/config',
-      readConfigJson: jest.fn(() => ({})),
-      writeConfigJson: jest.fn(),
-      on: jest.fn(),
+      readConfigJson: vi.fn(() => ({})),
+      writeConfigJson: vi.fn(),
+      on: vi.fn(),
     } as any
     const vault = { path: '/vault' } as any
     const i18n = { t: {} } as any

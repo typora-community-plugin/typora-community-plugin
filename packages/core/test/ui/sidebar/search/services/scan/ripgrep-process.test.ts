@@ -3,9 +3,8 @@
  */
 
 import { EventEmitter } from 'node:events'
-import { describe, expect, it, jest } from '@jest/globals'
-
 import { RipgrepProcessManager } from 'src/ui/sidebar/search/services/scan/ripgrep-process'
+import { describe, expect, it, vi } from 'vitest'
 
 
 class FakeStream extends EventEmitter {
@@ -50,7 +49,7 @@ describe('beginTextRun()', () => {
 
   it('calls onAllSettled once every tracked process of the run has closed', () => {
     const { spawned, manager } = createTestEnv()
-    const settled = jest.fn()
+    const settled = vi.fn()
     const run = manager.beginTextRun(settled)
     run.track(run.spawn('rg', [], '/vault'))
     run.track(run.spawn('rg', [], '/vault'))
@@ -63,7 +62,7 @@ describe('beginTextRun()', () => {
 
   it('settles idempotently when both close and error fire', () => {
     const { spawned, manager } = createTestEnv()
-    const settled = jest.fn()
+    const settled = vi.fn()
     const run = manager.beginTextRun(settled)
     run.track(run.spawn('rg', [], '/vault'))
 
@@ -74,8 +73,8 @@ describe('beginTextRun()', () => {
 
   it('ignores settlements of a superseded run and kills its processes', () => {
     const { manager } = createTestEnv()
-    const settled1 = jest.fn()
-    const settled2 = jest.fn()
+    const settled1 = vi.fn()
+    const settled2 = vi.fn()
 
     const run1 = manager.beginTextRun(settled1)
     const p1 = run1.track(run1.spawn('rg', [], '/vault'))
@@ -93,7 +92,7 @@ describe('beginTextRun()', () => {
 
   it('never fires onAllSettled when the run spawns no tasks', () => {
     const { manager } = createTestEnv()
-    const settled = jest.fn()
+    const settled = vi.fn()
     manager.beginTextRun(settled)
     expect(settled).not.toHaveBeenCalled()
   })
@@ -103,7 +102,7 @@ describe('cancelAll()', () => {
 
   it('kills text and negation processes and silences the old run', async () => {
     const { spawned, manager } = createTestEnv()
-    const settled = jest.fn()
+    const settled = vi.fn()
     const run = manager.beginTextRun(settled)
     const textProc = run.track(run.spawn('rg', [], '/vault'))
 

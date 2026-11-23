@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { describe, expect, jest, test } from '@jest/globals'
+import { describe, expect, type Mock, test, vi } from 'vitest'
 import type { PluginMarketInfo, PluginStat } from '../../src/plugin/plugin-marketplace'
 import { PluginMarketplace } from '../../src/plugin/plugin-marketplace'
 
@@ -19,11 +19,11 @@ function makePlugin(overrides: Partial<PluginMarketInfo> = {}): PluginMarketInfo
 }
 
 function makeMarketplace(
-  getJSON: jest.Mock,
+  getJSON: Mock,
   locale = 'zh-cn',
   manifests: Record<string, { version: string }> = {},
 ) {
-  const logger = { debug() { }, info() { }, warn: jest.fn(), error: jest.fn() } as any
+  const logger = { debug() { }, info() { }, warn: vi.fn(), error: vi.fn() } as any
   return new PluginMarketplace(
     logger,
     { locale } as any,
@@ -36,7 +36,7 @@ describe('PluginMarketplace.loadCommunityPlugins()', () => {
   test('should use the locale-specific list file when available', async () => {
     const zhList = [makePlugin({ name: '测试插件' })]
 
-    const getJSON = jest.fn(async (_repo: string, _branch: string, filepath: string) => {
+    const getJSON = vi.fn(async (_repo: string, _branch: string, filepath: string) => {
       if (filepath === `community-plugins.zh-cn.json`) return zhList
       if (filepath === 'community-plugin-stats.json') return {}
       throw new Error('unexpected file: ' + filepath)
@@ -53,7 +53,7 @@ describe('PluginMarketplace.loadCommunityPlugins()', () => {
   test('should not request the localized file for English', async () => {
     const englishList = [makePlugin()]
 
-    const getJSON = jest.fn(async (_repo: string, _branch: string, filepath: string) => {
+    const getJSON = vi.fn(async (_repo: string, _branch: string, filepath: string) => {
       if (filepath === 'community-plugins.json') return englishList
       if (filepath === 'community-plugin-stats.json') return {}
       throw new Error('unexpected file: ' + filepath)
@@ -70,7 +70,7 @@ describe('PluginMarketplace.loadCommunityPlugins()', () => {
   test('should fall back to the English list when the localized file is missing', async () => {
     const englishList = [makePlugin()]
 
-    const getJSON = jest.fn(async (_repo: string, _branch: string, filepath: string) => {
+    const getJSON = vi.fn(async (_repo: string, _branch: string, filepath: string) => {
       if (filepath === `community-plugins.zh-cn.json`) throw new Error('404')
       if (filepath === 'community-plugins.json') return englishList
       if (filepath === 'community-plugin-stats.json') return {}
@@ -89,7 +89,7 @@ describe('PluginMarketplace.loadCommunityPlugins()', () => {
   test('should fall back to the English list when the localized file is empty', async () => {
     const englishList = [makePlugin()]
 
-    const getJSON = jest.fn(async (_repo: string, _branch: string, filepath: string) => {
+    const getJSON = vi.fn(async (_repo: string, _branch: string, filepath: string) => {
       if (filepath === `community-plugins.de.json`) return []
       if (filepath === 'community-plugins.json') return englishList
       if (filepath === 'community-plugin-stats.json') return {}
@@ -103,7 +103,7 @@ describe('PluginMarketplace.loadCommunityPlugins()', () => {
   })
 
   test('should keep an empty list and log errors when both files are missing', async () => {
-    const getJSON = jest.fn(async (_repo: string, _branch: string, filepath: string) => {
+    const getJSON = vi.fn(async (_repo: string, _branch: string, filepath: string) => {
       if (filepath === 'community-plugin-stats.json') return {}
       throw new Error('not found: ' + filepath)
     })
@@ -122,7 +122,7 @@ describe('PluginMarketplace.loadCommunityPlugins()', () => {
       'test.plugin': { downloads: 1, updated: Date.now(), size: 1024, '1.2.3': 1 },
     }
 
-    const getJSON = jest.fn(async (_repo: string, _branch: string, filepath: string) => {
+    const getJSON = vi.fn(async (_repo: string, _branch: string, filepath: string) => {
       if (filepath === `community-plugins.zh-cn.json`) return zhList
       if (filepath === 'community-plugin-stats.json') return stats
       throw new Error('unexpected file: ' + filepath)
@@ -140,7 +140,7 @@ describe('PluginMarketplace.loadCommunityPlugins()', () => {
       'test.plugin': { downloads: 1, updated: Date.now(), size: 1024, '1.2.3': 1 },
     }
 
-    const getJSON = jest.fn(async (_repo: string, _branch: string, filepath: string) => {
+    const getJSON = vi.fn(async (_repo: string, _branch: string, filepath: string) => {
       if (filepath === `community-plugins.zh-cn.json`) return zhList
       if (filepath === 'community-plugin-stats.json') return stats
       throw new Error('unexpected file: ' + filepath)
@@ -160,7 +160,7 @@ describe('PluginMarketplace.loadCommunityPlugins()', () => {
       'test.plugin': { downloads: 1, updated: Date.now(), size: 1024, '1.2.3': 1 },
     }
 
-    const getJSON = jest.fn(async (_repo: string, _branch: string, filepath: string) => {
+    const getJSON = vi.fn(async (_repo: string, _branch: string, filepath: string) => {
       if (filepath === `community-plugins.zh-cn.json`) return zhList
       if (filepath === 'community-plugin-stats.json') return stats
       throw new Error('unexpected file: ' + filepath)
@@ -180,7 +180,7 @@ describe('PluginMarketplace.loadCommunityPlugins()', () => {
       'test.plugin': { downloads: 1, updated: Date.now(), size: 1024, '1.2.3': 1 },
     }
 
-    const getJSON = jest.fn(async (_repo: string, _branch: string, filepath: string) => {
+    const getJSON = vi.fn(async (_repo: string, _branch: string, filepath: string) => {
       if (filepath === `community-plugins.zh-cn.json`) return zhList
       if (filepath === 'community-plugin-stats.json') return stats
       throw new Error('unexpected file: ' + filepath)

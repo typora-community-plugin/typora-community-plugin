@@ -12,8 +12,7 @@ describe('isMarkdownUrl', () => {
   });
 
   it('should return false for undefined', () => {
-    // @ts-expect-error
-    expect(isMarkdownUrl(undefined)).toBe(false);
+    expect(isMarkdownUrl(undefined as any)).toBe(false);
   });
 
   it('should return false for HTTP URLs', () => {

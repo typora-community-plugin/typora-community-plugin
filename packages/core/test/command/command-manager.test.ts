@@ -1,6 +1,6 @@
 import 'src/setup-test-env'
-import { jest } from '@jest/globals'
 import { useService } from 'src/common/service'
+import { vi } from 'vitest'
 import { type Command, CommandManager } from '../../src/command/command-manager'
 
 
@@ -34,7 +34,7 @@ describe('CommandManager', () => {
     const command: Command = {
       id: 'test-command',
       title: 'Test Command',
-      callback: jest.fn(),
+      callback: vi.fn(),
       hotkey: 'ctrl+shift+t',
       scope: 'global',
     }
@@ -53,7 +53,7 @@ describe('CommandManager', () => {
     const command: Command = {
       id: 'double-unregister',
       title: 'Double Unregister',
-      callback: jest.fn(),
+      callback: vi.fn(),
       hotkey: 'ctrl+shift+d',
       scope: 'global',
     }
@@ -73,7 +73,7 @@ describe('CommandManager', () => {
     const command: Command = {
       id: 'run-command',
       title: 'Test Command',
-      callback: jest.fn(),
+      callback: vi.fn(),
       scope: 'global',
     }
 
@@ -90,7 +90,7 @@ describe('CommandManager', () => {
       title: 'Test Command',
       scope: 'global',
       hotkey: 'ctrl+s',
-      callback: jest.fn(),
+      callback: vi.fn(),
     }
 
     commandManager.testBindHotkey(command)
@@ -106,7 +106,7 @@ describe('CommandManager', () => {
       title: 'Test Command',
       scope: 'global',
       hotkey: 'ctrl+s',
-      callback: jest.fn(),
+      callback: vi.fn(),
     }
 
     commandManager.testBindHotkey(command)

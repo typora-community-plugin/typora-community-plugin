@@ -1,26 +1,26 @@
-import { jest } from '@jest/globals'
+import { vi } from 'vitest'
 import 'src/setup-test-env'
 
 
 const fsMock = {
-  listFiles: jest.fn(),
-  stat: jest.fn(),
-  readText: jest.fn(),
+  listFiles: vi.fn(),
+  stat: vi.fn(),
+  readText: vi.fn(),
 }
 
 const storeMock = {
-  loadCache: jest.fn(async () => ({})),
-  saveCache: jest.fn(async () => { }),
-  deleteCacheEntries: jest.fn(async () => { }),
-  closeCache: jest.fn(),
+  loadCache: vi.fn(async () => ({})),
+  saveCache: vi.fn(async () => { }),
+  deleteCacheEntries: vi.fn(async () => { }),
+  closeCache: vi.fn(),
 }
 
 async function setup() {
-  jest.clearAllMocks()
+  vi.clearAllMocks()
   storeMock.loadCache.mockResolvedValue({})
 
-  await jest.unstable_mockModule('src/io/fs/filesystem', () => ({ default: fsMock }))
-  await jest.unstable_mockModule('src/metadata/store/store', () => ({ ...storeMock }))
+  await vi.doMock('src/io/fs/filesystem', () => ({ default: fsMock }))
+  await vi.doMock('src/metadata/store/store', () => ({ ...storeMock }))
 
   const { MetadataIndexer } = await import('../../../src/metadata/processing/indexer')
   const { MetadataProcessor } = await import('../../../src/metadata/processing/processor')
@@ -31,7 +31,7 @@ async function setup() {
 }
 
 function createVault() {
-  return { id: 'v1', path: '/vault', on: jest.fn(() => jest.fn()) }
+  return { id: 'v1', path: '/vault', on: vi.fn(() => vi.fn()) }
 }
 
 
@@ -42,8 +42,8 @@ describe('MetadataIndexer', () => {
     const registry = new MetadataProviderRegistry()
     registry.register('md', async () => ({ metadata: {} }))
     const processor = new MetadataProcessor(registry)
-    const events = { start: jest.fn(), progress: jest.fn(), done: jest.fn() }
-    const publish = jest.fn()
+    const events = { start: vi.fn(), progress: vi.fn(), done: vi.fn() }
+    const publish = vi.fn()
     fsMock.listFiles.mockResolvedValue(['/vault/a.md', '/vault/b.md'])
     fsMock.stat.mockResolvedValue({ mtimeMs: 1, size: 1 })
 
@@ -67,11 +67,11 @@ describe('MetadataIndexer', () => {
 
   it('skips indexing when no folder is mounted', async () => {
     const { MetadataIndexer, MetadataProcessor, MetadataProviderRegistry, DeferredQueue } = await setup()
-    const events = { start: jest.fn(), progress: jest.fn(), done: jest.fn() }
-    const publish = jest.fn()
+    const events = { start: vi.fn(), progress: vi.fn(), done: vi.fn() }
+    const publish = vi.fn()
 
     const indexer = new MetadataIndexer({
-      vault: { id: 'v0', path: '', on: jest.fn(() => jest.fn()) } as any,
+      vault: { id: 'v0', path: '', on: vi.fn(() => vi.fn()) } as any,
       processor: new MetadataProcessor(new MetadataProviderRegistry()),
       concurrency: 1,
       indexingWork: new DeferredQueue(),
@@ -90,12 +90,12 @@ describe('MetadataIndexer', () => {
     const { MetadataIndexer, MetadataProcessor, MetadataProviderRegistry, DeferredQueue } = await setup()
 
     const indexer = new MetadataIndexer({
-      vault: { id: 'v0', path: '.', on: jest.fn(() => jest.fn()) } as any,
+      vault: { id: 'v0', path: '.', on: vi.fn(() => vi.fn()) } as any,
       processor: new MetadataProcessor(new MetadataProviderRegistry()),
       concurrency: 1,
       indexingWork: new DeferredQueue(),
-      events: { start: jest.fn(), progress: jest.fn(), done: jest.fn() },
-      publish: jest.fn(),
+      events: { start: vi.fn(), progress: vi.fn(), done: vi.fn() },
+      publish: vi.fn(),
     })
     await indexer.index()
 
@@ -113,8 +113,8 @@ describe('MetadataIndexer', () => {
       processor: new MetadataProcessor(new MetadataProviderRegistry()),
       concurrency: 1,
       indexingWork: new DeferredQueue(),
-      events: { start: jest.fn(), progress: jest.fn(), done: jest.fn() },
-      publish: jest.fn(),
+      events: { start: vi.fn(), progress: vi.fn(), done: vi.fn() },
+      publish: vi.fn(),
     })
 
     const first = indexer.index()
@@ -131,24 +131,24 @@ describe('MetadataIndexer', () => {
     const vault = {
       id: 'v1',
       path: '/vault',
-      on: jest.fn((event: string, cb: () => void) => {
+      on: vi.fn((event: string, cb: () => void) => {
         if (event === 'change') onVaultChange = cb
-        return jest.fn()
+        return vi.fn()
       }),
     }
     fsMock.listFiles.mockImplementation(async () => {
       onVaultChange()
       return []
     })
-    const publish = jest.fn()
-    const done = jest.fn()
+    const publish = vi.fn()
+    const done = vi.fn()
 
     const indexer = new MetadataIndexer({
       vault: vault as any,
       processor: new MetadataProcessor(new MetadataProviderRegistry()),
       concurrency: 1,
       indexingWork: new DeferredQueue(),
-      events: { start: jest.fn(), progress: jest.fn(), done },
+      events: { start: vi.fn(), progress: vi.fn(), done },
       publish,
     })
     await indexer.index()
@@ -169,12 +169,12 @@ describe('MetadataIndexer', () => {
       processor: new MetadataProcessor(new MetadataProviderRegistry()),
       concurrency: 1,
       indexingWork,
-      events: { start: jest.fn(), progress: jest.fn(), done: jest.fn() },
-      publish: jest.fn(),
+      events: { start: vi.fn(), progress: vi.fn(), done: vi.fn() },
+      publish: vi.fn(),
     })
 
     const indexing = indexer.index()
-    const task = jest.fn()
+    const task = vi.fn()
     const queued = indexingWork.run(async () => { task() })
     expect(indexingWork.deferring).toBe(true)
 

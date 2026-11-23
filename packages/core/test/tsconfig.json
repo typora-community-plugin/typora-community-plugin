@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "experimentalDecorators": true,
+    "types": [
+      "node",
+      "typora",
+      "vitest/globals"
+    ],
+    "paths": {
+      "src/*": [
+        "../src/*"
+      ]
+    },
+    "skipLibCheck": true,
+    "noImplicitAny": true,
+    "resolveJsonModule": true,
+    "noEmit": true
+  },
+  "include": [
+    "**/*.ts"
+  ]
+}

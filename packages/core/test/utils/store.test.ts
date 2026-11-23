@@ -1,4 +1,4 @@
-import { describe, expect, it, jest } from '@jest/globals'
+import { describe, expect, it, vi } from 'vitest'
 import { Store } from "../../src/utils/store"
 
 describe('Store', () => {
@@ -45,7 +45,7 @@ describe('Store', () => {
 
     it('should return undefined for non-existent path', () => {
       const store = newStore({ name: 'test' })
-      expect(store.get('nonexistent')).toBeUndefined()
+      expect(store.get('nonexistent' as any)).toBeUndefined()
       expect(store.get(['a', 'b'])).toBeUndefined()
     })
 
@@ -55,7 +55,6 @@ describe('Store', () => {
     })
 
     it('should return undefined when intermediate path is null', () => {
-      // @ts-expect-error
       const store = newStore<{ a: null }>({ a: null })
       expect(store.get(['a', 'b'])).toBeUndefined()
     })
@@ -64,8 +63,7 @@ describe('Store', () => {
       const store = newStore({ name: 'test' })
       // @ts-expect-error
       expect(() => store.get(123)).toThrow(TypeError)
-      // @ts-expect-error
-      expect(() => store.get(null)).toThrow(TypeError)
+      expect(() => store.get(null as any)).toThrow(TypeError)
     })
 
   })
@@ -98,7 +96,7 @@ describe('Store', () => {
 
     it('should not trigger emit when value is the same (strict equality)', () => {
       const store = newStore<{ count: number }>({ count: 10 })
-      const listener = jest.fn()
+      const listener = vi.fn()
       store.addChangeListener('count', listener)
       store.set('count', 10)
       expect(listener).not.toHaveBeenCalled()
@@ -107,7 +105,7 @@ describe('Store', () => {
     it('should not trigger emit when value is the same object reference', () => {
       const obj = { a: 1 }
       const store = newStore<{ data: object }>({ data: obj })
-      const listener = jest.fn()
+      const listener = vi.fn()
       store.addChangeListener('data', listener)
       store.set('data', obj)
       expect(listener).not.toHaveBeenCalled()
@@ -115,7 +113,7 @@ describe('Store', () => {
 
     it('should trigger emit when value is different object with same content', () => {
       const store = newStore<{ data: { a: number } }>({ data: { a: 1 } })
-      const listener = jest.fn()
+      const listener = vi.fn()
       store.addChangeListener('data', listener)
       store.set('data', { a: 1 })
       expect(listener).toHaveBeenCalledTimes(1)
@@ -125,8 +123,7 @@ describe('Store', () => {
       const store = newStore({ name: 'test' })
       // @ts-expect-error
       expect(() => store.set(123, 'value')).toThrow(TypeError)
-      // @ts-expect-error
-      expect(() => store.set(null, 'value')).toThrow(TypeError)
+      expect(() => store.set(null as any, 'value')).toThrow(TypeError)
     })
 
   })
@@ -135,7 +132,7 @@ describe('Store', () => {
 
     it('should call listener when specific key changes', () => {
       const store = newStore<{ name: string }>({ name: 'initial' })
-      const listener = jest.fn()
+      const listener = vi.fn()
       store.addChangeListener('name', listener)
       store.set('name', 'updated')
       expect(listener).toHaveBeenCalledWith('name', 'updated')
@@ -143,7 +140,7 @@ describe('Store', () => {
 
     it('should call listener when nested key path changes', () => {
       const store = newStore<{ user: { name: string } }>({ user: { name: 'initial' } })
-      const listener = jest.fn()
+      const listener = vi.fn()
       store.addChangeListener(['user', 'name'], listener)
       store.set(['user', 'name'], 'updated')
       expect(listener).toHaveBeenCalledWith(['user', 'name'], 'updated')
@@ -151,7 +148,7 @@ describe('Store', () => {
 
     it('should call wildcard listener for any key change', () => {
       const store = newStore<{ a: number; b: string }>({ a: 1, b: 'x' })
-      const listener = jest.fn()
+      const listener = vi.fn()
       store.addChangeListener('*', listener)
       store.set('a', 2)
       expect(listener).toHaveBeenCalledWith('a', 2)
@@ -161,7 +158,7 @@ describe('Store', () => {
 
     it('should not call listener for other keys', () => {
       const store = newStore<{ a: number; b: string }>({ a: 1, b: 'x' })
-      const listener = jest.fn()
+      const listener = vi.fn()
       store.addChangeListener('a', listener)
       store.set('b', 'y')
       expect(listener).not.toHaveBeenCalled()
@@ -169,7 +166,7 @@ describe('Store', () => {
 
     it('should return dispose function that removes listener', () => {
       const store = newStore<{ name: string }>({ name: 'initial' })
-      const listener = jest.fn()
+      const listener = vi.fn()
       const dispose = store.addChangeListener('name', listener)
       dispose()
       store.set('name', 'updated')
@@ -178,7 +175,7 @@ describe('Store', () => {
 
     it('should not add duplicate listener', () => {
       const store = newStore<{ name: string }>({ name: 'initial' })
-      const listener = jest.fn()
+      const listener = vi.fn()
       store.addChangeListener('name', listener)
       const dispose = store.addChangeListener('name', listener)
       store.set('name', 'updated')
@@ -188,8 +185,8 @@ describe('Store', () => {
 
     it('should handle listener errors gracefully', () => {
       const store = newStore<{ name: string }>({ name: 'initial' })
-      const errorListener = jest.fn(() => { throw new Error('listener error') })
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+      const errorListener = vi.fn(() => { throw new Error('listener error') })
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
       store.addChangeListener('name', errorListener)
       expect(() => store.set('name', 'updated')).not.toThrow()
       expect(errorListener).toHaveBeenCalled()
@@ -202,7 +199,7 @@ describe('Store', () => {
 
     it('should be same as addChangeListener', () => {
       const store = newStore<{ name: string }>({ name: 'initial' })
-      const listener = jest.fn()
+      const listener = vi.fn()
       store.onChange('name', listener)
       store.set('name', 'updated')
       expect(listener).toHaveBeenCalled()
@@ -214,7 +211,7 @@ describe('Store', () => {
 
     it('should remove listener by key', () => {
       const store = newStore<{ name: string }>({ name: 'initial' })
-      const listener = jest.fn()
+      const listener = vi.fn()
       store.addChangeListener('name', listener)
       store.removeChangeListener('name', listener)
       store.set('name', 'updated')
@@ -223,7 +220,7 @@ describe('Store', () => {
 
     it('should remove listener by array path', () => {
       const store = newStore<{ user: { name: string } }>({ user: { name: 'initial' } })
-      const listener = jest.fn()
+      const listener = vi.fn()
       store.addChangeListener(['user', 'name'], listener)
       store.removeChangeListener(['user', 'name'], listener)
       store.set(['user', 'name'], 'updated')
@@ -232,8 +229,8 @@ describe('Store', () => {
 
     it('should not call other listeners after removing one', () => {
       const store = newStore<{ name: string }>({ name: 'initial' })
-      const listener1 = jest.fn()
-      const listener2 = jest.fn()
+      const listener1 = vi.fn()
+      const listener2 = vi.fn()
       store.addChangeListener('name', listener1)
       store.addChangeListener('name', listener2)
       store.removeChangeListener('name', listener1)
@@ -244,13 +241,13 @@ describe('Store', () => {
 
     it('should handle removing from empty listeners gracefully', () => {
       const store = newStore<{ name: string }>({ name: 'initial' })
-      const listener = jest.fn()
+      const listener = vi.fn()
       expect(() => store.removeChangeListener('name', listener)).not.toThrow()
     })
 
     it('should remove wildcard listener', () => {
       const store = newStore<{ name: string }>({ name: 'initial' })
-      const listener = jest.fn()
+      const listener = vi.fn()
       store.addChangeListener('*', listener)
       store.removeChangeListener('*', listener)
       store.set('name', 'updated')
@@ -264,11 +261,11 @@ describe('Store', () => {
     it('should copy inherited object to own property before modifying nested path', () => {
       const defaults = { plugins: { a: true, b: false } }
       const store = new Store<typeof defaults>()
-      store._data = Object.create(defaults)
+      ;(store as any)._data = Object.create(defaults)
       store.set(['plugins', 'c'], true)
       expect(store.get(['plugins', 'c'])).toBe(true)
-      expect(Object.hasOwn(store._data, 'plugins')).toBe(true)
-      expect(defaults.plugins.c).toBeUndefined()
+      expect(Object.hasOwn((store as any)._data, 'plugins')).toBe(true)
+      expect((defaults.plugins as any).c).toBeUndefined()
     })
 
     it('should not copy inherited object when it is already an own property', () => {
@@ -280,10 +277,10 @@ describe('Store', () => {
     it('should handle deep path where intermediate is own property', () => {
       const defaults = { outer: { inner: { a: 1 } } }
       const store = new Store<typeof defaults>()
-      store._data = Object.assign(Object.create(defaults), { outer: defaults.outer })
+      ;(store as any)._data = Object.assign(Object.create(defaults), { outer: defaults.outer })
       store.set(['outer', 'inner', 'b'], 2)
       expect(store.get(['outer', 'inner', 'b'])).toBe(2)
-      expect(defaults.outer.inner.b).toBe(2)
+      expect((defaults.outer.inner as any).b).toBe(2)
     })
 
   })
@@ -310,7 +307,7 @@ describe('Store', () => {
 
     it('should handle numeric string keys', () => {
       const store = newStore<{ 0: string }>({ '0': 'zero' })
-      expect(store.get('0')).toBe('zero')
+      expect(store.get('0' as any)).toBe('zero')
     })
 
   })

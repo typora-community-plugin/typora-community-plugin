@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { jest } from '@jest/globals'
+import { vi } from 'vitest'
 import { Component } from '../../src/common/component'
 
 // 测试用的子组件类
@@ -46,7 +46,7 @@ describe('Component', () => {
 
   describe('load()', () => {
     test('should call onload and set loaded to true on first call', () => {
-      const onloadSpy = jest.spyOn(component, 'onload')
+      const onloadSpy = vi.spyOn(component, 'onload')
 
       component.load()
 
@@ -58,7 +58,7 @@ describe('Component', () => {
 
     test('should not call onload again if already loaded', () => {
       component.load() // First load
-      const onloadSpy = jest.spyOn(component, 'onload')
+      const onloadSpy = vi.spyOn(component, 'onload')
 
       component.load() // Second load
 
@@ -84,7 +84,7 @@ describe('Component', () => {
   describe('unload()', () => {
     test('should call onunload and set loaded to false', () => {
       component.load() // First load it
-      const onunloadSpy = jest.spyOn(component, 'onunload')
+      const onunloadSpy = vi.spyOn(component, 'onunload')
 
       component.unload()
 
@@ -95,7 +95,7 @@ describe('Component', () => {
     })
 
     test('should not call onunload if not loaded', () => {
-      const onunloadSpy = jest.spyOn(component, 'onunload')
+      const onunloadSpy = vi.spyOn(component, 'onunload')
 
       component.unload() // Unload without loading first
 
@@ -119,8 +119,8 @@ describe('Component', () => {
     })
 
     test('should clear all disposables when unloaded', () => {
-      const disposable1 = jest.fn()
-      const disposable2 = jest.fn()
+      const disposable1 = vi.fn()
+      const disposable2 = vi.fn()
 
       component.register(disposable1)
       component.register(disposable2)
@@ -210,7 +210,7 @@ describe('Component', () => {
 
   describe('register() and unregister()', () => {
     test('register should add disposable to disposables array', () => {
-      const disposable = jest.fn()
+      const disposable = vi.fn()
 
       component.register(disposable)
 
@@ -219,7 +219,7 @@ describe('Component', () => {
     })
 
     test('unregister should call disposable and remove it from array', () => {
-      const disposable = jest.fn()
+      const disposable = vi.fn()
 
       component.register(disposable)
       component.unregister(disposable)
@@ -229,7 +229,7 @@ describe('Component', () => {
     })
 
     test('unregister should handle non-existent disposable gracefully', () => {
-      const nonExistentDisposable = jest.fn()
+      const nonExistentDisposable = vi.fn()
 
       expect(() => {
         component.unregister(nonExistentDisposable)
@@ -252,11 +252,11 @@ describe('Component', () => {
   describe('registerDomEvent()', () => {
     test('should register event listener and add cleanup to disposables', () => {
       const target = {
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn()
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn()
       } as any
 
-      const listener = jest.fn()
+      const listener = vi.fn()
 
       component.registerDomEvent(target, 'click', listener)
 
@@ -266,11 +266,11 @@ describe('Component', () => {
 
     test('should pass options to addEventListener', () => {
       const target = {
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn()
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn()
       } as any
 
-      const listener = jest.fn()
+      const listener = vi.fn()
       const options = { capture: true }
 
       component.registerDomEvent(target, 'click', listener, options)
@@ -280,11 +280,11 @@ describe('Component', () => {
 
     test('should remove event listener when disposed', () => {
       const target = {
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn()
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn()
       } as any
 
-      const listener = jest.fn()
+      const listener = vi.fn()
 
       component.registerDomEvent(target, 'click', listener)
 
@@ -299,7 +299,7 @@ describe('Component', () => {
   describe('registerInterval()', () => {
     test('should register interval cleanup function', () => {
       const intervalId = 123 as any
-      const clearIntervalSpy = jest.spyOn(global, 'clearInterval')
+      const clearIntervalSpy = vi.spyOn(global, 'clearInterval')
 
       component.registerInterval(intervalId)
 
@@ -348,7 +348,7 @@ describe('Component', () => {
     })
 
     test('should handle multiple register/unregister of same disposable', () => {
-      const disposable = jest.fn()
+      const disposable = vi.fn()
 
       component.register(disposable)
       component.register(disposable) // Register same disposable again

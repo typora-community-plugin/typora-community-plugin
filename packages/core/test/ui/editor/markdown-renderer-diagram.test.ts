@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import { registerDiagramRenderer, unregisterDiagramRenderer } from '../../../src/ui/editor/codeblock/codeblock-diagram'
 import { renderDiagramBlocks } from '../../../src/ui/editor/markdown-renderer-diagram'
 
@@ -33,7 +33,7 @@ describe('renderDiagramBlocks()', () => {
           MODES: ['sequence', 'flow', 'mermaid'],
           isDiagramType: (lang: string) => ['sequence', 'flow', 'mermaid', 'typ-diagram'].includes(lang),
         },
-        lazyload: jest.fn(),
+        lazyload: vi.fn(),
       },
     }
     delete (globalThis as any).mermaidAPI
@@ -48,7 +48,7 @@ describe('renderDiagramBlocks()', () => {
 
 
   test('renders mermaid in a detached container', async () => {
-    const render = jest.fn(async () => ({ svg: '<svg class="mermaid-svg"></svg>' }))
+    const render = vi.fn(async () => ({ svg: '<svg class="mermaid-svg"></svg>' }))
     ;(globalThis as any).mermaidAPI = { render }
 
     const codeblock = createCodeblock('mermaid', 'graph TD; A-->B')
@@ -66,7 +66,7 @@ describe('renderDiagramBlocks()', () => {
 
   test('supports the legacy mermaid API that returns the SVG string', async () => {
     ;(globalThis as any).mermaidAPI = {
-      render: jest.fn(() => '<svg class="legacy-mermaid-svg"></svg>'),
+      render: vi.fn(() => '<svg class="legacy-mermaid-svg"></svg>'),
     }
 
     const root = await renderRoot(createCodeblock('mermaid', 'graph TD; A-->B'))
@@ -75,9 +75,9 @@ describe('renderDiagramBlocks()', () => {
   })
 
   test('calls bindFunctions on the rendered mermaid element', async () => {
-    const bindFunctions = jest.fn()
+    const bindFunctions = vi.fn()
     ;(globalThis as any).mermaidAPI = {
-      render: jest.fn(async () => ({ svg: '<svg></svg>', bindFunctions })),
+      render: vi.fn(async () => ({ svg: '<svg></svg>', bindFunctions })),
     }
 
     const root = await renderRoot(createCodeblock('mermaid', 'graph TD; A-->B'))
@@ -87,7 +87,7 @@ describe('renderDiagramBlocks()', () => {
   })
 
   test('draws sequence diagrams in an attached container when detached', async () => {
-    const drawSVG = jest.fn((container: HTMLElement) => {
+    const drawSVG = vi.fn((container: HTMLElement) => {
       expect(container.isConnected).toBe(true)
       container.append(document.createElementNS('http://www.w3.org/2000/svg', 'svg'))
     })
@@ -104,7 +104,7 @@ describe('renderDiagramBlocks()', () => {
   })
 
   test('uses a registered codeblock renderer', async () => {
-    const render = jest.fn(() => '<div class="custom-diagram"></div>')
+    const render = vi.fn(() => '<div class="custom-diagram"></div>')
     registerDiagramRenderer('typ-diagram', render)
 
     const codeblock = createCodeblock('typ-diagram', 'custom source')
@@ -116,7 +116,7 @@ describe('renderDiagramBlocks()', () => {
   })
 
   test('skips non-diagram codeblocks', async () => {
-    const render = jest.fn(async () => ({ svg: '<svg></svg>' }))
+    const render = vi.fn(async () => ({ svg: '<svg></svg>' }))
     ;(globalThis as any).mermaidAPI = { render }
 
     const codeblock = createCodeblock('javascript', 'const a = 1')
@@ -129,7 +129,7 @@ describe('renderDiagramBlocks()', () => {
 
   test('shows the render error and keeps the preview usable', async () => {
     ;(globalThis as any).mermaidAPI = {
-      render: jest.fn(async () => { throw new Error('parse error') }),
+      render: vi.fn(async () => { throw new Error('parse error') }),
     }
 
     const codeblock = createCodeblock('mermaid', 'invalid')

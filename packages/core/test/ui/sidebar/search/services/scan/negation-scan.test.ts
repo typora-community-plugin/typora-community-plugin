@@ -2,12 +2,12 @@
  * Whole-file negation scan helpers: ripgrep arguments and file-type checks.
  */
 
-import { describe, expect, it } from '@jest/globals'
 
 import {
   buildFilesWithMatchesArgs,
   isMarkdownFile,
 } from 'src/ui/sidebar/search/services/scan/negation-scan'
+import { describe, expect, it, vi } from 'vitest'
 
 describe('buildFilesWithMatchesArgs', () => {
 

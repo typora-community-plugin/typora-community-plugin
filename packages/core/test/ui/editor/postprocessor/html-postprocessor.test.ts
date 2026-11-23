@@ -1,4 +1,4 @@
-import { jest } from '@jest/globals'
+import { vi } from 'vitest'
 import { HtmlPostProcessor } from '../../../../src/ui/editor/postprocessor/html-postprocessor'
 
 describe('HtmlPostProcessor', () => {
@@ -10,7 +10,7 @@ describe('HtmlPostProcessor', () => {
       </div>
     `
 
-    const logger = { error: jest.fn() }
+    const logger = { error: vi.fn() }
     const processor = new HtmlPostProcessor(logger as any)
     processor.selector = 'code'
 

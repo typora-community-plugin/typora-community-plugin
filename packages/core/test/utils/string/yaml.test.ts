@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it, vi } from 'vitest';
 import { parseSimplifiedYAML, parseTagsWithPositionsFromYAML } from "../../../src/utils/string/yaml";
 
 describe('parseSimplifiedYAML', () => {

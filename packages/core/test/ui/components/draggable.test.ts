@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { beforeEach, describe, expect, jest } from '@jest/globals'
+import { beforeEach, describe, expect, vi } from 'vitest'
 import { draggable } from '../../../src/ui/components/draggable'
 
 // Mock offsetParent so elements have a valid parent chain for compare functions.
@@ -102,7 +102,7 @@ function makeDragFixture(direction: 'x' | 'y' = 'y', onChange?: () => void): Dra
 
   const w2 = document.createElement('div')
   w2.style.position = 'relative'
-  Object.defineProperty(w2, 'offsetLeft', { configureable: true, get() { return 0 } })
+  Object.defineProperty(w2, 'offsetLeft', { configurable: true, get() { return 0 } })
   Object.defineProperty(w2, 'offsetTop', { configurable: true, get() { return 0 } })
   Object.defineProperty(w2, 'offsetWidth', { configurable: true, get() { return 200 } })
   Object.defineProperty(w2, 'offsetParent', { configurable: true, get() { return containerEl } })
@@ -157,11 +157,11 @@ function fireEvent(element: Element, type: string, options: Record<string, any> 
 describe('draggable', () => {
   beforeEach(() => {
     document.body.innerHTML = ''
-    jest.useFakeTimers()
+    vi.useFakeTimers()
   })
 
   afterEach(() => {
-    jest.useRealTimers()
+    vi.useRealTimers()
     document.body.innerHTML = ''
   })
 
@@ -169,7 +169,7 @@ describe('draggable', () => {
     test('should add typ-dragging class to dragged element on mousedown', () => {
       const { item1 } = makeDragFixture('y') as any
       
-      jest.useRealTimers()
+      vi.useRealTimers()
       fireEvent(item1, 'mousedown', { button: 0 })
       
       expect(item1.classList.contains('typ-dragging')).toBe(true)
@@ -178,7 +178,7 @@ describe('draggable', () => {
     test('should not trigger on non-left mouse button', () => {
       const { item1 } = makeDragFixture('y') as any
 
-      jest.useRealTimers()
+      vi.useRealTimers()
       fireEvent(item1, 'mousedown', { button: 2 })
 
       expect(item1.classList.contains('typ-dragging')).toBe(false)
@@ -191,7 +191,7 @@ describe('draggable', () => {
       wrapper.textContent = 'text'
       origItem.appendChild(wrapper)
 
-      jest.useRealTimers()
+      vi.useRealTimers()
       fireEvent(wrapper, 'mousedown', { button: 0 })
       
       expect(origItem.classList.contains('typ-dragging')).toBe(true)
@@ -202,7 +202,7 @@ describe('draggable', () => {
     test('should reorder items on drag with y direction', () => {
       const { containerEl, item1, item2 } = makeDragFixture('y') as any
       
-      jest.useRealTimers()
+      vi.useRealTimers()
       
       fireEvent(item1, 'mousedown', { button: 0 })
       fireEvent(item2, 'pointermove', { button: 0, clientX: 0, clientY: 50 })
@@ -214,7 +214,7 @@ describe('draggable', () => {
     test('should not reorder on non-left button mousemove', () => {
       const { item1 } = makeDragFixture('y') as any
 
-      jest.useRealTimers()
+      vi.useRealTimers()
       
       fireEvent(item1, 'mousedown', { button: 0 })
       fireEvent(item1, 'pointermove', { button: 2, clientX: 0, clientY: 0 })
@@ -225,8 +225,8 @@ describe('draggable', () => {
 
   describe('pointerup behavior', () => {
     test('should remove typ-dragging class and call onChange on pointerup', () => {
-      jest.useRealTimers()
-      const onChange = jest.fn()
+      vi.useRealTimers()
+      const onChange = vi.fn()
       const fixture = makeDragFixture('y', onChange) as any
       const { item1 } = fixture;
 
@@ -239,8 +239,8 @@ describe('draggable', () => {
     })
 
     test('should not call onChange for non-left button pointerup', () => {
-      jest.useRealTimers()
-      const onChange = jest.fn()
+      vi.useRealTimers()
+      const onChange = vi.fn()
       const fixture = makeDragFixture('y', onChange) as any
       const { item1 } = fixture;
 
@@ -251,8 +251,8 @@ describe('draggable', () => {
     })
 
     test('should remove pointerup listener after one completion', () => {
-      jest.useRealTimers()
-      const onChange = jest.fn()
+      vi.useRealTimers()
+      const onChange = vi.fn()
       const fixture = makeDragFixture('y', onChange) as any
       const { item1 } = fixture;
 
@@ -265,7 +265,7 @@ describe('draggable', () => {
 
   describe('direction parameter', () => {
     test('should support y direction (default)', () => {
-      jest.useRealTimers()
+      vi.useRealTimers()
       const fixture = makeDragFixture('y') as any
       const { containerEl, item1, item2 } = fixture;
 
@@ -277,7 +277,7 @@ describe('draggable', () => {
     })
 
     test('should support x direction', () => {
-      jest.useRealTimers()
+      vi.useRealTimers()
       const fixture = makeDragFixture('x') as any
       const { containerEl, item1, item2 } = fixture;
 
@@ -291,7 +291,7 @@ describe('draggable', () => {
 
   describe('edge cases', () => {
     test('should not error when mousemove on element without draggable ancestor', () => {
-      jest.useRealTimers()
+      vi.useRealTimers()
       const container = document.createElement('div')
       container.style.position = 'relative'
       Object.defineProperty(container, 'offsetLeft', { configurable: true, get() { return 0 } })
@@ -320,8 +320,8 @@ describe('draggable', () => {
     })
 
     test('should handle drag and drop on same element (no swap)', () => {
-      jest.useRealTimers()
-      const onChange = jest.fn()
+      vi.useRealTimers()
+      const onChange = vi.fn()
       const fixture = makeDragFixture('y', onChange) as any
       const { item1 } = fixture;
 
@@ -335,7 +335,7 @@ describe('draggable', () => {
     })
 
     test('should work without onChange callback', () => {
-      jest.useRealTimers()
+      vi.useRealTimers()
       const fixture = makeDragFixture('y') as any
       const { item1 } = fixture;
 

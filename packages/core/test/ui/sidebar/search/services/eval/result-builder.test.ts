@@ -6,11 +6,11 @@
  * fallback for platforms without whole-file facts.
  */
 
-import { describe, expect, it } from '@jest/globals'
 import { buildSearchResult, evaluateAST } from 'src/ui/sidebar/search/services/eval/result-builder'
 import type { EvalContext } from 'src/ui/sidebar/search/services/query-parser'
 import { tryParse } from 'src/ui/sidebar/search/services/query-parser'
 import type { SearchResult } from 'src/ui/sidebar/search/services/text-search-service'
+import { describe, expect, it, vi } from 'vitest'
 
 function ctx(overrides: Partial<EvalContext> = {}): EvalContext {
   return {

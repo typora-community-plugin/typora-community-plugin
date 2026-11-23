@@ -1,27 +1,27 @@
-import { jest } from '@jest/globals'
+import { vi } from 'vitest'
 import 'src/setup-test-env'
 import type { MetadataManager, MetadataProvider } from '../../src/metadata/metadata-manager'
 
 
 const fsMock = {
-  listFiles: jest.fn(),
-  stat: jest.fn(),
-  readText: jest.fn(),
+  listFiles: vi.fn(),
+  stat: vi.fn(),
+  readText: vi.fn(),
 }
 
 const storeMock = {
-  loadCache: jest.fn(async () => ({})),
-  saveCache: jest.fn(async () => { }),
-  deleteCacheEntries: jest.fn(async () => { }),
-  closeCache: jest.fn(),
+  loadCache: vi.fn(async () => ({})),
+  saveCache: vi.fn(async () => { }),
+  deleteCacheEntries: vi.fn(async () => { }),
+  closeCache: vi.fn(),
 }
 
 async function loadManager(): Promise<typeof MetadataManager> {
-  jest.clearAllMocks()
+  vi.clearAllMocks()
   storeMock.loadCache.mockResolvedValue({})
 
-  await jest.unstable_mockModule('src/io/fs/filesystem', () => ({ default: fsMock }))
-  await jest.unstable_mockModule('src/metadata/store/store', () => ({ ...storeMock }))
+  await vi.doMock('src/io/fs/filesystem', () => ({ default: fsMock }))
+  await vi.doMock('src/metadata/store/store', () => ({ ...storeMock }))
 
   return (await import('../../src/metadata/metadata-manager')).MetadataManager
 }
@@ -30,8 +30,8 @@ function createManager(
   Manager: typeof MetadataManager,
   opts: { concurrency?: number } = {},
 ) {
-  const vault = { id: 'vault-1', path: '/vault', on: jest.fn(() => jest.fn()) }
-  const config = { on: jest.fn(() => jest.fn()) }
+  const vault = { id: 'vault-1', path: '/vault', on: vi.fn(() => vi.fn()) }
+  const config = { on: vi.fn(() => vi.fn()) }
 
   const manager = new Manager(
     { concurrency: opts.concurrency ?? 10 },
@@ -42,7 +42,7 @@ function createManager(
   return { manager, vault, config }
 }
 
-const entry = (mtime = 1) => ({ mtime, metadata: { frontmatter: {}, tags: [] } })
+const entry = (mtime = 1) => ({ mtime, metadata: { frontmatter: {}, tags: [] as never[] } })
 const flush = () => new Promise<void>(resolve => setTimeout(resolve, 0))
 
 
@@ -59,7 +59,7 @@ describe('MetadataManager', () => {
       const Manager = await loadManager()
       const { manager } = createManager(Manager)
       fsMock.stat.mockResolvedValue({ mtimeMs: 100, size: 10 })
-      const provider = jest.fn<MetadataProvider>(async (ctx) => ({
+      const provider = vi.fn<MetadataProvider>(async (ctx) => ({
         mtime: ctx.fileStats().mtimeMs,
         metadata: { title: 'x' },
       }))
@@ -75,7 +75,7 @@ describe('MetadataManager', () => {
       const Manager = await loadManager()
       const { manager } = createManager(Manager)
       fsMock.stat.mockResolvedValue({ mtimeMs: 100, size: 10 })
-      const provider = jest.fn<MetadataProvider>(async (ctx) => ({
+      const provider = vi.fn<MetadataProvider>(async (ctx) => ({
         mtime: ctx.fileStats().mtimeMs,
         metadata: {},
       }))
@@ -91,7 +91,7 @@ describe('MetadataManager', () => {
       const Manager = await loadManager()
       const { manager } = createManager(Manager)
       fsMock.stat.mockResolvedValue({ mtimeMs: 100, size: 10 })
-      const provider = jest.fn<MetadataProvider>(async (ctx) => ({
+      const provider = vi.fn<MetadataProvider>(async (ctx) => ({
         mtime: ctx.fileStats().mtimeMs,
         metadata: {},
       }))
@@ -112,7 +112,7 @@ describe('MetadataManager', () => {
 
       let active = 0
       let max = 0
-      const provider = jest.fn<MetadataProvider>(async () => {
+      const provider = vi.fn<MetadataProvider>(async () => {
         active++
         max = Math.max(max, active)
         await new Promise(resolve => setTimeout(resolve, 5))
@@ -134,14 +134,14 @@ describe('MetadataManager', () => {
       const Manager = await loadManager()
       const { manager } = createManager(Manager)
       fsMock.stat.mockResolvedValue({ mtimeMs: 100, size: 10 })
-      const provider = jest.fn<MetadataProvider>(async (ctx) => ({
+      const provider = vi.fn<MetadataProvider>(async (ctx) => ({
         mtime: ctx.fileStats().mtimeMs,
         metadata: {},
       }))
       manager.register('md', provider)
       await manager.update('/vault/a.md')
 
-      manager.register('md', jest.fn<MetadataProvider>(async () => ({ metadata: {} })))
+      manager.register('md', vi.fn<MetadataProvider>(async () => ({ metadata: {} })))
       await flush()
 
       expect(storeMock.deleteCacheEntries).toHaveBeenCalledWith('vault-1', ['a.md'])
@@ -188,10 +188,10 @@ describe('MetadataManager', () => {
       const { manager } = createManager(Manager)
       fsMock.stat.mockResolvedValue({ mtimeMs: 5, size: 1 })
       fsMock.listFiles.mockResolvedValue(['/vault/a.md', '/vault/b.md'])
-      const provider = jest.fn<MetadataProvider>(async () => ({ metadata: {} }))
+      const provider = vi.fn<MetadataProvider>(async () => ({ metadata: {} }))
       manager.register('md', provider)
 
-      const done = jest.fn()
+      const done = vi.fn()
       const off = manager.on('index:done', done)
       await manager.index()
       off()
@@ -221,7 +221,7 @@ describe('MetadataManager', () => {
       fsMock.stat.mockResolvedValue({ mtimeMs: 9, size: 1 })
       let resolveList!: (paths: string[]) => void
       fsMock.listFiles.mockReturnValue(new Promise(resolve => { resolveList = resolve }))
-      const provider = jest.fn<MetadataProvider>(async () => ({ metadata: {} }))
+      const provider = vi.fn<MetadataProvider>(async () => ({ metadata: {} }))
       manager.register('md', provider)
 
       const indexing = manager.index()

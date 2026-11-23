@@ -1,4 +1,4 @@
-import { jest } from '@jest/globals'
+import { vi } from 'vitest'
 
 
 interface FakeRow { path: string; metadata: any }
@@ -12,10 +12,10 @@ const state: {
 class FakeTable {
   records: FakeRow[] = []
 
-  toArray = jest.fn(async () => this.records)
-  clear = jest.fn(async () => { this.records = [] })
-  bulkPut = jest.fn(async (rows: FakeRow[]) => { this.records = rows.slice() })
-  bulkDelete = jest.fn(async (paths: string[]) => {
+  toArray = vi.fn(async () => this.records)
+  clear = vi.fn(async () => { this.records = [] })
+  bulkPut = vi.fn(async (rows: FakeRow[]) => { this.records = rows.slice() })
+  bulkDelete = vi.fn(async (paths: string[]) => {
     this.records = this.records.filter(r => !paths.includes(r.path))
   })
 }
@@ -33,25 +33,25 @@ class FakeMiniDexie {
     return { stores: (_schema: any) => this }
   }
 
-  _getDb = jest.fn(async () => {
+  _getDb = vi.fn(async () => {
     if (state.failOpen) throw new Error('open failed')
     return this._db
   })
 
-  close = jest.fn(() => { state.closed.push(this) })
+  close = vi.fn(() => { state.closed.push(this) })
 }
 
 async function setup(): Promise<typeof import('../../../src/metadata/store/store')> {
-  jest.resetModules()
+  vi.resetModules()
   state.instances = []
   state.closed = []
   state.failOpen = false
 
-  await jest.unstable_mockModule('src/utils/indexed-db', () => ({ MiniDexie: FakeMiniDexie }))
+  await vi.doMock('src/utils/indexed-db', () => ({ MiniDexie: FakeMiniDexie }))
   return import('../../../src/metadata/store/store')
 }
 
-const entry = (mtime: number) => ({ mtime, metadata: { frontmatter: {}, tags: [] } })
+const entry = (mtime: number) => ({ mtime, metadata: { frontmatter: {}, tags: [] as never[] } })
 
 
 describe('store', () => {

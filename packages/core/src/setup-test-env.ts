@@ -1,4 +1,4 @@
-import { jest } from '@jest/globals'
+import { vi } from 'vitest'
 import { registerService } from "./common/service"
 import { memorize } from "./utils/function/memorize"
 
@@ -50,8 +50,8 @@ registerService('logger', memorize(() =>
 
 registerService('app', memorize(() => (
   {
-    on: jest.fn(),
-    emit: jest.fn(),
+    on: vi.fn(),
+    emit: vi.fn(),
   } as any
 )))
 
@@ -60,21 +60,21 @@ registerService('config-repository', memorize(() => {
   return {
     get configDir() { return configDir },
     setConfigDir(d: string) { configDir = d },
-    readConfigJson: jest.fn()
+    readConfigJson: vi.fn()
       .mockImplementation((filename, defaultValue) => defaultValue),
-    writeConfigJson: jest.fn(),
+    writeConfigJson: vi.fn(),
   } as any
 }))
 
 registerService('hotkey-manager', memorize(() => (
   {
-    addHotkey: jest.fn().mockReturnValue(jest.fn()),
-    addEditorHotkey: jest.fn().mockReturnValue(jest.fn()),
+    addHotkey: vi.fn().mockReturnValue(vi.fn()),
+    addEditorHotkey: vi.fn().mockReturnValue(vi.fn()),
   } as any
 )))
 
 registerService('command-manager', memorize(() => ({
-  register: jest.fn().mockReturnValue(jest.fn()),
+  register: vi.fn().mockReturnValue(vi.fn()),
 } as any)))
 
 registerService('i18n', memorize(() => ({
@@ -85,13 +85,13 @@ registerService('i18n', memorize(() => ({
 registerService('vault', memorize(() => ({
   id: 'test-vault',
   path: '/vault',
-  on: jest.fn(() => jest.fn()),
+  on: vi.fn(() => vi.fn()),
 } as any)))
 
 registerService('workspace', memorize(() => ({
-  on: jest.fn(() => jest.fn()),
+  on: vi.fn(() => vi.fn()),
 } as any)))
 
 registerService('markdown-editor', memorize(() => ({
-  getMarkdown: jest.fn(() => ''),
+  getMarkdown: vi.fn(() => ''),
 } as any)))

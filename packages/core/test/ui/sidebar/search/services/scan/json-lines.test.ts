@@ -2,13 +2,13 @@
  * JSON-lines stream parsing for ripgrep --json output.
  */
 
-import { describe, expect, it } from '@jest/globals'
 
 import {
   JsonLinesParser,
   matchPathOf,
   toSearchMatch,
 } from 'src/ui/sidebar/search/services/scan/json-lines'
+import { describe, expect, it, vi } from 'vitest'
 
 
 function matchLine(path: string, extra: Record<string, unknown> = {}): string {

@@ -16,8 +16,9 @@ class Base {
   static get ver() {
     return '1.0'
   }
-  static [Symbol.for('tag')] = 'base'
 }
+// class fields only allow literal/unique-symbol computed names
+;(Base as any)[Symbol.for('tag')] = 'base'
 
 // babel `_inheritsLoose`
 function inheritsLoose(sub: any, sup: any) {
@@ -66,7 +67,7 @@ describe('es5-shim', () => {
         return _this
       } as unknown as typeof Base
       inheritsLoose(Es5Loose, Wrapped)
-      Es5Loose.prototype.customGreet = function (this: any) {
+      ;(Es5Loose.prototype as any).customGreet = function (this: any) {
         return this.greet() + ' / ' + this.custom
       }
 
@@ -86,7 +87,7 @@ describe('es5-shim', () => {
         return _this
       } as unknown as typeof Base
       inheritsLoose(Es5Spec, Wrapped)
-      Es5Spec.prototype.customGreet = function (this: any) {
+      ;(Es5Spec.prototype as any).customGreet = function (this: any) {
         return this.greet() + ' / ' + this.custom
       }
 
@@ -117,7 +118,7 @@ describe('es5-shim', () => {
     test('should copy static members and name', () => {
       expect(Wrapped.make()).toBe('made')
       expect(Wrapped.ver).toBe('1.0')
-      expect(Wrapped[Symbol.for('tag')]).toBe('base')
+      expect((Wrapped as any)[Symbol.for('tag')]).toBe('base')
       expect(Wrapped.name).toBe('Base')
     })
 

@@ -1,17 +1,17 @@
-import { jest } from '@jest/globals'
+import { vi } from 'vitest'
 import { throttle } from "../../../src/utils/schedule/throttle"
 
 describe('throttle', () => {
   beforeEach(() => {
-    jest.useFakeTimers()
+    vi.useFakeTimers()
   })
 
   afterEach(() => {
-    jest.useRealTimers()
+    vi.useRealTimers()
   })
 
   it('should execute the function immediately on first call', () => {
-    const fn = jest.fn()
+    const fn = vi.fn()
     const throttled = throttle(fn, 100)
 
     throttled()
@@ -20,7 +20,7 @@ describe('throttle', () => {
   })
 
   it('should not execute during the throttle window', () => {
-    const fn = jest.fn()
+    const fn = vi.fn()
     const throttled = throttle(fn, 100)
 
     throttled()
@@ -31,30 +31,30 @@ describe('throttle', () => {
   })
 
   it('should execute again after the throttle window', () => {
-    const fn = jest.fn()
+    const fn = vi.fn()
     const throttled = throttle(fn, 100)
 
     throttled()
-    jest.advanceTimersByTime(99)
+    vi.advanceTimersByTime(99)
     throttled()
 
     expect(fn).toHaveBeenCalledTimes(1)
 
-    jest.advanceTimersByTime(1)
+    vi.advanceTimersByTime(1)
     throttled()
 
     expect(fn).toHaveBeenCalledTimes(2)
   })
 
   it('should call function with correct arguments', () => {
-    const fn = jest.fn()
+    const fn = vi.fn()
     const throttled = throttle(fn, 100)
 
     throttled('a', 'b', 'c')
 
     expect(fn).toHaveBeenCalledWith('a', 'b', 'c')
 
-    jest.advanceTimersByTime(100)
+    vi.advanceTimersByTime(100)
     throttled('d', 'e', 'f')
 
     expect(fn).toHaveBeenCalledWith('d', 'e', 'f')
@@ -74,7 +74,7 @@ describe('throttle', () => {
   })
 
   it('should always use the first call\'s arguments during the window', () => {
-    const fn = jest.fn()
+    const fn = vi.fn()
     const throttled = throttle(fn, 100)
 
     throttled('first')
@@ -84,7 +84,7 @@ describe('throttle', () => {
     expect(fn).toHaveBeenCalledTimes(1)
     expect(fn).toHaveBeenCalledWith('first')
 
-    jest.advanceTimersByTime(100)
+    vi.advanceTimersByTime(100)
     throttled('fourth')
 
     expect(fn).toHaveBeenCalledTimes(2)
@@ -92,7 +92,7 @@ describe('throttle', () => {
   })
 
   it('should handle rapid successive calls gracefully', () => {
-    const fn = jest.fn()
+    const fn = vi.fn()
     const throttled = throttle(fn, 50)
 
     throttled(1)
@@ -103,7 +103,7 @@ describe('throttle', () => {
     expect(fn).toHaveBeenCalledTimes(1)
     expect(fn).toHaveBeenCalledWith(1)
 
-    jest.advanceTimersByTime(50)
+    vi.advanceTimersByTime(50)
     throttled(11)
 
     expect(fn).toHaveBeenCalledTimes(2)
@@ -111,8 +111,8 @@ describe('throttle', () => {
   })
 
   it('should support multiple independent throttle instances', () => {
-    const fn1 = jest.fn()
-    const fn2 = jest.fn()
+    const fn1 = vi.fn()
+    const fn2 = vi.fn()
 
     const throttled1 = throttle(fn1, 100)
     const throttled2 = throttle(fn2, 100)
@@ -129,7 +129,7 @@ describe('throttle', () => {
     expect(fn1).toHaveBeenCalledTimes(1)
     expect(fn2).toHaveBeenCalledTimes(1)
 
-    jest.advanceTimersByTime(100)
+    vi.advanceTimersByTime(100)
 
     throttled1()
     throttled2()

@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@jest/globals'
+import { describe, expect, it, vi } from 'vitest'
 import { TagSyntaxHandler } from '../../../../../../../src/ui/sidebar/search/services/query-parser/syntax/tag-syntax'
 import type { EvalContext, FieldNode } from '../../../../../../../src/ui/sidebar/search/services/query-parser/types'
 
@@ -224,8 +224,8 @@ describe('collectFieldMatches', () => {
       const ctx = makeCtx({
         frontmatter: { tags: ['work', 'project'] },
         tags: [
-          { tag: 'work', lineNumber: 3, lineText: '  - work' },
-          { tag: 'project', lineNumber: 4, lineText: '  - project' },
+          { name: 'work', lineNumber: 3, lineText: '  - work' },
+          { name: 'project', lineNumber: 4, lineText: '  - project' },
         ],
       })
       const matches = TagSyntaxHandler.collectFieldMatches(node, ctx)
@@ -257,7 +257,7 @@ describe('collectFieldMatches', () => {
       const node = fieldNode('personal')
       const ctx = makeCtx({
         frontmatter: { tags: 'personal' },
-        tags: [{ tag: 'personal', lineNumber: 5, lineText: 'personal' }],
+        tags: [{ name: 'personal', lineNumber: 5, lineText: 'personal' }],
       })
       const matches = TagSyntaxHandler.collectFieldMatches(node, ctx)
 

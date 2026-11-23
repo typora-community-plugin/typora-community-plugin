@@ -40,7 +40,7 @@ describe('useEditingTabs', () => {
     // We test against whatever is stored (same identity comparison).
     const current = tabs.editingTabs() as any
     if (current === undefined || current === null) {
-      mockTab1 && tabs.setEditingTabs(mockTab1)
+      mockTab1 && tabs.setEditingTabs(mockTab1 as any)
     }
     expect(tabs.isEditingTabs(current || mockTab1)).toBe(true)
   })

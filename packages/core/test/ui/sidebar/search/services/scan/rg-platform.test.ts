@@ -2,13 +2,13 @@
  * Platform/path helpers of the ripgrep search backend.
  */
 
-import { afterEach, describe, expect, it } from '@jest/globals'
 
 import {
   isNativeBridgePlatform,
   resolveRipgrepPath,
   toAbsolutePath,
 } from 'src/ui/sidebar/search/services/scan/rg-platform'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 
 const savedReqnode = (globalThis as any).reqnode
@@ -40,7 +40,7 @@ describe('resolveRipgrepPath', () => {
   })
 
   it('returns null when the module is missing, empty, or throws', () => {
-    ;(globalThis as any).reqnode = () => undefined
+    ;(globalThis as any).reqnode = (): undefined => undefined
     expect(resolveRipgrepPath()).toBeNull()
 
     ;(globalThis as any).reqnode = () => ({ rgPath: '' })

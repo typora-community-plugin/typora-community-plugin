@@ -1,4 +1,4 @@
-import { jest } from '@jest/globals'
+import { vi } from 'vitest'
 import { memorize } from "../../../src/utils/function/memorize"
 
 
@@ -18,7 +18,7 @@ describe('memorize function', () => {
     expect(result1).toBe(6)
 
     // Second call with same arguments, should return memoized result without calculation
-    const spy = jest.spyOn(console, 'log').mockImplementation(() => {}) // Mock console.log to avoid output
+    const spy = vi.spyOn(console, 'log').mockImplementation(() => {}) // Mock console.log to avoid output
     const result2 = memoizedFn(2, 3)
     expect(result2).toBe(6)
     expect(spy).not.toHaveBeenCalledWith('Calculating...', 2, 3); // Ensure no recalculation

@@ -1,16 +1,16 @@
-import { jest } from '@jest/globals'
+import { vi } from 'vitest'
 import { debounced } from '../../../src/utils/decorator/debounced'
 
 
 describe('debounced decorator', () => {
 
   beforeEach(() => {
-    jest.useFakeTimers()
+    vi.useFakeTimers()
   })
 
   afterEach(() => {
-    jest.useRealTimers()
-    jest.clearAllTimers()
+    vi.useRealTimers()
+    vi.clearAllTimers()
   })
 
   it('should debounce the method call', () => {
@@ -31,7 +31,7 @@ describe('debounced decorator', () => {
 
     expect(instance.callCount).toBe(0)
 
-    jest.advanceTimersByTime(100)
+    vi.advanceTimersByTime(100)
 
     expect(instance.callCount).toBe(1)
   })
@@ -52,7 +52,7 @@ describe('debounced decorator', () => {
     instance.method('second')
     instance.method('third')
 
-    jest.advanceTimersByTime(100)
+    vi.advanceTimersByTime(100)
 
     expect(instance.lastArg).toBe('third')
   })
@@ -72,7 +72,7 @@ describe('debounced decorator', () => {
 
     instance.greet('Hello')
 
-    jest.advanceTimersByTime(50)
+    vi.advanceTimersByTime(50)
 
     expect(instance.result).toBe('Hello, test')
   })
@@ -90,14 +90,14 @@ describe('debounced decorator', () => {
     const instance = new TestClass()
 
     instance.method()
-    jest.advanceTimersByTime(50)
+    vi.advanceTimersByTime(50)
     instance.method()
-    jest.advanceTimersByTime(50)
+    vi.advanceTimersByTime(50)
     instance.method()
 
     expect(instance.callCount).toBe(0)
 
-    jest.advanceTimersByTime(100)
+    vi.advanceTimersByTime(100)
 
     expect(instance.callCount).toBe(1)
   })

@@ -1,17 +1,17 @@
-import { describe, expect, it, jest } from '@jest/globals'
+import { describe, expect, it, vi } from 'vitest'
 import { getElementPagePosition, html } from '../../src/utils/html'
 
 // Mock jQuery globally for tests
-global.$ = jest.fn().mockReturnValue(document.createElement('div'))
+(global as any).$ = vi.fn().mockReturnValue(document.createElement('div'))
 
 describe('html', () => {
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('should convert template literal to a jQuery-wrapped DOM element', () => {
-    const resultEl: any = { id: 'test-el' }
-    global.$ = jest.fn().mockReturnValue({ get: jest.fn(() => resultEl) })
+    const resultEl: any = { id: 'test-el' };
+    (global as any).$ = vi.fn().mockReturnValue({ get: vi.fn(() => resultEl) })
 
     // TemplateStringsArray must be array-like with .reduce (from Array.prototype)
     // For `html\`<div>Hello </div>\``: strings[0]='<div>Hello ', values=['World'], strings[1]=']'
@@ -19,15 +19,15 @@ describe('html', () => {
     const strings = Object.assign(['<div>Hello ', '</div>'], { raw: ['<div>Hello ', '</div>'] }) as any
     const result = html(strings, 'World')
 
-    expect(global.$).toHaveBeenCalledWith('<div>Hello World</div>')
+    expect((global as any).$).toHaveBeenCalledWith('<div>Hello World</div>')
     expect(result).toBe(resultEl)
   })
 
   it('should concatenate multiple values', () => {
     let capturedArg: string | undefined
-    global.$ = jest.fn().mockImplementation((arg) => {
+    (global as any).$ = vi.fn().mockImplementation((arg) => {
       capturedArg = arg
-      return { get: jest.fn(() => 'el') }
+      return { get: vi.fn(() => 'el') }
     })
 
     const strings = Object.assign(['<li class="', '">item</li>'], { raw: ['<li class="', '">item</li>'] }) as any
@@ -38,9 +38,9 @@ describe('html', () => {
 
   it('should work with no interpolation values', () => {
     let capturedArg: string | undefined
-    global.$ = jest.fn().mockImplementation((arg) => {
+    (global as any).$ = vi.fn().mockImplementation((arg) => {
       capturedArg = arg
-      return { get: jest.fn(() => 'el') }
+      return { get: vi.fn(() => 'el') }
     })
 
     const strings = Object.assign(['<span></span>'], { raw: ['<span></span>'] }) as any
@@ -51,9 +51,9 @@ describe('html', () => {
 
   it('should handle empty template string', () => {
     let capturedArg: string | undefined
-    global.$ = jest.fn().mockImplementation((arg) => {
+    (global as any).$ = vi.fn().mockImplementation((arg) => {
       capturedArg = arg
-      return { get: jest.fn(() => 'el') }
+      return { get: vi.fn(() => 'el') }
     })
 
     const strings = Object.assign([''], { raw: [''] }) as any

@@ -6,10 +6,8 @@ describe('isCustomProtocolUrl', () => {
   })
 
   it('should return false for null/undefined', () => {
-    // @ts-expect-error
-    expect(isCustomProtocolUrl(null)).toBe(false)
-    // @ts-expect-error
-    expect(isCustomProtocolUrl(undefined)).toBe(false)
+    expect(isCustomProtocolUrl(null as any)).toBe(false)
+    expect(isCustomProtocolUrl(undefined as any)).toBe(false)
   })
 
   it('should return true for bookxnotepro:// custom protocol', () => {

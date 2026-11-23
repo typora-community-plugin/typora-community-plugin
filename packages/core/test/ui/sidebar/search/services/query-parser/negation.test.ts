@@ -3,7 +3,6 @@
  * and when the positive search alone cannot answer the query.
  */
 
-import { describe, expect, it } from '@jest/globals'
 
 import { tryParse } from 'src/ui/sidebar/search/services/query-parser'
 import {
@@ -12,6 +11,7 @@ import {
   astHasNegationUnderOr,
   collectNegationPatterns,
 } from 'src/ui/sidebar/search/services/query-parser/negation'
+import { describe, expect, it, vi } from 'vitest'
 
 function patterns(query: string): string[] {
   const ast = tryParse(query)

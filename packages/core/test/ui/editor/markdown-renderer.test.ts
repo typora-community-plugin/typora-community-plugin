@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { beforeEach, describe, expect, jest, test } from '@jest/globals'
+import { beforeEach, describe, expect, test, vi } from 'vitest'
 
 
 // `MarkdownRenderer` imports `typora` modules as bare globals. Provide the
@@ -54,7 +54,7 @@ beforeEach(async () => {
       constructor: {
         isDiagramType: (lang: string) => ['sequence', 'flow', 'mermaid'].includes(lang),
       },
-      lazyload: jest.fn(),
+      lazyload: vi.fn(),
     },
   }
   ;(globalThis as any).CodeMirror = (el: HTMLElement) => {
@@ -75,11 +75,11 @@ beforeEach(async () => {
     },
   }
   ;(globalThis as any).MathJax = {
-    typesetPromise: jest.fn(async () => { }),
+    typesetPromise: vi.fn(async () => { }),
   }
   ;(window as any).getCodeMirrorMode = () => 'mermaid'
   ;(globalThis as any).mermaidAPI = {
-    render: jest.fn(async () => ({ svg: '<svg class="mermaid-svg"></svg>' })),
+    render: vi.fn(async () => ({ svg: '<svg class="mermaid-svg"></svg>' })),
   }
 
   MarkdownRenderer = (await import('../../../src/ui/editor/markdown-renderer')).MarkdownRenderer
@@ -88,7 +88,7 @@ beforeEach(async () => {
 function createRenderer() {
   return new MarkdownRenderer({
     preProcessor: { process: (_stage: string, md: string) => md },
-    postProcessor: { processAll: jest.fn() },
+    postProcessor: { processAll: vi.fn() },
   } as any)
 }
 

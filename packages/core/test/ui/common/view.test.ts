@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { describe, expect, jest } from '@jest/globals'
+import { describe, expect, vi } from 'vitest'
 import { type Closeable, View } from '../../../src/ui/common/view'
 
 describe('View', () => {
@@ -9,7 +9,7 @@ describe('View', () => {
     test('should call callback with containerEl', () => {
       const view = new View()
       view.containerEl = defaultContainerEl
-      const callback = jest.fn()
+      const callback = vi.fn()
       view.then(callback)
       expect(callback).toHaveBeenCalledWith(defaultContainerEl)
     })

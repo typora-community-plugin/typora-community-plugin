@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { describe, expect, it, jest } from '@jest/globals'
+import { describe, expect, it, vi } from 'vitest'
 import { SettingItem } from '../../../src/ui/settings/setting-item'
 
 
@@ -32,7 +32,7 @@ describe('SettingItem.addSidebarLayout', () => {
   function setup(items: string[], initialActive?: string) {
     const setting = new SettingItem()
     document.body.append(setting.containerEl)
-    const onSelect = jest.fn()
+    const onSelect = vi.fn()
     const layout = setting.addSidebarLayout({ items, initialActive }, ctx => onSelect(ctx))
     return { setting, layout, sidebarEl: setting.info.querySelector('.typ-setting-sidebar')! as HTMLElement, panelEl: setting.info.querySelector('.typ-setting-panel')! as HTMLElement, onSelect }
   }
@@ -49,8 +49,8 @@ describe('SettingItem.addSidebarLayout', () => {
     setting.addSidebarLayout({ items: ['a'] }, ctx => captured = ctx)
     expect(captured.panel).toBeDefined()
 
-    captured.panel.addSetting(item => item.addName("Row 1"))
-    captured.panel.addSetting(item => item.addDescription("desc 2"))
+    captured.panel.addSetting((item: any) => item.addName("Row 1"))
+    captured.panel.addSetting((item: any) => item.addDescription("desc 2"))
 
     const panelEl = setting.info.querySelector('.typ-setting-panel')! as HTMLElement
     expect(panelEl.childElementCount).toBe(2)

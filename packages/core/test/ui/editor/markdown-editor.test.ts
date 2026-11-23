@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals'
+import { afterEach, beforeEach, describe, expect, type Mock, test, vi } from 'vitest'
 import { EditorSelection } from '../../../src/ui/editor/selection'
 
 // Some modules imported by `markdown-editor` read the Typora global at import
@@ -11,8 +11,8 @@ const { MarkdownEditor } = await import('../../../src/ui/editor/markdown-editor'
 function createRange(collapsed = false) {
   const range = {
     collapsed,
-    collapse: jest.fn(() => { range.collapsed = true }),
-    select: jest.fn(),
+    collapse: vi.fn(() => { range.collapsed = true }),
+    select: vi.fn(),
   }
   return range as any
 }
@@ -20,15 +20,15 @@ function createRange(collapsed = false) {
 function createEditor() {
   // Constructing `MarkdownEditor` would set up the whole Typora editor; only
   // the insertion logic is under test here.
-  const mdEditor = Object.create(MarkdownEditor.prototype) as MarkdownEditor
-  mdEditor.selection = new EditorSelection({ on: jest.fn() } as any)
+  const mdEditor = Object.create(MarkdownEditor.prototype) as InstanceType<typeof MarkdownEditor>
+  mdEditor.selection = new EditorSelection({ on: vi.fn() } as any)
   return mdEditor
 }
 
 
 describe('MarkdownEditor.insertMarkdown()', () => {
   let editor: any
-  let mdEditor: MarkdownEditor
+  let mdEditor: InstanceType<typeof MarkdownEditor>
   let writingArea: HTMLElement
   let input: HTMLInputElement
   let codeEditor: HTMLTextAreaElement
@@ -47,8 +47,8 @@ describe('MarkdownEditor.insertMarkdown()', () => {
     // so the editor instance is provided through `globalThis` in tests.
     editor = {
       writingArea,
-      selection: { getRangy: jest.fn() },
-      UserOp: { pasteHandler: jest.fn() },
+      selection: { getRangy: vi.fn() },
+      UserOp: { pasteHandler: vi.fn() },
     }
     ;(globalThis as any).editor = editor
     mdEditor = createEditor()
@@ -121,8 +121,8 @@ describe('MarkdownEditor.insertMarkdown()', () => {
 
 
 describe('MarkdownEditor._onContextMenu()', () => {
-  let mdEditor: MarkdownEditor
-  let menu: { containerEl: HTMLElement, removeExtendedMenuItem: jest.Mock }
+  let mdEditor: InstanceType<typeof MarkdownEditor>
+  let menu: { containerEl: HTMLElement, removeExtendedMenuItem: Mock }
   let writingArea: HTMLElement
   let editor: any
 
@@ -135,17 +135,17 @@ describe('MarkdownEditor._onContextMenu()', () => {
     editor = { writingArea, sourceView: { inSourceMode: false } }
     ;(globalThis as any).editor = editor
 
-    mdEditor = Object.create(MarkdownEditor.prototype) as MarkdownEditor
+    mdEditor = Object.create(MarkdownEditor.prototype) as InstanceType<typeof MarkdownEditor>
     menu = {
       containerEl: document.querySelector('#context-menu')!,
-      removeExtendedMenuItem: jest.fn(),
+      removeExtendedMenuItem: vi.fn(),
     }
     ;(mdEditor as any)._contextmenu = menu
     ;(mdEditor as any)._isContextMenuReady = false
   })
 
   afterEach(() => {
-    jest.useRealTimers()
+    vi.useRealTimers()
   })
 
   function rightClick() {
@@ -153,18 +153,18 @@ describe('MarkdownEditor._onContextMenu()', () => {
   }
 
   test('waits for the native menu to be shown on the first open', async () => {
-    jest.useFakeTimers()
-    const callback = jest.fn()
+    vi.useFakeTimers()
+    const callback = vi.fn()
     mdEditor._onContextMenu(callback)
 
     rightClick()
     expect(menu.removeExtendedMenuItem).toHaveBeenCalled()
-    jest.advanceTimersByTime(1000)
+    vi.advanceTimersByTime(1000)
     expect(callback).not.toHaveBeenCalled()
 
     // Typora creates the native menu groups and shows the menu after mousedown.
     menu.containerEl.classList.add('show')
-    await jest.advanceTimersByTimeAsync(352)
+    await vi.advanceTimersByTimeAsync(352)
 
     expect(callback).toHaveBeenCalledWith({ menu })
     expect((mdEditor as any)._isContextMenuReady).toBe(true)
@@ -172,7 +172,7 @@ describe('MarkdownEditor._onContextMenu()', () => {
 
   test('invokes plugins immediately once the native menu is ready', () => {
     ;(mdEditor as any)._isContextMenuReady = true
-    const callback = jest.fn()
+    const callback = vi.fn()
     mdEditor._onContextMenu(callback)
 
     rightClick()
@@ -182,7 +182,7 @@ describe('MarkdownEditor._onContextMenu()', () => {
 
   test('invokes plugins immediately in source mode', () => {
     editor.sourceView.inSourceMode = true
-    const callback = jest.fn()
+    const callback = vi.fn()
     mdEditor._onContextMenu(callback)
 
     rightClick()

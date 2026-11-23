@@ -1,16 +1,16 @@
-import { jest } from '@jest/globals'
+import { vi } from 'vitest'
 import 'src/setup-test-env'
 
 
 const fsMock = {
-  listFiles: jest.fn(),
-  stat: jest.fn(),
-  readText: jest.fn(),
+  listFiles: vi.fn(),
+  stat: vi.fn(),
+  readText: vi.fn(),
 }
 
 async function setup() {
-  jest.clearAllMocks()
-  await jest.unstable_mockModule('src/io/fs/filesystem', () => ({ default: fsMock }))
+  vi.clearAllMocks()
+  await vi.doMock('src/io/fs/filesystem', () => ({ default: fsMock }))
 
   const { MetadataProcessor } = await import('../../../src/metadata/processing/processor')
   const { MetadataProviderRegistry } = await import('src/metadata/provider/registry')
@@ -18,7 +18,7 @@ async function setup() {
   return { MetadataProcessor, MetadataProviderRegistry }
 }
 
-const entry = (mtime = 1) => ({ mtime, metadata: { frontmatter: {}, tags: [] } })
+const entry = (mtime = 1) => ({ mtime, metadata: { frontmatter: {}, tags: [] as never[] } })
 
 
 describe('MetadataProcessor', () => {
@@ -55,7 +55,7 @@ describe('MetadataProcessor', () => {
     it('skips reprocessing when mtime and provider signature are unchanged', async () => {
       const { MetadataProcessor, MetadataProviderRegistry } = await setup()
       const registry = new MetadataProviderRegistry()
-      const provider = jest.fn(async (ctx: any) => ({
+      const provider = vi.fn(async (ctx: any) => ({
         mtime: ctx.fileStats().mtimeMs,
         metadata: {},
       }))

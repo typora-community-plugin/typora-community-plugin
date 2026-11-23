@@ -1,22 +1,22 @@
-import { jest } from '@jest/globals'
+import { vi } from 'vitest'
 import 'src/setup-test-env'
 import { FileAdapter } from '../../../src/io/fs/file-adapter'
 
 class TestFileAdapter extends FileAdapter {
-  mockList = jest.fn().mockResolvedValue([] as string[])
-  mockIsDir = jest.fn().mockResolvedValue(false)
-  mockAccess = jest.fn().mockResolvedValue(undefined)
-  mockExists = jest.fn().mockResolvedValue(true)
-  mockStat = jest.fn()
-  mockMkdir = jest.fn()
-  mockCopy = jest.fn()
-  mockMove = jest.fn()
-  mockReadText = jest.fn()
-  mockReadTextSync = jest.fn()
-  mockWriteText = jest.fn()
-  mockAppendText = jest.fn()
-  mockRemove = jest.fn()
-  mockTrash = jest.fn()
+  mockList = vi.fn().mockResolvedValue([] as string[])
+  mockIsDir = vi.fn().mockResolvedValue(false)
+  mockAccess = vi.fn().mockResolvedValue(undefined)
+  mockExists = vi.fn().mockResolvedValue(true)
+  mockStat = vi.fn()
+  mockMkdir = vi.fn()
+  mockCopy = vi.fn()
+  mockMove = vi.fn()
+  mockReadText = vi.fn()
+  mockReadTextSync = vi.fn()
+  mockWriteText = vi.fn()
+  mockAppendText = vi.fn()
+  mockRemove = vi.fn()
+  mockTrash = vi.fn()
 
   async access(filepath: string) { return this.mockAccess(filepath) }
   async exists(filepath: string) { return this.mockExists(filepath) }
@@ -132,7 +132,9 @@ describe('FileAdapter', () => {
 
       const promise = adapter.listFiles('/vault', { recursive: true, signal: controller.signal })
 
-      await expect(promise).rejects.toThrow('The operation was aborted')
+      // jsdom's own AbortSignal says "The operation was aborted"; the
+      // Node-backed one (jsdom >= 27) says "This operation was aborted".
+      await expect(promise).rejects.toThrow(/operation was aborted/)
     })
 
     it('should respect AbortSignal abort during processing', async () => {
