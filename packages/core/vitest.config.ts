@@ -8,7 +8,7 @@ export default defineConfig({
   // oxc (vite 8) only applies `experimentalDecorators` to files covered by an
   // included tsconfig; test files are outside the root tsconfig's `include`.
   oxc: {
-    transform: { decorator: { legacy: true } },
+    decorator: { legacy: true },
   },
   resolve: {
     alias: [
@@ -33,13 +33,13 @@ export default defineConfig({
       provider: 'v8',
       include: ['src/**'],
       exclude: ['**/*.d.ts', 'src/setup-test-env.ts'],
-      // baseline (2026-11): 27.41 / 31.5 / 21.42 / 27.27 — thresholds sit
+      // baseline (2026-11): 39.99 / 43.69 / 34.15 / 40.03 — thresholds sit
       // 1–2 points below so regressions fail CI without blocking growth.
       thresholds: {
-        statements: 26,
-        branches: 30,
-        functions: 20,
-        lines: 26,
+        statements: 38,
+        branches: 42,
+        functions: 33,
+        lines: 38,
       },
     },
   },

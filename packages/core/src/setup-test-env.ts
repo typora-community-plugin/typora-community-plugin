@@ -15,10 +15,24 @@ Object.defineProperty(HTMLElement.prototype, 'innerText', {
 // tested explicitly by removing it.
 ;(globalThis as any).PointerEvent ??= MouseEvent
 
+// jsdom's HTML parser drops table section elements outside a `<table>`, so
+// wrap them before parsing (jQuery does the same internally).
+function parseHtml(htmlStr: string): Element {
+  const needsTableWrapper = /^\s*<(thead|tbody|tfoot|tr)\b/i.test(htmlStr)
+  const fragment = document.createRange().createContextualFragment(
+    needsTableWrapper ? `<table>${htmlStr}</table>` : htmlStr,
+  )
+  const first = fragment.firstElementChild!
+
+  return needsTableWrapper
+    ? (first.firstElementChild as Element)
+    : first
+}
+
 // Minimal jQuery shim so `html`` and other DOM helpers work under jsdom.
 ;(globalThis as any).$ = ((selectorOrHtml: string | Element) => {
   const el = typeof selectorOrHtml === 'string'
-    ? document.createRange().createContextualFragment(selectorOrHtml).firstElementChild!
+    ? parseHtml(selectorOrHtml)
     : selectorOrHtml
 
   // jQuery-like chainable wrapper around a single element. `el` is the real DOM
@@ -31,6 +45,16 @@ Object.defineProperty(HTMLElement.prototype, 'innerText', {
     removeClass(cls: string) { el.classList.remove(cls); return this },
     on(event: string, fn: EventListener) { el.addEventListener(event, fn); return this },
     appendTo(parent: Element) { parent.append(el); return this },
+    append(...contents: Array<string | Node>) {
+      for (const content of contents) {
+        if (typeof content === 'string') {
+          el.append(document.createRange().createContextualFragment(content))
+        } else {
+          el.append(content)
+        }
+      }
+      return this
+    },
   }
 
   const out = new Proxy(el, {

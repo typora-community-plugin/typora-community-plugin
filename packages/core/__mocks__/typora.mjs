@@ -63,5 +63,7 @@ export const CodeMirror = new Proxy(/** @type {any} */ (() => { }), {
 })
 export const Rangy = live('Rangy', {})
 export const ClientCommand = () => { }
-export const reqnode = () => undefined
+// Tests can install `globalThis.__reqnode` to emulate Typora's Node.js module
+// loader; production builds replace `reqnode(...)` with `require(...)`.
+export const reqnode = id => globalThis.__reqnode?.(id)
 export const Version = "0.0.0"

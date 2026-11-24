@@ -1,7 +1,18 @@
 import 'src/setup-test-env'
 import { registerService } from 'src/common/service'
+import fs from 'src/io/fs/filesystem'
 import { PluginManager } from 'src/plugin/plugin-manager'
-import { describe, expect, test, vi } from 'vitest'
+import { Notice } from 'src/ui/components/notice'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+
+vi.mock('src/io/fs/filesystem', () => ({
+  default: {
+    access: vi.fn(),
+    list: vi.fn(),
+    readTextSync: vi.fn(),
+    remove: vi.fn(),
+  },
+}))
 
 // `PluginManager.marketplace` 会在首次访问时懒加载 `plugin-marketplace` 服务，
 // 这里注册它可能间接依赖的服务，避免测试中抛异常。
@@ -136,5 +147,328 @@ describe('PluginManager.marketplace', () => {
     // 修复后是同步解析的服务实例。
     expect(manager.marketplace).toBe(marketplaceStub)
     expect(manager.marketplace).toBe(marketplaceStub)
+  })
+})
+
+
+describe('PluginManager manifests and lifecycle', () => {
+  const ID = 'test.plugin'
+
+  function createManager(options: {
+    env?: any
+    config?: any
+    i18n?: any
+  } = {}) {
+    const logger = {
+      debug: vi.fn(),
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+    }
+    const config = options.config ?? {
+      configDir: '/config',
+      readConfigJson: vi.fn(() => ({})),
+      writeConfigJson: vi.fn(),
+    }
+    const vault = { path: '/vault' }
+    const i18n = options.i18n ?? {
+      t: {
+        pluginManager: {
+          needNewerCoreVersion: 'need newer core for {name}',
+          upToDate: '{name} is up to date',
+          updateSuccessful: '{name} updated',
+        },
+      },
+    }
+    const env = options.env ?? { PLUGIN_GLOBAL_DIR: '' }
+
+    return new PluginManager(logger as any, config as any, vault as any, i18n as any, env as any)
+  }
+
+  function manifest(overrides: Record<string, any> = {}) {
+    return {
+      id: ID,
+      name: 'Test Plugin',
+      version: '1.0.0',
+      minCoreVersion: '',
+      position: 'global',
+      dir: '/plugins/test',
+      ...overrides,
+    } as any
+  }
+
+  beforeEach(() => {
+    vi.useFakeTimers()
+    vi.mocked(fs.access).mockReset().mockResolvedValue(undefined)
+    vi.mocked(fs.list).mockReset().mockResolvedValue([])
+    vi.mocked(fs.readTextSync).mockReset().mockReturnValue('{}')
+    vi.mocked(fs.remove).mockReset().mockResolvedValue(undefined)
+    vi.spyOn(Notice, 'info').mockImplementation(() => ({}) as any)
+    vi.spyOn(Notice, 'success').mockImplementation(() => ({}) as any)
+    vi.spyOn(Notice, 'error').mockImplementation(() => ({}) as any)
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.restoreAllMocks()
+    document.head.querySelectorAll('[id^="typora-plugin:"]').forEach(el => el.remove())
+  })
+
+  test('pluginsDataDir lives under the config directory', () => {
+    expect(createManager().pluginsDataDir).toBe('/config/data')
+  })
+
+  test('loadFromVault expands the plugin dir template and loads plugins', async () => {
+    const manager = createManager({ env: { PLUGIN_GLOBAL_DIR: '/custom/{VAULT}/plugins' } })
+    const config = (manager as any).config
+    config.readConfigJson.mockReturnValue({ [ID]: true })
+    vi.spyOn(manager, 'loadManifests').mockResolvedValue(undefined)
+    vi.spyOn(manager, 'loadPlugins').mockResolvedValue([] as any)
+
+    await manager.loadFromVault()
+
+    expect(manager.globalPluginsDir).toBe('/custom//vault/plugins')
+    expect(manager.vaultPluginsDir).toBe('/config/plugins')
+    expect(manager.enabledPlugins).toEqual({ [ID]: true })
+    expect(manager.loadManifests).toHaveBeenCalled()
+    expect(manager.loadPlugins).toHaveBeenCalled()
+  })
+
+  test('loadFromVault falls back to the global plugins root', async () => {
+    const manager = createManager()
+    vi.spyOn(manager, 'loadManifests').mockResolvedValue(undefined)
+    vi.spyOn(manager, 'loadPlugins').mockResolvedValue([] as any)
+
+    await manager.loadFromVault()
+
+    expect(manager.globalPluginsDir.endsWith('/plugins')).toBe(true)
+  })
+
+  test('loadManifests reads both plugin directories', async () => {
+    const manager = createManager()
+    manager.globalPluginsDir = '/global-plugins'
+    manager.vaultPluginsDir = '/vault-plugins'
+    vi.mocked(fs.list).mockImplementation(async (dir: string) =>
+      dir === '/global-plugins' ? ['a'] : [])
+    vi.mocked(fs.readTextSync).mockReturnValue(JSON.stringify(manifest({ id: 'a' })))
+
+    await manager.loadManifests()
+
+    expect(manager.manifests.a).toMatchObject({
+      id: 'a',
+      position: 'global',
+      dir: '/global-plugins/a',
+    })
+  })
+
+  test('skips directories that do not exist', async () => {
+    const manager = createManager()
+    manager.globalPluginsDir = ''
+    manager.vaultPluginsDir = '/missing'
+    vi.mocked(fs.access).mockRejectedValue(new Error('ENOENT'))
+
+    await manager.loadManifests()
+
+    expect(fs.list).not.toHaveBeenCalled()
+    expect(manager.manifests).toEqual({})
+  })
+
+  test('logs manifest parsing failures', async () => {
+    const manager = createManager()
+    vi.mocked(fs.readTextSync).mockReturnValue('{not json')
+
+    await manager.loadManifest('global', '/plugins/broken')
+
+    expect((manager as any).logger.error).toHaveBeenCalled()
+    expect(manager.manifests).toEqual({})
+  })
+
+  test('loadPlugins only enables plugins marked as enabled', async () => {
+    const manager = createManager()
+    manager.manifests.a = manifest({ id: 'a' })
+    manager.manifests.b = manifest({ id: 'b' })
+    manager.enabledPlugins = { a: true }
+    const enable = vi.spyOn(manager, 'enablePlugin').mockResolvedValue(undefined)
+
+    await manager.loadPlugins()
+
+    expect(enable).toHaveBeenCalledTimes(1)
+    expect(enable).toHaveBeenCalledWith('a')
+  })
+
+  test('unloadPlugins unloads every enabled plugin', () => {
+    const manager = createManager()
+    manager.enabledPlugins = { a: true, b: true }
+    const unload = vi.spyOn(manager, 'unloadPlugin').mockImplementation(() => { })
+
+    manager.unloadPlugins()
+
+    expect(unload.mock.calls).toEqual([['a'], ['b']])
+  })
+
+  test('loadPlugin logs import failures', async () => {
+    const manager = createManager()
+    manager.manifests[ID] = manifest({ dir: '/definitely-not-existing' })
+
+    await manager.loadPlugin(ID)
+
+    expect((manager as any).logger.error).toHaveBeenCalledWith(`Plugin.load:${ID}`, expect.any(Error))
+    expect(manager.instances[ID]).toBeUndefined()
+  })
+
+  test('unloadPlugin disables and forgets the instance and styles', () => {
+    const manager = createManager()
+    const unload = vi.fn()
+    manager.instances[ID] = { unload } as any
+    manager.styles[ID] = 'body{}'
+    manager.enabledPlugins[ID] = true
+
+    manager.unloadPlugin(ID)
+
+    expect(unload).toHaveBeenCalled()
+    expect(manager.instances[ID]).toBeUndefined()
+    expect(manager.styles[ID]).toBeUndefined()
+    expect(manager.enabledPlugins[ID]).toBeUndefined()
+  })
+
+  test('enablePlugin refuses plugins that need a newer core', async () => {
+    const manager = createManager()
+    manager.manifests[ID] = manifest({ minCoreVersion: '99.0.0' })
+    const disable = vi.spyOn(manager, 'disablePlugin')
+
+    await manager.enablePlugin(ID)
+
+    expect(disable).toHaveBeenCalledWith(ID)
+    expect(Notice.info).toHaveBeenCalledWith('need newer core for Test Plugin')
+    expect(manager.enabledPlugins[ID]).toBeUndefined()
+  })
+
+  test('enablePlugin loads the instance, injects styles and persists state', async () => {
+    const manager = createManager()
+    manager.manifests[ID] = manifest()
+    const load = vi.fn()
+    manager.loadPlugin = vi.fn(async () => {
+      manager.instances[ID] = { load } as any
+    })
+    manager.styles[ID] = 'body{color:red}'
+
+    await manager.enablePlugin(ID)
+
+    expect(load).toHaveBeenCalled()
+    expect(manager.enabledPlugins[ID]).toBe(true)
+    expect(document.getElementById(`typora-plugin:${ID}`)?.textContent).toBe('body{color:red}')
+
+    vi.advanceTimersByTime(1_000)
+    expect((manager as any).config.writeConfigJson)
+      .toHaveBeenCalledWith('plugins', { [ID]: true })
+  })
+
+  test('enablePlugin logs errors thrown while loading the instance', async () => {
+    const manager = createManager()
+    manager.manifests[ID] = manifest()
+    manager.instances[ID] = { load: () => { throw new Error('load failed') } } as any
+
+    await manager.enablePlugin(ID)
+
+    expect((manager as any).logger.error).toHaveBeenCalledWith(expect.any(Error))
+    // The plugin is still marked as enabled.
+    expect(manager.enabledPlugins[ID]).toBe(true)
+  })
+
+  test('disablePlugin logs unload failures but still cleans up', () => {
+    const manager = createManager()
+    manager.instances[ID] = { unload: () => { throw new Error('unload failed') } } as any
+    manager.enabledPlugins[ID] = true
+    document.head.insertAdjacentHTML('beforeend', `<style id="typora-plugin:${ID}"></style>`)
+
+    manager.disablePlugin(ID)
+
+    expect((manager as any).logger.error).toHaveBeenCalledWith(
+      `Plugin.unload:${ID}`,
+      expect.any(Error),
+    )
+    // The style cleanup shares the try block, so it is skipped on unload errors.
+    expect(document.getElementById(`typora-plugin:${ID}`)).not.toBeNull()
+    expect(manager.enabledPlugins[ID]).toBeUndefined()
+  })
+
+  test('disablePlugin removes the injected style', () => {
+    const manager = createManager()
+    manager.instances[ID] = { unload: vi.fn() } as any
+    manager.enabledPlugins[ID] = true
+    document.head.insertAdjacentHTML('beforeend', `<style id="typora-plugin:${ID}"></style>`)
+
+    manager.disablePlugin(ID)
+
+    expect(document.getElementById(`typora-plugin:${ID}`)).toBeNull()
+  })
+
+  test('updatePlugin ignores unknown plugins', async () => {
+    const manager = createManager()
+    manager.marketplace = { getPlugin: vi.fn(() => undefined) } as any
+
+    await expect(manager.updatePlugin(ID)).resolves.toBeUndefined()
+  })
+
+  test('updatePlugin reports when the plugin is already up to date', async () => {
+    const manager = createManager()
+    manager.manifests[ID] = manifest({ version: '2.0.0' })
+    manager.marketplace = {
+      getPlugin: vi.fn(() => ({ id: ID, repo: 'a/b' })),
+      getPluginNewestVersion: vi.fn(async () => '2.0.0'),
+      installPlugin: vi.fn(),
+    } as any
+    const uninstall = vi.spyOn(manager, 'uninstallPlugin')
+
+    await manager.updatePlugin(ID)
+
+    expect(Notice.info).toHaveBeenCalledWith('Test Plugin is up to date')
+    expect(uninstall).not.toHaveBeenCalled()
+  })
+
+  test('updatePlugin reinstalls and re-enables an enabled plugin', async () => {
+    const manager = createManager()
+    manager.manifests[ID] = manifest({ version: '1.0.0', position: 'vault' })
+    manager.enabledPlugins[ID] = true
+    const installPlugin = vi.fn(async () => { })
+    manager.marketplace = {
+      getPlugin: vi.fn(() => ({ id: ID, repo: 'a/b' })),
+      getPluginNewestVersion: vi.fn(async () => '2.0.0'),
+      installPlugin,
+    } as any
+    vi.spyOn(manager, 'uninstallPlugin').mockResolvedValue(undefined as any)
+    const enable = vi.spyOn(manager, 'enablePlugin').mockResolvedValue(undefined)
+
+    await manager.updatePlugin(ID)
+
+    expect(installPlugin).toHaveBeenCalledWith(expect.objectContaining({ id: ID }), 'vault')
+    expect(enable).toHaveBeenCalledWith(ID)
+    expect(Notice.success).toHaveBeenCalledWith('Test Plugin updated')
+  })
+
+  test('uninstallPlugin removes files and forgets the plugin', async () => {
+    const manager = createManager()
+    manager.manifests[ID] = manifest({ dir: '/plugins/test' })
+    manager.enabledPlugins[ID] = true
+
+    await manager.uninstallPlugin(ID)
+
+    expect(fs.remove).toHaveBeenCalledWith('/plugins/test')
+    expect(manager.manifests[ID]).toBeUndefined()
+    expect(manager.enabledPlugins[ID]).toBeUndefined()
+
+    vi.advanceTimersByTime(1_000)
+    expect((manager as any).config.writeConfigJson).toHaveBeenCalledWith('plugins', {})
+  })
+
+  test('the enabled config is saved with sorted keys', () => {
+    const manager = createManager()
+    manager.enabledPlugins = { b: true, a: false }
+
+    ;(manager as any)._saveEnabledConfig()
+    vi.advanceTimersByTime(1_000)
+
+    expect((manager as any).config.writeConfigJson)
+      .toHaveBeenCalledWith('plugins', { a: false, b: true })
   })
 })

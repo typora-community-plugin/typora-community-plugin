@@ -121,6 +121,81 @@ describe('MarkdownEditor.insertMarkdown()', () => {
 })
 
 
+describe('MarkdownEditor file and cursor API', () => {
+  let mdEditor: InstanceType<typeof MarkdownEditor>
+  let editor: any
+
+  beforeEach(() => {
+    editor = {
+      writingArea: document.createElement('div'),
+      library: { openFile: vi.fn() },
+      tryOpenUrl: vi.fn(),
+      getMarkdown: vi.fn(() => '# current'),
+      UserOp: { pasteHandler: vi.fn() },
+      selection: { getRangy: vi.fn() },
+    }
+    ;(globalThis as any).editor = editor
+    ;(globalThis as any).File = {
+      isNode: false,
+      reloadContent: vi.fn(),
+    }
+
+    mdEditor = Object.create(MarkdownEditor.prototype) as InstanceType<typeof MarkdownEditor>
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+    delete (globalThis as any).File
+  })
+
+  test('openFile opens a plain path', () => {
+    mdEditor.openFile('/notes/a.md')
+
+    expect(editor.library.openFile).toHaveBeenCalledWith('/notes/a.md')
+  })
+
+  test('openFile opens a FileURL and follows its hash after a delay', () => {
+    vi.useFakeTimers()
+
+    mdEditor.openFile({ pathname: '/notes/a.md', hash: '#heading' } as any)
+
+    expect(editor.library.openFile).toHaveBeenCalledWith('/notes/a.md')
+    expect(editor.tryOpenUrl).not.toHaveBeenCalled()
+
+    vi.advanceTimersByTime(500)
+    expect(editor.tryOpenUrl).toHaveBeenCalledWith('#heading')
+  })
+
+  test('getMarkdown reads from the Typora editor', () => {
+    expect(mdEditor.getMarkdown()).toBe('# current')
+  })
+
+  test('setMarkdown reloads the file content', () => {
+    mdEditor.setMarkdown('# next')
+
+    expect((globalThis as any).File.reloadContent)
+      .toHaveBeenCalledWith('# next', false, true, false, true)
+  })
+})
+
+describe('MarkdownEditor._onContextMenu() non-right clicks', () => {
+  test('ignores left clicks', () => {
+    const writingArea = document.createElement('div')
+    document.body.append(writingArea)
+    ;(globalThis as any).editor = { writingArea }
+    const mdEditor = Object.create(MarkdownEditor.prototype) as InstanceType<typeof MarkdownEditor>
+    const menu = { containerEl: document.createElement('ul'), removeExtendedMenuItem: vi.fn() }
+    ;(mdEditor as any)._contextmenu = menu
+    const callback = vi.fn()
+
+    mdEditor._onContextMenu(callback)
+    writingArea.dispatchEvent(new MouseEvent('mousedown', { button: 0 }))
+
+    expect(callback).not.toHaveBeenCalled()
+    expect(menu.removeExtendedMenuItem).not.toHaveBeenCalled()
+  })
+})
+
 describe('MarkdownEditor._onContextMenu()', () => {
   let mdEditor: InstanceType<typeof MarkdownEditor>
   let menu: { containerEl: HTMLElement, removeExtendedMenuItem: Mock }

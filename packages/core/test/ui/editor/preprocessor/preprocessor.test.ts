@@ -1,5 +1,14 @@
-import { RE_CODEBLOCK } from "src/ui/editor/preprocessor/preprocessor"
+import { bindPreProcessorToEditor, MarkdownPreProcessor, RE_CODEBLOCK } from "src/ui/editor/preprocessor/preprocessor"
 import { HtmlMask, RegexpBasedStringMask } from "src/ui/editor/preprocessor/string-mask"
+import { editor } from "typora"
+import { afterEach, vi } from "vitest"
+
+const decorateMock = vi.hoisted(() => ({
+  returnValue: vi.fn(),
+  parameters: vi.fn(),
+}))
+
+vi.mock('@plylrnsdy/decorate.js', () => ({ default: decorateMock }))
 
 
 describe('extract codeblock', () => {
@@ -192,5 +201,173 @@ describe('mask html', () => {
       const s = '<a\nhref>'
       expect(masker.mask(s)).toEqual(s)
     })
+  })
+})
+
+
+describe('MarkdownPreProcessor', () => {
+  const logger = { debug() { }, info() { }, warn() { }, error: vi.fn() }
+
+  function createProcessor() {
+    logger.error.mockClear()
+    return new MarkdownPreProcessor(logger as any)
+  }
+
+  test('registers, reports and unregisters processors per (when, type)', () => {
+    const p = createProcessor()
+    const processor = { when: 'preload' as const, type: 'mdtext' as const, process: (s: string) => s }
+
+    const unregister = p.register(processor)
+
+    expect(p.isEmpty('preload')).toBe(false)
+    expect(p.isEmpty('presave')).toBe(true)
+
+    unregister()
+    expect(p.isEmpty('preload')).toBe(true)
+  })
+
+  test('applies mdtext processors in registration order', () => {
+    const p = createProcessor()
+    p.register({ when: 'preload', type: 'mdtext', process: s => `${s}1` })
+    p.register({ when: 'preload', type: 'mdtext', process: s => `${s}2` })
+
+    expect(p.process('preload', 'a')).toBe('a12')
+  })
+
+  test('keeps processed processors scoped to their phase', () => {
+    const p = createProcessor()
+    p.register({ when: 'preload', type: 'mdtext', process: s => s.toUpperCase() })
+
+    expect(p.process('preload', 'abc')).toBe('ABC')
+    expect(p.process('presave', 'abc')).toBe('abc')
+  })
+
+  test('masks inline code and code blocks from mdtext processors', () => {
+    const p = createProcessor()
+    p.register({ when: 'preload', type: 'mdtext', process: s => s.replace(/a/g, 'A') })
+
+    expect(p.process('preload', 'a `a`\n```\na\n```\na')).toBe('A `a`\n```\na\n```\nA')
+  })
+
+  test('masks html only during preload', () => {
+    const p = createProcessor()
+    p.register({ when: 'preload', type: 'mdtext', process: s => s.replace(/</g, '[') })
+    p.register({ when: 'presave', type: 'mdtext', process: s => s.replace(/</g, '[') })
+
+    expect(p.process('preload', '<br>')).toBe('<br>')
+    expect(p.process('presave', '<br>')).toBe('[br>')
+  })
+
+  test('applies code processors to the masked code content only', () => {
+    const p = createProcessor()
+    p.register({ when: 'preload', type: 'code', process: s => s.toUpperCase() })
+
+    expect(p.process('preload', 'x `code` y')).toBe('x `CODE` y')
+  })
+
+  test('resets masks between process() calls', () => {
+    const p = createProcessor()
+
+    expect(p.process('preload', '`a`')).toBe('`a`')
+    expect(p.process('preload', '`b`')).toBe('`b`')
+  })
+
+  test('returns the original document and logs when a processor throws', () => {
+    const p = createProcessor()
+    p.register({
+      when: 'preload',
+      type: 'mdtext',
+      process: () => { throw new Error('processor failed') },
+    })
+
+    expect(p.process('preload', 'original')).toBe('original')
+    expect(logger.error).toHaveBeenCalledWith(expect.any(Error))
+  })
+})
+
+
+describe('bindPreProcessorToEditor', () => {
+  const logger = { debug() { }, info() { }, warn() { }, error: vi.fn() }
+
+  afterEach(() => {
+    decorateMock.returnValue.mockReset()
+    decorateMock.parameters.mockReset()
+    delete (globalThis as any).File
+  })
+
+  function setup(isNode: boolean) {
+    ;(globalThis as any).File = { isNode }
+    const preProcessor = new MarkdownPreProcessor(logger as any)
+    bindPreProcessorToEditor({ preProcessor } as any)
+    return preProcessor
+  }
+
+  test('decorates File.readContentFrom on Node.js', () => {
+    setup(true)
+
+    expect(decorateMock.returnValue).toHaveBeenCalledWith(
+      expect.anything(),
+      'readContentFrom',
+      expect.any(Function),
+    )
+    expect(decorateMock.parameters).not.toHaveBeenCalled()
+
+    const readContentFrom = decorateMock.returnValue.mock.calls[0][2]
+    expect(readContentFrom([], ['file.md', 'text'])).toEqual(['file.md', 'text'])
+  })
+
+  test('processes the loaded content when preload processors exist', () => {
+    const preProcessor = setup(true)
+    preProcessor.register({ when: 'preload', type: 'mdtext', process: s => s.toUpperCase() })
+    const readContentFrom = decorateMock.returnValue.mock.calls[0][2]
+
+    const result = readContentFrom([], ['file.md', 'text'])
+
+    expect(result[1]).toBe('TEXT')
+  })
+
+  test('decorates File.loadFile in the browser', () => {
+    setup(false)
+
+    expect(decorateMock.parameters).toHaveBeenCalledWith(
+      expect.anything(),
+      'loadFile',
+      expect.any(Function),
+    )
+    expect(decorateMock.returnValue).toHaveBeenCalledTimes(1) // editor.getMarkdown
+  })
+
+  test('processes loadFile arguments when preload processors exist', () => {
+    const preProcessor = setup(false)
+    preProcessor.register({ when: 'preload', type: 'mdtext', process: s => s.toUpperCase() })
+    const loadFile = decorateMock.parameters.mock.calls[0][2]
+
+    const args = [null, null, ['text']]
+    expect(loadFile(args)).toBe(args)
+    expect(args[2][0]).toBe('TEXT')
+  })
+
+  test('leaves loadFile arguments untouched without preload processors', () => {
+    setup(false)
+    const loadFile = decorateMock.parameters.mock.calls[0][2]
+
+    const args = [null, null, ['text']]
+    expect(loadFile(args)).toBe(args)
+    expect(args[2][0]).toBe('text')
+  })
+
+  test('decorates editor.getMarkdown for presave processors', () => {
+    const preProcessor = setup(true)
+    expect(decorateMock.returnValue).toHaveBeenLastCalledWith(
+      editor,
+      'getMarkdown',
+      expect.any(Function),
+    )
+
+    const getMarkdown = decorateMock.returnValue.mock.calls[1][2]
+    expect(getMarkdown([], 'text')).toBe('text')
+
+    preProcessor.register({ when: 'presave', type: 'mdtext', process: s => `${s}!` })
+    expect(getMarkdown([], 'text')).toBe('text!')
   })
 })
