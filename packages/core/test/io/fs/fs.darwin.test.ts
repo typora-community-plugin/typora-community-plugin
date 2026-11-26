@@ -60,6 +60,32 @@ describe('MacFS', () => {
     expect(shellRun).not.toHaveBeenCalled()
   })
 
+  test('detects a file through bridge handlers without running a shell command', async () => {
+    callSync.mockReturnValue('{"content":""}')
+
+    await expect(fs.isFile('/vault/doc.md')).resolves.toBe(true)
+
+    expect(shellRun).not.toHaveBeenCalled()
+  })
+
+  test('reports a directory as not a file without running a shell command', async () => {
+    callHandler.mockImplementation((_channel: string, _payload: any, callback: (value: any) => void) => {
+      callback(true)
+    })
+
+    await expect(fs.isFile('/vault/sub')).resolves.toBe(false)
+
+    expect(shellRun).not.toHaveBeenCalled()
+  })
+
+  test('reports a missing path as not a file without running a shell command', async () => {
+    callSync.mockReturnValue('{"error":"stat"}')
+
+    await expect(fs.isFile('/vault/missing.md')).resolves.toBe(false)
+
+    expect(shellRun).not.toHaveBeenCalled()
+  })
+
   test('falls back to test -e on Typora versions without path.readTextLimited', async () => {
     shellRun.mockResolvedValue('')
 

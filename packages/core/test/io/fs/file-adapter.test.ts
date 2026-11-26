@@ -48,6 +48,36 @@ describe('FileAdapter', () => {
     })
   })
 
+  describe('isFile()', () => {
+
+    it('should return true for an existing file without calling stat()', async () => {
+      const adapter = new TestFileAdapter()
+      adapter.mockIsDir.mockResolvedValue(false)
+      adapter.mockExists.mockResolvedValue(true)
+
+      await expect(adapter.isFile('/vault/doc.md')).resolves.toBe(true)
+
+      expect(adapter.mockStat).not.toHaveBeenCalled()
+    })
+
+    it('should return false for a directory without calling exists()', async () => {
+      const adapter = new TestFileAdapter()
+      adapter.mockIsDir.mockResolvedValue(true)
+
+      await expect(adapter.isFile('/vault/sub')).resolves.toBe(false)
+
+      expect(adapter.mockExists).not.toHaveBeenCalled()
+    })
+
+    it('should return false when the path does not exist', async () => {
+      const adapter = new TestFileAdapter()
+      adapter.mockIsDir.mockResolvedValue(false)
+      adapter.mockExists.mockResolvedValue(false)
+
+      await expect(adapter.isFile('/vault/missing.md')).resolves.toBe(false)
+    })
+  })
+
   describe('listFilesWithStats()', () => {
 
     it('should return undefined when the adapter has no native implementation', async () => {
@@ -238,6 +268,7 @@ describe('FileAdapter', () => {
       await adapter.exists('/test/file.txt')
       await adapter.stat('/test/file.txt')
       await adapter.isDirectory('/test/dir')
+      await adapter.isFile('/test/file.txt')
       await adapter.mkdir('/test/dir')
       await adapter.copy('/src', '/dest')
       await adapter.move('/src', '/dest')

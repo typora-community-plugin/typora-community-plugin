@@ -22,6 +22,17 @@ export abstract class FileAdapter {
   abstract isDirectory(filepath: string): Promise<boolean>
 
   /**
+   * Returns `false` when the path does not exist.
+   *
+   * The default implementation avoids `stat()`, which needs a shell command on
+   * macOS: `isDirectory()` and `exists()` both use Typora's bridge handlers.
+   */
+  async isFile(filepath: string): Promise<boolean> {
+    if (await this.isDirectory(filepath)) return false
+    return this.exists(filepath)
+  }
+
+  /**
    * On macOS, it's very slow.
    */
   abstract mkdir(dirpath: string): Promise<void>

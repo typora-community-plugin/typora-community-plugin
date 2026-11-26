@@ -101,7 +101,7 @@ class QuickOpenInCurrentWin extends Component {
       decorate(JSBridge, 'invoke', fn => async (...args) => {
         if (
           args[0] === 'app.openFileOrFolder' &&
-          (await fs.stat(args[1])).isFile() &&
+          await fs.isFile(args[1]) &&
           !args[2].forceCreateWindow
         ) {
           const filePath = args[1] as string
