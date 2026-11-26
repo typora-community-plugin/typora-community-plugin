@@ -1,3 +1,4 @@
+import { platform } from "src/common/constants"
 import fs from "src/io/fs/filesystem"
 import path from "src/path"
 import { noop } from "src/utils"
@@ -68,6 +69,11 @@ export class FileLogger {
 let _devInstance: FileLogger | undefined
 
 export function getOrCreateDevLogger(): FileLogger {
+  // On macOS, `fs` is bridged through Typora and each call may surface a
+  // system approval dialog. The dev timer would pop it up every 5s, so keep
+  // console as the only sink there.
+  if (platform() === 'darwin') return new NoopFileLogger()
+
   const logFile = resolveDevLogFile()
   if (!logFile) return new NoopFileLogger()
 
