@@ -1,5 +1,31 @@
 # 更新日志
 
+## v2.10.92
+
+- fix(core): 减少在 macOS 中使用 Typora v1.14.16 时反复弹出授权对话框 [#116](https://github.com/typora-community-plugin/typora-community-plugin/pull/116)
+  - feat(core/io/fs): 新增 `isFile()`、`listDirs()`，macOS 下避免逐项 shell 调用
+  - fix(core/io): 避免 macOS 授权弹窗导致的失败，并跳过内容无变化的配置写入
+  - fix(core/io/logger): macOS 开发模式跳过文件日志，避免反复弹出授权对话框
+  - perf(core/metadata): macOS 下通过原生文件树索引文件，不再依赖 shell 命令
+
+- **工作区**
+  - fix(core/ui/views/markdown): 点击交换后同步激活预览标签页，主题未提供边框色时活动标签也有指示线
+  - fix(core/ui/views/markdown): 重置工作区时不再重新打开已分离的预览叶子，避免出现重复标签页
+  - fix(core/ui/views/markdown-view): 关闭「自动交换」后，重新加载视图不会再自动启用
+
+- **开发者**
+  - feat(core): 开发模式支持 ES5 转译插件继承核心 ES6 类
+  - feat(core/vault): 新增 `file:create` 事件，新建文件自动同步到元数据缓存
+  - chore(lint): 引入 Biome 统一 lint，并接入 husky + lint-staged 提交门禁
+  - chore(core): 新增 i18n key 一致性检查，防止语言文件漂移
+  - chore(build): 根构建脚本改用 pnpm 拓扑顺序，任一包构建失败即停止
+  - chore(tsconfig): 迁移到 TS6 兼容的编译选项
+  - chore(core): 发布的类型声明排除开发演示与测试基础设施
+  - ci: 新增 CI 工作流，发布流程加入审计、lint、类型检查与测试门禁
+
+- **安装脚本**
+  - fix(installer/windows): 避免重复注入 loader，按完整文档匹配 userData 路径
+
 ## v2.10.86
 
 - **设置**

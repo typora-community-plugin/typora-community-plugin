@@ -1,5 +1,31 @@
 # Changelog
 
+## v2.10.92
+
+- fix(core): reduce repeated authorization dialogs when using Typora v1.14.16 on macOS [#116](https://github.com/typora-community-plugin/typora-community-plugin/pull/116)
+  - feat(core/io/fs): add `isFile()` and `listDirs()` to avoid per-item shell calls on macOS
+  - fix(core/io): avoid failures caused by macOS authorization dialogs, and skip config writes when the content is unchanged
+  - fix(core/io/logger): skip file logging in development mode on macOS to avoid repeated authorization dialogs
+  - perf(core/metadata): index files through the native file tree on macOS instead of relying on shell commands
+
+- **Workspace**
+  - fix(core/ui/views/markdown): sync-activate the preview tab after clicking swap; the active tab now shows an indicator line even when the theme provides no border color
+  - fix(core/ui/views/markdown): do not reopen detached preview leaves when resetting the workspace, avoiding duplicate tabs
+  - fix(core/ui/views/markdown-view): after turning off "Auto Swap", reloading the view no longer re-enables it
+
+- **Developer**
+  - feat(core): in development mode, ES5-transpiled plugins can extend core ES6 classes
+  - feat(core/vault): add the `file:create` event; newly created files are synced to the metadata cache automatically
+  - chore(lint): adopt Biome for unified linting, wired into a husky + lint-staged commit gate
+  - chore(core): add an i18n key consistency check to prevent language files from drifting
+  - chore(build): root build script now uses pnpm topological order and stops when any package build fails
+  - chore(tsconfig): migrate to TS6-compatible compiler options
+  - chore(core): exclude development demos and test infrastructure from published type declarations
+  - ci: add a CI workflow; the release process now includes audit, lint, type check and test gates
+
+- **Installer**
+  - fix(installer/windows): avoid injecting the loader repeatedly; match the userData path against the whole document
+
 ## v2.10.86
 
 - **Settings**
