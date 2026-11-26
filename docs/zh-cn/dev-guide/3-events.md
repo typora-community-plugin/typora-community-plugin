@@ -34,6 +34,7 @@ this.app.on('load', () => { /* ... */ })
 | `mounted` | `(path: string)` | 首次挂载笔记文件夹，或切换文件夹时触发。 |
 | `change` | `(path: string)` | 切换笔记文件夹时触发。 |
 | `directory:rename` | `(oldPath: string, newPath: string)` | 文件夹重命名。 |
+| `file:create` | `(path: string)` | 在编辑器外新建了文件。 |
 | `file:delete` | `(path: string)` | 文件被删除。 |
 | `file:rename` | `(oldPath: string, newPath: string)` | 文件重命名。 |
 

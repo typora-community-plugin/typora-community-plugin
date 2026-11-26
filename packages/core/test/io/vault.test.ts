@@ -1,5 +1,6 @@
+import { vi } from 'vitest'
 import 'src/setup-test-env'
-import { resolveVaultPath } from 'src/io/vault'
+import { resolveVaultPath, Vault } from 'src/io/vault'
 
 
 function setTyporaGlobals(
@@ -66,5 +67,43 @@ describe('resolveVaultPath', () => {
       {})
 
     expect(resolveVaultPath()).toBe('')
+  })
+})
+
+
+describe('Vault on macOS', () => {
+
+  afterEach(() => {
+    delete (globalThis as any).File
+    delete (globalThis as any)._options
+    delete (globalThis as any).editor
+  })
+
+  function createVault(onFileChanges: (events: any[]) => void) {
+    ;(globalThis as any).File = {
+      isNode: false,
+      getMountFolder: () => '/vault',
+      setMountFolder: () => { },
+    }
+    ;(globalThis as any)._options = {}
+    ;(globalThis as any).editor = { library: { onFileChanges } }
+
+    return new Vault({ once: vi.fn() } as any)
+  }
+
+  it('emits file:create for created files but not created folders', () => {
+    const onFileChanges = vi.fn()
+    const vault = createVault(onFileChanges)
+    const created = vi.fn()
+    vault.on('file:create', created)
+
+    // The constructor decorates the native handler, so call the decorated one.
+    ;(globalThis as any).editor.library.onFileChanges([
+      { type: 'created', path: '/vault/new.md', isDir: false },
+      { type: 'created', path: '/vault/new-folder', isDir: true },
+    ])
+
+    expect(created).toHaveBeenCalledTimes(1)
+    expect(created).toHaveBeenCalledWith('/vault/new.md')
   })
 })

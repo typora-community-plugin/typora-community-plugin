@@ -34,6 +34,7 @@ Accessed via `app.vault`.
 | `mounted` | `(path: string)` | Fired when the notes folder is mounted for the first time or when switching folders. |
 | `change` | `(path: string)` | Fired when switching the notes folder. |
 | `directory:rename` | `(oldPath: string, newPath: string)` | A folder was renamed. |
+| `file:create` | `(path: string)` | A file was created outside the editor. |
 | `file:delete` | `(path: string)` | A file was deleted. |
 | `file:rename` | `(oldPath: string, newPath: string)` | A file was renamed. |
 
