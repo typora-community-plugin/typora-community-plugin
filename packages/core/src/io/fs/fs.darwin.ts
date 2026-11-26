@@ -1,32 +1,53 @@
 import { isCommandCancelled, Shell } from "src/io/shell"
 import path from "src/path"
 import { bridge, JSBridge } from "typora"
-import { FileAdapter, type FileStats } from "./file-adapter"
+import { FileAdapter, type FileStats, type FileTreeEntry, type ListFilesOptions } from "./file-adapter"
+
+
+function toTimeMs(value: unknown): number | undefined {
+  if (value instanceof Date) return value.getTime()
+
+  if (typeof value === 'number') {
+    // Accept both epoch milliseconds and epoch seconds.
+    return value < 1e12 ? value * 1000 : value
+  }
+
+  if (typeof value === 'string') {
+    const time = new Date(value).getTime()
+    return Number.isNaN(time) ? undefined : time
+  }
+
+  return undefined
+}
 
 
 class MacFileStats implements FileStats {
-  constructor(private info: string) {
+  private readonly type: string
+  private readonly mtime: number
+  private readonly bytes: number
+
+  constructor(info: string) {
+    // `stat -f '%m %z %HT'` output, e.g. `1795698131 334 Regular File`.
+    const [mtime = '0', size = '0', ...type] = info.trim().split(/\s+/)
+    this.mtime = Number.parseFloat(mtime) * 1000
+    this.bytes = Number.parseInt(size, 10)
+    this.type = type.join(' ')
   }
 
   isDirectory() {
-    return this.info.includes('FileType: Directory')
+    return this.type.includes('Directory')
   }
 
   isFile() {
-    return this.info.includes('FileType: Regular File')
+    return this.type.includes('Regular File')
   }
 
   get mtimeMs() {
-    const [, modifyStr] = this.info.match(/Modify:\s+(.*)/) ?? []
-    if (!modifyStr) return undefined
-
-    const date = new Date(modifyStr)
-    return date.getTime()
+    return this.mtime
   }
 
   get size() {
-    const match = this.info.match(/Size:\s+(\d+)/)
-    return match ? parseInt(match[1], 10) : 0
+    return this.bytes
   }
 }
 
@@ -58,7 +79,10 @@ export class MacFS extends FileAdapter {
   }
 
   stat(filepath: string): Promise<MacFileStats> {
-    return Shell.run(`stat ${Shell.escape(filepath)}`)
+    // macOS uses BSD stat: `Modify:`/`Size:` labels are GNU-only. Force the
+    // C locale so `%HT` (file type) stays English and parse the fields we ask
+    // for instead of the platform's default output.
+    return Shell.run(`LC_ALL=C stat -f '%m %z %HT' ${Shell.escape(filepath)}`)
       .then((out: string) => new MacFileStats(out))
   }
 
@@ -110,10 +134,68 @@ export class MacFS extends FileAdapter {
   }
 
   async listDirs(dirpath: string): Promise<string[]> {
-    const dirs = await this._listDirsByBridge(dirpath)
-    if (dirs !== undefined) return dirs
+    const node = await this._listUnderBridge(dirpath)
+    if (!node || !Array.isArray(node.subdir)) {
+      return super.listDirs(dirpath)
+    }
 
-    return super.listDirs(dirpath)
+    return node.subdir
+      .filter((entry: any) => typeof entry?.name === 'string')
+      .map((entry: any) => entry.name as string)
+  }
+
+  /**
+   * Recursively list files and mtimes through Typora's file-tree API.
+   *
+   * Note: `library.listDocsUnder` only returns files Typora shows in the file
+   * tree (Markdown documents, and hidden/non-document files according to the
+   * user's sidebar settings). Callers that need every file must fall back to
+   * `listFiles()` when the tree does not contain a directory.
+   */
+  async listFilesWithStats(
+    dirpath: string,
+    options: ListFilesOptions = {},
+  ): Promise<FileTreeEntry[] | undefined> {
+    const { recursive = false, signal } = options
+    const files: FileTreeEntry[] = []
+
+    const walk = async (dir: string): Promise<boolean> => {
+      signal?.throwIfAborted()
+
+      const node = await this._listUnderBridge(dir)
+      if (!node) return false
+
+      if (recursive && Array.isArray(node.subdir)) {
+        for (const subdir of node.subdir) {
+          if (typeof subdir?.path !== 'string') continue
+          const subdirPath = path.isAbsolute(subdir.path)
+            ? subdir.path
+            : path.join(dir, subdir.path)
+          if (!await walk(subdirPath)) return false
+        }
+      }
+
+      if (Array.isArray(node.content)) {
+        for (const entry of node.content) {
+          if (typeof entry?.path !== 'string') continue
+          if (entry.isFile === false) continue
+
+          files.push({
+            path: path.isAbsolute(entry.path)
+              ? entry.path
+              : path.join(dir, entry.path),
+            mtimeMs: toTimeMs(entry.lastModified),
+            // `TFile` does not declare a size, but keep it if a future Typora
+            // version provides one.
+            size: typeof entry.size === 'number' ? entry.size : undefined,
+          })
+        }
+      }
+
+      return true
+    }
+
+    return await walk(dirpath) ? files : undefined
   }
 
   readText(filepath: string): Promise<string> {
@@ -167,18 +249,18 @@ export class MacFS extends FileAdapter {
   }
 
   /**
-   * List immediate sub-directories through Typora's file-tree API.
+   * Read a directory node through Typora's file-tree API.
    *
    * `library.listDocsUnder` is the only non-shell directory listing available
    * on macOS. Returns `undefined` when the handler is unavailable or fails, so
-   * callers can fall back to `ls`.
+   * callers can fall back to shell commands.
    */
-  private _listDirsByBridge(dirpath: string): Promise<string[] | undefined> {
+  private _listUnderBridge(dirpath: string): Promise<any | undefined> {
     return new Promise(resolve => {
       let settled = false
       let timer: ReturnType<typeof setTimeout> | undefined
 
-      const finish = (value: string[] | undefined) => {
+      const finish = (value: any | undefined) => {
         if (settled) return
         settled = true
         if (timer) clearTimeout(timer)
@@ -189,21 +271,12 @@ export class MacFS extends FileAdapter {
 
       try {
         bridge.callHandler('library.listDocsUnder', dirpath, (file: any) => {
-          if (
-            !file
-            || typeof file !== 'object'
-            || typeof file.name !== 'string'
-            || !Array.isArray(file.subdir)
-          ) {
+          if (!file || typeof file !== 'object' || typeof file.name !== 'string') {
             finish(undefined)
             return
           }
 
-          finish(file.subdir
-            .filter((entry: any) =>
-              typeof entry?.name === 'string'
-              && (!entry.path || path.dirname(entry.path) === dirpath))
-            .map((entry: any) => entry.name as string))
+          finish(file)
         })
       }
       catch {

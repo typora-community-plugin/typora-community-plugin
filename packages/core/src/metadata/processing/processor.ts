@@ -1,3 +1,4 @@
+import type { FileStats, FileTreeEntry } from 'src/io/fs/file-adapter'
 import fs from 'src/io/fs/filesystem'
 import { mergeMetadata } from 'src/metadata/provider/merge'
 import { MetadataProviderContext, type MetadataProviderRegistry } from 'src/metadata/provider/registry'
@@ -34,7 +35,14 @@ export class MetadataProcessor {
   /**
    * Process a single file: with cache check and providers
    */
-  async processFile(cache: Cache, vaultPath: string, filePath: string, content?: string, signal?: AbortSignal): Promise<void> {
+  async processFile(
+    cache: Cache,
+    vaultPath: string,
+    filePath: string,
+    content?: string,
+    signal?: AbortSignal,
+    fileInfo?: FileTreeEntry,
+  ): Promise<void> {
     signal?.throwIfAborted()
 
     const ext = path.extname(filePath).toLowerCase()
@@ -43,7 +51,13 @@ export class MetadataProcessor {
     if (!providers || providers.length === 0) return
 
     try {
-      const stats = await fs.stat(filePath)
+      const stats = fileInfo
+        ? statsFromFileInfo(fileInfo)
+        : content !== undefined
+          // Editor content is not on disk yet, so `stat()` would return the
+          // previous mtime (and prompt on macOS). Use synthetic stats instead.
+          ? statsFromContent(content)
+          : await fs.stat(filePath)
       const mtime = stats.mtimeMs
       const relativePath = path.relative(vaultPath, filePath)
 
@@ -87,5 +101,26 @@ export class MetadataProcessor {
     } catch (error) {
       console.error(`Failed to process ${filePath}:`, error)
     }
+  }
+}
+
+
+function statsFromFileInfo(fileInfo: FileTreeEntry): FileStats {
+  return {
+    isDirectory: () => false,
+    isFile: () => true,
+    // Fall back to "now" when the native tree omits mtime, so the cache is
+    // reprocessed rather than silently treating the file as unchanged.
+    mtimeMs: fileInfo.mtimeMs ?? Date.now(),
+    size: fileInfo.size ?? 0,
+  }
+}
+
+function statsFromContent(content: string): FileStats {
+  return {
+    isDirectory: () => false,
+    isFile: () => true,
+    mtimeMs: Date.now(),
+    size: content.length,
   }
 }

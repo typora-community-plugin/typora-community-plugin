@@ -4,6 +4,7 @@ import 'src/setup-test-env'
 
 const fsMock = {
   listFiles: vi.fn(),
+  listFilesWithStats: vi.fn(),
   stat: vi.fn(),
   readText: vi.fn(),
 }
@@ -17,6 +18,7 @@ const storeMock = {
 
 async function setup() {
   vi.clearAllMocks()
+  fsMock.listFilesWithStats.mockReset().mockResolvedValue(undefined)
   storeMock.loadCache.mockResolvedValue({})
 
   await vi.doMock('src/io/fs/filesystem', () => ({ default: fsMock }))
@@ -63,6 +65,38 @@ describe('MetadataIndexer', () => {
       expect.objectContaining({ 'a.md': expect.any(Object), 'b.md': expect.any(Object) }))
     expect(storeMock.saveCache).toHaveBeenCalledWith('v1', expect.any(Object))
     expect(indexer.isIndexing).toBe(false)
+  })
+
+  it('uses native file-tree stats without listFiles() or stat()', async () => {
+    const { MetadataIndexer, MetadataProcessor, MetadataProviderRegistry, DeferredQueue } = await setup()
+    const registry = new MetadataProviderRegistry()
+    registry.register('md', async ctx => ({
+      mtime: ctx.fileStats().mtimeMs,
+      metadata: {},
+    }))
+    const processor = new MetadataProcessor(registry)
+    const publish = vi.fn()
+    fsMock.listFilesWithStats.mockResolvedValue([
+      { path: '/vault/a.md', mtimeMs: 11 },
+      { path: '/vault/b.md', mtimeMs: 22 },
+    ])
+
+    const indexer = new MetadataIndexer({
+      vault: createVault() as any,
+      processor,
+      concurrency: 2,
+      indexingWork: new DeferredQueue(),
+      events: { start: vi.fn(), progress: vi.fn(), done: vi.fn() },
+      publish,
+    })
+    await indexer.index()
+
+    expect(fsMock.listFiles).not.toHaveBeenCalled()
+    expect(fsMock.stat).not.toHaveBeenCalled()
+    expect(publish).toHaveBeenCalledWith(expect.objectContaining({
+      'a.md': expect.objectContaining({ mtime: 11 }),
+      'b.md': expect.objectContaining({ mtime: 22 }),
+    }))
   })
 
   it('skips indexing when no folder is mounted', async () => {

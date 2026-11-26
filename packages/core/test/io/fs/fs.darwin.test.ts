@@ -84,6 +84,29 @@ describe('MacFS', () => {
     await expect(fs.readText('/missing.json')).rejects.toThrow('ENOENT')
   })
 
+  test('parses the BSD stat fields into mtime and size', async () => {
+    shellRun.mockResolvedValue('1795698131 334 Regular File\n')
+
+    const stats = await fs.stat('/vault/doc.md')
+
+    expect(shellRun).toHaveBeenCalledWith(
+      `LC_ALL=C stat -f '%m %z %HT' ${Shell.escape('/vault/doc.md')}`,
+    )
+    expect(stats.mtimeMs).toBe(1795698131000)
+    expect(stats.size).toBe(334)
+    expect(stats.isFile()).toBe(true)
+    expect(stats.isDirectory()).toBe(false)
+  })
+
+  test('recognises a directory from the BSD stat output', async () => {
+    shellRun.mockResolvedValue('1795698131 96 Directory\n')
+
+    const stats = await fs.stat('/vault/sub')
+
+    expect(stats.isDirectory()).toBe(true)
+    expect(stats.isFile()).toBe(false)
+  })
+
   test('lists an empty directory as an empty array', async () => {
     shellRun.mockResolvedValue('  \n')
 
@@ -124,6 +147,44 @@ describe('MacFS', () => {
     await expect(fs.listDirs('/plugins')).resolves.toEqual(['a'])
 
     expect(shellRun).toHaveBeenCalledWith(`ls ${Shell.escape('/plugins')}`)
+  })
+
+  test('lists files recursively with mtimes through library.listDocsUnder', async () => {
+    const tree: Record<string, any> = {
+      '/vault': {
+        name: 'vault',
+        subdir: [{ name: 'sub', path: '/vault/sub' }],
+        content: [{ name: 'a.md', path: '/vault/a.md', lastModified: new Date(1_700_000_000_000) }],
+      },
+      '/vault/sub': {
+        name: 'sub',
+        subdir: [],
+        content: [{ name: 'b.md', path: '/vault/sub/b.md', lastModified: 1_700_000_001_000 }],
+      },
+    }
+    callHandler.mockImplementation((channel: string, payload: any, callback: (value: any) => void) => {
+      if (channel === 'library.listDocsUnder') {
+        callback(tree[payload] ?? null)
+        return
+      }
+      callback(false)
+    })
+
+    const files = await fs.listFilesWithStats('/vault', { recursive: true })
+
+    expect(files).toEqual(expect.arrayContaining([
+      { path: '/vault/a.md', mtimeMs: 1_700_000_000_000 },
+      { path: '/vault/sub/b.md', mtimeMs: 1_700_000_001_000 },
+    ]))
+    expect(shellRun).not.toHaveBeenCalled()
+  })
+
+  test('returns undefined when the native file tree is unavailable', async () => {
+    callHandler.mockImplementation((channel: string, _payload: any, callback: (value: any) => void) => {
+      callback(channel === 'library.listDocsUnder' ? null : false)
+    })
+
+    await expect(fs.listFilesWithStats('/vault', { recursive: true })).resolves.toBeUndefined()
   })
 
   test('writes text with printf and escapes paths', async () => {

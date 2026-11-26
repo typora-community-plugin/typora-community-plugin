@@ -1,6 +1,8 @@
 import decorate from '@plylrnsdy/decorate.js'
 import { StickyEvents } from 'src/common/events'
 import { useService } from 'src/common/service'
+import type { FileTreeEntry } from 'src/io/fs/file-adapter'
+import fs from 'src/io/fs/filesystem'
 import { MetadataIndexer } from 'src/metadata/processing/indexer'
 import { MetadataProcessor } from 'src/metadata/processing/processor'
 import { type MetadataProvider, MetadataProviderRegistry, normalizeExtension, type RegisterOptions } from 'src/metadata/provider/registry'
@@ -195,7 +197,13 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
   async update(filePath: string, content?: string): Promise<void> {
     await this._indexingWork.run(() =>
       this._updateLimiter.run(async () => {
-        await this.processor.processFile(this.cache, this.vault.path, filePath, content)
+        // Editor content is not on disk yet, so there is no native tree entry
+        // to read; `processFile` uses synthetic stats for it.
+        const fileInfo = content === undefined
+          ? await this._fileInfo(filePath)
+          : undefined
+
+        await this.processor.processFile(this.cache, this.vault.path, filePath, content, undefined, fileInfo)
 
         const relativePath = this.toRelative(filePath)
         if (relativePath in this.cache) {
@@ -203,6 +211,20 @@ export class MetadataManager extends StickyEvents<MetadataEvents> {
         }
       })
     )
+  }
+
+  /**
+   * Read mtime/size for one file from the platform's native file tree.
+   * Returns `undefined` when unavailable; `processFile` then falls back to `stat()`.
+   */
+  private async _fileInfo(filePath: string): Promise<FileTreeEntry | undefined> {
+    try {
+      const files = await fs.listFilesWithStats(path.dirname(filePath), { recursive: false })
+      return files?.find(file => file.path === filePath)
+    }
+    catch {
+      return undefined
+    }
   }
 
   /**

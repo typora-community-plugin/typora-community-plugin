@@ -18,7 +18,7 @@
   "internalPlugins": {
     "metadata": {
       "name": "Metadata (beta)",
-      "description": "Index metadata of all files in the vault. Used by other plugins (like `tag`)."
+      "description": "Index metadata of all files in the vault. Used by other plugins (like `tag`). On macOS, only files visible in Typora's file tree are indexed."
     },
     "workspace": {
       "name": "Workspace",

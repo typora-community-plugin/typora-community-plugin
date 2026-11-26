@@ -60,6 +60,20 @@ export abstract class FileAdapter {
   }
 
   /**
+   * List files together with modification times when the platform can provide
+   * them without extra shell commands.
+   *
+   * Returns `undefined` when the adapter has no native implementation, so
+   * callers fall back to `listFiles()` + `stat()`.
+   */
+  async listFilesWithStats(
+    _dirpath: string,
+    _options: ListFilesOptions = {},
+  ): Promise<FileTreeEntry[] | undefined> {
+    return undefined
+  }
+
+  /**
    * On macOS, it's very slow.
    */
   async listFiles(dirpath: string, options: ListFilesOptions = {}): Promise<string[]> {
@@ -111,6 +125,14 @@ export interface FileStats {
   isFile(): boolean
   mtimeMs: number
   size: number
+}
+
+export interface FileTreeEntry {
+  path: string
+  /** Modification time in milliseconds, when available without an extra shell command. */
+  mtimeMs?: number
+  /** File size in bytes, when available without an extra shell command. */
+  size?: number
 }
 
 export type ListFilesOptions = {

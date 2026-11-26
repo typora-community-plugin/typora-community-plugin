@@ -1,3 +1,4 @@
+import type { FileTreeEntry } from 'src/io/fs/file-adapter'
 import fs from 'src/io/fs/filesystem'
 import type { Vault } from 'src/io/vault'
 import { type Cache, loadCache, saveCache } from 'src/metadata/store/store'
@@ -66,7 +67,18 @@ export class MetadataIndexer {
 
     try {
       const { signal } = abortController
-      const allFiles = await fs.listFiles(vaultPath, { recursive: true, signal })
+
+      // On macOS `library.listDocsUnder` provides the file tree and mtimes
+      // without a shell command per directory/file. Other platforms return
+      // `undefined` and keep using `listFiles()` + `stat()`.
+      const fileTree = await fs.listFilesWithStats(vaultPath, { recursive: true, signal })
+      const allFiles = fileTree
+        ? fileTree.map(file => file.path)
+        : await fs.listFiles(vaultPath, { recursive: true, signal })
+      const statsByPath = fileTree
+        ? new Map<string, FileTreeEntry>(fileTree.map(file => [file.path, file]))
+        : undefined
+
       events.start(allFiles.length)
 
       signal.throwIfAborted()
@@ -79,7 +91,8 @@ export class MetadataIndexer {
       await runConcurrent(
         allFiles,
         concurrency,
-        filePath => processor.processFile(indexingCache, vaultPath, filePath, undefined, signal),
+        filePath => processor.processFile(
+          indexingCache, vaultPath, filePath, undefined, signal, statsByPath?.get(filePath)),
         {
           signal,
           // Preserve the historical 0-based progress value expected by listeners.

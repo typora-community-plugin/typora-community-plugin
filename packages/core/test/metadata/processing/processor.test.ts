@@ -4,6 +4,7 @@ import 'src/setup-test-env'
 
 const fsMock = {
   listFiles: vi.fn(),
+  listFilesWithStats: vi.fn(),
   stat: vi.fn(),
   readText: vi.fn(),
 }
@@ -50,6 +51,53 @@ describe('MetadataProcessor', () => {
       await processor.processFile(cache, '/vault', '/vault/a.md')
 
       expect(cache['a.md']).toMatchObject({ mtime: 100, metadata: { title: 'x' } })
+    })
+
+    it('uses provided file info instead of stat()', async () => {
+      const { MetadataProcessor, MetadataProviderRegistry } = await setup()
+      const registry = new MetadataProviderRegistry()
+      registry.register('md', async (ctx) => ({
+        mtime: ctx.fileStats().mtimeMs,
+        size: ctx.fileStats().size,
+        metadata: {},
+      }))
+      const processor = new MetadataProcessor(registry)
+      const cache: Record<string, any> = {}
+
+      await processor.processFile(
+        cache,
+        '/vault',
+        '/vault/a.md',
+        undefined,
+        undefined,
+        { path: '/vault/a.md', mtimeMs: 42, size: 7 },
+      )
+
+      expect(fsMock.stat).not.toHaveBeenCalled()
+      expect(cache['a.md']).toMatchObject({
+        mtime: 42,
+        size: 7,
+      })
+    })
+
+    it('uses synthetic stats for editor content instead of stat()', async () => {
+      const { MetadataProcessor, MetadataProviderRegistry } = await setup()
+      const registry = new MetadataProviderRegistry()
+      registry.register('md', async (ctx) => ({
+        mtime: ctx.fileStats().mtimeMs,
+        size: ctx.fileStats().size,
+        metadata: {},
+      }))
+      const processor = new MetadataProcessor(registry)
+      const cache: Record<string, any> = {}
+
+      await processor.processFile(cache, '/vault', '/vault/a.md', 'hello')
+
+      expect(fsMock.stat).not.toHaveBeenCalled()
+      expect(cache['a.md']).toMatchObject({
+        mtime: expect.any(Number),
+        size: 5,
+      })
     })
 
     it('skips reprocessing when mtime and provider signature are unchanged', async () => {

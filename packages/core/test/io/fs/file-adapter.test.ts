@@ -37,6 +37,26 @@ class TestFileAdapter extends FileAdapter {
 
 describe('FileAdapter', () => {
 
+  describe('listDirs()', () => {
+
+    it('should return directory names only', async () => {
+      const adapter = new TestFileAdapter()
+      adapter.mockList.mockResolvedValue(['subdir', 'file.md'])
+      adapter.mockIsDir.mockImplementation(async (p: string) => p.endsWith('subdir'))
+
+      await expect(adapter.listDirs('/vault')).resolves.toEqual(['subdir'])
+    })
+  })
+
+  describe('listFilesWithStats()', () => {
+
+    it('should return undefined when the adapter has no native implementation', async () => {
+      const adapter = new TestFileAdapter()
+
+      await expect(adapter.listFilesWithStats('/vault')).resolves.toBeUndefined()
+    })
+  })
+
   describe('listFiles()', () => {
 
     it('should return only files (not directories)', async () => {

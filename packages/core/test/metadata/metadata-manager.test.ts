@@ -5,6 +5,7 @@ import type { MetadataManager, MetadataProvider } from 'src/metadata/metadata-ma
 
 const fsMock = {
   listFiles: vi.fn(),
+  listFilesWithStats: vi.fn(),
   stat: vi.fn(),
   readText: vi.fn(),
 }
@@ -18,6 +19,7 @@ const storeMock = {
 
 async function loadManager(): Promise<typeof MetadataManager> {
   vi.clearAllMocks()
+  fsMock.listFilesWithStats.mockReset().mockResolvedValue(undefined)
   storeMock.loadCache.mockResolvedValue({})
 
   await vi.doMock('src/io/fs/filesystem', () => ({ default: fsMock }))
@@ -69,6 +71,24 @@ describe('MetadataManager', () => {
 
       expect(provider).toHaveBeenCalledTimes(1)
       expect(manager.get('a.md')).toMatchObject({ mtime: 100, metadata: { title: 'x' } })
+    })
+
+    it('uses native file info instead of stat() when available', async () => {
+      const Manager = await loadManager()
+      const { manager } = createManager(Manager)
+      fsMock.listFilesWithStats.mockResolvedValue([
+        { path: '/vault/a.md', mtimeMs: 77, size: 3 },
+      ])
+      const provider = vi.fn<MetadataProvider>(async (ctx) => ({
+        mtime: ctx.fileStats().mtimeMs,
+        metadata: {},
+      }))
+      manager.register('md', provider)
+
+      await manager.update('/vault/a.md')
+
+      expect(fsMock.stat).not.toHaveBeenCalled()
+      expect(manager.get('a.md')).toMatchObject({ mtime: 77 })
     })
 
     it('reuses the cache when mtime and provider signature are unchanged', async () => {
