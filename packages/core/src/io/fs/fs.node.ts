@@ -1,9 +1,12 @@
 import { noop } from "src/utils"
-import { JSBridge, reqnode } from "typora"
+import { JSBridge } from "typora"
 import { FileAdapter, type FileStats } from "./file-adapter"
 
 
-const fs = reqnode?.('fs') as typeof import('fs')
+// `reqnode` is a bare Electron global: on macOS (WKWebView) the identifier does
+// not exist at all, and even `reqnode?.()` throws a ReferenceError while this
+// module is evaluated by the NodeFS chunk. Read it off `globalThis` instead.
+const fs = (globalThis as { reqnode?: (module: string) => any }).reqnode?.('fs') as typeof import('fs')
 const fsp = fs?.promises
 
 export class NodeFS extends FileAdapter {
