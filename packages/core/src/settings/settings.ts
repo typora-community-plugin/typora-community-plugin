@@ -39,6 +39,7 @@ export class Settings<T extends Record<string, any>>
   private _fileVersion = 0
   private _defaultSettings = {} as T
   private _migrations: SettingMigrations | undefined
+  private _lastSavedText = ''
 
   constructor(
     options: SettingsOptions,
@@ -79,6 +80,9 @@ export class Settings<T extends Record<string, any>>
       Object.create(this._defaultSettings),
       rawStores.settings
     )
+    // Loading must not persist anything. This snapshot also lets `save()`
+    // skip writes whose content has not changed.
+    this._lastSavedText = this._serialize()
 
     Object.keys(this._defaultSettings).forEach((key: keyof T) => {
       if (this._data[key] === oldSettings[key]) return
@@ -94,10 +98,31 @@ export class Settings<T extends Record<string, any>>
     }
   }
 
+  private _serialize() {
+    return JSON.stringify({ version: this._fileVersion, settings: this._data }, null, 2)
+  }
+
   @debounced(1e3)
   save() {
+    const text = this._serialize()
+    if (text === this._lastSavedText) return
+
     this.logger.debug(`Saving settings to ${this.filename}.json`)
-    this.config.writeConfigJson(this.filename, { version: this._fileVersion, settings: this._data })
+    const result = this.config.writeConfigJson(
+      this.filename,
+      { version: this._fileVersion, settings: this._data }
+    )
+
+    if (result && typeof result.then === 'function') {
+      result.then((saved: boolean) => {
+        // Keep the snapshot unchanged when the write was cancelled, so a later
+        // change can retry instead of silently dropping the settings.
+        if (saved !== false) this._lastSavedText = text
+      }, () => { })
+    }
+    else {
+      this._lastSavedText = text
+    }
   }
 
   migrateTo(newVersion: number, transform: (oldStores: SettingsFile<any>) => any) {

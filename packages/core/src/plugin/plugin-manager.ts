@@ -1,6 +1,7 @@
 import { coreVersion, globalRootDir } from 'src/common/constants'
 import { useService } from 'src/common/service'
 import fs from 'src/io/fs/filesystem'
+import { isCommandCancelled } from 'src/io/shell'
 import path from 'src/path'
 import { Notice } from 'src/ui/components/notice'
 import { debounced, format } from 'src/utils'
@@ -22,6 +23,7 @@ export class PluginManager {
   styles: Record<string, string> = {}
 
   private _marketplace?: PluginMarketplace
+  private _lastEnabledText = ''
 
   /**
    * Lazily resolve the shared `plugin-marketplace` service.
@@ -32,7 +34,10 @@ export class PluginManager {
    * without racing the manager's initialization.
    */
   get marketplace(): PluginMarketplace {
-    return this._marketplace ??= useService('plugin-marketplace')
+    if (!this._marketplace) {
+      this._marketplace = useService('plugin-marketplace')
+    }
+    return this._marketplace
   }
 
   set marketplace(marketplace: PluginMarketplace) {
@@ -60,7 +65,8 @@ export class PluginManager {
 
     this.vaultPluginsDir = path.join(this.config.configDir, 'plugins')
 
-    this.enabledPlugins = this.config.readConfigJson('plugins')
+    this.enabledPlugins = this.config.readConfigJson('plugins') ?? {}
+    this._lastEnabledText = JSON.stringify(this._getEnabledConfig(), null, 2)
 
     await this.loadManifests()
     await this.loadPlugins()
@@ -82,27 +88,45 @@ export class PluginManager {
   private async _readPluginsDir(pluginsPath: string) {
     if (!pluginsPath) return []
 
-    return fs.access(pluginsPath)
-      .then(() => fs.list(pluginsPath))
-      .then((dirnames) =>
-        dirnames.map(dir => path.join(pluginsPath, dir))
-      )
-      .catch(() => [] as any[])
+    try {
+      // `path.isDirectory` does not run a shell command on macOS, so checking
+      // first avoids an approval dialog for a directory that does not exist.
+      const exists = await fs.isDirectory(pluginsPath).catch(() => false)
+      if (!exists) return []
+
+      const dirnames = await fs.list(pluginsPath)
+      return dirnames.map(dir => path.join(pluginsPath, dir))
+    }
+    catch (error) {
+      if (isCommandCancelled(error)) {
+        this.logger.warn(`Listing plugin directory was cancelled: ${pluginsPath}`)
+      }
+      return []
+    }
   }
 
-  loadManifest(position: PluginPosition, pluginPath: string) {
+  async loadManifest(position: PluginPosition, pluginPath: string) {
     const manifestPath = path.join(pluginPath, 'manifest.json')
 
-    return fs.access(manifestPath)
-      .then(() => fs.readTextSync(manifestPath))
-      .then(text => {
-        const manifest = JSON.parse(text) as PluginManifest
-        manifest.position = position
-        manifest.dir = pluginPath
+    try {
+      const text = fs.readTextSync(manifestPath)
+      if (!text) {
+        throw new Error(`Empty plugin manifest: ${manifestPath}`)
+      }
 
-        this.manifests[manifest.id] = manifest
-      })
-      .catch((error) => this.logger.error(error))
+      const manifest = JSON.parse(text) as PluginManifest
+      if (!manifest?.id) {
+        throw new Error(`Invalid plugin manifest: ${manifestPath}`)
+      }
+
+      manifest.position = position
+      manifest.dir = pluginPath
+
+      this.manifests[manifest.id] = manifest
+    }
+    catch (error) {
+      this.logger.error(error)
+    }
   }
 
   /**
@@ -117,27 +141,42 @@ export class PluginManager {
   }
 
   /**
-   * Unload all enabled plugins
+   * Unload all enabled plugins without persisting a disabled state.
+   *
+   * `unloadPlugin()` is for actually disabling a plugin. Using it here would
+   * remove every id from `enabledPlugins` and write an empty `plugins.json`
+   * during a config switch, before the new config is loaded.
    */
   unloadPlugins() {
-    Object.keys(this.enabledPlugins)
-      .map(id => this.unloadPlugin(id))
+    for (const id of Object.keys(this.enabledPlugins)) {
+      try {
+        this.instances[id]?.unload()
+        document.getElementById(`typora-plugin:${id}`)?.remove()
+      }
+      catch (error) {
+        this.logger.error(`Plugin.unload:${id}`, error)
+      }
+
+      delete this.instances[id]
+      delete this.styles[id]
+    }
   }
 
   async loadPlugin(id: string) {
     try {
       const manifest = this.manifests[id]
 
-      const module = await import('file://' + path.join(manifest.dir!, 'main.js') + `?v=${manifest.version}`)
+      const module = await import(`file://${path.join(manifest.dir!, 'main.js')}?v=${manifest.version}`)
 
       const PluginImplement = module.default
       this.instances[id] = new PluginImplement(useService('app'), manifest)
 
       const cssPath = path.join(manifest.dir!, 'style.css')
-      await fs.access(cssPath)
-        .then(() => fs.readTextSync(cssPath))
-        .then(cssText => { this.styles[id] = cssText })
-        .catch(() => { })
+      try {
+        const cssText = fs.readTextSync(cssPath)
+        if (cssText) this.styles[id] = cssText
+      }
+      catch { }
     }
     catch (error) {
       this.logger.error(`Plugin.load:${id}`, error)
@@ -221,11 +260,28 @@ export class PluginManager {
     return fs.remove(manifest.dir!)
   }
 
+  private _getEnabledConfig() {
+    const enabledPlugins: Record<string, boolean> = {}
+    for (const id of Object.keys(this.enabledPlugins).sort()) {
+      enabledPlugins[id] = this.enabledPlugins[id]
+    }
+    return enabledPlugins
+  }
+
   @debounced(1e3)
   private _saveEnabledConfig() {
-    const enabledPlugins = Object.keys(this.enabledPlugins)
-      .sort()
-      .reduce((o, id) => (o[id] = this.enabledPlugins[id], o), {} as any)
-    this.config.writeConfigJson('plugins', enabledPlugins)
+    const enabledPlugins = this._getEnabledConfig()
+    const text = JSON.stringify(enabledPlugins, null, 2)
+    if (text === this._lastEnabledText) return
+
+    const result = this.config.writeConfigJson('plugins', enabledPlugins)
+    if (result && typeof result.then === 'function') {
+      result.then((saved: boolean) => {
+        if (saved !== false) this._lastEnabledText = text
+      }, () => { })
+    }
+    else {
+      this._lastEnabledText = text
+    }
   }
 }

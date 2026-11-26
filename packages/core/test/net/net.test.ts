@@ -12,6 +12,7 @@ const fsMock = {
 
 const unzipMock = vi.fn(async () => { })
 const shellRun = vi.fn(async () => '')
+const shellEscape = (text: string) => `'${text.replace(/'/g, "'\\''")}'`
 const notice = vi.fn()
 
 let net: typeof import('src/net/net')
@@ -19,7 +20,7 @@ let net: typeof import('src/net/net')
 beforeAll(async () => {
   await vi.doMock('src/io/fs/filesystem', () => ({ default: fsMock }))
   await vi.doMock('src/io/zlib', () => ({ unzip: unzipMock }))
-  await vi.doMock('src/io/shell', () => ({ Shell: { run: shellRun } }))
+  await vi.doMock('src/io/shell', () => ({ Shell: { run: shellRun, escape: shellEscape } }))
   net = await import('src/net/net')
 })
 

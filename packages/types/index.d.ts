@@ -76,6 +76,13 @@ export declare var bridge: {
   callSync(method: "document.isDocumentEdited"): boolean
   callSync(method: "images.convertFakeUrl", url: string): string
   callSync(method: "path.readText", filepath: string): string
+  /**
+   * Read a file as limited JSON, added in Typora 1.14.15.
+   *
+   * Returns a JSON string shaped like `{ content }`, `{ tooLarge: true }`,
+   * `{ binary: true }` or `{ error }`.
+   */
+  callSync(method: "path.readTextLimited", filepath: string): string
   //
   callSync(method: string, data?: any, cb?: (param0: any) => void): any
 }
@@ -850,6 +857,10 @@ export declare var JSBridge: {
   /** Open file with default application. */
   invoke(command: "shell.openItem", path: string): Promise<any>
   invoke(command: "shell.trashItem", path: string): Promise<any>
+  //
+  invoke(command: "path.copyFile", opts: { from: string, to: string }): Promise<boolean>
+  invoke(command: "path.moveFile", opts: { from: string, to: string }): Promise<boolean>
+  invoke(command: "path.delete", path: string): Promise<any>
   //
   invoke(command: "theme.setThemeSource", mode: "system" | "light" | "dark"): Promise<any>
   //

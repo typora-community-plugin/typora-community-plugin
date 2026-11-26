@@ -13,6 +13,6 @@ export function unzip(src: string, dest: string) {
     })
   }
   else {
-    return Shell.run(`unzip -o '${src}' -d '${dest}'`)
+    return Shell.run(`unzip -o ${Shell.escape(src)} -d ${Shell.escape(dest)}`)
   }
 }

@@ -148,6 +148,35 @@ describe('class Settings', () => {
     })
   })
 
+  describe('save()', () => {
+
+    it('should not save settings that were only loaded', () => {
+      vi.useFakeTimers()
+      const configRepo = useService('config-repository') as any
+      configRepo.setConfigDir('/settings-load-a')
+
+      const s = new Settings<any>({
+        filename: 'load-test',
+        version: 1,
+      })
+      s.setDefault({ key1: 'default' })
+
+      configRepo.setConfigDir('/settings-load-b')
+      configRepo.readConfigJson.mockReturnValue({
+        version: 1,
+        settings: { key1: 'saved' },
+      })
+      configRepo.writeConfigJson.mockReset()
+
+      s.load()
+      vi.runAllTimers()
+
+      expect(s.get('key1')).toBe('saved')
+      expect(configRepo.writeConfigJson).not.toHaveBeenCalled()
+      vi.useRealTimers()
+    })
+  })
+
   describe('addChangeListener()', () => {
 
     it('should add a listener to the _listeners object', () => {

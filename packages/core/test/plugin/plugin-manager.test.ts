@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 vi.mock('src/io/fs/filesystem', () => ({
   default: {
-    access: vi.fn(),
+    isDirectory: vi.fn(),
     list: vi.fn(),
     readTextSync: vi.fn(),
     remove: vi.fn(),
@@ -199,7 +199,7 @@ describe('PluginManager manifests and lifecycle', () => {
 
   beforeEach(() => {
     vi.useFakeTimers()
-    vi.mocked(fs.access).mockReset().mockResolvedValue(undefined)
+    vi.mocked(fs.isDirectory).mockReset().mockResolvedValue(true)
     vi.mocked(fs.list).mockReset().mockResolvedValue([])
     vi.mocked(fs.readTextSync).mockReset().mockReturnValue('{}')
     vi.mocked(fs.remove).mockReset().mockResolvedValue(undefined)
@@ -265,7 +265,7 @@ describe('PluginManager manifests and lifecycle', () => {
     const manager = createManager()
     manager.globalPluginsDir = ''
     manager.vaultPluginsDir = '/missing'
-    vi.mocked(fs.access).mockRejectedValue(new Error('ENOENT'))
+    vi.mocked(fs.isDirectory).mockResolvedValue(false)
 
     await manager.loadManifests()
 
@@ -296,14 +296,24 @@ describe('PluginManager manifests and lifecycle', () => {
     expect(enable).toHaveBeenCalledWith('a')
   })
 
-  test('unloadPlugins unloads every enabled plugin', () => {
+  test('unloadPlugins unloads every enabled plugin without persisting disabled state', () => {
     const manager = createManager()
+    const unloadA = vi.fn()
+    const unloadB = vi.fn()
     manager.enabledPlugins = { a: true, b: true }
-    const unload = vi.spyOn(manager, 'unloadPlugin').mockImplementation(() => { })
+    manager.instances = { a: { unload: unloadA } as any, b: { unload: unloadB } as any }
+    manager.styles = { a: 'a{}', b: 'b{}' }
 
     manager.unloadPlugins()
 
-    expect(unload.mock.calls).toEqual([['a'], ['b']])
+    expect(unloadA).toHaveBeenCalled()
+    expect(unloadB).toHaveBeenCalled()
+    expect(manager.enabledPlugins).toEqual({ a: true, b: true })
+    expect(manager.instances).toEqual({})
+    expect(manager.styles).toEqual({})
+
+    vi.advanceTimersByTime(1_000)
+    expect((manager as any).config.writeConfigJson).not.toHaveBeenCalled()
   })
 
   test('loadPlugin logs import failures', async () => {
@@ -470,5 +480,16 @@ describe('PluginManager manifests and lifecycle', () => {
 
     expect((manager as any).config.writeConfigJson)
       .toHaveBeenCalledWith('plugins', { a: false, b: true })
+  })
+
+  test('does not persist enabled plugins that did not change', () => {
+    const manager = createManager()
+    manager.enabledPlugins = { a: true }
+    ;(manager as any)._lastEnabledText = JSON.stringify({ a: true }, null, 2)
+
+    ;(manager as any)._saveEnabledConfig()
+    vi.advanceTimersByTime(1_000)
+
+    expect((manager as any).config.writeConfigJson).not.toHaveBeenCalled()
   })
 })

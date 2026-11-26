@@ -17,6 +17,7 @@ export class ConfigRepository extends Events<ConfigEvents> {
   private _disposeCommand: DisposeFunc
 
   private _configDir: string
+  private _ensuredDirs = new Set<string>()
 
   constructor(
     protected logger = useService('logger', ['Config']),
@@ -50,17 +51,16 @@ export class ConfigRepository extends Events<ConfigEvents> {
 
   private _autoSelectConfig() {
     // No folder is mounted and no document is opened: there is no vault-local
-    // config to look for, so skip `fs.access()` on a relative `.typora` path.
+    // config to look for, so skip the existence check on a relative `.typora` path.
     if (!this.vault.path) {
-      // Keep the `switch` event asynchronous (as `fs.access()` does), so that
-      // listeners registered right after construction, such as `App`, still
-      // receive it.
+      // Keep the `switch` event asynchronous, so that listeners registered
+      // right after construction, such as `App`, still receive it.
       Promise.resolve().then(() => this.useGlobalConfig())
       return
     }
 
-    fs.access(this.vault.configDir)
-      .then(() => this.useVaultConfig())
+    fs.isDirectory(this.vault.configDir)
+      .then(exists => exists ? this.useVaultConfig() : this.useGlobalConfig())
       .catch(() => this.useGlobalConfig())
   }
 
@@ -68,6 +68,7 @@ export class ConfigRepository extends Events<ConfigEvents> {
     if (this._configDir === globalConfigDir()) return
     this._disposeCommand?.()
 
+    this._ensuredDirs.clear()
     this._configDir = globalConfigDir()
     this._isUsingGlobalConfig = true
 
@@ -96,6 +97,7 @@ export class ConfigRepository extends Events<ConfigEvents> {
     if (this._configDir === this.vault.configDir) return
     this._disposeCommand?.()
 
+    this._ensuredDirs.clear()
     this._configDir = this.vault.configDir
     this._isUsingGlobalConfig = false
 
@@ -115,11 +117,14 @@ export class ConfigRepository extends Events<ConfigEvents> {
       })
     })
 
-    fs.access(this.vault.configDir)
-      .catch(() =>
-        fs.mkdir(this.vault.configDir)
+    fs.isDirectory(this.vault.configDir)
+      .catch(() => false)
+      .then(exists => exists
+        ? undefined
+        : fs.mkdir(this.vault.configDir)
           .then(() => fs.copy(globalConfigDir(), this.vault.configDir))
       )
+      .catch(error => this.logger.warn(`Failed to prepare config directory "${this.vault.configDir}".`, error))
       .then(() => this.emit('switch'))
   }
 
@@ -132,7 +137,7 @@ export class ConfigRepository extends Events<ConfigEvents> {
    */
   readConfigJson(filename: string, defaultValue: any = {}): any {
     try {
-      const configPath = path.join(this.configDir, filename + '.json')
+      const configPath = path.join(this.configDir, `${filename}.json`)
       const text = fs.readTextSync(configPath)
       return JSON.parse(text)
     } catch (_error) {
@@ -147,15 +152,38 @@ export class ConfigRepository extends Events<ConfigEvents> {
    * @param filename File name without extension name `.json`
    * @param config JSON serializable object
    */
-  writeConfigJson(filename: string, config: any) {
-    const configPath = path.join(this.configDir, filename + '.json')
+  writeConfigJson(filename: string, config: any): Promise<boolean> {
+    const configPath = path.join(this.configDir, `${filename}.json`)
     const dirname = path.dirname(configPath)
-    return fs
-      .access(dirname)
-      .catch(() => fs.mkdir(dirname))
-      .then(() => fs.writeText(configPath, JSON.stringify(config, null, 2)))
+    const text = JSON.stringify(config, null, 2)
+
+    return this._ensureDir(dirname)
+      .then(() => fs.readText(configPath).catch((): undefined => undefined))
+      .then(current => {
+        // macOS writes go through `controller.runCommand`, which shows an
+        // approval dialog. Skip writes that would not change the file.
+        if (typeof current === 'string' && current.replace(/\r?\n$/, '') === text) {
+          return true
+        }
+        return fs.writeText(configPath, text).then(() => true)
+      })
       .catch(error => {
+        // The directory may have been removed since it was checked; retry the
+        // check on the next save instead of failing forever.
+        this._ensuredDirs.delete(dirname)
         this.logger.error(`Failed to save config "${filename}.json".`, error)
+        return false
+      })
+  }
+
+  private _ensureDir(dirname: string): Promise<void> {
+    if (this._ensuredDirs.has(dirname)) return Promise.resolve()
+
+    return fs.isDirectory(dirname)
+      .catch(() => false)
+      .then(exists => exists ? undefined : fs.mkdir(dirname))
+      .then(() => {
+        this._ensuredDirs.add(dirname)
       })
   }
 }

@@ -41,7 +41,7 @@ function download(url: string, dest: string) {
       : downloadByNodejs(url, dest)
   }
   else {
-    return Shell.run(`curl -fLsS '${url}' -o '${dest}'`)
+    return Shell.run(`curl -fLsS ${Shell.escape(url)} -o ${Shell.escape(dest)}`)
   }
 }
 
