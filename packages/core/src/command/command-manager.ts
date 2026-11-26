@@ -46,6 +46,9 @@ export class CommandManager {
 
   protected disposableMap: Record<string, DisposeFunc[]> = {}
 
+  private _isLoadingConfig = false
+  private _lastSavedText = ''
+
   private static readonly RECENT_COMMANDS_STORAGE_KEY = 'typora-plugin-core@v2.recent-commands'
 
   constructor(
@@ -181,13 +184,21 @@ export class CommandManager {
   }
 
   private loadConfig() {
-    const map = this.config.readConfigJson('hotkeys') as Record<string, Command>
+    const map = (this.config.readConfigJson('hotkeys') ?? {}) as Record<string, Command>
 
-    Object.keys(this.commandMap)
-      .forEach(id => this.resetCommandHotkey(id))
+    this._isLoadingConfig = true
+    try {
+      Object.keys(this.commandMap)
+        .forEach(id => this.resetCommandHotkey(id))
 
-    Object.keys(map)
-      .forEach(id => this.setCommandHotkey(id, map[id].hotkey!))
+      Object.keys(map)
+        .forEach(id => this.setCommandHotkey(id, map[id].hotkey!))
+    }
+    finally {
+      this._isLoadingConfig = false
+      // Restoring hotkeys must not rewrite the same file on every start.
+      this._lastSavedText = JSON.stringify(this.getConfig(), null, 2)
+    }
   }
 
   private getConfig() {
@@ -198,6 +209,20 @@ export class CommandManager {
 
   @debounced(1e3)
   private saveConfig() {
-    this.config.writeConfigJson('hotkeys', this.getConfig())
+    if (this._isLoadingConfig) return
+
+    const config = this.getConfig()
+    const text = JSON.stringify(config, null, 2)
+    if (text === this._lastSavedText) return
+
+    const result = this.config.writeConfigJson('hotkeys', config)
+    if (result && typeof result.then === 'function') {
+      result.then((saved: boolean) => {
+        if (saved !== false) this._lastSavedText = text
+      }, () => { })
+    }
+    else {
+      this._lastSavedText = text
+    }
   }
 }

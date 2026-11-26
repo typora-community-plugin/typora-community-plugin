@@ -94,7 +94,7 @@ export class PluginManager {
       const exists = await fs.isDirectory(pluginsPath).catch(() => false)
       if (!exists) return []
 
-      const dirnames = await fs.list(pluginsPath)
+      const dirnames = await fs.listDirs(pluginsPath)
       return dirnames.map(dir => path.join(pluginsPath, dir))
     }
     catch (error) {

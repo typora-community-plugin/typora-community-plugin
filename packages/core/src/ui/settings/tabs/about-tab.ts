@@ -150,13 +150,11 @@ export class AboutTab extends SettingTab {
     this.addSetting(async setting => {
       setting.addName(t.lang)
       setting.addDescription(t.langDesc)
-      setting.addSelect(async el => {
-        const files = await fs.list(path.join(coreDir(), 'locales'))
-
+      setting.addSelect(el => {
         const selected = this.settings.get('displayLang')
         const select = (opt: string) => opt === selected ? 'selected' : ''
-        const options = files
-          .map(name => name.slice(5, -5))
+        const options = Object.keys(LANG_NAMES)
+          .sort()
           .map(name => `<option value="${name}" ${select(name)}>${LANG_NAMES[name] ?? name}</option>`)
 
         $(el)

@@ -319,6 +319,18 @@ describe('CommandManager configuration and recent commands', () => {
     expect(manager.commandMap.first.hotkey).toBe('ctrl+k')
   })
 
+  test('loadConfig does not rewrite unchanged hotkeys', () => {
+    vi.useFakeTimers()
+    const { manager, app, config } = createManager()
+    manager.register(command({ id: 'first', hotkey: 'ctrl+s' }))
+    config.readConfigJson.mockReturnValue({})
+
+    app.emit('load')
+    vi.advanceTimersByTime(1_000)
+
+    expect(config.writeConfigJson).not.toHaveBeenCalled()
+  })
+
   test('getConfig only includes commands with own properties', () => {
     vi.useFakeTimers()
     const { manager, config } = createManager()

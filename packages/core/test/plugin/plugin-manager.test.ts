@@ -9,6 +9,7 @@ vi.mock('src/io/fs/filesystem', () => ({
   default: {
     isDirectory: vi.fn(),
     list: vi.fn(),
+    listDirs: vi.fn(),
     readTextSync: vi.fn(),
     remove: vi.fn(),
   },
@@ -201,6 +202,7 @@ describe('PluginManager manifests and lifecycle', () => {
     vi.useFakeTimers()
     vi.mocked(fs.isDirectory).mockReset().mockResolvedValue(true)
     vi.mocked(fs.list).mockReset().mockResolvedValue([])
+    vi.mocked(fs.listDirs).mockReset().mockResolvedValue([])
     vi.mocked(fs.readTextSync).mockReset().mockReturnValue('{}')
     vi.mocked(fs.remove).mockReset().mockResolvedValue(undefined)
     vi.spyOn(Notice, 'info').mockImplementation(() => ({}) as any)
@@ -248,7 +250,7 @@ describe('PluginManager manifests and lifecycle', () => {
     const manager = createManager()
     manager.globalPluginsDir = '/global-plugins'
     manager.vaultPluginsDir = '/vault-plugins'
-    vi.mocked(fs.list).mockImplementation(async (dir: string) =>
+    vi.mocked(fs.listDirs).mockImplementation(async (dir: string) =>
       dir === '/global-plugins' ? ['a'] : [])
     vi.mocked(fs.readTextSync).mockReturnValue(JSON.stringify(manifest({ id: 'a' })))
 
@@ -269,7 +271,7 @@ describe('PluginManager manifests and lifecycle', () => {
 
     await manager.loadManifests()
 
-    expect(fs.list).not.toHaveBeenCalled()
+    expect(fs.listDirs).not.toHaveBeenCalled()
     expect(manager.manifests).toEqual({})
   })
 

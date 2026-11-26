@@ -53,6 +53,13 @@ export class NodeFS extends FileAdapter {
     return fsp.readdir(dirpath)
   }
 
+  listDirs(dirpath: string): Promise<string[]> {
+    return fsp.readdir(dirpath, { withFileTypes: true })
+      .then(entries => entries
+        .filter(entry => entry.isDirectory())
+        .map(entry => entry.name))
+  }
+
   readText(filepath: string): Promise<string> {
     return fsp.readFile(filepath, 'utf8')
   }

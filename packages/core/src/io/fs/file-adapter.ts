@@ -38,6 +38,27 @@ export abstract class FileAdapter {
    * On macOS, it's very slow.
    */
   abstract list(dirpath: string): Promise<string[]>
+
+  /**
+   * List directory names only.
+   *
+   * The default implementation filters `list()` with `isDirectory()`, which
+   * avoids a shell command per entry on macOS. Platform adapters may override
+   * it with a faster native implementation.
+   */
+  async listDirs(dirpath: string): Promise<string[]> {
+    const names = await this.list(dirpath)
+    const dirs: string[] = []
+
+    for (const name of names) {
+      if (await this.isDirectory(path.join(dirpath, name))) {
+        dirs.push(name)
+      }
+    }
+
+    return dirs
+  }
+
   /**
    * On macOS, it's very slow.
    */

@@ -90,6 +90,42 @@ describe('MacFS', () => {
     await expect(fs.list('/empty')).resolves.toEqual([])
   })
 
+  test('lists directories through library.listDocsUnder without a shell command', async () => {
+    callHandler.mockImplementation((channel: string, _payload: any, callback: (value: any) => void) => {
+      if (channel === 'library.listDocsUnder') {
+        callback({
+          name: 'plugins',
+          subdir: [
+            { name: 'b', path: '/plugins/b' },
+            { name: 'a', path: '/plugins/a' },
+          ],
+          content: [],
+        })
+        return
+      }
+      callback(false)
+    })
+
+    await expect(fs.listDirs('/plugins')).resolves.toEqual(['b', 'a'])
+
+    expect(shellRun).not.toHaveBeenCalled()
+  })
+
+  test('falls back to ls when library.listDocsUnder is unavailable', async () => {
+    callHandler.mockImplementation((channel: string, payload: any, callback: (value: any) => void) => {
+      if (channel === 'library.listDocsUnder') {
+        callback(null)
+        return
+      }
+      callback(payload === '/plugins/a')
+    })
+    shellRun.mockResolvedValue('a\nb\n')
+
+    await expect(fs.listDirs('/plugins')).resolves.toEqual(['a'])
+
+    expect(shellRun).toHaveBeenCalledWith(`ls ${Shell.escape('/plugins')}`)
+  })
+
   test('writes text with printf and escapes paths', async () => {
     await fs.writeText("/tmp/it's.json", "it's")
 

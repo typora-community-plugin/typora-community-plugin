@@ -1,4 +1,5 @@
 import { isCommandCancelled, Shell } from "src/io/shell"
+import path from "src/path"
 import { bridge, JSBridge } from "typora"
 import { FileAdapter, type FileStats } from "./file-adapter"
 
@@ -108,6 +109,13 @@ export class MacFS extends FileAdapter {
       })
   }
 
+  async listDirs(dirpath: string): Promise<string[]> {
+    const dirs = await this._listDirsByBridge(dirpath)
+    if (dirs !== undefined) return dirs
+
+    return super.listDirs(dirpath)
+  }
+
   readText(filepath: string): Promise<string> {
     return Promise.resolve().then(() => this.readTextSync(filepath))
   }
@@ -156,6 +164,52 @@ export class MacFS extends FileAdapter {
 
   private _accessByShell(filepath: string) {
     return Shell.run(`test -e ${Shell.escape(filepath)}`) as Promise<void>
+  }
+
+  /**
+   * List immediate sub-directories through Typora's file-tree API.
+   *
+   * `library.listDocsUnder` is the only non-shell directory listing available
+   * on macOS. Returns `undefined` when the handler is unavailable or fails, so
+   * callers can fall back to `ls`.
+   */
+  private _listDirsByBridge(dirpath: string): Promise<string[] | undefined> {
+    return new Promise(resolve => {
+      let settled = false
+      let timer: ReturnType<typeof setTimeout> | undefined
+
+      const finish = (value: string[] | undefined) => {
+        if (settled) return
+        settled = true
+        if (timer) clearTimeout(timer)
+        resolve(value)
+      }
+
+      timer = setTimeout(() => finish(undefined), 5_000)
+
+      try {
+        bridge.callHandler('library.listDocsUnder', dirpath, (file: any) => {
+          if (
+            !file
+            || typeof file !== 'object'
+            || typeof file.name !== 'string'
+            || !Array.isArray(file.subdir)
+          ) {
+            finish(undefined)
+            return
+          }
+
+          finish(file.subdir
+            .filter((entry: any) =>
+              typeof entry?.name === 'string'
+              && (!entry.path || path.dirname(entry.path) === dirpath))
+            .map((entry: any) => entry.name as string))
+        })
+      }
+      catch {
+        finish(undefined)
+      }
+    })
   }
 
   /**
