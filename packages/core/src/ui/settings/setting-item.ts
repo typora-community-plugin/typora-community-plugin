@@ -16,8 +16,44 @@ export class SettingContainer {
   addSetting(build: (setting: SettingItem) => void) {
     const setting = new SettingItem()
     build(setting)
+    labelControls(setting)
     this.containerEl.append(setting.containerEl)
   }
+}
+
+/** Makes ids unique across every row in the document. */
+let labelCount = 0
+
+/**
+ * Give the row's form controls the row's name as their accessible name, and
+ * its description as their accessible description, so a screen reader
+ * announces "Downloader, combo box" rather than an unnamed control. Controls
+ * the caller has labelled already keep their label. Buttons are left alone,
+ * because their own text names them.
+ */
+function labelControls(setting: SettingItem) {
+  const nameEl = setting.name
+  if (!nameEl?.textContent?.trim()) return
+
+  // A plain selector list, not `:is()`, which older macOS WebKit lacks.
+  const controls = setting.containerEl.querySelectorAll(['input', 'select', 'textarea']
+    .map(tag => `:scope > .typ-setting-controls ${tag}`).join(', '))
+  if (!controls.length) return
+
+  const descriptionEl = setting.info.querySelector('.typ-setting-description')
+  const id = ++labelCount
+
+  controls.forEach(control => {
+    if (control.hasAttribute('aria-label') || control.hasAttribute('aria-labelledby')) return
+
+    nameEl.id ||= `typ-setting-name-${id}`
+    control.setAttribute('aria-labelledby', nameEl.id)
+
+    if (descriptionEl && !control.hasAttribute('aria-describedby')) {
+      descriptionEl.id ||= `typ-setting-description-${id}`
+      control.setAttribute('aria-describedby', descriptionEl.id)
+    }
+  })
 }
 
 type SelectOptions = {

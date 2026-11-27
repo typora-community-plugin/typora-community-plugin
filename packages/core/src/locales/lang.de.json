@@ -61,7 +61,8 @@
     "titleVault": "Vault-Einstellungen",
     "groupCore": "Kern",
     "groupInternalPlugins": "Kern-Plugins",
-    "groupPlugins": "Community-Plugins"
+    "groupPlugins": "Community-Plugins",
+    "navLabel": "Einstellungsseiten"
   },
   "settingTabs": {
     "fileLink": {

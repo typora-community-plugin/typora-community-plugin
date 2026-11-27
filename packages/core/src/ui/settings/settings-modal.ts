@@ -14,6 +14,10 @@ import { PluginManagerSettingTab } from "./tabs/plugin-manager-setting-tab"
 import { PluginMarketplaceSettingTab } from './tabs/plugin-marketplace-setting-tab'
 
 
+/** Makes each group title id unique, even with several modals in one document. */
+let navGroupCount = 0
+
+
 export type SettingsModalEvents = {
   'open'(): void
 
@@ -101,13 +105,17 @@ export class SettingsModal extends Component {
       )
       .setBody(body => {
         body.append(
-          this.sidebar = html`<div class="typ-sidebar"></div>`,
+          this.sidebar = html`<div class="typ-sidebar" role="navigation"></div>`,
           this.main = html`<div class="typ-main"></div>`,
         )
 
+        this.sidebar.setAttribute('aria-label', t.navLabel)
         this.sidebar.addEventListener('click', this.onItemClick)
+        this.sidebar.addEventListener('keydown', this.onNavKeydown)
 
         this.filterInput = html`<input class="typ-nav__filter" type="text" placeholder="${t.filterPlaceholder}">` as HTMLInputElement
+        // A placeholder is not an accessible name, and it disappears once the user types.
+        this.filterInput.setAttribute('aria-label', t.filterPlaceholder)
         this.filterInput.addEventListener('input', this.onFilterInput)
         this.sidebar.append(this.filterInput)
       })
@@ -138,6 +146,59 @@ export class SettingsModal extends Component {
     this.openTab(this.tabs.find(tab => tab.name === name)!)
   }
 
+  /**
+   * Keyboard support for the nav items: Enter or Space opens a page, and the
+   * arrow keys, Home and End move focus between the items the filter shows.
+   * ArrowDown in the filter box moves to the first visible item.
+   */
+  private onNavKeydown = (event: KeyboardEvent) => {
+    const target = event.target as HTMLElement
+    const visible = this.visibleNavItems()
+
+    if (target === this.filterInput) {
+      if (event.key !== 'ArrowDown' || !visible.length) return
+      event.preventDefault()
+      visible[0].focus()
+      return
+    }
+
+    const item = target.closest('.typ-nav__item') as HTMLElement | null
+    if (!item) return
+
+    let next: HTMLElement | undefined
+    switch (event.key) {
+      case 'Enter':
+      case ' ':
+        event.preventDefault()
+        item.click()
+        return
+      case 'ArrowDown':
+        next = visible[visible.indexOf(item) + 1]
+        break
+      case 'ArrowUp':
+        next = visible[visible.indexOf(item) - 1]
+        break
+      case 'Home':
+        next = visible[0]
+        break
+      case 'End':
+        next = visible[visible.length - 1]
+        break
+      default:
+        return
+    }
+
+    event.preventDefault()
+    next?.focus()
+  }
+
+  /** Nav items in display order, without those the filter has hidden. */
+  private visibleNavItems() {
+    return Array.from(this.sidebar.querySelectorAll<HTMLElement>('.typ-nav__item'))
+      .filter(item => item.style.display !== 'none'
+        && (item.closest('.typ-nav__group') as HTMLElement | null)?.style.display !== 'none')
+  }
+
   private onFilterInput = () => {
     this.applyFilter()
   }
@@ -161,9 +222,10 @@ export class SettingsModal extends Component {
   }
 
   private addGroup(text: string) {
-    const group = html`<section class="typ-nav__group"></section>`
+    const titleId = `typ-nav__group-title-${++navGroupCount}`
+    const group = html`<section class="typ-nav__group" role="group" aria-labelledby="${titleId}"></section>`
     this.sidebar.append(group)
-    group.append(html`<div class="typ-nav__group-title">${text}</div>`)
+    group.append(html`<div class="typ-nav__group-title" id="${titleId}">${text}</div>`)
     this.allGroups.push(group)
     return group
   }
@@ -196,7 +258,7 @@ export class SettingsModal extends Component {
   }
 
   private createNavItem(tab: SettingTab) {
-    const item = html`<div class="typ-nav__item" data-name="${tab.name}"></div>`
+    const item = html`<div class="typ-nav__item" data-name="${tab.name}" role="button" tabindex="0"></div>`
     item.append(html`<span class="typ-nav__item-name">${tab.name}</span>`)
 
     if (tab.pill !== undefined && tab.pill !== '') {
@@ -247,8 +309,13 @@ export class SettingsModal extends Component {
   }
 
   openTab(tab: SettingTab) {
-    this.sidebar.querySelector('.active')?.classList.remove('active')
-    this.sidebar.querySelector(`[data-name="${tab.name}"]`)!.classList.add('active')
+    const previous = this.sidebar.querySelector('.active')
+    previous?.classList.remove('active')
+    previous?.removeAttribute('aria-current')
+
+    const item = this.sidebar.querySelector(`[data-name="${tab.name}"]`)!
+    item.classList.add('active')
+    item.setAttribute('aria-current', 'page')
 
     this.activeTab?.containerEl?.remove()
     this.activeTab?.hide()

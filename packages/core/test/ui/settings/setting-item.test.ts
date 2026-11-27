@@ -1,5 +1,5 @@
 import 'src/setup-test-env'
-import { SettingItem } from 'src/ui/settings/setting-item'
+import { SettingContainer, SettingItem } from 'src/ui/settings/setting-item'
 import { describe, expect, it, vi } from 'vitest'
 
 
@@ -311,5 +311,77 @@ describe('SettingItem.addSidebarLayout', () => {
       expect(getItems(sidebarEl)).toHaveLength(0)
       expect(panelEl.childElementCount).toBe(0)
     })
+  })
+})
+
+describe('SettingContainer.addSetting() accessible names', () => {
+  function add(build: (setting: SettingItem) => void) {
+    const host = document.createElement('div')
+    document.body.append(host)
+    new SettingContainer(host).addSetting(build)
+    return host.lastElementChild as HTMLElement
+  }
+
+  it('names a control by its row name and describes it by the row description', () => {
+    const row = add(setting => {
+      setting.addName('Downloader')
+      setting.addDescription('Which tool downloads plugins.')
+      setting.addSelect(select => select.append(new Option('Typora')))
+    })
+
+    const select = row.querySelector('select')!
+    const name = row.querySelector('.typ-setting-name')!
+    const description = row.querySelector('.typ-setting-description')!
+    expect(select.getAttribute('aria-labelledby')).toBe(name.id)
+    expect(select.getAttribute('aria-describedby')).toBe(description.id)
+    expect(name.id).not.toBe(description.id)
+  })
+
+  it('names checkboxes in the prefix column and text inputs alike', () => {
+    const row = add(setting => {
+      setting.addName('Show ribbon')
+      setting.addCheckbox(() => { })
+      setting.addText(() => { })
+    })
+
+    const name = row.querySelector('.typ-setting-name')!
+    for (const control of row.querySelectorAll('input')) {
+      expect(control.getAttribute('aria-labelledby')).toBe(name.id)
+      expect(control.hasAttribute('aria-describedby')).toBe(false)
+    }
+  })
+
+  it('gives every row its own ids', () => {
+    const first = add(setting => { setting.addName('A'); setting.addText(() => { }) })
+    const second = add(setting => { setting.addName('B'); setting.addText(() => { }) })
+
+    expect(first.querySelector('input')!.getAttribute('aria-labelledby'))
+      .not.toBe(second.querySelector('input')!.getAttribute('aria-labelledby'))
+  })
+
+  it('keeps a label the caller already set', () => {
+    const row = add(setting => {
+      setting.addName('Search commands')
+      setting.addText(input => input.setAttribute('aria-label', 'Search'))
+    })
+
+    const input = row.querySelector('input')!
+    expect(input.getAttribute('aria-label')).toBe('Search')
+    expect(input.hasAttribute('aria-labelledby')).toBe(false)
+  })
+
+  it('leaves rows without a name unchanged', () => {
+    const row = add(setting => setting.addText(() => { }))
+
+    expect(row.querySelector('input')!.hasAttribute('aria-labelledby')).toBe(false)
+  })
+
+  it('does not label buttons, which name themselves', () => {
+    const row = add(setting => {
+      setting.addName('Plugin list')
+      setting.addButton(button => { button.textContent = 'Refresh' })
+    })
+
+    expect(row.querySelector('button')!.hasAttribute('aria-labelledby')).toBe(false)
   })
 })
