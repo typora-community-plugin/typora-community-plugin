@@ -1,8 +1,18 @@
+import { macHelper } from "src/io/helper"
+import { type HelperListInfo, type HelperStatInfo, HelperUnavailableError } from "src/io/helper/protocol"
 import { isCommandCancelled, Shell } from "src/io/shell"
 import path from "src/path"
 import { bridge, JSBridge } from "typora"
 import { FileAdapter, type FileStats, type FileTreeEntry, type ListFilesOptions } from "./file-adapter"
 
+
+/**
+ * `list` / `listDirs` answer `{ names }`; the shell and bridge fallbacks answer
+ * a plain array. Normalize both so callers always get names.
+ */
+function toNames(result: string[] | HelperListInfo): string[] {
+  return Array.isArray(result) ? result : result.names
+}
 
 function toTimeMs(value: unknown): number | undefined {
   if (value instanceof Date) return value.getTime()
@@ -51,6 +61,52 @@ class MacFileStats implements FileStats {
   }
 }
 
+class HelperFileStats implements FileStats {
+  constructor(private readonly info: HelperStatInfo) { }
+
+  isDirectory() {
+    return this.info.isDir
+  }
+
+  isFile() {
+    return this.info.isFile
+  }
+
+  get mtimeMs() {
+    return this.info.mtimeMs
+  }
+
+  get size() {
+    return this.info.size
+  }
+}
+
+/**
+ * Runs the operation through `typora-helper` when it is available, and falls
+ * back to the shell path when it is not.
+ *
+ * Only `HelperUnavailableError` triggers the fallback: an operation-level error
+ * (`ENOENT`, `EACCES`, ...) is a real answer and must reach the caller
+ * unchanged, otherwise a failed helper call would turn into an approval dialog
+ * and then the same error.
+ */
+async function viaHelper<T>(
+  op: string,
+  args: Record<string, unknown>,
+  fallback: () => Promise<T>,
+  timeoutMs?: number,
+): Promise<T> {
+  if (!macHelper.isEnabled()) return fallback()
+
+  try {
+    return await macHelper.request<T>(op, args, timeoutMs)
+  }
+  catch (error) {
+    if (error instanceof HelperUnavailableError) return fallback()
+    throw error
+  }
+}
+
 export class MacFS extends FileAdapter {
 
   access(filepath: string): Promise<void> {
@@ -62,6 +118,19 @@ export class MacFS extends FileAdapter {
   }
 
   async exists(filepath: string): Promise<boolean> {
+    // `exists()` runs on hot paths (startup, `access()`, config reads). Gate on
+    // `ready` rather than `isEnabled()` so an existence check never spawns the
+    // helper, i.e. never pops the approval dialog by itself.
+    if (macHelper.ready) {
+      try {
+        const info = await macHelper.request<HelperStatInfo>('stat', { path: filepath })
+        return info.exists
+      }
+      catch (error) {
+        if (!(error instanceof HelperUnavailableError)) throw error
+      }
+    }
+
     const isDirectory = await this._isDirectory(filepath)
     if (isDirectory === true) return true
 
@@ -78,12 +147,25 @@ export class MacFS extends FileAdapter {
     }
   }
 
-  stat(filepath: string): Promise<MacFileStats> {
+  async stat(filepath: string): Promise<FileStats> {
+    if (macHelper.isEnabled()) {
+      try {
+        const info = await macHelper.request<HelperStatInfo>('stat', { path: filepath })
+        if (!info.exists) {
+          throw new Error(`ENOENT: no such file or directory, stat '${filepath}'`)
+        }
+        return new HelperFileStats(info)
+      }
+      catch (error) {
+        if (!(error instanceof HelperUnavailableError)) throw error
+      }
+    }
+
     // macOS uses BSD stat: `Modify:`/`Size:` labels are GNU-only. Force the
     // C locale so `%HT` (file type) stays English and parse the fields we ask
     // for instead of the platform's default output.
-    return Shell.run(`LC_ALL=C stat -f '%m %z %HT' ${Shell.escape(filepath)}`)
-      .then((out: string) => new MacFileStats(out))
+    const out = await Shell.run(`LC_ALL=C stat -f '%m %z %HT' ${Shell.escape(filepath)}`) as string
+    return new MacFileStats(out)
   }
 
   isDirectory(filepath: string): Promise<boolean> {
@@ -92,10 +174,19 @@ export class MacFS extends FileAdapter {
   }
 
   mkdir(dirpath: string): Promise<void> {
-    return Shell.run(`mkdir -p ${Shell.escape(dirpath)}`) as Promise<void>
+    return viaHelper('mkdir', { path: dirpath },
+      () => Shell.run(`mkdir -p ${Shell.escape(dirpath)}`) as Promise<void>)
   }
 
-  async copy(src: string, dest: string): Promise<void> {
+  copy(src: string, dest: string): Promise<void> {
+    return viaHelper('copy', { src, dest }, () => this._copyByBridgeOrShell(src, dest), 30_000)
+  }
+
+  move(src: string, dest: string): Promise<void> {
+    return viaHelper('move', { src, dest }, () => this._moveByBridgeOrShell(src, dest), 30_000)
+  }
+
+  private async _copyByBridgeOrShell(src: string, dest: string): Promise<void> {
     if (await this._isDirectory(src) === true) {
       return Shell.run(`cp -r ${Shell.escape(src)} ${Shell.escape(dest)}`) as Promise<void>
     }
@@ -110,7 +201,7 @@ export class MacFS extends FileAdapter {
     }
   }
 
-  async move(src: string, dest: string): Promise<void> {
+  private async _moveByBridgeOrShell(src: string, dest: string): Promise<void> {
     if (await this._isDirectory(src) === true) {
       return Shell.run(`mv -f ${Shell.escape(src)} ${Shell.escape(dest)}`) as Promise<void>
     }
@@ -126,22 +217,27 @@ export class MacFS extends FileAdapter {
   }
 
   list(dirpath: string): Promise<string[]> {
-    return Shell.run(`ls ${Shell.escape(dirpath)}`)
-      .then((out: string) => {
-        const text = String(out ?? '').trim()
-        return text ? text.split(/\r?\n/) : []
-      })
+    return viaHelper<string[] | HelperListInfo>('list', { path: dirpath }, () =>
+      Shell.run(`ls ${Shell.escape(dirpath)}`)
+        .then((out: string) => {
+          const text = String(out ?? '').trim()
+          return text ? text.split(/\r?\n/) : []
+        }),
+    ).then(toNames)
   }
 
   async listDirs(dirpath: string): Promise<string[]> {
-    const node = await this._listUnderBridge(dirpath)
-    if (!node || !Array.isArray(node.subdir)) {
-      return super.listDirs(dirpath)
-    }
+    const result = await viaHelper<string[] | HelperListInfo>('listDirs', { path: dirpath }, async () => {
+      const node = await this._listUnderBridge(dirpath)
+      if (!node || !Array.isArray(node.subdir)) {
+        return super.listDirs(dirpath)
+      }
 
-    return node.subdir
-      .filter((entry: any) => typeof entry?.name === 'string')
-      .map((entry: any) => entry.name as string)
+      return node.subdir
+        .filter((entry: any) => typeof entry?.name === 'string')
+        .map((entry: any) => entry.name as string)
+    })
+    return toNames(result)
   }
 
   /**
@@ -207,14 +303,26 @@ export class MacFS extends FileAdapter {
   }
 
   writeText(filepath: string, text: string): Promise<void> {
-    return Shell.run(`printf '%s\\n' ${Shell.escape(text)} > ${Shell.escape(filepath)}`) as Promise<void>
+    // The shell version writes `printf '%s\n'`, i.e. text plus one newline.
+    // Keep the bytes identical so config files do not change shape.
+    return viaHelper('writeText', { path: filepath, text: `${text}\n` },
+      () => Shell.run(`printf '%s\\n' ${Shell.escape(text)} > ${Shell.escape(filepath)}`) as Promise<void>,
+      30_000)
   }
 
   appendText(filepath: string, text: string): Promise<void> {
-    return Shell.run(`printf '%s' ${Shell.escape(text)} >> ${Shell.escape(filepath)}`) as Promise<void>
+    return viaHelper('appendText', { path: filepath, text },
+      () => Shell.run(`printf '%s' ${Shell.escape(text)} >> ${Shell.escape(filepath)}`) as Promise<void>,
+      30_000)
   }
 
-  async remove(filepath: string): Promise<void> {
+  remove(filepath: string): Promise<void> {
+    return viaHelper('remove', { path: filepath },
+      () => this._removeByBridgeOrShell(filepath),
+      30_000)
+  }
+
+  private async _removeByBridgeOrShell(filepath: string): Promise<void> {
     if (await this._isDirectory(filepath) === true) {
       return Shell.run(`rm -r ${Shell.escape(filepath)}`) as Promise<void>
     }

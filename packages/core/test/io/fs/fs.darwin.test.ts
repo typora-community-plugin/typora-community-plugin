@@ -1,5 +1,6 @@
 import 'src/setup-test-env'
 import { MacFS } from 'src/io/fs/fs.darwin'
+import { macHelper } from 'src/io/helper'
 import { CommandCancelledError, Shell } from 'src/io/shell'
 
 
@@ -137,6 +138,28 @@ describe('MacFS', () => {
     shellRun.mockResolvedValue('  \n')
 
     await expect(fs.list('/empty')).resolves.toEqual([])
+  })
+
+  test('unwraps the helper `{ names }` response for list and listDirs', async () => {
+    const originalFile = (globalThis as any).File
+    ;(globalThis as any).File = { isMac: true }
+    const request = vi.spyOn(macHelper, 'request')
+      .mockResolvedValueOnce({ names: ['.typora', 'doc.md'] })
+      .mockResolvedValueOnce({ names: ['sub'] })
+
+    try {
+      await expect(fs.list('/vault')).resolves.toEqual(['.typora', 'doc.md'])
+      await expect(fs.listDirs('/vault')).resolves.toEqual(['sub'])
+
+      expect(shellRun).not.toHaveBeenCalled()
+      expect(callHandler).not.toHaveBeenCalled()
+      expect(request).toHaveBeenNthCalledWith(1, 'list', { path: '/vault' }, undefined)
+      expect(request).toHaveBeenNthCalledWith(2, 'listDirs', { path: '/vault' }, undefined)
+    }
+    finally {
+      request.mockRestore()
+      ;(globalThis as any).File = originalFile
+    }
   })
 
   test('lists directories through library.listDocsUnder without a shell command', async () => {
