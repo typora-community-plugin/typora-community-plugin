@@ -60,7 +60,7 @@ export class AboutTab extends SettingTab {
 
     settingsModal.once('open', () => this.checkUpdateDaily())
 
-    settings.onChange('autoCheckForUpdates', enabled => {
+    settings.onChange('autoCheckForUpdates', (_, enabled) => {
       enabled ? this.checkUpdateDaily() : this.setUpdateState(false)
     })
   }
