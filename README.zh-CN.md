@@ -46,6 +46,7 @@
 - [x] 自定义命令的[快捷键](./docs/zh-cn/user-guide/3c-hotkey.md)
 - [x] [多国语言](./docs/zh-cn/user-guide/5-i18n.md): 跟随系统或手动配置，现在支持英语、中文和德语
 - [x] 兼容 macOS
+  - [x] [macOS 文件操作助手](./docs/zh-cn/user-guide/1d-macos-helper.md)
 - [x] [高级搜索](./docs/zh-cn/user-guide/4c-advanced-search.md): 支持如 `(书籍 电影) OR tag:游戏` 的表达式
 
 

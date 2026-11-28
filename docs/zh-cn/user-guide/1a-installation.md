@@ -71,6 +71,7 @@
 
 ## 相关页面
 
+- [macOS 文件操作助手](./1d-macos-helper.md)
 - [升级插件](./1c-update.md)
 - [如何卸载](./1b-uninstall.md)
 - [插件安装](./2-plugin-installation.md)

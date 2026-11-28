@@ -11,6 +11,7 @@ Typora Community Plugin 为 Typora 增加插件系统，并内置多标签、分
 | [如何安装](./1a-installation.md) | 脚本安装、手动安装、安装失败排查 |
 | [如何卸载](./1b-uninstall.md) | 脚本卸载与手动还原 |
 | [升级插件](./1c-update.md) | 「关于 → 更新」、自动检查更新、更新日志 |
+| [macOS 文件操作助手](./1d-macos-helper.md) | 减少 macOS 上反复出现的文件操作授权框（仅 macOS） |
 | [插件安装](./2-plugin-installation.md) | 从插件市场或手动安装、启用、更新、卸载插件 |
 | [设置总览](./3-settings.md) | 全局设置与本地设置的区别、7 个设置页各管什么 |
 | [切换语言](./5-i18n.md) | 中文、英文、德文界面 |

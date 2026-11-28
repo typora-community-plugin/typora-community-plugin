@@ -46,6 +46,7 @@ To be on the safe side, install an open source plugin that can review the source
 - [x] Custom command [hotkeys](./docs/en-us/user-guide/3c-hotkey.md)
 - [x] [I18n](./docs/en-us/user-guide/5-i18n.md): follow system or manual configure, now support English, Chinese and German
 - [x] Compatible with macOS
+  - [x] [macOS file operations helper](./docs/en-us/user-guide/1d-macos-helper.md)
 - [x] [Advanced Search](./docs/en-us/user-guide/4c-advanced-search.md): support expressions like `(book film) OR tag:game`
 
 

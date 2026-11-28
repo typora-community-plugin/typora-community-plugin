@@ -11,6 +11,7 @@ Pick an entry point by scenario: the first group if you are just getting started
 | [How to install](./1a-installation.md) | Script installation, manual installation, troubleshooting |
 | [How to uninstall](./1b-uninstall.md) | Script uninstallation and manual restore |
 | [Upgrading the plugin](./1c-update.md) | About → Update, automatic update checks, changelog |
+| [macOS file operations helper](./1d-macos-helper.md) | Reduce repeated file operation authorization dialogs on macOS (macOS only) |
 | [Plugin installation](./2-plugin-installation.md) | Install from the marketplace or manually, enable, update, uninstall |
 | [Settings overview](./3-settings.md) | Global vs. vault settings, and what each of the 7 settings pages controls |
 | [Switching languages](./5-i18n.md) | Chinese, English, and German UI |

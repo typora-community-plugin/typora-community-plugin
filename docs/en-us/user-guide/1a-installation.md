@@ -71,6 +71,7 @@ If the Ribbon and file tabs do not appear after installation, check the followin
 
 ## Related pages
 
+- [macOS file operations helper](./1d-macos-helper.md)
 - [Upgrading the plugin](./1c-update.md)
 - [How to uninstall](./1b-uninstall.md)
 - [Plugin installation](./2-plugin-installation.md)
