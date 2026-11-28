@@ -96,7 +96,9 @@
     "hotkey": {
       "name": "快捷键",
       "searchHotkey": "搜索命令",
-      "commands": "命令的快捷键",
+      "coreCommands": "核心命令",
+      "pluginCommands": "插件命令",
+      "addHotkey": "添加快捷键",
       "waitHotkey": "请按下快捷键..."
     },
     "internalPlugins": {

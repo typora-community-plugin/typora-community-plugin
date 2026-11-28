@@ -16,11 +16,15 @@ export class HotkeySettingTab extends SettingTab {
     return this.i18n.t.settingTabs.hotkey.name
   }
 
+  private query = ''
+  private rendered = false
+
   constructor(
     config = useService('config-repository'),
     app = useEventBus('app'),
     private i18n = useService('i18n'),
     private commands = useService('command-manager'),
+    private plugins = useService('plugin-manager'),
   ) {
     super()
 
@@ -39,27 +43,59 @@ export class HotkeySettingTab extends SettingTab {
     this.addSetting(setting => {
       setting.addName(t.searchHotkey)
       setting.addText(input => {
+        input.value = this.query
         input.oninput = debounce(() => {
-          this.renderHotkeyList(input.value)
+          this.query = input.value
+          this.renderHotkeyList()
         }, 300)
       })
     })
 
-    this.addSettingTitle(t.commands)
+    this.renderHotkeyList()
+    this.rendered = true
+  }
+
+  /**
+   * Re-render when the page is shown, so commands of plugins enabled or
+   * disabled since the last visit appear or disappear. Before the first
+   * `render()` there is no search box yet, and the list would land above it.
+   */
+  onshow() {
+    if (!this.rendered) return
     this.renderHotkeyList()
   }
 
-  private renderHotkeyList(query: string = '') {
+  private renderHotkeyList() {
+    const t = this.i18n.t.settingTabs.hotkey
     this.cleanHotkeyList()
-    query = query.toLowerCase()
+    const query = this.query.toLowerCase()
 
-    Object.values(this.commands.commandMap)
+    const shown = Object.values(this.commands.commandMap)
       .filter(cmd => cmd.showInCommandPanel && (!query || cmd.title.toLowerCase().includes(query)))
-      .forEach(cmd => this.renderHotkey(cmd))
+
+    // `Plugin.registerCommand()` prefixes a community plugin's command ids
+    // with `${manifest.id}:`. Core plugins are not in `manifests`, so their
+    // commands stay under core commands.
+    const pluginPrefixes = Object.keys(this.plugins.manifests).map(id => `${id}:`)
+    const isPluginCommand = (cmd: Command) => pluginPrefixes.some(prefix => cmd.id.startsWith(prefix))
+
+    this.renderGroup(t.coreCommands, shown.filter(cmd => !isPluginCommand(cmd)))
+    this.renderGroup(t.pluginCommands, shown.filter(isPluginCommand))
+  }
+
+  /** Render a titled group of commands, or nothing when it has none. */
+  private renderGroup(title: string, commands: Command[]) {
+    if (!commands.length) return
+
+    this.addSetting(setting => {
+      setting.addTitle(title)
+      setting.containerEl.classList.add('typ-hotkey-group')
+    })
+    commands.forEach(cmd => this.renderHotkey(cmd))
   }
 
   private cleanHotkeyList() {
-    this.containerEl.querySelectorAll('.typ-hotkey-item')
+    this.containerEl.querySelectorAll('.typ-hotkey-group, .typ-hotkey-item')
       .forEach(el => el.remove())
   }
 
@@ -88,7 +124,11 @@ export class HotkeySettingTab extends SettingTab {
 
   private addCreateHotkeyButton(setting: SettingItem, id: string) {
     setting.addButton(btn => {
-      btn.append(html`<span class="fa fa-plus"></span>`)
+      // The button shows only an icon, so give it a name and a tooltip.
+      const label = this.i18n.t.settingTabs.hotkey.addHotkey
+      btn.setAttribute('aria-label', label)
+      btn.title = label
+      btn.append(html`<span class="fa fa-plus" aria-hidden="true"></span>`)
       btn.onclick = () => {
         btn.remove()
         setting.addButton(el => {

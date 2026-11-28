@@ -96,7 +96,9 @@
     "hotkey": {
       "name": "Tastenkürzel",
       "searchHotkey": "Befehle suchen",
-      "commands": "Tastenkürzel der Befehle",
+      "coreCommands": "Core-Befehle",
+      "pluginCommands": "Plugin-Befehle",
+      "addHotkey": "Tastenkürzel hinzufügen",
       "waitHotkey": "Tastenkürzel drücken..."
     },
     "internalPlugins": {
