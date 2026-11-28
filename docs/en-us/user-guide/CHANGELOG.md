@@ -1,8 +1,17 @@
 # Changelog
 
+## v2.10.96
+
+- feat(core/io/helper): add a macOS file operation helper client; read and write files through a local helper to reduce repeated authorization dialogs when using Typora v1.14.16 on macOS [#116](https://github.com/typora-community-plugin/typora-community-plugin/issues/116)
+
+- **Settings**
+  - feat(core/ui/settings): settings navigation supports keyboard operation and screen readers, and setting items automatically link their headings and descriptions by @jprisant [#118](https://github.com/typora-community-plugin/typora-community-plugin/pull/118)
+  - feat(core/ui/settings/tabs/hotkey): the hotkey page groups commands into "Core Commands" and "Plugin Commands", and refreshes the list based on plugin enable state by @jprisant [#119](https://github.com/typora-community-plugin/typora-community-plugin/pull/119)
+  - fix(core/ui/settings/tabs/about): clear update badges on navigation and entries after turning off automatic update checks
+
 ## v2.10.92
 
-- fix(core): reduce repeated authorization dialogs when using Typora v1.14.16 on macOS [#116](https://github.com/typora-community-plugin/typora-community-plugin/pull/116)
+- fix(core): reduce repeated authorization dialogs when using Typora v1.14.16 on macOS [#116](https://github.com/typora-community-plugin/typora-community-plugin/issues/116)
   - feat(core/io/fs): add `isFile()` and `listDirs()` to avoid per-item shell calls on macOS
   - fix(core/io): avoid failures caused by macOS authorization dialogs, and skip config writes when the content is unchanged
   - fix(core/io/logger): skip file logging in development mode on macOS to avoid repeated authorization dialogs

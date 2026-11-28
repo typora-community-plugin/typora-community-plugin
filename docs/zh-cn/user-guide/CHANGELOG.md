@@ -1,8 +1,17 @@
 # 更新日志
 
+## v2.10.96
+
+- feat(core/io/helper): 新增 macOS 文件操作助手客户端，通过本地助手读写文件减少在 macOS 中使用 Typora v1.14.16 时反复弹出授权对话框 [#116](https://github.com/typora-community-plugin/typora-community-plugin/issues/116)
+
+- **设置**
+  - feat(core/ui/settings): 设置导航支持键盘操作与屏幕阅读器，设置项自动关联标题与说明 by @jprisant [#118](https://github.com/typora-community-plugin/typora-community-plugin/pull/118)
+  - feat(core/ui/settings/tabs/hotkey): 快捷键页将命令分为「核心命令」与「插件命令」，并按插件启停状态刷新列表 by @jprisant [#119](https://github.com/typora-community-plugin/typora-community-plugin/pull/119)
+  - fix(core/ui/settings/tabs/about): 关闭自动检查更新后清除导航与条目上的更新角标
+
 ## v2.10.92
 
-- fix(core): 减少在 macOS 中使用 Typora v1.14.16 时反复弹出授权对话框 [#116](https://github.com/typora-community-plugin/typora-community-plugin/pull/116)
+- fix(core): 减少在 macOS 中使用 Typora v1.14.16 时反复弹出授权对话框 [#116](https://github.com/typora-community-plugin/typora-community-plugin/issues/116)
   - feat(core/io/fs): 新增 `isFile()`、`listDirs()`，macOS 下避免逐项 shell 调用
   - fix(core/io): 避免 macOS 授权弹窗导致的失败，并跳过内容无变化的配置写入
   - fix(core/io/logger): macOS 开发模式跳过文件日志，避免反复弹出授权对话框
