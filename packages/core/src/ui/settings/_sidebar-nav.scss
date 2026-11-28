@@ -44,6 +44,12 @@
     background: rgba(var(--typ-border-color), .35);
   }
 
+  // Keyboard focus only: a mouse click does not draw the ring.
+  &:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
+  }
+
   &.active {
     color: $active-color;
     background: $active-bg;

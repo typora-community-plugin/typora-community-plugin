@@ -61,7 +61,8 @@
     "titleVault": "本地设置",
     "groupCore": "核心设置",
     "groupInternalPlugins": "内置插件设置",
-    "groupPlugins": "社区插件设置"
+    "groupPlugins": "社区插件设置",
+    "navLabel": "设置页面"
   },
   "settingTabs": {
     "fileLink": {
